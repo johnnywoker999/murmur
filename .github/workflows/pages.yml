@@ -1,4 +1,4 @@
-name: Deploy MURMUR AI to GitHub Pages
+name: Deploy MURMUR AI (site + workspace + canvas)
 
 on:
   push:
@@ -17,6 +17,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      OWNER: ${{ github.repository_owner }}
     steps:
       - uses: actions/checkout@v4
 
@@ -24,27 +26,55 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Install dependencies
+      # ---------- 1. 官網（純靜態，直接複製） ----------
+      - name: Assemble landing at site root
+        run: |
+          mkdir -p dist
+          cp -r site/. dist/
+          touch dist/.nojekyll
+
+      # ---------- 2. 創作工作台 → /murmur-ai/ ----------
+      - name: Install workspace deps
         working-directory: web
         run: bun install --frozen-lockfile || bun install
 
-      - name: Build static site
+      - name: Build workspace
         working-directory: web
         env:
-          # 子路徑必須等於 repo 名，否則 GitHub Pages 上的資源會 404
-          VITE_BASE_PATH: /${{ github.event.repository.name }}/
-          # 側欄「ComfyUI 無限畫布」的目標；留空則用預設 http://127.0.0.1:3000
-          VITE_INFINITE_CANVAS_URL: ${{ vars.INFINITE_CANVAS_URL }}
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/murmur-ai/
         run: bun run build:desktop
 
-      - name: SPA fallback + nojekyll
+      - name: Move workspace build
         run: |
-          cp web/dist/index.html web/dist/404.html
-          touch web/dist/.nojekyll
+          mkdir -p dist/murmur-ai
+          cp -r web/dist/. dist/murmur-ai/
+          # 深層連結回退：未知路徑交給工作台路由處理
+          cp dist/murmur-ai/index.html dist/404.html
+
+      # ---------- 3. 無限畫布 → /murmur-canvas/ ----------
+      - name: Clone canvas repo
+        id: canvas
+        continue-on-error: true
+        run: git clone --depth 1 "https://github.com/${OWNER}/murmur-canvas.git" canvas-src
+
+      - name: Build canvas
+        if: steps.canvas.outcome == 'success'
+        working-directory: canvas-src/web
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/murmur-canvas/
+        run: |
+          bun install --frozen-lockfile || bun install
+          bun run build
+          mkdir -p ../../dist/murmur-canvas
+          cp -r dist/. ../../dist/murmur-canvas/
+
+      - name: Note missing canvas
+        if: steps.canvas.outcome != 'success'
+        run: echo "::warning::murmur-canvas 倉庫尚未建立或建置失敗，畫布入口會是 404"
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: web/dist
+          path: dist
 
   deploy:
     needs: build

@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-Hant">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>MURMUR AI — 專業級 AI 影視製作平台</title>
+        <meta
+            name="description"
+            content="MURMUR AI 是一條完整的 AI 影視產線：雙畫布協作、數位資產沉澱、模型與智能體市集，從一個故事到一部成片。"
+        />
+        <link rel="icon" href="./assets/murmur-logo.svg" type="image/svg+xml" />
+        <link rel="stylesheet" href="./styles.css" />
+    </head>
+    <body>
+        <header class="site-header">
+            <a class="brand" href="./" aria-label="MURMUR AI 首頁">
+                <img src="./assets/murmur-logo.svg" alt="" class="brand-mark" />
+                <span class="brand-name">MURMUR<span class="brand-ai">AI</span></span>
+            </a>
+            <nav class="site-nav" aria-label="主要導覽">
+                <a href="#canvases">雙畫布</a>
+                <a href="#assets">數位資產</a>
+                <a href="#market">AI 超市</a>
+                <a href="#custom">客製化訂製</a>
+                <a href="#pipeline">產線</a>
+            </nav>
+            <div class="header-actions">
+                <a class="btn btn-ghost" href="./murmur-ai/">進入工作台</a>
+                <a class="btn btn-primary" href="./murmur-canvas/">打開無限畫布</a>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="hero-glow" aria-hidden="true"></div>
+                <p class="eyebrow">專業級 · AI 影視製作平台</p>
+                <h1>
+                    從一個故事，<br />
+                    到一部<span class="grad">成片</span>。
+                </h1>
+                <p class="lede">
+                    兩塊畫布各有分工：工作台管專案、分鏡與交付，無限畫布直連 ComfyUI 跑鏡頭。
+                    素材生成後自動沉澱為可授權的數位資產，下一部片不必從零開始。
+                </p>
+                <div class="hero-cta">
+                    <a class="btn btn-primary btn-lg" href="./murmur-ai/">進入創作工作台 →</a>
+                    <a class="btn btn-outline btn-lg" href="./murmur-canvas/">打開 ComfyUI 無限畫布</a>
+                </div>
+                <ul class="hero-stats">
+                    <li><strong>30 集</strong><span>短劇整包交付實績</span></li>
+                    <li><strong>3 條</strong><span>算力通道（本地／雲端／API）</span></li>
+                    <li><strong>2 塊</strong><span>畫布，同一套資產底層</span></li>
+                </ul>
+            </section>
+
+            <section id="canvases" class="section">
+                <div class="section-head">
+                    <p class="eyebrow">雙畫布</p>
+                    <h2>兩種工作方式，同一條產線</h2>
+                    <p class="section-sub">
+                        不是兩套系統各做一半，而是刻意分工：一個負責「按集交付」，一個負責「把鏡頭試到對」。
+                    </p>
+                </div>
+                <div class="cards two">
+                    <article class="card card-link">
+                        <div class="card-top">
+                            <span class="tag">交付引擎</span>
+                            <span class="chip">專案制</span>
+                        </div>
+                        <h3>MURMUR 工作台</h3>
+                        <p>
+                            專案庫、分鏡表、角色與道具、音訊與時間軸、內建 Agent。
+                            適合一部 30 集短劇從立項走到成片，每一集的版本與素材都可回溯。
+                        </p>
+                        <ul class="bullets">
+                            <li>專案 / 分鏡 / 鏡次結構化，改一顆鏡頭不牽動全片</li>
+                            <li>資產庫與授權紀錄，交付時附來源與參數</li>
+                            <li>Agent 參與：拆集、寫提示詞、排剪輯</li>
+                        </ul>
+                        <a class="card-cta" href="./murmur-ai/">進入工作台 →</a>
+                    </article>
+                    <article class="card card-link">
+                        <div class="card-top">
+                            <span class="tag">實驗引擎</span>
+                            <span class="chip">ComfyUI</span>
+                        </div>
+                        <h3>ComfyUI 無限畫布</h3>
+                        <p>
+                            瀏覽器直連你的 ComfyUI，節點參數由工作流槽位驅動。
+                            換模型、調步數、試首尾幀，不用離開畫布就能看到結果。
+                        </p>
+                        <ul class="bullets">
+                            <li>工作流即介面：上傳 API JSON 就多一種能力</li>
+                            <li>文生圖 / 圖生圖 / 全能參考 / 首尾幀影片</li>
+                            <li>本機 GPU 或雲端算力，地址一填就接上</li>
+                        </ul>
+                        <a class="card-cta" href="./murmur-canvas/">打開無限畫布 →</a>
+                    </article>
+                </div>
+            </section>
+
+            <section id="assets" class="section">
+                <div class="section-head">
+                    <p class="eyebrow">數位資產庫</p>
+                    <h2>拍過的，不該是一次性的</h2>
+                    <p class="section-sub">
+                        角色、劇本、聲音、場景——每一項都帶著出處、參數與授權狀態，可以在下一部片直接調用或轉售。
+                    </p>
+                </div>
+                <div class="cards four">
+                    <article class="card mini">
+                        <h3>人像資產</h3>
+                        <p>角色三視圖、表情庫、服裝與配件，同一張臉跨集保持一致。</p>
+                    </article>
+                    <article class="card mini">
+                        <h3>劇本資產</h3>
+                        <p>分集大綱、分鏡腳本、台詞與節拍，可版本化、可比對、可重寫。</p>
+                    </article>
+                    <article class="card mini">
+                        <h3>聲音資產</h3>
+                        <p>配音、配樂、音效與嗓線樣本，換語言不必重錄。</p>
+                    </article>
+                    <article class="card mini">
+                        <h3>場景道具</h3>
+                        <p>場景圖、道具、材質與燈光配方，重建同一個世界的成本降到最低。</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="market" class="section">
+                <div class="section-head">
+                    <p class="eyebrow">AI 超市</p>
+                    <h2>模型、智能體、工作流，一次買齊</h2>
+                    <p class="section-sub">不用自己拼技術堆疊。挑現成的，接上自己的畫布就能跑。</p>
+                </div>
+                <div class="cards three">
+                    <article class="card">
+                        <h3>模型渠道</h3>
+                        <p>本地 ComfyUI、雲端算力、閉源廠商 API 三類通道並存，同一顆節點換渠道不用重畫。</p>
+                        <ul class="bullets">
+                            <li>MiniMax H3 · Seedance · 可靈</li>
+                            <li>Gemini / Veo · Flux · Qwen-Image</li>
+                            <li>自建 ComfyUI，模型路徑自管</li>
+                        </ul>
+                    </article>
+                    <article class="card">
+                        <h3>智能體</h3>
+                        <p>把工序拆成可交付的角色：編劇、分鏡、提示詞、剪輯、審片，各有輸入輸出契約。</p>
+                        <ul class="bullets">
+                            <li>一鍵拆集：大綱到分集腳本</li>
+                            <li>分鏡生成：鏡次與時長可約束</li>
+                            <li>審片：一致性與連戲檢查</li>
+                        </ul>
+                    </article>
+                    <article class="card">
+                        <h3>工作流包</h3>
+                        <p>封裝好的節點圖，含槽位標註與預設參數，載入即用，也能拆開改。</p>
+                        <ul class="bullets">
+                            <li>首尾幀影片 · 全能參考影片</li>
+                            <li>角色一致性 · 局部重繪</li>
+                            <li>字幕轉寫 · 配音替換</li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <section id="custom" class="section">
+                <div class="section-head">
+                    <p class="eyebrow">客製化訂製</p>
+                    <h2>你把需求給我們，我們交出成片</h2>
+                    <p class="section-sub">
+                        自有硬體 + 自建產線，不靠單一廠商額度。劇本、分鏡、生成、剪輯、交付，一個窗口到底。
+                    </p>
+                </div>
+                <div class="cards three">
+                    <article class="card plan">
+                        <h3>AI 短劇整包</h3>
+                        <p class="plan-target">30 集 · 每集 90 秒</p>
+                        <ul class="bullets">
+                            <li>劇本與分集大綱</li>
+                            <li>角色／場景資產建立</li>
+                            <li>逐集生成與剪輯交付</li>
+                        </ul>
+                        <a class="card-cta" href="#contact">洽談整包 →</a>
+                    </article>
+                    <article class="card plan featured">
+                        <h3>品牌廣告片</h3>
+                        <p class="plan-target">15–60 秒 · 多版本</p>
+                        <ul class="bullets">
+                            <li>腳本與分鏡提案</li>
+                            <li>產品／人物一致性控制</li>
+                            <li>交付多比例裁切版本</li>
+                        </ul>
+                        <a class="card-cta" href="#contact">洽談拍攝 →</a>
+                    </article>
+                    <article class="card plan">
+                        <h3>資產包訂製</h3>
+                        <p class="plan-target">角色 / 場景 / 聲音</p>
+                        <ul class="bullets">
+                            <li>三視圖與表情庫</li>
+                            <li>場景正交視圖與氛圍圖</li>
+                            <li>嗓線樣本與配音授權</li>
+                        </ul>
+                        <a class="card-cta" href="#contact">洽談授權 →</a>
+                    </article>
+                </div>
+            </section>
+
+            <section id="pipeline" class="section">
+                <div class="section-head">
+                    <p class="eyebrow">產線</p>
+                    <h2>五個步驟，每一步都留得下來</h2>
+                </div>
+                <ol class="steps">
+                    <li><span class="step-no">01</span><h3>立項</h3><p>題材、受眾、集數與預算，先定交付形狀。</p></li>
+                    <li><span class="step-no">02</span><h3>腳本</h3><p>大綱拆集、分鏡腳本、台詞與節拍表。</p></li>
+                    <li><span class="step-no">03</span><h3>資產</h3><p>角色、場景、道具與聲音入庫，鎖定一致性。</p></li>
+                    <li><span class="step-no">04</span><h3>生成</h3><p>畫布上跑鏡頭，選渠道、調參數、留版本。</p></li>
+                    <li><span class="step-no">05</span><h3>交付</h3><p>剪輯、字幕、配音、成片與素材包一併交。</p></li>
+                </ol>
+            </section>
+
+            <section id="stack" class="section">
+                <div class="section-head">
+                    <p class="eyebrow">技術底座</p>
+                    <h2>算力自己選，資產自己留</h2>
+                </div>
+                <div class="cards three">
+                    <article class="card mini">
+                        <h3>本地 GPU</h3>
+                        <p>自建 ComfyUI，模型與 LoRA 自己管。資料不出機器，成本固定。</p>
+                    </article>
+                    <article class="card mini">
+                        <h3>雲端算力</h3>
+                        <p>臨時擴容跑大規模生成，用完就關，不必為峰值養卡。</p>
+                    </article>
+                    <article class="card mini">
+                        <h3>閉源 API</h3>
+                        <p>需要特定廠商效果時直接串接，與本地渠道混用同一張畫布。</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="contact" class="cta-band">
+                <h2>下一部片，從這裡開始</h2>
+                <p>想先看看能不能用，直接進工作台或畫布試；要談整包或授權，寫信給我們。</p>
+                <div class="hero-cta">
+                    <a class="btn btn-primary btn-lg" href="./murmur-ai/">進入工作台</a>
+                    <a class="btn btn-outline btn-lg" href="mailto:hello@murmur.ai?subject=MURMUR%20AI%20合作洽詢">預約諮詢</a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-brand">
+                <img src="./assets/murmur-logo.svg" alt="" class="brand-mark" />
+                <div>
+                    <p class="brand-name">MURMUR<span class="brand-ai">AI</span></p>
+                    <p class="footer-note">專業級 AI 影視製作平台</p>
+                </div>
+            </div>
+            <nav class="footer-links" aria-label="頁尾導覽">
+                <a href="./murmur-ai/">創作工作台</a>
+                <a href="./murmur-canvas/">ComfyUI 無限畫布</a>
+                <a href="#custom">客製化訂製</a>
+                <a href="mailto:hello@murmur.ai">聯絡我們</a>
+            </nav>
+            <p class="footer-legal">© <span id="year">2026</span> MURMUR AI. All rights reserved.</p>
+        </footer>
+
+        <script>
+            document.getElementById("year").textContent = String(new Date().getFullYear());
+        </script>
+    </body>
+</html>
