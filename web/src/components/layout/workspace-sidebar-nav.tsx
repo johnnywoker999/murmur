@@ -45,8 +45,8 @@ const INFINITE_CANVAS_URL = (() => {
     const configured = (import.meta.env.VITE_INFINITE_CANVAS_URL as string | undefined)?.trim();
     if (configured) return configured;
     const base = String(import.meta.env.BASE_URL || "/");
-    if (base !== "/") return "../murmur-canvas/";
-    return "http://127.0.0.1:3000";
+    if (base !== "/") return "../murmur-canvas/canvas";
+    return "http://127.0.0.1:3000/canvas";
 })();
 
 function toolItem(slug: NavigationToolSlug, to: string): WorkspaceNavItem {
