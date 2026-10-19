@@ -511,3 +511,48 @@ img {
         width: 100%;
     }
 }
+
+/* ---------- 行業別市集 ---------- */
+.industry-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 28px;
+}
+
+.pill {
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    font-size: 13px;
+    color: var(--fg-dim);
+    letter-spacing: 0.02em;
+}
+
+.pill:hover {
+    border-color: rgba(34, 211, 238, 0.45);
+    color: var(--fg);
+}
+
+.custom-note {
+    margin-top: 22px;
+    padding: 22px 24px;
+    border-left: 2px solid rgba(34, 211, 238, 0.6);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 14px;
+    color: var(--fg-dim);
+    line-height: 1.85;
+}
+
+.custom-note strong {
+    color: var(--fg);
+}
+
+.custom-note a {
+    margin-left: 6px;
+    color: #a5b4fc;
+    font-weight: 600;
+    white-space: nowrap;
+}
