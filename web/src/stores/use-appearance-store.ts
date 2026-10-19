@@ -9,8 +9,9 @@ export const DEFAULT_PUBLIC_APPEARANCE: PublicAppearance = {
     brandSlug: "murmur",
     authHeroTitle: "讓一個故事，\n從文字走向銀幕。",
     authHeroDescription: "",
-    logoUrl: "/murmur-logo.svg",
-    darkLogoUrl: "/murmur-logo.svg",
+    // 子路徑部署時（GitHub Pages）必須帶上 BASE_URL，否則 logo 會 404
+    logoUrl: `${import.meta.env.BASE_URL}murmur-logo.svg`,
+    darkLogoUrl: `${import.meta.env.BASE_URL}murmur-logo.svg`,
     logoFrameEnabled: false,
     authVideoUrl: "https://boss-shjd.biliapi.net/updream/aniforge/video/video_bbcb00bd-650d-4249-9346-5cd21fd2484c_m1hc-u0-1pu13x-3v1s.mp4",
     authVideoPosterUrl: "https://i0.hdslb.com/bfs/aitool/aniforge/image/02933f26-5f1b-49ff-a811-b7f95ee5e5b8_m1hc-u0-sau.jpg",
