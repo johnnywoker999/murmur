@@ -37,9 +37,17 @@ type WorkspaceNavGroup = {
     items: WorkspaceNavItem[];
 };
 
-// 外部無限畫布（infinite-canvas）地址：可用 VITE_INFINITE_CANVAS_URL 覆寫
-const INFINITE_CANVAS_URL =
-    (import.meta.env.VITE_INFINITE_CANVAS_URL as string | undefined)?.trim() || "http://127.0.0.1:3000";
+// 外部無限畫布（infinite-canvas）地址，依序判斷：
+// 1) VITE_INFINITE_CANVAS_URL（明確指定，最高優先）
+// 2) 部署在子路徑時（GitHub Pages），視為同帳號下的相鄰 repo：../murmur-canvas/
+// 3) 本機開發（base 為 /）走 127.0.0.1:3000
+const INFINITE_CANVAS_URL = (() => {
+    const configured = (import.meta.env.VITE_INFINITE_CANVAS_URL as string | undefined)?.trim();
+    if (configured) return configured;
+    const base = String(import.meta.env.BASE_URL || "/");
+    if (base !== "/") return "../murmur-canvas/";
+    return "http://127.0.0.1:3000";
+})();
 
 function toolItem(slug: NavigationToolSlug, to: string): WorkspaceNavItem {
     const tool = navigationTools.find((item) => item.slug === slug);
