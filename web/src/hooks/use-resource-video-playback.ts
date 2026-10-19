@@ -38,7 +38,7 @@ export function useResourceVideoPlayback(storageKey: string, fallback: string, a
                 } else setUrl(resolved);
             })
             .catch((error) => {
-                if (!cancelled) setError(error instanceof Error ? error.message : "视频加载失败，请重新打开");
+                if (!cancelled) setError(error instanceof Error ? error.message : "影片載入失敗，請重新開啟");
             })
             .finally(() => { if (!cancelled) setLoading(false); });
         return () => { cancelled = true; controller.abort(); if (ownedUrl) URL.revokeObjectURL(ownedUrl); };
@@ -53,5 +53,5 @@ export function useResourceVideoPlayback(storageKey: string, fallback: string, a
     return { url: current ? url : "", loading: active && (!current || loading), error: current ? error : "",
         compatible: current && compatible, requestCompatible, retryEpoch,
         retry: () => { setError(""); setRetryEpoch((value) => value + 1); },
-        fail: () => setError("视频暂时无法播放，请重新读取预览。") };
+        fail: () => setError("影片暫時無法播放，請重新讀取預覽。") };
 }

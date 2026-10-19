@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 export type VoiceRecordingState = "idle" | "recording" | "paused";
 
 type UseVoiceRecordingOptions = {
-    /** 最大录音时长（秒），默认 60 秒 */
+    /** 最大錄音時長（秒），預設 60 秒 */
     maxDuration?: number;
 };
 
@@ -19,8 +19,8 @@ export type UseVoiceRecordingReturn = {
 };
 
 /**
- * 语音录制 Hook
- * 使用 MediaRecorder API 录制音频，AnalyserNode 获取实时波形数据
+ * 語音錄製 Hook
+ * 使用 MediaRecorder API 錄製音訊，AnalyserNode 獲取即時波形資料
  */
 export function useVoiceRecording(options: UseVoiceRecordingOptions = {}): UseVoiceRecordingReturn {
     const { maxDuration = 60 } = options;
@@ -38,7 +38,7 @@ export function useVoiceRecording(options: UseVoiceRecordingOptions = {}): UseVo
     const timerRef = useRef<number | null>(null);
     const startTimeRef = useRef<number>(0);
 
-    // 清理资源
+    // 清理資源
     const cleanup = useCallback(() => {
         if (animationFrameRef.current) {
             cancelAnimationFrame(animationFrameRef.current);
@@ -60,7 +60,7 @@ export function useVoiceRecording(options: UseVoiceRecordingOptions = {}): UseVo
         mediaRecorderRef.current = null;
     }, []);
 
-    // 更新波形数据
+    // 更新波形資料
     const updateWaveform = useCallback(() => {
         const analyser = analyserRef.current;
         if (!analyser) return;
@@ -69,7 +69,7 @@ export function useVoiceRecording(options: UseVoiceRecordingOptions = {}): UseVo
         const dataArray = new Uint8Array(bufferLength);
         analyser.getByteFrequencyData(dataArray);
 
-        // 取 32 个频段的平均值，用于波形显示
+        // 取 32 個頻段的平均值，用於波形顯示
         const step = Math.floor(bufferLength / 32);
         const values: number[] = [];
         for (let i = 0; i < 32; i++) {
@@ -84,7 +84,7 @@ export function useVoiceRecording(options: UseVoiceRecordingOptions = {}): UseVo
         animationFrameRef.current = requestAnimationFrame(updateWaveform);
     }, []);
 
-    // 开始录制
+    // 開始錄製
     const start = useCallback(async () => {
         setError(null);
         setWaveform([]);
@@ -117,20 +117,20 @@ export function useVoiceRecording(options: UseVoiceRecordingOptions = {}): UseVo
             startTimeRef.current = Date.now();
             setState("recording");
 
-            // 启动波形更新
+            // 啟動波形更新
             animationFrameRef.current = requestAnimationFrame(updateWaveform);
 
-            // 启动计时器
+            // 啟動計時器
             timerRef.current = window.setInterval(() => {
                 const elapsed = (Date.now() - startTimeRef.current) / 1000;
                 setDuration(elapsed);
                 if (elapsed >= maxDuration) {
-                    // 达到最大时长，自动停止
+                    // 達到最大時長，自動停止
                     mediaRecorder.stop();
                 }
             }, 100);
         } catch (err) {
-            const message = err instanceof Error ? err.message : "无法访问麦克风";
+            const message = err instanceof Error ? err.message : "無法訪問麥克風";
             setError(message);
             setState("idle");
             cleanup();
@@ -138,7 +138,7 @@ export function useVoiceRecording(options: UseVoiceRecordingOptions = {}): UseVo
 
     }, [cleanup, maxDuration, updateWaveform]);
 
-    // 停止录制
+    // 停止錄製
     const stop = useCallback((): Promise<Blob | null> => {
         return new Promise((resolve) => {
             const mediaRecorder = mediaRecorderRef.current;
@@ -160,7 +160,7 @@ export function useVoiceRecording(options: UseVoiceRecordingOptions = {}): UseVo
         });
     }, [cleanup]);
 
-    // 取消录制
+    // 取消錄製
     const cancel = useCallback(() => {
         chunksRef.current = [];
         cleanup();
@@ -175,7 +175,7 @@ export function useVoiceRecording(options: UseVoiceRecordingOptions = {}): UseVo
         setError(null);
     }, [cancel]);
 
-    // 组件卸载时清理
+    // 元件解除安裝時清理
     useEffect(() => {
         return () => cleanup();
     }, [cleanup]);

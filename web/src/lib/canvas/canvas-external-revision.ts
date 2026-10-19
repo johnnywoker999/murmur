@@ -5,11 +5,11 @@ export type CanvasExternalRevisionDecision =
     | { kind: "keep-local"; projectId: string; candidate: CanvasProject; localRevision: number; remoteRevision: number };
 
 /**
- * 外部写入（内置助手回合、CLI/MCP 操作）到达时，决定是否把它投影到本地编辑器。
+ * 外部寫入（內建助手回合、CLI/MCP 操作）到達時，決定是否把它投影到本地編輯器。
  *
- * 只有本地没有服务端尚未确认的编辑时才允许应用；有编辑时保留本地内容，并把
- * 外部内容作为候选原样留下（供用户显式选择），因为外部文档是整份覆盖写，
- * 直接套用会回滚用户正在编辑的内容。
+ * 只有本地沒有服務端尚未確認的編輯時才允許應用；有編輯時保留本地內容，並把
+ * 外部內容作為候選原樣留下（供使用者顯式選擇），因為外部檔案是整份覆蓋寫，
+ * 直接套用會回滾使用者正在編輯的內容。
  */
 export function decideExternalCanvasRevision(input: {
     remote: CanvasProject;
@@ -25,8 +25,8 @@ export function decideExternalCanvasRevision(input: {
 }
 
 /**
- * 外部文档是服务端权威内容，但视口与画布外观属于本机查看偏好，
- * 服务端不持久化它们；套用外部 revision 时保留本地视角，避免画面跳动。
+ * 外部檔案是服務端權威內容，但視口與畫布外觀屬於本機檢視偏好，
+ * 服務端不持久化它們；套用外部 revision 時保留本地視角，避免畫面跳動。
  */
 function mergeExternalCanvasRevision(remote: CanvasProject, local: CanvasProject): CanvasProject {
     return {

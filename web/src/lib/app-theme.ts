@@ -3,7 +3,7 @@ import { theme as antdTheme } from "antd";
 
 import { getSkinAntOverrides, normalizeSkinID } from "@/lib/skin-themes";
 
-// 主操作、普通选择和开关是不同交互语义，必须各自维护成对的背景/前景色。
+// 主操作、普通選擇和開關是不同互動語義，必須各自維護成對的背景/前景色。
 const controlTheme = {
     light: {
         solidBg: "#171717",
@@ -128,17 +128,17 @@ export function getAntThemeConfig(dark: boolean, skinID: unknown = "classic"): T
         dangerForeground: skin.dangerForeground || baseColor.dangerForeground,
         info: skin.info || baseColor.info,
     };
-    // 浮层背景必须不透明（0.96 会透出下层内容）；与侧栏切换器等自定义浮层的实底背景保持一致
+    // 浮層背景必須不透明（0.96 會透出下層內容）；與側欄切換器等自定義浮層的實底背景保持一致
     const elevatedBackground = skin.elevatedBackground || (dark ? "rgba(31, 31, 32, 1)" : "rgba(255, 255, 255, 1)");
     const subtleBackground = skin.subtleBackground || (dark ? "rgba(255, 255, 255, 0.055)" : "rgba(17, 17, 17, 0.035)");
     const interactiveBorder = skin.controlBorder || (dark ? "rgba(255, 255, 255, 0.18)" : "rgba(17, 17, 17, 0.18)");
-    // 信息提示使用独立的浅色/深色表面，不能复用主操作的纯黑/纯白色；
-    // 否则 Ant Design 会根据 colorInfo 生成近似纯黑的浅色主题背景，造成文字对比度失效。
+    // 資訊提示使用獨立的淺色/深色表面，不能複用主操作的純黑/純白色；
+    // 否則 Ant Design 會根據 colorInfo 生成近似純黑的淺色主題背景，造成文字對比度失效。
     const infoBackground = dark ? "rgba(255, 255, 255, 0.08)" : "rgba(17, 17, 17, 0.045)";
     const infoBackgroundHover = dark ? "rgba(255, 255, 255, 0.11)" : "rgba(17, 17, 17, 0.07)";
     const infoBorder = dark ? "rgba(255, 255, 255, 0.2)" : "rgba(17, 17, 17, 0.14)";
     const infoAccent = color.info;
-    // 黑白主题使用边框表达焦点，避免输入控件周围出现蓝紫色光圈。
+    // 黑白主題使用邊框表達焦點，避免輸入控制元件周圍出現藍紫色光圈。
     const focusShadow = "none";
 
     return {
@@ -378,9 +378,9 @@ export function getAntThemeConfig(dark: boolean, skinID: unknown = "classic"): T
 }
 
 /**
- * 管理后台使用更高密度的控件节奏；只在 AdminShell 内挂载，避免改变创作端的视觉契约。
+ * 管理後臺使用更高密度的控制元件節奏；只在 AdminShell 內掛載，避免改變創作端的視覺契約。
  */
-/** 用户端与后台共享业务控件，但使用独立的产品尺寸和柔和表面。 */
+/** 使用者端與後臺共享業務控制元件，但使用獨立的產品尺寸和柔和表面。 */
 export function getWorkspaceAntThemeConfig(): ThemeConfig {
     return {
         token: {

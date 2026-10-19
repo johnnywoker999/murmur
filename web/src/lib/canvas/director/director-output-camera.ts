@@ -26,5 +26,5 @@ export async function waitForDirectorCaptureCamera(
             await nextFrame();
         }
     }
-    throw new Error("当前场景没有可用机位，无法生成参考视频");
+    throw new Error("當前場景沒有可用機位，無法生成參考影片");
 }

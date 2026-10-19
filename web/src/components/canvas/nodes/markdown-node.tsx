@@ -12,11 +12,11 @@ type MarkdownNodeContentProps = {
 };
 
 /**
- * Markdown 展示节点。
+ * Markdown 展示節點。
  *
- * 内容取自身 metadata.content；为空时回落到上游文本素材——这样「AI 写文档 → 连一根线 →
- * 排版好的文档」不需要先把内容搬进本节点。上游取用统一经 CanvasNodeGraphContext，
- * 判定文本素材复用注册表的 resourceKind，不在这里另立一套判断。
+ * 內容取自身 metadata.content；為空時回落到上游文本素材——這樣「AI 寫檔案 → 連一根線 →
+ * 排版好的檔案」不需要先把內容搬進本節點。上游取用統一經 CanvasNodeGraphContext，
+ * 判定文本素材複用登入檔的 resourceKind，不在這裡另立一套判斷。
  */
 export function MarkdownNodeContent({ node, theme }: MarkdownNodeContentProps) {
     const upstream = useUpstreamNodes(node.id);
@@ -28,13 +28,13 @@ export function MarkdownNodeContent({ node, theme }: MarkdownNodeContentProps) {
         return (
             <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-center" style={{ color: theme.node.muted }}>
                 <FileText className="size-5 opacity-60" />
-                <span style={{ fontSize: "var(--fs-label)" }}>连接文本节点，或双击编辑 Markdown</span>
+                <span style={{ fontSize: "var(--fs-label)" }}>連線文本節點，或雙擊編輯 Markdown</span>
             </div>
         );
     }
 
     return (
-        // 滚动区要吞掉 wheel 并标 data-canvas-no-zoom，否则滚动会被画布缩放拦走。
+        // 滾動區要吞掉 wheel 並標 data-canvas-no-zoom，否則滾動會被畫布縮放攔走。
         <div
             className="h-full w-full overflow-y-auto overflow-x-hidden px-4 py-3"
             data-canvas-no-zoom

@@ -132,7 +132,7 @@ function remoteHasBoundGenerationResult(node: CanvasNodeData | undefined) {
 function hasTrueGenerationContentConflict(base: CanvasNodeData | undefined, local: CanvasNodeData, remote: CanvasNodeData) {
     const localContent = ownMetadataString(local.metadata, "content");
     if (localContent === undefined) return false;
-    // loading/error + 空串是恢复 overlay，不是人把已绑定 success 清掉。
+    // loading/error + 空串是恢復 overlay，不是人把已繫結 success 清掉。
     if (!nonemptyMediaRef(localContent) && isInFlightGenerationOverlay(local)) return false;
     const remoteContent = ownMetadataString(remote.metadata, "content") ?? "";
     const baseContent = ownMetadataString(base?.metadata, "content") ?? "";
@@ -140,11 +140,11 @@ function hasTrueGenerationContentConflict(base: CanvasNodeData | undefined, loca
 }
 
 /**
- * 只结算同一任务仍在 loading/error 展示层上的生成字段。
- * 远端必须 status=success 且带有效 media；taskStatus=succeeded 或空 content 不能当已绑定完成。
- * loading/error 上的空 content 是 overlay，不是人类清空，可被远端已绑定 success 结算。
- * 人类写过的非空 content 保留；非 overlay 上的空串按真实编辑保留。
- * 新任务删除 content 键视为正常清旧结果，不同 taskId 不会写回旧 storageKey。
+ * 只結算同一任務仍在 loading/error 展示層上的生成欄位。
+ * 遠端必須 status=success 且帶有效 media；taskStatus=succeeded 或空 content 不能當已繫結完成。
+ * loading/error 上的空 content 是 overlay，不是人類清空，可被遠端已繫結 success 結算。
+ * 人類寫過的非空 content 保留；非 overlay 上的空串按真實編輯保留。
+ * 新任務刪除 content 鍵視為正常清舊結果，不同 taskId 不會寫回舊 storageKey。
  */
 export function settleInFlightGenerationOverlay(input: {
     base: CanvasProject;
@@ -185,8 +185,8 @@ export function settleInFlightGenerationOverlay(input: {
     return changed ? { ...input.local, nodes } : input.local;
 }
 
-// 节点级 createdAt/updatedAt 由编辑器在打开和编辑时补写，服务端写入的节点常常没有；
-// 它们不是用户编辑，远端删掉的节点不能只因为这两个字段不同就被留下。
+// 節點級 createdAt/updatedAt 由編輯器在開啟和編輯時補寫，服務端寫入的節點常常沒有；
+// 它們不是使用者編輯，遠端刪掉的節點不能只因為這兩個欄位不同就被留下。
 function sameNodeIgnoringTimestamps(left: CanvasNodeData, right: CanvasNodeData) {
     const strip = ({ createdAt: _createdAt, updatedAt: _updatedAt, ...rest }: CanvasNodeData) => rest;
     return equal(strip(left), strip(right));
@@ -247,10 +247,10 @@ function mergeEntityList<T extends { id: string }>(
 }
 
 /**
- * 以已确认快照为基线的字段级三路合并。
+ * 以已確認快照為基線的欄位級三路合併。
  *
- * 本地相对基线的删除与未冲突编辑保留；服务端相对基线、本地未改的字段（含生成媒体）采纳。
- * 同一字段双方都改过时保留本地可见值并标冲突，不猜胜者。
+ * 本地相對基線的刪除與未衝突編輯保留；服務端相對基線、本地未改的欄位（含生成媒體）採納。
+ * 同一欄位雙方都改過時保留本地可見值並標衝突，不猜勝者。
  */
 export function rebaseCanvasDocumentThreeWay(input: {
     base: CanvasProject;

@@ -14,7 +14,7 @@ export function createPluginHostContext(plugin: RegisteredPlugin, installation: 
             ai: {
                 text: {
                     requestToolResponse: async (request: PluginTextRequest) => {
-                        if (!permissions.has("ai.text")) throw new Error("插件没有调用文本模型的权限");
+                        if (!permissions.has("ai.text")) throw new Error("外掛沒有呼叫文本模型的許可權");
                         const response = await requestToolResponse(
                             { ...aiConfig, model: request.model?.trim() || aiConfig.textModel },
                             request.messages as ResponseInputMessage[],

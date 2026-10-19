@@ -15,13 +15,13 @@ type GeminiVeoOperation = {
 };
 
 export async function createGeminiVeoTask(deps: VideoProviderDeps, config: ResolvedAiConfig, model: string, prompt: string, references: ReferenceImage[], videoReferences: ReferenceVideo[], audioReferences: ReferenceAudio[], options?: RequestOptions): Promise<VideoGenerationTask> {
-    if (references.length > 1 || videoReferences.length || audioReferences.length) throw new Error("Gemini Veo 当前只支持 1 张起始图，不支持参考视频或音频");
-    if (references.length && options?.videoEditOperation === "reference_to_video") throw new Error("Gemini Veo 当前不支持角色或风格参考图生视频，请改用支持 reference_to_video 的模型");
+    if (references.length > 1 || videoReferences.length || audioReferences.length) throw new Error("Gemini Veo 當前只支援 1 張起始圖，不支援參考影片或音訊");
+    if (references.length && options?.videoEditOperation === "reference_to_video") throw new Error("Gemini Veo 當前不支援角色或風格參考圖生影片，請改用支援 reference_to_video 的模型");
     const instance: Record<string, unknown> = { prompt: prompt.trim() };
     if (references[0]) {
         const dataUrl = await imageToDataUrl(references[0]);
         const matched = /^data:([^;,]+);base64,(.+)$/s.exec(dataUrl);
-        if (!matched) throw new Error("Gemini Veo 起始图读取失败");
+        if (!matched) throw new Error("Gemini Veo 起始圖讀取失敗");
         instance.image = { bytesBase64Encoded: matched[2], mimeType: matched[1] };
     }
     const payload = {
@@ -35,10 +35,10 @@ export async function createGeminiVeoTask(deps: VideoProviderDeps, config: Resol
     };
     try {
         const response = await deps.transport.post<GeminiVeoOperation>(geminiVeoCreateUrl(config, modelOptionName(model)), payload, options);
-        if (!response.name) throw new Error("Gemini Veo 没有返回 operation name");
+        if (!response.name) throw new Error("Gemini Veo 沒有返回 operation name");
         return { id: response.name, provider: "gemini-veo", model };
     } catch (error) {
-        throw new Error(deps.response.readAxiosError(error, "Gemini Veo 任务创建失败"));
+        throw new Error(deps.response.readAxiosError(error, "Gemini Veo 任務建立失敗"));
     }
 }
 
@@ -48,12 +48,12 @@ export async function pollGeminiVeoTask(deps: VideoProviderDeps, config: Resolve
         if (operation.error?.message) return { status: "failed", error: operation.error.message };
         if (!operation.done) return { status: "pending" };
         const url = findGeminiVideoURL(operation.response);
-        if (!url) return { status: "failed", error: "Gemini Veo 任务已完成但没有返回视频地址" };
+        if (!url) return { status: "failed", error: "Gemini Veo 任務已完成但沒有返回影片地址" };
         const blob = await deps.transport.getExternalBlob(url, geminiVeoHeaders(config), options);
         await deps.response.assertVideoBlob(blob);
         return { status: "completed", result: { blob } };
     } catch (error) {
-        throw new Error(deps.response.readAxiosError(error, "Gemini Veo 任务查询失败"));
+        throw new Error(deps.response.readAxiosError(error, "Gemini Veo 任務查詢失敗"));
     }
 }
 

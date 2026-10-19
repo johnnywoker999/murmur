@@ -1,5 +1,5 @@
-// 时间线吸附算法（移植自 lingji-cut 的 timeline-snap.ts）。
-// 候选时间点吸附到播放头或其它片段边缘（起点/终点），取阈值内最近目标。
+// 時間線吸附演算法（移植自 lingji-cut 的 timeline-snap.ts）。
+// 候選時間點吸附到播放頭或其它片段邊緣（起點/終點），取閾值內最近目標。
 
 import type { TimelineClip } from "@/types/timeline";
 

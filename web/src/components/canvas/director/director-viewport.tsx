@@ -45,7 +45,7 @@ export type DirectorViewportHandle = {
     recordVideo: (duration: number, fps: number) => Promise<Blob>;
     readCameraTransform: () => DirectorTransform | null;
     focusOnPoint: (point: DirectorVec3, radius: number) => boolean;
-    /** 只读放置意图。上下文不可用或从未产生合法点时返回空意图，绝不抛异常。 */
+    /** 只讀放置意圖。上下文不可用或從未產生合法點時返回空意圖，絕不拋異常。 */
     readPlacementIntent: () => DirectorPlacementIntent;
 };
 
@@ -63,7 +63,7 @@ type DirectorViewportProps = {
     renderMode: DirectorRenderMode;
     playhead: number;
     playing: boolean;
-    /** 动画模式下显示演员与摄影机 Transform 关键帧形成的空间路径。 */
+    /** 動畫模式下顯示演員與攝影機 Transform 關鍵幀形成的空間路徑。 */
     showMotionPaths?: boolean;
     drawActorPath?: "pencil" | "pen" | null;
     onDrawActorPath?: (points: DirectorGroundPoint[], kind: "pencil" | "pen") => void;
@@ -74,9 +74,9 @@ type DirectorViewportProps = {
     onSelectPath?: (kind: "actor" | "camera", id: string) => void;
     selectedPath?: { kind: "actor" | "camera"; id: string; keyframeId?: string } | null;
     onMovePathPoint?: (kind: "actor" | "camera", id: string, keyframeId: string, position: DirectorVec3) => void;
-    /** 取景模式。省略即自由视角，保持接线前的行为不变。 */
+    /** 取景模式。省略即自由視角，保持接線前的行為不變。 */
     viewMode?: DirectorViewMode;
-    /** 提供该回调即在视口内渲染 3D/CAM 切换器；不提供则不显示，视口仍按 viewMode 取景。 */
+    /** 提供該回撥即在視口內渲染 3D/CAM 切換器；不提供則不顯示，視口仍按 viewMode 取景。 */
     onViewModeChange?: (mode: DirectorViewMode) => void;
     onCaptureReadyChange?: (ready: boolean) => void;
     onSelectObject: (id: string | null) => void;
@@ -91,23 +91,23 @@ type DirectorViewportProps = {
 
 type CaptureContext = { gl: WebGLRenderer; scene: Scene; camera: Camera; cameraKind: "free" | "camera" | "orthographic"; suspendDisplayMaterialOverride: () => () => void };
 
-// 稳定空值：identity 不匹配时返回同一引用，避免下游 effect 依赖每次 render 都变化。
+// 穩定空值：identity 不匹配時返回同一引用，避免下游 effect 依賴每次 render 都變化。
 const emptyAnimations: AnimationClip[] = [];
 const emptyRestRotations: Partial<Record<DirectorHumanoidBone, DirectorQuat>> = {};
 
-// Canvas 配置必须是稳定引用：inline literal 每次父级 render 都是新对象，
-// context lost 的 dispatch 触发重渲染后 R3F 会 configure 并在失效 context 上
-// 重建 WebGLRenderer，抛 getMaxPrecision / autoReset。稳定后 lost 只显示 notice。
+// Canvas 配置必須是穩定引用：inline literal 每次父級 render 都是新物件，
+// context lost 的 dispatch 觸發重渲染後 R3F 會 configure 並在失效 context 上
+// 重建 WebGLRenderer，拋 getMaxPrecision / autoReset。穩定後 lost 只顯示 notice。
 const directorCanvasGl = { antialias: true, preserveDrawingBuffer: true, alpha: false } as const;
 const directorCanvasCamera = { position: [0, 2, 13] as [number, number, number], fov: 45, near: 0.05, far: 1200 } as const;
 const directorCanvasDpr: [number, number] = [1, 1.5];
-// 自由视角固定环绕焦点：free 是独立观察相机，不跟随 shot 摄影机的 target 走，
-// 否则切换镜头/摄影机会连带把用户正在环绕的焦点也悄悄挪走。
+// 自由視角固定環繞焦點：free 是獨立觀察相機，不跟隨 shot 攝影機的 target 走，
+// 否則切換鏡頭/攝影機會連帶把使用者正在環繞的焦點也悄悄挪走。
 const DIRECTOR_FREE_ORBIT_TARGET: DirectorVec3 = [0, 1.4, 0];
 
 export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewportProps>(function DirectorViewport(props, ref) {
-    // onViewModeChange 只服务 DOM 层的切换器，绝不进 Canvas 子树：它的身份每次父级
-    // render 都可能变化，穿透到 memo 化的 Canvas 会触发 configure 重建 renderer。
+    // onViewModeChange 只服務 DOM 層的切換器，絕不進 Canvas 子樹：它的身份每次父級
+    // render 都可能變化，穿透到 memo 化的 Canvas 會觸發 configure 重建 renderer。
     const { onViewModeChange, onCaptureReadyChange, ...sceneProps } = props;
     const captureContext = useRef<CaptureContext | null>(null);
     const shellRef = useRef<HTMLDivElement>(null);
@@ -123,7 +123,7 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
     }, []);
     const aspectRatio = props.aspectRatioOverride ?? props.scene.aspectRatio ?? "adaptive";
     const frame = resolveDirectorFrameRect(shellSize.width, shellSize.height, aspectRatio);
-    // 地面点连同 owner canvas 一起记录：owner 不是当前 renderer 的 canvas 就是陈旧值。
+    // 地面點連同 owner canvas 一起記錄：owner 不是當前 renderer 的 canvas 就是陳舊值。
     const groundRef = useRef<{ owner: HTMLCanvasElement; point: DirectorGroundPoint } | null>(null);
     const orbitControlsRef = useRef<DirectorOrbitControls | null>(null);
     const orbitOrientationListenerRef = useRef<(() => void) | null>(null);
@@ -132,7 +132,7 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
     const onCameraOrientation = useCallback((next: DirectorOrientation) => {
         setCameraOrientation((current) => current.every((value, index) => Math.abs(value - next[index]) < 0.002) ? current : next);
     }, []);
-    /** pointermove 高频路径只写 ref，不触发 render；清空只允许由该点的 owner 发起。 */
+    /** pointermove 高頻路徑只寫 ref，不觸發 render；清空只允許由該點的 owner 發起。 */
     const onGroundPoint = useCallback((owner: HTMLCanvasElement, point: DirectorGroundPoint | null) => {
         if (point) {
             groundRef.current = { owner, point };
@@ -159,7 +159,7 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
         onViewModeChange?.("free");
         const controls = orbitControlsRef.current;
         if (!controls) return;
-        // reset() 本身不清掉仍在衰减的拖拽量；临时关闭阻尼使本次 update 消耗掉残量。
+        // reset() 本身不清掉仍在衰減的拖拽量；臨時關閉阻尼使本次 update 消耗掉殘量。
         const damping = controls.enableDamping;
         controls.enableDamping = false;
         controls.reset();
@@ -169,9 +169,9 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
         controls.saveState();
         controls.enableDamping = damping;
     }, [onViewModeChange]);
-    // retryKey 变化会真正重建 Canvas 与 ErrorBoundary，而不是只换文案。
+    // retryKey 變化會真正重建 Canvas 與 ErrorBoundary，而不是隻換文案。
     const [retryKey, setRetryKey] = useState(0);
-    // capture 可用性：上下文丢失期间不得再使用失效 renderer；恢复后需重新登记。
+    // capture 可用性：上下文丟失期間不得再使用失效 renderer；恢復後需重新登記。
     const [capture, dispatchCapture] = useReducer(reduceDirectorCapture, directorCaptureInitial);
     const captureReady = directorCaptureUsable(capture);
     useEffect(() => {
@@ -180,13 +180,13 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
     useEffect(() => () => onCaptureReadyChange?.(false), [onCaptureReadyChange]);
     const captureRef = useRef(capture);
     captureRef.current = capture;
-    // 加载失败的对象 id -> 该对象自己的 retry；Canvas 内部无法呈现可操作提示，统一提到 DOM 层。
+    // 載入失敗的物件 id -> 該物件自己的 retry；Canvas 內部無法呈現可操作提示，統一提到 DOM 層。
     const [failedLoads, setFailedLoads] = useState<DirectorFailedLoads>({});
     const onCaptureContext = useCallback((context: CaptureContext) => {
         captureContext.current = context;
         dispatchCapture("register");
     }, []);
-    /** 子树卸载 / boundary 捕获：清掉指向已销毁 renderer 的引用并打回不可用。 */
+    /** 子樹解除安裝 / boundary 捕獲：清掉指向已銷燬 renderer 的引用並打回不可用。 */
     const releaseCapture = useCallback(() => {
         releaseDirectorCapture({
             clearContext: () => {
@@ -194,7 +194,7 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
             },
             onAvailability: dispatchCapture,
         });
-        // 地面点与 controls 都属于已销毁的 renderer，必须一并作废。
+        // 地面點與 controls 都屬於已銷燬的 renderer，必須一併作廢。
         groundRef.current = null;
         orbitControlsRef.current = null;
     }, []);
@@ -206,9 +206,9 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
     const onLoadStateChange = useCallback((id: string, signal: DirectorLoadSignal, retryLoad: () => void) => {
         setFailedLoads((current) => upsertDirectorFailedLoad(current, id, signal, retryLoad));
     }, []);
-    // 稳定引用：否则新的监听 effect 会在每次父级 render 时摘除重装。
+    // 穩定引用：否則新的監聽 effect 會在每次父級 render 時摘除重灌。
     const onContextLost = useCallback(() => {
-        // 上下文丢失后相机与射线结果都不可信，旧地面点必须作废，恢复后需重新移动 pointer。
+        // 上下文丟失後相機與射線結果都不可信，舊地面點必須作廢，恢復後需重新移動 pointer。
         groundRef.current = null;
         recordDirectorDiagnostic("DIRECTOR_VIEWPORT_CONTEXT_LOST");
         dispatchCapture("lost");
@@ -218,7 +218,7 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
         dispatchCapture("restored");
     }, []);
     const failedIds = Object.keys(failedLoads);
-    // 上下文失效时 renderer 不可用：capture/record/readCamera 必须明确失败而不是画出脏帧。
+    // 上下文失效時 renderer 不可用：capture/record/readCamera 必須明確失敗而不是畫出髒幀。
     const usableContext = () => {
         if (!directorCaptureUsable(captureRef.current)) return null;
         return captureContext.current;
@@ -228,7 +228,7 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
         captureCameraPreview: (playhead) => captureCameraPreviewFrame(usableContext(), props.scene, playhead),
         captureShot: (playhead) => {
             const context = usableContext();
-            if (!context) throw new Error("3D 视口尚未就绪");
+            if (!context) throw new Error("3D 視口尚未就緒");
             const canvas = context.gl.domElement;
             const crop = resolveDirectorPixelCrop(canvas.width, canvas.height, aspectRatio, { width: canvas.clientWidth, height: canvas.clientHeight });
             return captureCameraPreviewFrame(context, props.scene, playhead, crop.width, crop.height);
@@ -236,7 +236,7 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
         readCaptureCameraKind: () => usableContext()?.cameraKind ?? null,
         recordVideo: (duration, fps) => {
             const context = usableContext();
-            if (context && context.cameraKind !== "camera") throw new Error("机位视角尚未就绪，无法录制参考视频");
+            if (context && context.cameraKind !== "camera") throw new Error("機位視角尚未就緒，無法錄製參考影片");
             return recordCanvas(context, duration, fps, aspectRatio);
         },
         readCameraTransform: () => {
@@ -265,10 +265,10 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
         readPlacementIntent: () => {
             const context = usableContext();
             if (!context) return emptyDirectorPlacementIntent;
-            // owner 校验：上下文重建后，旧 renderer canvas 记录的点一律不采用。
+            // owner 校驗：上下文重建後，舊 renderer canvas 記錄的點一律不採用。
             const tracked = groundRef.current;
             const pointer = tracked && tracked.owner === context.gl.domElement ? tracked.point : null;
-            // 读实例当前世界系 target，再转回场景局部 XZ；平移/旋转/缩放后仍能按原坐标放置。
+            // 讀例項當前世界系 target，再轉回場景區域性 XZ；平移/旋轉/縮放後仍能按原座標放置。
             const target = orbitControlsRef.current?.target;
             const localTarget = target ? directorStageLocalPoint(directorStageTransform(props.scene), target.toArray() as DirectorVec3) : null;
             return { pointer, orbitTarget: finiteDirectorGroundPoint(localTarget?.[0], localTarget?.[2]) };
@@ -276,8 +276,8 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
     }), [aspectRatio, onViewModeChange, props.scene]);
 
     return (
-        // data-renderer-ready 直接来自 directorCaptureUsable：capture context 已登记且未 lost。
-        // 这是真实就绪信号，供 E2E 在触发 context loss 前确定监听器已安装。
+        // data-renderer-ready 直接來自 directorCaptureUsable：capture context 已登記且未 lost。
+        // 這是真實就緒訊號，供 E2E 在觸發 context loss 前確定監聽器已安裝。
         <div ref={shellRef} className="director-viewport-shell" data-drawing-actor-path={props.drawActorPath ? "true" : "false"} data-drawing-camera-path={props.drawCameraPath ? "true" : "false"} data-renderer-ready={directorCaptureUsable(capture) ? "true" : "false"}>
             <DirectorViewportErrorBoundary key={`boundary-${retryKey}`} onRelease={releaseCapture} onRetry={retry}>
                 <DirectorCanvasSurface
@@ -293,25 +293,25 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
                     onCameraOrientation={onCameraOrientation}
                 />
             </DirectorViewportErrorBoundary>
-            {aspectRatio !== "adaptive" && frame.width > 0 ? <div data-director-aspect-frame={aspectRatio} aria-label={`${aspectRatio} 画幅取景框`} className="pointer-events-none absolute rounded-xl border border-white/35" style={{ zIndex: 1, left: frame.x, top: frame.y, width: frame.width, height: frame.height, boxShadow: "0 0 0 100vmax rgba(0, 0, 0, 0.68)" }} /> : null}
-            {/* 取景切换是纯视口状态：放在 DOM 层，不随 Canvas 重建而丢失。 */}
+            {aspectRatio !== "adaptive" && frame.width > 0 ? <div data-director-aspect-frame={aspectRatio} aria-label={`${aspectRatio} 畫幅取景框`} className="pointer-events-none absolute rounded-xl border border-white/35" style={{ zIndex: 1, left: frame.x, top: frame.y, width: frame.width, height: frame.height, boxShadow: "0 0 0 100vmax rgba(0, 0, 0, 0.68)" }} /> : null}
+            {/* 取景切換是純視口狀態：放在 DOM 層，不隨 Canvas 重建而丟失。 */}
             {onViewModeChange ? <DirectorViewToolbar viewMode={props.viewMode ?? DIRECTOR_DEFAULT_VIEW_MODE} orientation={props.viewMode === "camera" ? cameraOrientation : freeOrientation} onViewModeChange={onViewModeChange} onResetView={resetView} /> : null}
             {capture.contextLost ? (
                 <DirectorViewportNotice
-                    title="3D 显示上下文已丢失"
-                    description="浏览器回收了 WebGL 上下文。等待自动恢复，或立即重建视口。"
-                    actionLabel="重建 3D 视口"
+                    title="3D 顯示上下文已丟失"
+                    description="瀏覽器回收了 WebGL 上下文。等待自動恢復，或立即重建視口。"
+                    actionLabel="重建 3D 視口"
                     onAction={retry}
                 />
             ) : null}
             {!capture.contextLost && failedIds.length ? (
                 <DirectorViewportNotice
                     variant="corner"
-                    title={`${failedIds.length} 个 3D 模型加载失败`}
-                    description="已用占位人偶继续显示场景。可能是网络或模型地址不可用，重试将重新加载。"
-                    actionLabel="重试加载"
+                    title={`${failedIds.length} 個 3D 模型載入失敗`}
+                    description="已用佔位人偶繼續顯示場景。可能是網路或模型地址不可用，重試將重新載入。"
+                    actionLabel="重試載入"
                     onAction={() => {
-                        // 重试触发新的 load generation，旧的晚到回调会被忽略并释放资源。
+                        // 重試觸發新的 load generation，舊的晚到回撥會被忽略並釋放資源。
                         Object.values(failedLoads).forEach((retryLoad) => retryLoad());
                         setFailedLoads({});
                     }}
@@ -321,7 +321,7 @@ export const DirectorViewport = forwardRef<DirectorViewportHandle, DirectorViewp
     );
 });
 
-// onViewModeChange 被显式排除：切换器活在 DOM 层，Canvas 子树只需要 viewMode 取值。
+// onViewModeChange 被顯式排除：切換器活在 DOM 層，Canvas 子樹只需要 viewMode 取值。
 type DirectorCanvasSurfaceProps = Omit<DirectorViewportProps, "onViewModeChange" | "onCaptureReadyChange"> & {
     onCaptureContext: (context: CaptureContext) => void;
     onRelease: () => void;
@@ -335,13 +335,13 @@ type DirectorCanvasSurfaceProps = Omit<DirectorViewportProps, "onViewModeChange"
 };
 
 /**
- * Canvas 表面独立 memo。
+ * Canvas 表面獨立 memo。
  *
- * R3F 本地 CanvasImpl 的 layout effect 没有依赖数组，父级每次 rerender 都会 configure。
- * context lost 时 DirectorViewport 会 dispatchCapture 触发 rerender，若 Canvas 跟着重渲染，
- * configure 就会在已失效的 canvas 上重建 WebGLRenderer 并抛 getMaxPrecision / autoReset。
- * 隔离在 memo 子组件后，contextLost / failedLoads 这类外层状态变化不再穿透到 Canvas；
- * 只有 props 真的变化才重渲染，retryKey 变化仍由外层 key 触发真正 remount。
+ * R3F 本地 CanvasImpl 的 layout effect 沒有依賴陣列，父級每次 rerender 都會 configure。
+ * context lost 時 DirectorViewport 會 dispatchCapture 觸發 rerender，若 Canvas 跟著重渲染，
+ * configure 就會在已失效的 canvas 上重建 WebGLRenderer 並拋 getMaxPrecision / autoReset。
+ * 隔離在 memo 子元件後，contextLost / failedLoads 這類外層狀態變化不再穿透到 Canvas；
+ * 只有 props 真的變化才重渲染，retryKey 變化仍由外層 key 觸發真正 remount。
  */
 const DirectorCanvasSurface = memo(function DirectorCanvasSurface(props: DirectorCanvasSurfaceProps) {
     const { onCaptureContext, onRelease, onContextLost, onContextRestored, onLoadStateChange, onGroundPoint, onOrbitControls, onCameraOrientation, ...sceneProps } = props;
@@ -384,7 +384,7 @@ const DirectorCanvasSurface = memo(function DirectorCanvasSurface(props: Directo
     );
 });
 
-/** 本地失败隔离：3D 视口异常只替换视口本身，不影响画布/项目其余部分。 */
+/** 本地失敗隔離：3D 視口異常只替換視口本身，不影響畫布/專案其餘部分。 */
 class DirectorViewportErrorBoundary extends Component<{ children: ReactNode; onRelease: () => void; onRetry: () => void }, { failed: boolean }> {
     state = { failed: false };
 
@@ -393,9 +393,9 @@ class DirectorViewportErrorBoundary extends Component<{ children: ReactNode; onR
     }
 
     componentDidCatch() {
-        // 只记录稳定错误码：原始 error / componentStack 可能带素材 URL 或正文，不落日志。
+        // 只記錄穩定錯誤碼：原始 error / componentStack 可能帶素材 URL 或正文，不落日誌。
         recordDirectorDiagnostic("DIRECTOR_VIEWPORT_RENDER_FAILED");
-        // 子树已被 React 卸载，capture context 指向已销毁的 renderer，必须同步释放。
+        // 子樹已被 React 解除安裝，capture context 指向已銷燬的 renderer，必須同步釋放。
         this.props.onRelease();
     }
 
@@ -403,9 +403,9 @@ class DirectorViewportErrorBoundary extends Component<{ children: ReactNode; onR
         if (!this.state.failed) return this.props.children;
         return (
             <DirectorViewportNotice
-                title="3D 视口渲染失败"
-                description="导演台其余面板仍可使用。可重试重建视口；若持续失败请检查显卡驱动或浏览器 WebGL 支持。"
-                actionLabel="重试 3D 视口"
+                title="3D 視口渲染失敗"
+                description="導演臺其餘面板仍可使用。可重試重建視口；若持續失敗請檢查顯示卡驅動或瀏覽器 WebGL 支援。"
+                actionLabel="重試 3D 視口"
                 onAction={() => {
                     this.setState({ failed: false });
                     this.props.onRetry();
@@ -463,9 +463,9 @@ function DirectorSceneContent({ scene, selectedObjectId, selectedObjectIds = [],
     const panoramaSettings = directorPanoramaSphere(scene);
     const panoramaDisplayRef = useRef({ ...panoramaSettings, renderMode });
     panoramaDisplayRef.current = { ...panoramaSettings, renderMode };
-    // 三台相机各司其职、互不共享：free 只由 OrbitControls 驱动，CAM/正交只在各自模式下
-    // 由取景数据接管。切换 viewMode 只挪动「谁是活动相机」这个指针，任何一台的内部状态
-    // 都不会因为切换而被读写——这是「切换不丢失/不污染任一相机状态」的唯一来源。
+    // 三臺相機各司其職、互不共享：free 只由 OrbitControls 驅動，CAM/正交只在各自模式下
+    // 由取景資料接管。切換 viewMode 只挪動「誰是活動相機」這個指標，任何一臺的內部狀態
+    // 都不會因為切換而被讀寫——這是「切換不丟失/不汙染任一相機狀態」的唯一來源。
     const [freeCamera] = useState(() => {
         const instance = new PerspectiveCamera(directorCanvasCamera.fov, 1, directorCanvasCamera.near, directorCanvasCamera.far);
         instance.position.set(...directorCanvasCamera.position);
@@ -473,8 +473,8 @@ function DirectorSceneContent({ scene, selectedObjectId, selectedObjectIds = [],
     });
     const [camCamera] = useState(() => new PerspectiveCamera(directorCanvasCamera.fov, 1, directorCanvasCamera.near, directorCanvasCamera.far));
     const [orthoCamera] = useState(() => new OrthographicCamera(-1, 1, 1, -1, 0.05, 500));
-    // CAM 与正交轴向的取景解算都是纯函数：mode 不匹配时各自返回 null，互不冲突。
-    // 活动相机不直接看 viewMode：CAM 取景失败必须回落 free，否则会露出从未写入的 camCamera。
+    // CAM 與正交軸向的取景解算都是純函式：mode 不匹配時各自返回 null，互不衝突。
+    // 活動相機不直接看 viewMode：CAM 取景失敗必須回落 free，否則會露出從未寫入的 camCamera。
     const camFraming = resolveDirectorViewFraming({ scene, mode: viewMode, playhead });
     const orthoFraming = resolveDirectorOrthographicFraming({ scene, mode: viewMode });
     const effectiveViewport = resolveDirectorEffectiveViewport({ mode: viewMode, framing: camFraming });
@@ -503,16 +503,16 @@ function DirectorSceneContent({ scene, selectedObjectId, selectedObjectIds = [],
         onCaptureContext(readCaptureContext());
     }, [onCaptureContext, readCaptureContext]);
 
-    // 子树卸载（重试重建、boundary 捕获后 React 卸载）时同步释放：
-    // 此后 captureContext 指向已销毁的 renderer，必须清空并打回不可用。
-    // 单独 effect 且只依赖稳定的 onRelease，不会被 readCaptureContext 变化连带触发。
+    // 子樹解除安裝（重試重建、boundary 捕獲後 React 解除安裝）時同步釋放：
+    // 此後 captureContext 指向已銷燬的 renderer，必須清空並打回不可用。
+    // 單獨 effect 且只依賴穩定的 onRelease，不會被 readCaptureContext 變化連帶觸發。
     useEffect(() => () => onRelease(), [onRelease]);
 
-    // 上下文丢失/恢复监听绑定在 renderer 自己的 canvas 上，随 renderer 与重试精确摘除。
+    // 上下文丟失/恢復監聽繫結在 renderer 自己的 canvas 上，隨 renderer 與重試精確摘除。
     useEffect(() => installDirectorContextListeners(gl.domElement, {
         onLost: onContextLost,
-        // 恢复后 registered 会被置回 false，必须用当前 renderer 重新登记，
-        // 否则 capture/record/readCameraTransform 会一直不可用。走与测试共用的序列 helper。
+        // 恢復後 registered 會被置回 false，必須用當前 renderer 重新登記，
+        // 否則 capture/record/readCameraTransform 會一直不可用。走與測試共用的序列 helper。
         onRestored: () => restoreDirectorCapture({
             readContext: readCaptureContext,
             onAvailability: onContextRestored,
@@ -522,10 +522,10 @@ function DirectorSceneContent({ scene, selectedObjectId, selectedObjectIds = [],
     }), [gl, invalidate, onCaptureContext, onContextLost, onContextRestored, readCaptureContext]);
 
     /**
-     * 地面拾取：renderer 自己的 canvas 上做 pointer 监听，再用真实 Raycaster 与
-     * 变换后的场景局部 y=0 Plane 求交。不走 mesh onPointerMove（会被物体 stopPropagation 截断），
-     * 也不做 DOM 像素伪换算；因此 pointer 悬停在物体上方时射线仍与地面相交。
-     * 高频路径只写 ref，绝不 setState。
+     * 地面拾取：renderer 自己的 canvas 上做 pointer 監聽，再用真實 Raycaster 與
+     * 變換後的場景區域性 y=0 Plane 求交。不走 mesh onPointerMove（會被物體 stopPropagation 截斷），
+     * 也不做 DOM 畫素偽換算；因此 pointer 懸停在物體上方時射線仍與地面相交。
+     * 高頻路徑只寫 ref，絕不 setState。
      */
     useEffect(() => {
         const canvasElement = gl.domElement;
@@ -542,7 +542,7 @@ function DirectorSceneContent({ scene, selectedObjectId, selectedObjectIds = [],
             if (bounds.width <= 0 || bounds.height <= 0) return null;
             ndc.set(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -((event.clientY - bounds.top) / bounds.height) * 2 + 1);
             raycaster.setFromCamera(ndc, camera);
-            // 射线与地面平行或背离时 intersectPlane 返回 null：保留上一个合法点，不写非法值。
+            // 射線與地面平行或背離時 intersectPlane 返回 null：保留上一個合法點，不寫非法值。
             if (!raycaster.ray.intersectPlane(groundPlane, hit)) return null;
             localHit.copy(hit).applyMatrix4(inverseStageMatrix);
             return finiteDirectorGroundPoint(localHit.x, localHit.z);
@@ -632,16 +632,16 @@ function DirectorSceneContent({ scene, selectedObjectId, selectedObjectIds = [],
             canvasElement.removeEventListener("dblclick", onDoubleClick, { capture: true });
             canvasElement.removeEventListener("pointercancel", onPointerCancel);
             canvasElement.removeEventListener("pointermove", onPointerMove, { capture: Boolean(drawPath) });
-            // 这个 renderer 的 canvas 卸载后，它记录的地面点不得再被读到。
+            // 這個 renderer 的 canvas 解除安裝後，它記錄的地面點不得再被讀到。
             onGroundPoint(canvasElement, null);
         };
     }, [camera, drawPath, drawCameraPath, gl, onDrawActorPath, onDrawCameraPath, onGroundPoint, onPenFirstPoint, stageMatrix]);
 
-    // OrbitControls 的真实 target 只能从实例读；activeCamera.target 只是初始 prop。
-    // 挂载期登记一次即可：drei 重建实例会连带重跑本 effect。
+    // OrbitControls 的真實 target 只能從例項讀；activeCamera.target 只是初始 prop。
+    // 掛載期登記一次即可：drei 重建例項會連帶重跑本 effect。
     useEffect(() => {
-        // drei 构造时 target0 是原点，且初次 commit 的相机/target 写入可能不同步。
-        // 明确设定自由视角后再保存 reset 状态，只影响本次 Canvas 挂载。
+        // drei 構造時 target0 是原點，且初次 commit 的相機/target 寫入可能不同步。
+        // 明確設定自由視角後再儲存 reset 狀態，隻影響本次 Canvas 掛載。
         const controls = orbitRef.current;
         if (controls) {
             controls.object.position.set(...directorCanvasCamera.position);
@@ -720,8 +720,8 @@ function DirectorSceneContent({ scene, selectedObjectId, selectedObjectIds = [],
         };
     }, [invalidate, renderMode, scene.objects, threeScene]);
 
-    // 透视相机（free/CAM）的宽高比随容器尺寸变化；正交相机的半范围在自己的同步 effect 里
-    // 按水平/竖直跨度与 aspect 同时拟合，这里只负责两台透视相机的 aspect + 投影矩阵。
+    // 透視相機（free/CAM）的寬高比隨容器尺寸變化；正交相機的半範圍在自己的同步 effect 裡
+    // 按水平/豎直跨度與 aspect 同時擬合，這裡只負責兩臺透視相機的 aspect + 投影矩陣。
     useEffect(() => {
         const aspect = size.width / Math.max(size.height, 1);
         freeCamera.aspect = aspect;
@@ -731,9 +731,9 @@ function DirectorSceneContent({ scene, selectedObjectId, selectedObjectIds = [],
         invalidate();
     }, [camCamera, freeCamera, invalidate, size]);
 
-    // 唯一决定「视口活动相机是谁」的入口：只挪动 state.camera 指针，从不读写另外两台
-    // 相机对象的内部状态——这是「切换模式互不污染」的保证来源。
-    // CAM 无合法取景时指针指向 freeCamera，取景恢复后再指回 camCamera。
+    // 唯一決定「視口活動相機是誰」的入口：只挪動 state.camera 指標，從不讀寫另外兩臺
+    // 相機物件的內部狀態——這是「切換模式互不汙染」的保證來源。
+    // CAM 無合法取景時指標指向 freeCamera，取景恢復後再指回 camCamera。
     useEffect(() => {
         const next = effectiveViewport.camera === "orthographic" ? orthoCamera : effectiveViewport.camera === "camera" ? camCamera : freeCamera;
         set({ camera: next });
@@ -747,8 +747,8 @@ function DirectorSceneContent({ scene, selectedObjectId, selectedObjectIds = [],
     const hasMultiSelection = multiSelectedObjects.length > 1;
     return (
         <>
-            {/* CAM 与正交轴向的取景各自独立同步到专属相机对象，互不干扰；free 完全交给
-                下面的 OrbitControls，这里不对它做任何写入。 */}
+            {/* CAM 與正交軸向的取景各自獨立同步到專屬相機物件，互不幹擾；free 完全交給
+                下面的 OrbitControls，這裡不對它做任何寫入。 */}
             <DirectorShotCameraSync camera={camCamera} framing={camFraming} />
             <DirectorOrthoCameraSync camera={orthoCamera} framing={orthoFraming} aspect={size.width / Math.max(size.height, 1)} />
             <ambientLight intensity={scene.environmentIntensity * 0.35} />
@@ -799,10 +799,10 @@ function DirectorSceneContent({ scene, selectedObjectId, selectedObjectIds = [],
             ))}
             {showMultiGizmo ? <DirectorMultiObjectGizmo objects={multiSelectedObjects} targets={objectTargetsRef.current} playhead={playhead} transformMode={transformMode} onFreeze={freezeMultiObjects} onTransforming={setTransformingState} onTransform={(from, to) => onMultiObjectTransform(multiSelectedObjects.map((item) => item.id), from.group, to.group)} /> : null}
             </group>
-            {/* 只有有效 free 回落允许环绕：drei 只在 enabled 时调 controls.update()，CAM/正交下这是
-                真正的锁定，不会有 controls 每帧把相机拽回自己 target 的回写竞争。
-                camera 显式绑定 freeCamera：即使 state.camera 当前指向别的相机，也绝不会
-                被这份环绕状态误伤。CAM 取景失败时 orbit 打开，用已有的自由视角，不改场景。 */}
+            {/* 只有有效 free 回落允許環繞：drei 只在 enabled 時調 controls.update()，CAM/正交下這是
+                真正的鎖定，不會有 controls 每幀把相機拽回自己 target 的回寫競爭。
+                camera 顯式繫結 freeCamera：即使 state.camera 當前指向別的相機，也絕不會
+                被這份環繞狀態誤傷。CAM 取景失敗時 orbit 開啟，用已有的自由視角，不改場景。 */}
             <OrbitControls ref={orbitRef} makeDefault camera={freeCamera} enabled={!transforming && !drawPath && effectiveViewport.orbit} target={DIRECTOR_FREE_ORBIT_TARGET} minDistance={0.6} maxDistance={80} />
         </>
     );
@@ -888,7 +888,7 @@ function DirectorCameraGizmo({ target, transformMode, onFreeze, onTransforming, 
     return <TransformControls object={target} mode={transformMode} size={0.8} onMouseDown={() => transaction.begin()} onMouseUp={() => transaction.end("commit")} />;
 }
 
-/** 起点、终点、路径点、方向与当前进度共用一条 Transform 关键帧路径。 */
+/** 起點、終點、路徑點、方向與當前進度共用一條 Transform 關鍵幀路徑。 */
 function DirectorTransformPath({ keyframes, playhead, color, visibleKeyIds, maxVisiblePoints, selected = false, selectedKeyframeId, lineOnly = false, onSelectPath, onSelectKeyframe, onMoveKeyframe, onDragActive, onClaimPointer }: { keyframes: DirectorObject["keyframes"]; playhead: number; color: string; visibleKeyIds?: string[]; maxVisiblePoints?: number; selected?: boolean; selectedKeyframeId?: string; lineOnly?: boolean; onSelectPath?: () => void; onSelectKeyframe?: (keyframe: DirectorKeyframe) => void; onMoveKeyframe?: (keyframe: DirectorKeyframe, position: DirectorVec3) => void; onDragActive?: (active: boolean) => void; onClaimPointer?: (holdMs: number) => void }) {
     const sorted = useMemo(() => finiteDirectorTransformKeyframes(keyframes).sort((left, right) => left.time - right.time), [keyframes]);
     const points = useMemo(() => sorted.map((keyframe) => keyframe.transform.position), [sorted]);
@@ -991,20 +991,20 @@ function DirectorTransformPath({ keyframes, playhead, color, visibleKeyIds, maxV
 }
 
 /**
- * CAM 取景：把 shot 摄影机的解算结果写进专属的机位相机对象。
+ * CAM 取景：把 shot 攝影機的解算結果寫進專屬的機位相機物件。
  *
- * 这台相机独立持有，不是共享的视口默认相机：离开 CAM 模式后不需要任何快照/还原——
- * 没有人会在其他模式下碰它，回到 CAM 时上一次写入的状态原样还在，物理上不可能被污染。
+ * 這臺相機獨立持有，不是共享的視口預設相機：離開 CAM 模式後不需要任何快照/還原——
+ * 沒有人會在其他模式下碰它，回到 CAM 時上一次寫入的狀態原樣還在，物理上不可能被汙染。
  *
- * 只写这台相机对象，绝不触碰 DirectorScene：换一只眼睛看场景不是内容改动，
- * 因此不产生任何 undo/history 记录，也不会触发保存。
+ * 只寫這臺相機物件，絕不觸碰 DirectorScene：換一隻眼睛看場景不是內容改動，
+ * 因此不產生任何 undo/history 記錄，也不會觸發儲存。
  */
 function DirectorShotCameraSync({ camera, framing }: { camera: PerspectiveCamera; framing: DirectorViewFraming | null }) {
     const invalidate = useThree((state) => state.invalidate);
     const framingKey = directorViewFramingKey(framing);
     useEffect(() => {
         if (!framing) return;
-        // up 必须先写：lookAt 用当前 camera.up 解基向量，顺序颠倒会丢掉荷兰角。
+        // up 必須先寫：lookAt 用當前 camera.up 解基向量，順序顛倒會丟掉荷蘭角。
         camera.up.set(...framing.up);
         camera.position.set(...framing.position);
         camera.fov = framing.fov;
@@ -1013,18 +1013,18 @@ function DirectorShotCameraSync({ camera, framing }: { camera: PerspectiveCamera
         camera.lookAt(...framing.target);
         camera.updateProjectionMatrix();
         invalidate();
-        // framing 只通过 framingKey 参与依赖：草稿对象身份变化不触发无谓回写。
+        // framing 只通過 framingKey 參與依賴：草稿物件身份變化不觸發無謂回寫。
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [framingKey, invalidate, camera]);
     return null;
 }
 
 /**
- * 正交轴向取景：把包围盒解算结果写进专属的正交相机对象，语义与 DirectorShotCameraSync
- * 完全对称——独立持有、无需快照还原、绝不碰 DirectorScene。
+ * 正交軸向取景：把包圍盒解算結果寫進專屬的正交相機物件，語義與 DirectorShotCameraSync
+ * 完全對稱——獨立持有、無需快照還原、絕不碰 DirectorScene。
  *
- * 水平/竖直跨度由领域层给出；视口只传入运行时 aspect，半范围换算走
- * resolveDirectorOrthographicFrustum，同时装下两条轴，避免宽内容被裁切。
+ * 水平/豎直跨度由領域層給出；視口只傳入執行時 aspect，半範圍換算走
+ * resolveDirectorOrthographicFrustum，同時裝下兩條軸，避免寬內容被裁切。
  */
 function DirectorOrthoCameraSync({ camera, framing, aspect }: { camera: OrthographicCamera; framing: DirectorOrthographicFraming | null; aspect: number }) {
     const invalidate = useThree((state) => state.invalidate);
@@ -1051,7 +1051,7 @@ function DirectorOrthoCameraSync({ camera, framing, aspect }: { camera: Orthogra
 function DirectorObjectView({ object, selected, selectedBone, showBoneControls, showLabel, showGizmo = true, isMultiSelection = false, externalFrozenTransform, onTargetReady, isTransformingRef, transformClaimRef, transformMode, playhead, onSelect, onSelectBone, onTransforming, onTransform, onBoneTransform, onActorRigReady, onLoadStateChange }: { object: DirectorObject; selected: boolean; selectedBone: string | null; showBoneControls: boolean; showLabel: boolean; showGizmo?: boolean; isMultiSelection?: boolean; externalFrozenTransform?: DirectorTransform | null; onTargetReady?: (id: string, target: Group | null) => void; isTransformingRef?: { current: boolean }; transformClaimRef?: { current: boolean }; transformMode: DirectorViewportProps["transformMode"]; playhead: number; onSelect: () => void; onSelectBone: (bone: string | null) => void; onTransforming: (value: boolean) => void; onTransform: (from: DirectorTransform, to: DirectorTransform) => void; onBoneTransform: (bone: string, rotation: DirectorQuat) => void; onActorRigReady: (rig: DirectorRig, animations: AnimationClip[]) => void; onLoadStateChange: (id: string, signal: DirectorLoadSignal, retry: () => void) => void }) {
     const [target, setTarget] = useState<Group | null>(null);
     const resolved = interpolateDirectorTransform(object.transform, object.keyframes, playhead);
-    // 手势进行中冻结声明式 transform，交由 gizmo 直接改写 Object3D；终态后再由场景状态接管。
+    // 手勢進行中凍結宣告式 transform，交由 gizmo 直接改寫 Object3D；終態後再由場景狀態接管。
     const [frozen, setFrozen] = useState<DirectorTransform | null>(null);
     const transform = frozen || externalFrozenTransform || resolved;
     const bindTarget = useCallback((instance: Group | null) => {
@@ -1183,9 +1183,9 @@ function DirectorMultiObjectGizmo({ objects, targets, playhead, transformMode, o
 }
 
 /**
- * gizmo 事务的统一接线：对象与骨骼共用，避免两套实现产生偏差。
- * 监听在挂载期间常驻安装（不以「当前是否有手势」为安装条件），
- * 非活跃时 end 自身是空操作。
+ * gizmo 事務的統一接線：物件與骨骼共用，避免兩套實現產生偏差。
+ * 監聽在掛載期間常駐安裝（不以「當前是否有手勢」為安裝條件），
+ * 非活躍時 end 自身是空操作。
  */
 function useDirectorGizmoTransaction<TSnapshot>({ read, restore, commit, onActive }: { read: () => TSnapshot | null; restore: (snapshot: TSnapshot) => void; commit: (from: TSnapshot, to: TSnapshot) => void; onActive: (active: boolean, snapshot: TSnapshot | null) => void }) {
     const hooksRef = useRef({ read, restore, commit, onActive });
@@ -1196,9 +1196,9 @@ function useDirectorGizmoTransaction<TSnapshot>({ read, restore, commit, onActiv
         restore: (snapshot) => hooksRef.current.restore(snapshot),
         commit: (from, to) => hooksRef.current.commit(from, to),
         setActive: (active) => hooksRef.current.onActive(active, active ? hooksRef.current.read() : null),
-        // stdlib 在 domElement.ownerDocument 上注册 pointerup，其 pointerUp({button:0})
-        // 会 dispatch mouseUp 后清 dragging=false / axis=null。因此用真实事件走它自己的
-        // 收尾通道，而不是写它的私有字段（.d.ts 中 dragging/axis 均为 private）。
+        // stdlib 在 domElement.ownerDocument 上註冊 pointerup，其 pointerUp({button:0})
+        // 會 dispatch mouseUp 後清 dragging=false / axis=null。因此用真實事件走它自己的
+        // 收尾通道，而不是寫它的私有欄位（.d.ts 中 dragging/axis 均為 private）。
         terminateDrag: () => document.dispatchEvent(new PointerEvent("pointerup", { button: 0, bubbles: true })),
     }), []);
 
@@ -1208,7 +1208,7 @@ function useDirectorGizmoTransaction<TSnapshot>({ read, restore, commit, onActiv
         isHidden: () => document.visibilityState === "hidden",
     }), [transaction]);
 
-    // 取消选中、删除对象、切换模型或卸载都必须回到快照并释放 transforming。
+    // 取消選中、刪除物件、切換模型或解除安裝都必須回到快照並釋放 transforming。
     useEffect(() => () => transaction.end("cancel"), [transaction]);
 
     return transaction;
@@ -1257,8 +1257,8 @@ function DirectorModel({ object, selected, selectedBone, showBoneControls, playh
     loadRef.current = load;
     const loadGeneration = load.generation;
     const modelUrl = object.url || DIRECTOR_DEFAULT_ACTOR_URL;
-    // 展示身份 = generation + 解析输入。render 阶段用它屏蔽旧资源，
-    // 因此 prop/retry 变化的第一次 render 就已卸下上一代 model，随后 cleanup 才 dispose。
+    // 展示身份 = generation + 解析輸入。render 階段用它遮蔽舊資源，
+    // 因此 prop/retry 變化的第一次 render 就已卸下上一代 model，隨後 cleanup 才 dispose。
     const identity = directorLoadIdentity({ generation: loadGeneration, url: modelUrl, storageKey: object.storageKey, kind: object.kind });
     type LoadedModel = { model: Object3D; rig: DirectorRig; animations: AnimationClip[]; restRotations: Partial<Record<DirectorHumanoidBone, DirectorQuat>> };
     const [loaded, setLoaded] = useState<{ identity: string; value: LoadedModel } | null>(null);
@@ -1275,14 +1275,14 @@ function DirectorModel({ object, selected, selectedBone, showBoneControls, playh
     const ownedRef = useRef<{ model: Object3D | null; mixer: AnimationMixer | null }>({ model: null, mixer: null });
     const onActorRigReadyRef = useRef(onActorRigReady);
     const invalidate = useThree((state) => state.invalidate);
-    // helper 只跟随「当前 identity 下真正要展示的 model」，不会挂在已卸下的旧 model 上。
+    // helper 只跟隨「當前 identity 下真正要展示的 model」，不會掛在已卸下的舊 model 上。
     const helper = useMemo(() => model ? new SkeletonHelper(model) : null, [model]);
     useEffect(() => () => disposeDirectorHelper(helper), [helper]);
 
-    // 把 loading/error/ready 报到 DOM 层，Canvas 内部无法呈现可操作提示。
-    // 依赖必须收敛到稳定原始值：object 每次场景编辑都是新引用，
-    // 若挂在 [object] 上会让下面的注销 effect 每次编辑都误报 unmounted，
-    // 失败模型的重试入口会随之消失。
+    // 把 loading/error/ready 報到 DOM 層，Canvas 內部無法呈現可操作提示。
+    // 依賴必須收斂到穩定原始值：object 每次場景編輯都是新引用，
+    // 若掛在 [object] 上會讓下面的登出 effect 每次編輯都誤報 unmounted，
+    // 失敗模型的重試入口會隨之消失。
     const objectId = object.id;
     const objectKind = directorDiagnosticObjectKind(object);
     const retryLoad = useCallback(() => {
@@ -1295,8 +1295,8 @@ function DirectorModel({ object, selected, selectedBone, showBoneControls, playh
         onLoadStateChangeRef.current(object.id, load.phase, retryLoad);
     }, [load.phase, object.id, retryLoad]);
 
-    // 卸载（删除、隐藏分支、换 URL/kind、Canvas 重建）必须注销自己，避免通知残留陈旧条目。
-    // 单独 effect 且只依赖 id：phase 变化不会反复注销重登。
+    // 解除安裝（刪除、隱藏分支、換 URL/kind、Canvas 重建）必須登出自己，避免通知殘留陳舊條目。
+    // 單獨 effect 且只依賴 id：phase 變化不會反覆登出重登。
     useEffect(() => () => onLoadStateChangeRef.current(object.id, "unmounted", retryLoad), [object.id, retryLoad]);
     const selectedBoneObject = selectedBone && rig?.boneMap[selectedBone as DirectorHumanoidBone] ? model?.getObjectByName(rig.boneMap[selectedBone as DirectorHumanoidBone]!) : null;
     const motion = object.motionClips?.find((item) => item.id === object.activeMotionClipId);
@@ -1316,7 +1316,7 @@ function DirectorModel({ object, selected, selectedBone, showBoneControls, playh
             }
         });
         if (!nearestBone) return;
-        // 模型表面可能先于关节控制球被射线命中，用最近骨骼保证点击仍可选中。
+        // 模型表面可能先於關節控制球被射線命中，用最近骨骼保證點選仍可選中。
         event.stopPropagation();
         onSelectBone(nearestBone);
     }, [model, onSelectBone, rig, selected]);
@@ -1326,37 +1326,37 @@ function DirectorModel({ object, selected, selectedBone, showBoneControls, playh
     useEffect(() => {
         const generation = loadRef.current.generation;
         let active = true;
-        // render 阶段已由 identity 屏蔽旧资源；这里再清一次作为防御，不作为安全性依据。
+        // render 階段已由 identity 遮蔽舊資源；這裡再清一次作為防禦，不作為安全性依據。
         setLoaded(null);
         setLoadPhase("loading");
         const failLoad = () => {
             if (!active || generation !== loadRef.current.generation) return;
-            // 只记录稳定码与安全枚举：URL / storageKey / 原始 error 都不落日志。
+            // 只記錄穩定碼與安全列舉：URL / storageKey / 原始 error 都不落日誌。
             recordDirectorDiagnostic("DIRECTOR_MODEL_LOAD_FAILED", { objectId: object.id, objectKind: directorDiagnosticObjectKind(object), attempt: generation });
             setLoadPhase("error");
         };
         const loader = new GLTFLoader();
         void resolveMediaUrl(object.storageKey, modelUrl)
             .then((url) => {
-                // 解析完成时已失效：不再发起无意义的网络加载。
+                // 解析完成時已失效：不再發起無意義的網路載入。
                 if (!active || generation !== loadRef.current.generation) return;
                 loader.load(
                     url,
                     (gltf) => {
                         const ownership = resolveDirectorLoadOwnership({ active, generation, currentGeneration: loadRef.current.generation });
                         if (!ownership.adopt) {
-                            // 未被采纳的晚到 source 必须释放，否则孤儿泄漏。
+                            // 未被採納的晚到 source 必須釋放，否則孤兒洩漏。
                             if (ownership.disposeSource) disposeDirectorObject3D(gltf.scene);
                             return;
                         }
-                        // 采纳流程整体包裹：clone / normalize / rig 推断 / 材质替换 / mixer /
-                        // setLoaded / onActorRigReady 任一步抛错都不得逃出，也不得留下半采纳资源。
+                        // 採納流程整體包裹：clone / normalize / rig 推斷 / 材質替換 / mixer /
+                        // setLoaded / onActorRigReady 任一步拋錯都不得逃出，也不得留下半採納資源。
                         let clone: Object3D | null = null;
                         let mixer: AnimationMixer | null = null;
                         try {
-                            // clone 与 source 共享 geometry/material/texture。
-                            // 采纳后 source 的 Object3D 层级可被 GC，共享 GPU 资源由 owned clone 持有，
-                            // 最终只在 clone 的 cleanup 里释放一次；这里绝不 dispose source。
+                            // clone 與 source 共享 geometry/material/texture。
+                            // 採納後 source 的 Object3D 層級可被 GC，共享 GPU 資源由 owned clone 持有，
+                            // 最終只在 clone 的 cleanup 裡釋放一次；這裡絕不 dispose source。
                             clone = SkeletonUtils.clone(gltf.scene);
                             normalizeModel(clone, object.castShadow, object.receiveShadow);
                             if (object.kind === "actor" && object.url === DIRECTOR_QUATERNIUS_MALE_URL && object.actorPreset) {
@@ -1370,7 +1370,7 @@ function DirectorModel({ object, selected, selectedBone, showBoneControls, playh
                             mixer = new AnimationMixer(clone);
                             mixerRef.current = mixer;
                             ownedRef.current = { model: clone, mixer };
-                            // 一次性写入带 identity 的展示记录，避免 model/rig/animations 之间出现中间态。
+                            // 一次性寫入帶 identity 的展示記錄，避免 model/rig/animations 之間出現中間態。
                             setLoaded({
                                 identity,
                                 value: { model: clone, rig: nextRig, animations: gltf.animations, restRotations: readRigRestRotations(clone, nextRig) },
@@ -1378,14 +1378,14 @@ function DirectorModel({ object, selected, selectedBone, showBoneControls, playh
                             setLoadPhase("ready");
                             onActorRigReadyRef.current(nextRig, gltf.animations);
                         } catch {
-                            // 只记录稳定错误码：原始 error / URL / 素材正文都不落日志。
+                            // 只記錄穩定錯誤碼：原始 error / URL / 素材正文都不落日誌。
                             recordDirectorDiagnostic("DIRECTOR_MODEL_ADOPT_FAILED", { objectId: object.id, objectKind: directorDiagnosticObjectKind(object) });
-                            // 先摘掉 owned 记录，避免 effect cleanup 二次释放同一批资源。
+                            // 先摘掉 owned 記錄，避免 effect cleanup 二次釋放同一批資源。
                             ownedRef.current = { model: null, mixer: null };
                             mixerRef.current = null;
                             setLoaded(null);
                             disposeDirectorAdoptionFailure({ clone, mixer, source: gltf.scene });
-                            // 回到既有 error/retry/占位人偶路径。
+                            // 回到既有 error/retry/佔位人偶路徑。
                             failLoad();
                         }
                     },
@@ -1393,11 +1393,11 @@ function DirectorModel({ object, selected, selectedBone, showBoneControls, playh
                     failLoad,
                 );
             })
-            // 地址解析失败与 GLTFLoader onError 走同一条 error/retry 通道。
+            // 地址解析失敗與 GLTFLoader onError 走同一條 error/retry 通道。
             .catch(failLoad);
         return () => {
             active = false;
-            // 替换/重试/卸载：释放本 generation 拥有的 clone 与 mixer（共享资源随之恰好释放一次）。
+            // 替換/重試/解除安裝：釋放本 generation 擁有的 clone 與 mixer（共享資源隨之恰好釋放一次）。
             const owned = ownedRef.current;
             ownedRef.current = { model: null, mixer: null };
             mixerRef.current = null;
@@ -1462,7 +1462,7 @@ function DirectorModel({ object, selected, selectedBone, showBoneControls, playh
     </group>;
 }
 
-/** 骨骼 gizmo 与对象 gizmo 共用事务接线，取消时恢复骨骼 quaternion。 */
+/** 骨骼 gizmo 與物件 gizmo 共用事務接線，取消時恢復骨骼 quaternion。 */
 function DirectorBoneGizmo({ bone, onCommit }: { bone: Object3D; onCommit: (rotation: DirectorQuat) => void }) {
     const transaction = useDirectorGizmoTransaction<DirectorQuat>({
         read: () => bone.quaternion.toArray() as DirectorQuat,
@@ -1678,7 +1678,7 @@ function BoneController({ bone, selected, dimmed, onSelect }: { bone: Object3D |
         if (!bone || !ref.current) return;
         const parent = ref.current.parent;
         if (!parent) return;
-        // 控制点与模型根节点是兄弟关系，必须转换到控制点父级坐标，否则点击区域会与骨骼错位。
+        // 控制點與模型根節點是兄弟關係，必須轉換到控制點父級座標，否則點選區域會與骨骼錯位。
         bone.getWorldPosition(world);
         camera.getWorldPosition(cameraWorld);
         local.copy(world);
@@ -1697,7 +1697,7 @@ function BoneController({ bone, selected, dimmed, onSelect }: { bone: Object3D |
             <sphereGeometry args={[1, 12, 8]} />
             <meshBasicMaterial color={selected ? "#f0b36a" : "#78a9ff"} depthTest={false} transparent opacity={selected ? 1 : dimmed ? 0.14 : 0.68} />
         </mesh>
-        {/* 可视点保持小尺寸，透明球只负责提供稳定的点击面积。 */}
+        {/* 可視點保持小尺寸，透明球只負責提供穩定的點選面積。 */}
         <mesh ref={hitRef} onPointerDown={handlePointerDown} frustumCulled={false}>
             <sphereGeometry args={[1, 8, 6]} />
             <meshBasicMaterial transparent opacity={0} depthTest={false} />
@@ -1742,7 +1742,7 @@ function applyActorReferenceMaterial(root: Object3D, color: string) {
     root.traverse((child) => {
         const mesh = child as Mesh;
         if (!mesh.isMesh) return;
-        // 被顶掉的原材质不再被任何 mesh 引用，必须释放，否则每次加载都泄漏一份。
+        // 被頂掉的原材質不再被任何 mesh 引用，必須釋放，否則每次載入都洩漏一份。
         if (mesh.material) replaced.push(...(Array.isArray(mesh.material) ? mesh.material : [mesh.material]));
         mesh.material = material;
         mesh.userData.directorActor = true;
@@ -1816,7 +1816,7 @@ function applyDirectorBoneTracks(model: Object3D, object: DirectorObject, playhe
         const target = name ? model.getObjectByName(name) : null;
         if (!target) return;
         const humanoidBone = bone as DirectorHumanoidBone;
-        // hasActiveMotion 时 mixer 已写入 target.quaternion，直接作为动作层输入。
+        // hasActiveMotion 時 mixer 已寫入 target.quaternion，直接作為動作層輸入。
         const rotation = resolveDirectorBoneRotation({
             motion: hasActiveMotion ? target.quaternion.toArray() as DirectorQuat : null,
             rest: hasActiveMotion ? null : restRotations[humanoidBone] || null,
@@ -1838,8 +1838,8 @@ function applyDirectorBoneTracks(model: Object3D, object: DirectorObject, playhe
 }
 
 function DirectorBillboard({ object, selected }: { object: DirectorObject; selected: boolean }) {
-    // 展示状态带 url 身份：只有与当前 object.url 匹配才交给 material，
-    // 这样换 URL 的第一次 render 就卸下旧纹理，随后 cleanup 才 dispose。
+    // 展示狀態帶 url 身份：只有與當前 object.url 匹配才交給 material，
+    // 這樣換 URL 的第一次 render 就卸下舊紋理，隨後 cleanup 才 dispose。
     const [loaded, setLoaded] = useState<{ identity: string; value: Texture } | null>(null);
     const identity = object.url || "";
     const texture = resolveDirectorDisplay(loaded, identity);
@@ -1848,7 +1848,7 @@ function DirectorBillboard({ object, selected }: { object: DirectorObject; selec
         let owned: Texture | null = null;
         setLoaded(null);
         new TextureLoader().load(object.url!, (next) => {
-            // 晚到的回调：本组件已换 URL 或卸载，直接释放这张纹理。
+            // 晚到的回撥：本元件已換 URL 或解除安裝，直接釋放這張紋理。
             if (!active) {
                 next.dispose();
                 return;
@@ -1879,7 +1879,7 @@ function DirectorLightView({ light }: { light: DirectorLight }) {
 }
 
 async function captureFrame(context: CaptureContext | null, mode: DirectorRenderMode, aspectRatio: DirectorAspectRatio) {
-    if (!context) throw new Error("3D 视口尚未就绪");
+    if (!context) throw new Error("3D 視口尚未就緒");
     const { gl, scene, camera } = context;
     const resumeDisplayMaterialOverride = context.suspendDisplayMaterialOverride();
     const previous = scene.overrideMaterial;
@@ -1903,13 +1903,13 @@ async function captureFrame(context: CaptureContext | null, mode: DirectorRender
 }
 
 /**
- * 摄像机检查器缩略预览：在现有 renderer 的小型离屏 target 渲染，不创建第二个 WebGL context，
- * 且在同步读回像素后立刻恢复主视口 target / viewport / overlay 状态，避免污染用户当前取景。
+ * 攝像機檢查器縮略預覽：在現有 renderer 的小型離屏 target 渲染，不建立第二個 WebGL context，
+ * 且在同步讀回畫素後立刻恢復主視口 target / viewport / overlay 狀態，避免汙染使用者當前取景。
  */
 function captureCameraPreviewFrame(context: CaptureContext | null, directorScene: DirectorScene, playhead: number, width = 384, height = 216) {
-    if (!context) throw new Error("3D 视口尚未就绪");
+    if (!context) throw new Error("3D 視口尚未就緒");
     const framing = resolveDirectorViewFraming({ scene: directorScene, mode: "camera", playhead });
-    if (!framing) throw new Error("当前场景没有可用机位");
+    if (!framing) throw new Error("當前場景沒有可用機位");
 
     const { gl, scene, camera: activeCamera } = context;
     const target = new WebGLRenderTarget(width, height, { depthBuffer: true, stencilBuffer: false });
@@ -1944,7 +1944,7 @@ function captureCameraPreviewFrame(context: CaptureContext | null, directorScene
         gl.readRenderTargetPixels(target, 0, 0, width, height, pixels);
 
         const canvasContext = canvas.getContext("2d");
-        if (!canvasContext) throw new Error("无法初始化摄影机预览画布");
+        if (!canvasContext) throw new Error("無法初始化攝影機預覽畫布");
         const imageData = canvasContext.createImageData(width, height);
         for (let row = 0; row < height; row += 1) {
             const sourceStart = (height - row - 1) * width * 4;
@@ -1968,8 +1968,8 @@ function captureCameraPreviewFrame(context: CaptureContext | null, directorScene
 }
 
 async function recordCanvas(context: CaptureContext | null, duration: number, fps: number, aspectRatio: DirectorAspectRatio) {
-    if (!context) throw new Error("3D 视口尚未就绪");
-    if (!context.gl.domElement.captureStream || typeof MediaRecorder === "undefined") throw new Error("当前浏览器不支持视频录制，请导出帧序列");
+    if (!context) throw new Error("3D 視口尚未就緒");
+    if (!context.gl.domElement.captureStream || typeof MediaRecorder === "undefined") throw new Error("當前瀏覽器不支援影片錄製，請匯出幀序列");
     const resumeDisplayMaterialOverride = context.suspendDisplayMaterialOverride();
     const previousMaterial = context.scene.overrideMaterial;
     const restoreClayMaterials = applyClaySceneMaterials(context.scene);
@@ -1997,16 +1997,16 @@ async function recordCanvas(context: CaptureContext | null, duration: number, fp
         const mimeType = selectDirectorRecordingMimeType((type) => MediaRecorder.isTypeSupported(type));
         const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
         const chunks: Blob[] = [];
-        // captureStream 依赖渲染循环持续产出新帧；异常立即停止，避免静默回写残缺视频。
+        // captureStream 依賴渲染迴圈持續產出新幀；異常立即停止，避免靜默回寫殘缺影片。
         let renderError: Error | null = null;
         onRenderError = () => {
-            renderError ??= new Error("白膜视频录制期间发生渲染错误，请重试");
+            renderError ??= new Error("白膜影片錄製期間發生渲染錯誤，請重試");
             if (recorder.state !== "inactive") recorder.stop();
         };
         window.addEventListener("error", onRenderError);
         const result = new Promise<Blob>((resolve, reject) => {
             recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
-            recorder.onerror = () => reject(new Error("白膜视频录制失败"));
+            recorder.onerror = () => reject(new Error("白膜影片錄製失敗"));
             recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || "video/webm" }));
         });
         recorder.start(250);
@@ -2019,7 +2019,7 @@ async function recordCanvas(context: CaptureContext | null, duration: number, fp
             ? await import("@fix-webm-duration/fix").then(({ fixWebmDuration }) => fixWebmDuration(rawBlob, Math.max(1, performance.now() - recordingStartedAt), { logger: false }))
             : rawBlob;
         const recorded = await probeRecordedDuration(blob);
-        if (!Number.isFinite(recorded) || recorded < Math.max(0.25, duration * 0.5)) throw new Error("白膜视频时长异常，录制可能不完整，请重试");
+        if (!Number.isFinite(recorded) || recorded < Math.max(0.25, duration * 0.5)) throw new Error("白膜影片時長異常，錄製可能不完整，請重試");
         return blob;
     } finally {
         if (stopTimer !== null) window.clearTimeout(stopTimer);
@@ -2065,5 +2065,5 @@ async function probeRecordedDuration(blob: Blob) {
 }
 
 function canvasToBlob(canvas: HTMLCanvasElement) {
-    return new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("3D 预览图导出失败"))), "image/png"));
+    return new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("3D 預覽圖匯出失敗"))), "image/png"));
 }

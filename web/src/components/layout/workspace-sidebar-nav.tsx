@@ -26,7 +26,7 @@ export type WorkspaceNavItem = {
     shortcut?: string;
     badge?: string | number;
     disabled?: boolean;
-    /** 外部鏈接：整列渲染成 <a target=_blank>，不走 SPA 路由 */
+    /** 外部連結：整列渲染成 <a target=_blank>，不走 SPA 路由 */
     external?: boolean;
     action?: "search";
     children?: WorkspaceNavItem[];
@@ -50,24 +50,24 @@ function buildNav(features: FeatureAvailability): { groups: WorkspaceNavGroup[];
     const groups: WorkspaceNavGroup[] = [
         {
             items: [
-                { id: "new", title: "新建项目", icon: Plus, to: "/canvas?mode=new" },
+                { id: "new", title: "新建專案", icon: Plus, to: "/canvas?mode=new" },
             ],
         },
         {
             items: [
-                { id: "home", title: "首页", icon: Home, to: "/" },
-                { ...toolItem("canvas", "/project"), title: "项目" },
-                { ...toolItem("assets", "/assets"), title: "资产" },
+                { id: "home", title: "首頁", icon: Home, to: "/" },
+                { ...toolItem("canvas", "/project"), title: "專案" },
+                { ...toolItem("assets", "/assets"), title: "資產" },
                 { id: "comfy-canvas", title: "ComfyUI 無限畫布", icon: Frame, to: INFINITE_CANVAS_URL, external: true },
                 { id: "settings:channels", title: "模型配置", icon: Settings2, to: "/settings?section=channels" },
-                ...(getDesktopAppBinding()?.StorageSettings ? [{ id: "settings:storage", title: "存储设置", icon: HardDrive, to: "/settings?section=storage" }] : []),
+                ...(getDesktopAppBinding()?.StorageSettings ? [{ id: "settings:storage", title: "儲存設定", icon: HardDrive, to: "/settings?section=storage" }] : []),
                 { id: "agents", title: "MURMUR AI MCP", icon: Plug, to: "/agents" },
             ],
         },
     ];
 
-    // 管理、设置和退出登录不再占据参考站式侧栏底部，而是通过用户卡片菜单进入。
-    // 路由和写操作仍保留，避免把用户端导航变成无法访问的装饰。
+    // 管理、設定和退出登入不再佔據參考站式側欄底部，而是通過使用者卡片選單進入。
+    // 路由和寫操作仍保留，避免把使用者端導航變成無法訪問的裝飾。
     return { groups, footer: [] };
 }
 
@@ -77,7 +77,7 @@ function WorkspaceSwitcher({ collapsed, onNavigate, onExpand, onCollapse }: { co
     if (collapsed) {
         return (
             <div className="app-workspace-sidebar-rail-header shrink-0">
-                <button type="button" className="app-workspace-sidebar-rail-button" aria-label="展开侧栏菜单" title="展开侧栏菜单" onClick={onExpand}>
+                <button type="button" className="app-workspace-sidebar-rail-button" aria-label="展開側欄選單" title="展開側欄選單" onClick={onExpand}>
                     <ChevronRight className="size-4" strokeWidth={1.7} />
                 </button>
             </div>
@@ -86,7 +86,7 @@ function WorkspaceSwitcher({ collapsed, onNavigate, onExpand, onCollapse }: { co
 
     return (
         <div className="app-workspace-sidebar-brand-row relative shrink-0 px-3 pt-3">
-            <Link to="/" onClick={onNavigate} className="app-workspace-sidebar-brand-button group" aria-label={`${appearance.brandName}首页`}>
+            <Link to="/" onClick={onNavigate} className="app-workspace-sidebar-brand-button group" aria-label={`${appearance.brandName}首頁`}>
                 <span className="flex min-w-0 items-center gap-2">
                     <BrandLogoFrame className="app-workspace-brand-mark grid size-8 shrink-0 place-items-center rounded-[var(--r-sm)] shadow-sm" logoClassName="size-5 object-contain" alt="" fallback={<span className="app-workspace-brand-placeholder" aria-hidden>M</span>} />
                     <span className="flex min-w-0">
@@ -94,7 +94,7 @@ function WorkspaceSwitcher({ collapsed, onNavigate, onExpand, onCollapse }: { co
                     </span>
                 </span>
             </Link>
-            <button type="button" className="app-workspace-sidebar-collapse-button" aria-label="收起侧栏" title="收起侧栏" onClick={onCollapse}>
+            <button type="button" className="app-workspace-sidebar-collapse-button" aria-label="收起側欄" title="收起側欄" onClick={onCollapse}>
                 <ChevronLeft className="size-4" strokeWidth={1.7} />
             </button>
         </div>
@@ -121,7 +121,7 @@ function NavItem({
     const [isOpen, setIsOpen] = useState(false);
     const reducedMotion = useReducedMotion();
 
-    // 激活分支自动展开（如设置分区子项），保证当前位置可见。
+    // 啟用分支自動展開（如設定分割槽子項），保證當前位置可見。
     useEffect(() => {
         if (isActive && hasChildren) setIsOpen(true);
     }, [isActive, hasChildren]);
@@ -142,7 +142,7 @@ function NavItem({
                 {!collapsed ? <span className="app-workspace-nav-title truncate">{item.title}</span> : null}
             </span>
             <span className="app-workspace-nav-meta flex shrink-0 items-center gap-2">
-                {item.disabled && !collapsed ? <span className="text-[var(--fs-micro)] font-normal text-foreground/35">正在开发</span> : null}
+                {item.disabled && !collapsed ? <span className="text-[var(--fs-micro)] font-normal text-foreground/35">正在開發</span> : null}
                 {item.shortcut ? (
                     <Kbd className="hidden group-hover:inline-flex">{item.shortcut}</Kbd>
                 ) : null}
@@ -178,9 +178,9 @@ function NavItem({
         onSelect(item.id);
     };
 
-    // 局部 const：闭包内 TS 保留窄化，供 preload 回调使用。
+    // 區域性 const：閉包內 TS 保留窄化，供 preload 回撥使用。
     const linkTo = item.to;
-    const disabledLabel = item.disabled ? `${item.title}：正在开发` : undefined;
+    const disabledLabel = item.disabled ? `${item.title}：正在開發` : undefined;
 
     return (
         <div className="flex w-full flex-col">
@@ -243,7 +243,7 @@ function NavGroup({ group, activeId, onNavigate, onOpenSearch, collapsed }: { gr
     const [isOpen, setIsOpen] = useState(true);
     const hasActive = group.items.some((item) => item.id === activeId || (item.id === "settings" && activeId.startsWith("settings:")));
 
-    // 激活项所在分组自动展开，保证当前位置可见。
+    // 啟用項所在分組自動展開，保證當前位置可見。
     useEffect(() => {
         if (hasActive) setIsOpen(true);
     }, [hasActive]);
@@ -256,7 +256,7 @@ function NavGroup({ group, activeId, onNavigate, onOpenSearch, collapsed }: { gr
         </div>
     );
 
-    // 无标题分组（核心导航入口）常驻展示，不做折叠。
+    // 無標題分組（核心導航入口）常駐展示，不做摺疊。
     if (!group.heading || collapsed) {
         return <div className="app-workspace-nav-group flex shrink-0 flex-col" data-nav-group-heading={group.heading || ""}>{content}</div>;
     }
@@ -333,7 +333,7 @@ export function WorkspaceSidebarNav({ collapsed, onNavigate, onOpenSearch, onExp
                 </div>
                 <div className={cn("app-workspace-sidebar-utility-row", collapsed && "is-collapsed")}>
                     <WorkspaceSidebarUpdate collapsed={collapsed} />
-                    <AnimatedThemeToggler theme={theme} onThemeChange={setTheme} aria-label={theme === "dark" ? "切换到浅色模式" : "切换到深色模式"} title={theme === "dark" ? "切换到浅色模式" : "切换到深色模式"} className="app-workspace-theme-action">
+                    <AnimatedThemeToggler theme={theme} onThemeChange={setTheme} aria-label={theme === "dark" ? "切換到淺色模式" : "切換到深色模式"} title={theme === "dark" ? "切換到淺色模式" : "切換到深色模式"} className="app-workspace-theme-action">
                         {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
                     </AnimatedThemeToggler>
                 </div>

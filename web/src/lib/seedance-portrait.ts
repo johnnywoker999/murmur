@@ -23,7 +23,7 @@ export function portraitTaskRetryError(inputJson?: string, model?: string): stri
     const portrait = [model, input.videoParameters?.model, input.config?.model].some((value) => typeof value === "string" && seedancePortraitModel(value));
     // Sanitized task detail contains no unique provider or account identity.
     // A current channel with the same bare model ID cannot establish its price.
-    return portrait ? "请回到原画布重新选择视频模型，确认当前价格后重新生成" : "";
+    return portrait ? "請回到原畫布重新選擇影片模型，確認當前價格後重新生成" : "";
 }
 
 export function sanitizeVideoPriceQuote(value: unknown): VideoPriceQuote | null {
@@ -41,7 +41,7 @@ export function sanitizeVideoPriceQuote(value: unknown): VideoPriceQuote | null 
 export function portraitPriceLines(value: unknown): string[] {
     const quote = sanitizeVideoPriceQuote(value);
     if (!quote) return [];
-    if (quote.mode === "seconds") return [...Object.entries(quote.rates).map(([resolution, rate]) => `${resolution}：${quote.reference_invoice?"普通生成 ":""}¥${Number(rate.output.toFixed(4))} / 秒`), ...(quote.reference_image ? [`前 ${quote.free_reference_images} 张参考图免费，之后 ¥${Number(quote.reference_image.toFixed(4))} / 张`] : []),...(quote.reference_invoice?[`参考生成：实际美元账单 × ${quote.reference_invoice.usd_cny} × 1.5；预留 ¥${Number((quote.reference_invoice.reserve_usd*quote.reference_invoice.usd_cny*1.5).toFixed(4))}，出账后结算`]:[])];
+    if (quote.mode === "seconds") return [...Object.entries(quote.rates).map(([resolution, rate]) => `${resolution}：${quote.reference_invoice?"普通生成 ":""}¥${Number(rate.output.toFixed(4))} / 秒`), ...(quote.reference_image ? [`前 ${quote.free_reference_images} 張參考圖免費，之後 ¥${Number(quote.reference_image.toFixed(4))} / 張`] : []),...(quote.reference_invoice?[`參考生成：實際美元賬單 × ${quote.reference_invoice.usd_cny} × 1.5；預留 ¥${Number((quote.reference_invoice.reserve_usd*quote.reference_invoice.usd_cny*1.5).toFixed(4))}，出賬後結算`]:[])];
     return Object.entries(quote.rates)
-        .map(([resolution, rate]) => `${resolution}：无视频输入 ¥${rate.output}，含视频输入 ¥${rate.reference_video} / 百万视频 Token`);
+        .map(([resolution, rate]) => `${resolution}：無影片輸入 ¥${rate.output}，含影片輸入 ¥${rate.reference_video} / 百萬影片 Token`);
 }

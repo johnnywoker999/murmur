@@ -22,7 +22,7 @@ export type BatchConnectionPlanOptions = {
     nodes: CanvasNodeData[];
     connections: CanvasConnection[];
     config: AiConfig;
-    // 创建聚合节点时保留完整图结构；生成提交阶段再按模型能力截取参考素材。
+    // 建立聚合節點時保留完整圖結構；生成提交階段再按模型能力擷取參考素材。
     allowCapacityOverflow?: boolean;
 };
 
@@ -79,7 +79,7 @@ export function planBatchConnections({ sourceNodeIds, targetNodeId, targetHandle
 
         const source = nodes.find((node) => node.id === sourceNodeId);
         if (!source) {
-            skipped.push({ nodeId: sourceNodeId, reason: "找不到连接源节点" });
+            skipped.push({ nodeId: sourceNodeId, reason: "找不到連線源節點" });
             return;
         }
         const sourceRestriction = batchSourceRestriction(source);
@@ -88,13 +88,13 @@ export function planBatchConnections({ sourceNodeIds, targetNodeId, targetHandle
             return;
         }
         if (source.id === targetNodeId) {
-            skipped.push({ nodeId: source.id, reason: "目标节点不能连接到自身" });
+            skipped.push({ nodeId: source.id, reason: "目標節點不能連線到自身" });
             return;
         }
 
         const normalized = normalizeConnection(source.id, targetNodeId, nodes, "source");
         if (!normalized) {
-            skipped.push({ nodeId: source.id, reason: "节点之间不能连接" });
+            skipped.push({ nodeId: source.id, reason: "節點之間不能連線" });
             return;
         }
 
@@ -132,8 +132,8 @@ export function planBatchConnections({ sourceNodeIds, targetNodeId, targetHandle
 }
 
 export function batchSourceRestriction(node: CanvasNodeData) {
-    if (node.type === CanvasNodeType.Frame) return "背板不能作为连接源";
-    if (node.type === CanvasNodeType.Script) return "分镜脚本需要按行连接";
-    if (node.type === CanvasNodeType.Config) return "生成配置不能作为聚合连接源";
+    if (node.type === CanvasNodeType.Frame) return "背板不能作為連線源";
+    if (node.type === CanvasNodeType.Script) return "分鏡指令碼需要按行連線";
+    if (node.type === CanvasNodeType.Config) return "生成配置不能作為聚合連線源";
     return "";
 }

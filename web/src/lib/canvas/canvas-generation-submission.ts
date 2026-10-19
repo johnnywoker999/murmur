@@ -26,9 +26,9 @@ export type CanvasGenerationRequestFingerprintInput = {
 };
 
 /**
- * 编辑器保留带 @ 槽位的原始提示词，任务请求单独保存经过技能/风格处理的模型提示词。
- * 模型提示词也保留 @图片1 等槽位标记。
- * 两者不能互相覆盖，否则刷新后富引用会退化为普通“图片1”文本。
+ * 編輯器保留帶 @ 槽位的原始提示詞，任務請求單獨儲存經過技能/風格處理的模型提示詞。
+ * 模型提示詞也保留 @圖片1 等槽位標記。
+ * 兩者不能互相覆蓋，否則重新整理後富引用會退化為普通“圖片1”文本。
  */
 export function canvasGenerationPromptMetadata(composerContent: string, effectivePrompt: string) {
     return { composerContent, prompt: effectivePrompt };

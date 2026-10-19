@@ -257,7 +257,7 @@ export function useCanvasSelectionController({
             const targetId = findFrameDropTargetFromIndex(frameDropIndexRef.current, draggedNodesRef.current, draggedNodeIds, { x: dx, y: dy });
             const target = targetId ? positioned.find((node) => node.id === targetId) : undefined;
             const linkedFolder = target?.metadata?.folder?.assetFolderId ? target : undefined;
-            // 素材库文件夹只建立归档关系，不把画布节点变成其本地子节点。
+            // 素材庫資料夾只建立歸檔關係，不把畫布節點變成其本地子節點。
             setNodes(linkedFolder ? positioned : applyFrameDrop(positioned, draggedNodeIds, targetId));
             if (linkedFolder) onLinkedFolderDrop?.(linkedFolder, positioned.filter((node) => draggedNodeIds.has(node.id)));
             if (clickedNodeId) onNodeDragEnd?.(clickedNodeId);
@@ -360,7 +360,7 @@ export function useCanvasSelectionController({
         if (hadPendingSelection && !wasSelection && strategy === "replace") deselectCanvas();
     }, [deselectCanvas, resetSelectionBox, screenToCanvas, updateSelectionPreview]);
 
-    // 重渲染只更新回调，不能拆掉进行中的手势监听并清除 iframe 保护层 / 待执行帧。
+    // 重渲染只更新回撥，不能拆掉進行中的手勢監聽並清除 iframe 保護層 / 待執行幀。
     const gestureHandlersRef = useRef({ finishNodeDrag, finishSelection, cancelSelectionBox, handleNodeDragMove, handlePointerMove });
     useEffect(() => {
         gestureHandlersRef.current = { finishNodeDrag, finishSelection, cancelSelectionBox, handleNodeDragMove, handlePointerMove };

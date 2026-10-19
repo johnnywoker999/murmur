@@ -2,33 +2,33 @@ import type { GenerationErrorCategory } from "./generation-error";
 
 type VODCopy = { category: GenerationErrorCategory; reason: string; action: string; uncertain: boolean };
 const copies: Record<string, VODCopy> = {
-    capacity: { category: "concurrency", reason: "图片服务当前繁忙", action: "请稍后再试", uncertain: false },
-    rate: { category: "throttled", reason: "图片服务请求过于频繁", action: "请稍后再试", uncertain: false },
-    channel_auth: { category: "permission", reason: "当前图片服务未通过授权", action: "请联系支持检查渠道权限后再试", uncertain: false },
-    channel_config: { category: "permission", reason: "当前图片服务配置有误", action: "请联系支持检查服务配置后再试", uncertain: false },
-    input_missing: { category: "input_inaccessible", reason: "参考素材不存在或已无法访问", action: "请检查并更换参考素材后重新生成", uncertain: false },
-    invalid_params: { category: "invalid_params", reason: "图片生成参数不符合要求", action: "请检查模型、尺寸、格式和数量后再试", uncertain: false },
-    invalid_media: { category: "invalid_params", reason: "参考素材格式不受当前模型支持", action: "请转换图片格式后更换参考素材", uncertain: false },
-    duplicate: { category: "submission_uncertain", reason: "检测到已有相同的图片任务", action: "请先查看原任务结果，不要重复提交", uncertain: true },
-    create_unknown: { category: "submission_uncertain", reason: "尚未确认图片任务是否创建成功", action: "请联系支持核对原任务，不要重复提交", uncertain: true },
-    task_internal: { category: "async_failed", reason: "图片任务因模型服务内部错误而失败", action: "请保留排查信息并联系支持核对结果，再决定是否重新生成", uncertain: false },
-    task_failed: { category: "async_failed", reason: "模型未能完成这次图片生成", action: "请保留排查信息并联系支持核对原因，再决定是否重新生成", uncertain: false },
-    task_timeout: { category: "timeout", reason: "图片任务执行超时", action: "请联系支持查询原任务结果，不要立即重新生成", uncertain: true },
-    cancelled: { category: "cancelled", reason: "图片任务已取消", action: "如仍需生成，请确认后重新提交", uncertain: false },
-    query_failed: { category: "submission_uncertain", reason: "暂时无法查询图片任务结果", action: "请稍后查看原任务，不要重复提交", uncertain: true },
-    query_rejected: { category: "submission_uncertain", reason: "原图片任务查询被服务拒绝", action: "请联系支持修复查询，不要重复提交", uncertain: true },
-    query_missing: { category: "submission_uncertain", reason: "暂时无法找到原图片任务", action: "请联系支持核对任务记录，不要重复提交", uncertain: true },
-    query_auth: { category: "submission_uncertain", reason: "图片服务暂时无权查询原任务", action: "请联系支持检查渠道权限并恢复查询，不要重复提交", uncertain: true },
-    unknown: { category: "submission_uncertain", reason: "图片任务结果尚未确认", action: "请先查看原任务或联系支持核对，不要重复提交", uncertain: true },
-    partial: { category: "partial_success", reason: "部分图片已生成，任务未全部完成", action: "请联系支持取回图片，再决定是否补做", uncertain: true },
-    results_missing: { category: "results_missing", reason: "图片任务已结束，但未返回可用图片", action: "请联系支持核对原任务，不要重复提交", uncertain: true },
-    download_failed: { category: "download_failed", reason: "图片已生成，但下载失败", action: "请联系支持取回原图片，不要重新生成", uncertain: true },
-    request_large: { category: "input_too_large", reason: "图片请求的数据量超过服务上限", action: "请减少参考素材或压缩图片后再试", uncertain: false },
-    unsupported: { category: "model_missing", reason: "当前图片服务不支持这次请求", action: "请联系支持检查模型、接口和地域设置", uncertain: false },
-    response_large: { category: "submission_uncertain", reason: "图片服务返回的数据超过接口上限", action: "请联系支持取回结果，不要重复提交", uncertain: true },
-    source_busy: { category: "input_inaccessible", reason: "图片任务所需资源正在被占用", action: "请确认参考素材可用后再试", uncertain: false },
-    dry_run: { category: "invalid_params", reason: "本次为服务检查，未执行图片生成", action: "请联系支持检查渠道配置后再试", uncertain: false },
-    moderation: { category: "moderation_input", reason: "提示词或参考素材未通过内容安全审核", action: "请调整提示词或参考素材后重新生成", uncertain: false },
+    capacity: { category: "concurrency", reason: "圖片服務當前繁忙", action: "請稍後再試", uncertain: false },
+    rate: { category: "throttled", reason: "圖片服務請求過於頻繁", action: "請稍後再試", uncertain: false },
+    channel_auth: { category: "permission", reason: "當前圖片服務未通過授權", action: "請聯絡支援檢查渠道許可權後再試", uncertain: false },
+    channel_config: { category: "permission", reason: "當前圖片服務配置有誤", action: "請聯絡支援檢查服務配置後再試", uncertain: false },
+    input_missing: { category: "input_inaccessible", reason: "參考素材不存在或已無法訪問", action: "請檢查並更換參考素材後重新生成", uncertain: false },
+    invalid_params: { category: "invalid_params", reason: "圖片生成引數不符合要求", action: "請檢查模型、尺寸、格式和數量後再試", uncertain: false },
+    invalid_media: { category: "invalid_params", reason: "參考素材格式不受當前模型支援", action: "請轉換圖片格式後更換參考素材", uncertain: false },
+    duplicate: { category: "submission_uncertain", reason: "檢測到已有相同的圖片任務", action: "請先檢視原任務結果，不要重複提交", uncertain: true },
+    create_unknown: { category: "submission_uncertain", reason: "尚未確認圖片任務是否建立成功", action: "請聯絡支援核對原任務，不要重複提交", uncertain: true },
+    task_internal: { category: "async_failed", reason: "圖片任務因模型服務內部錯誤而失敗", action: "請保留排查資訊並聯系支援核對結果，再決定是否重新生成", uncertain: false },
+    task_failed: { category: "async_failed", reason: "模型未能完成這次圖片生成", action: "請保留排查資訊並聯系支援核對原因，再決定是否重新生成", uncertain: false },
+    task_timeout: { category: "timeout", reason: "圖片任務執行超時", action: "請聯絡支援查詢原任務結果，不要立即重新生成", uncertain: true },
+    cancelled: { category: "cancelled", reason: "圖片任務已取消", action: "如仍需生成，請確認後重新提交", uncertain: false },
+    query_failed: { category: "submission_uncertain", reason: "暫時無法查詢圖片任務結果", action: "請稍後檢視原任務，不要重複提交", uncertain: true },
+    query_rejected: { category: "submission_uncertain", reason: "原圖片任務查詢被服務拒絕", action: "請聯絡支援修復查詢，不要重複提交", uncertain: true },
+    query_missing: { category: "submission_uncertain", reason: "暫時無法找到原圖片任務", action: "請聯絡支援核對任務記錄，不要重複提交", uncertain: true },
+    query_auth: { category: "submission_uncertain", reason: "圖片服務暫時無權查詢原任務", action: "請聯絡支援檢查渠道許可權並恢復查詢，不要重複提交", uncertain: true },
+    unknown: { category: "submission_uncertain", reason: "圖片任務結果尚未確認", action: "請先檢視原任務或聯絡支援核對，不要重複提交", uncertain: true },
+    partial: { category: "partial_success", reason: "部分圖片已生成，任務未全部完成", action: "請聯絡支援取回圖片，再決定是否補做", uncertain: true },
+    results_missing: { category: "results_missing", reason: "圖片任務已結束，但未返回可用圖片", action: "請聯絡支援核對原任務，不要重複提交", uncertain: true },
+    download_failed: { category: "download_failed", reason: "圖片已生成，但下載失敗", action: "請聯絡支援取回原圖片，不要重新生成", uncertain: true },
+    request_large: { category: "input_too_large", reason: "圖片請求的資料量超過服務上限", action: "請減少參考素材或壓縮圖片後再試", uncertain: false },
+    unsupported: { category: "model_missing", reason: "當前圖片服務不支援這次請求", action: "請聯絡支援檢查模型、介面和地域設定", uncertain: false },
+    response_large: { category: "submission_uncertain", reason: "圖片服務返回的資料超過介面上限", action: "請聯絡支援取回結果，不要重複提交", uncertain: true },
+    source_busy: { category: "input_inaccessible", reason: "圖片任務所需資源正在被佔用", action: "請確認參考素材可用後再試", uncertain: false },
+    dry_run: { category: "invalid_params", reason: "本次為服務檢查，未執行圖片生成", action: "請聯絡支援檢查渠道配置後再試", uncertain: false },
+    moderation: { category: "moderation_input", reason: "提示詞或參考素材未通過內容安全稽核", action: "請調整提示詞或參考素材後重新生成", uncertain: false },
 };
 const codes: Record<string, Record<string, string>> = {
     "create": {
@@ -107,7 +107,7 @@ function genericVODCode(code: string) {
 }
 
 export function vodImageErrorCopy(code: string, text: string): (VODCopy & { providerCode?: string; fromCode: boolean; retryable: boolean }) | undefined {
-    if (code === "access_denied" && text.startsWith("你的请求触发了上游内容安全策略，类别：内容安全")) return { ...copies.moderation, fromCode: true, retryable: false };
+    if (code === "access_denied" && text.startsWith("你的請求觸發了上游內容安全策略，類別：內容安全")) return { ...copies.moderation, fromCode: true, retryable: false };
     let key = code.startsWith("vod_image_") ? code.slice(10) : "";
     let providerCode = code;
     if (!Object.hasOwn(copies, key)) {

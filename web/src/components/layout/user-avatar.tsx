@@ -9,7 +9,7 @@ export function UserAvatar({ user, className }: { user: LocalUser; className?: s
 
     useEffect(() => setFailed(false), [avatarUrl]);
 
-    // 结构保持 button > span > svg：占位图标自动复用顶栏图标按钮的 18px/1.8 描边与配色合同；默认不套圆角容器，hover 由按钮背景反馈。
+    // 結構保持 button > span > svg：佔點陣圖示自動複用頂欄圖示按鈕的 18px/1.8 描邊與配色合同；預設不套圓角容器，hover 由按鈕背景反饋。
     return (
         <span className={cn("grid shrink-0 place-items-center overflow-hidden", className)}>
             {avatarUrl && !failed ? (

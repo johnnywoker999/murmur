@@ -26,7 +26,7 @@ export function CanvasUploadModal({ open, onClose, onUpload, onImportUrl }: Canv
         if(!isReferenceHTTPSLink(url)) return;
         setUploading(true);
         try { if(await onImportUrl(url.trim(),kind)) { setUrl(""); onClose(); } }
-        catch(error) { message.error(error instanceof Error ? error.message : "链接添加失败"); }
+        catch(error) { message.error(error instanceof Error ? error.message : "連結新增失敗"); }
         finally { setUploading(false); }
     };
 
@@ -48,7 +48,7 @@ export function CanvasUploadModal({ open, onClose, onUpload, onImportUrl }: Canv
             onClose();
             await pendingUpload;
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "文件上传失败，请稍后重试");
+            message.error(error instanceof Error ? error.message : "檔案上傳失敗，請稍後重試");
         } finally {
             setUploading(false);
         }
@@ -70,10 +70,10 @@ export function CanvasUploadModal({ open, onClose, onUpload, onImportUrl }: Canv
             <div className="flex min-h-96 flex-col overflow-hidden">
                 <header className="flex h-14 shrink-0 items-center justify-between border-b border-border py-0 pl-5 pr-12">
                     <div className="min-w-0">
-                        <div role="heading" aria-level={2} className="text-sm font-semibold leading-5">添加素材</div>
-                        <div className="mt-0.5 text-[var(--fs-label)] leading-4 text-foreground/60">导入本地文件或在线素材</div>
+                        <div role="heading" aria-level={2} className="text-sm font-semibold leading-5">新增素材</div>
+                        <div className="mt-0.5 text-[var(--fs-label)] leading-4 text-foreground/60">匯入本地檔案或線上素材</div>
                     </div>
-                    <span className="shrink-0 text-[var(--fs-label)] text-foreground/45">已选 {fileList.length} 项</span>
+                    <span className="shrink-0 text-[var(--fs-label)] text-foreground/45">已選 {fileList.length} 項</span>
                 </header>
 
                 <section className="min-h-0 flex-1 overflow-y-auto p-4">
@@ -84,7 +84,7 @@ export function CanvasUploadModal({ open, onClose, onUpload, onImportUrl }: Canv
                         fileList={fileList}
                         beforeUpload={(file) => {
                             if (isCanvasUploadFile(file)) return false;
-                            message.warning(`“${file.name}”不是支持的图片、视频、音频或 TXT / Markdown 文件`);
+                            message.warning(`“${file.name}”不是支援的圖片、影片、音訊或 TXT / Markdown 檔案`);
                             return Upload.LIST_IGNORE;
                         }}
                         onChange={({ fileList: nextFileList }) => setFileList(nextFileList)}
@@ -98,19 +98,19 @@ export function CanvasUploadModal({ open, onClose, onUpload, onImportUrl }: Canv
                             <span className="grid size-12 place-items-center rounded-lg bg-foreground/[.06] text-foreground/70">
                                 <UploadCloud className="size-6" aria-hidden="true" />
                             </span>
-                            <p className="mt-4 text-sm font-medium">拖动文件到这里，或点击选择</p>
-                            <p className="mt-1 text-xs text-foreground/45">支持同时选择多个文件</p>
-                            <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-[var(--fs-label)] text-foreground/45" aria-label="支持的文件类型">
-                                <span className="inline-flex items-center gap-1"><FileImage className="size-3.5" aria-hidden="true" />图片</span>
-                                <span className="inline-flex items-center gap-1"><Film className="size-3.5" aria-hidden="true" />视频</span>
-                                <span className="inline-flex items-center gap-1"><Music2 className="size-3.5" aria-hidden="true" />音频</span>
+                            <p className="mt-4 text-sm font-medium">拖動檔案到這裡，或點選選擇</p>
+                            <p className="mt-1 text-xs text-foreground/45">支援同時選擇多個檔案</p>
+                            <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-[var(--fs-label)] text-foreground/45" aria-label="支援的檔案型別">
+                                <span className="inline-flex items-center gap-1"><FileImage className="size-3.5" aria-hidden="true" />圖片</span>
+                                <span className="inline-flex items-center gap-1"><Film className="size-3.5" aria-hidden="true" />影片</span>
+                                <span className="inline-flex items-center gap-1"><Music2 className="size-3.5" aria-hidden="true" />音訊</span>
                                 <span className="inline-flex items-center gap-1"><FileText className="size-3.5" aria-hidden="true" />TXT / Markdown</span>
                             </div>
                         </div>
                     </Upload.Dragger>
 
                     {fileList.length ? (
-                        <div className="thin-scrollbar mt-3 flex max-h-52 flex-wrap gap-3 overflow-y-auto" aria-label="已选文件">
+                        <div className="thin-scrollbar mt-3 flex max-h-52 flex-wrap gap-3 overflow-y-auto" aria-label="已選檔案">
                             {fileList.map((file) => (
                                 <article key={file.uid} className="group w-24 min-w-0 overflow-hidden rounded-lg bg-muted">
                                     <div className="relative aspect-square overflow-hidden bg-muted">
@@ -134,20 +134,20 @@ export function CanvasUploadModal({ open, onClose, onUpload, onImportUrl }: Canv
                 </section>
 
                 <section className="space-y-3 border-t border-border p-4" data-canvas-no-zoom>
-                    <label className="block text-sm" htmlFor="canvas-media-url">在线素材地址</label>
+                    <label className="block text-sm" htmlFor="canvas-media-url">線上素材地址</label>
                     <div className="flex min-w-0 flex-wrap gap-2">
-                        <Select ariaLabel="素材类型" value={kind} options={[{value:"image",label:"图片"},{value:"video",label:"视频"},{value:"audio",label:"音频"}]} onChange={value=>setKind(value === "video" ? "video" : value === "audio" ? "audio" : "image")} />
+                        <Select ariaLabel="素材型別" value={kind} options={[{value:"image",label:"圖片"},{value:"video",label:"影片"},{value:"audio",label:"音訊"}]} onChange={value=>setKind(value === "video" ? "video" : value === "audio" ? "audio" : "image")} />
                         <Input id="canvas-media-url" className="min-w-0 flex-1" value={url} onChange={event=>setUrl(event.target.value)} placeholder="https://…" disabled={uploading} autoComplete="off"/>
-                        <Button onClick={()=>void submitUrl()} disabled={!isReferenceHTTPSLink(url)} loading={uploading}>添加链接</Button>
+                        <Button onClick={()=>void submitUrl()} disabled={!isReferenceHTTPSLink(url)} loading={uploading}>新增連結</Button>
                     </div>
-                    <p className="text-xs leading-5 text-foreground/60">保留原始网址用于生成，请使用服务商可直接读取的 HTTPS 素材链接。</p>
+                    <p className="text-xs leading-5 text-foreground/60">保留原始網址用於生成，請使用服務商可直接讀取的 HTTPS 素材連結。</p>
                 </section>
                 <footer className="flex h-14 shrink-0 items-center justify-between border-t border-border px-4">
-                    <span className="hidden text-[var(--fs-label)] text-foreground/45 sm:inline">文件将在确认后按顺序添加到画布</span>
+                    <span className="hidden text-[var(--fs-label)] text-foreground/45 sm:inline">檔案將在確認後按順序新增到畫布</span>
                     <div className="ml-auto flex gap-2">
                         <Button disabled={uploading} onClick={onClose}>取消</Button>
                         <Button type="primary" icon={<UploadCloud className="size-4" />} disabled={!fileList.length} loading={uploading} onClick={() => void submit()}>
-                            添加到画布{fileList.length ? `（${fileList.length}）` : ""}
+                            新增到畫布{fileList.length ? `（${fileList.length}）` : ""}
                         </Button>
                     </div>
                 </footer>
@@ -168,10 +168,10 @@ function CanvasUploadFilePreview({ file }: { file: UploadFile }) {
     }, [source]);
 
     if (source?.type.startsWith("image/") && previewUrl) {
-        return <img src={previewUrl} alt={`预览：${file.name}`} className="size-full object-cover" />;
+        return <img src={previewUrl} alt={`預覽：${file.name}`} className="size-full object-cover" />;
     }
     if (source?.type.startsWith("video/") && previewUrl) {
-        return <video src={previewUrl} aria-label={`预览：${file.name}`} muted playsInline preload="metadata" className="size-full object-cover" />;
+        return <video src={previewUrl} aria-label={`預覽：${file.name}`} muted playsInline preload="metadata" className="size-full object-cover" />;
     }
     return (
         <div className="grid size-full place-items-center text-foreground/45">

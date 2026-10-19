@@ -26,11 +26,11 @@ const pendingRequests = new Map<number, PendingRequest>();
 
 export async function detectCanvasFaces(dataUrl: string, signal?: AbortSignal): Promise<CanvasFaceDetectionResult> {
     if (!__BEEFTV_HEAVY_MEDIA_ENABLED__) {
-        throw new Error("精简版未包含自动人脸识别，请改用手动框选，或安装完整媒体包");
+        throw new Error("精簡版未包含自動人臉識別，請改用手動框選，或安裝完整媒體包");
     }
-    if (signal?.aborted) throw new DOMException("人脸识别已取消", "AbortError");
+    if (signal?.aborted) throw new DOMException("人臉識別已取消", "AbortError");
     const response = await fetch(dataUrl, { signal });
-    if (!response.ok) throw new Error("无法读取源图片，请重新上传后再试");
+    if (!response.ok) throw new Error("無法讀取源圖片，請重新上傳後再試");
     const image = await createImageBitmap(await response.blob());
     const worker = getDetectorWorker();
     const id = ++requestSequence;
@@ -40,7 +40,7 @@ export async function detectCanvasFaces(dataUrl: string, signal?: AbortSignal): 
             if (!request) return;
             pendingRequests.delete(id);
             request.cleanup();
-            reject(new DOMException("人脸识别已取消", "AbortError"));
+            reject(new DOMException("人臉識別已取消", "AbortError"));
         };
         const cleanup = () => signal?.removeEventListener("abort", abort);
         pendingRequests.set(id, { resolve, reject, cleanup });
@@ -68,7 +68,7 @@ function getDetectorWorker() {
         });
     };
     worker.onerror = (event) => {
-        const error = new Error(event.message || "人脸识别服务初始化失败");
+        const error = new Error(event.message || "人臉識別服務初始化失敗");
         pendingRequests.forEach((request) => {
             request.cleanup();
             request.reject(error);

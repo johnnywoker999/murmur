@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 import "./canvas-angle-scene.css";
 
-/** 预览交互范围对齐 recombyn：俯仰 ±60；水平保留 ±180 以便「背面」绕到主体后方。 */
+/** 預覽互動範圍對齊 recombyn：俯仰 ±60；水平保留 ±180 以便「背面」繞到主體後方。 */
 const rotateMin = -180;
 const rotateMax = 180;
 const tiltMin = -60;

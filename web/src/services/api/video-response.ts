@@ -9,11 +9,11 @@ export function videoTaskId(payload: { id?: string; request_id?: string; task_id
 }
 
 export function unwrapVideoResponse(payload: ApiVideoResponse) {
-    return unwrapEnvelope(payload, "接口没有返回视频任务");
+    return unwrapEnvelope(payload, "介面沒有返回影片任務");
 }
 
 export function unwrapSeedanceTask(payload: ApiEnvelope<SeedanceTask>) {
-    return unwrapEnvelope(payload, "Seedance 接口没有返回任务");
+    return unwrapEnvelope(payload, "Seedance 介面沒有返回任務");
 }
 
 export function unwrapEnvelope<T>(payload: ApiEnvelope<T>, emptyMessage: string): T {
@@ -69,7 +69,7 @@ export function blobToDataUrl(blob: Blob) {
     return new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(String(reader.result || ""));
-        reader.onerror = () => reject(new Error("读取本地素材失败"));
+        reader.onerror = () => reject(new Error("讀取本地素材失敗"));
         reader.readAsDataURL(blob);
     });
 }

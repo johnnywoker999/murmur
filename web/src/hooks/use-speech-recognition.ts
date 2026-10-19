@@ -35,26 +35,26 @@ export type SpeechRecognitionError = {
 };
 
 type UseSpeechRecognitionOptions = {
-    /** 语言代码，默认 zh-CN */
+    /** 語言程式碼，預設 zh-CN */
     lang?: string;
 };
 
 export type UseSpeechRecognitionReturn = {
-    /** 浏览器是否支持 Web Speech API */
+    /** 瀏覽器是否支援 Web Speech API */
     supported: boolean;
-    /** 识别错误（权限、网络、不支持等） */
+    /** 識別錯誤（許可權、網路、不支援等） */
     error: SpeechRecognitionError | null;
-    /** 开始识别，挂载后自动调用 */
+    /** 開始識別，掛載後自動呼叫 */
     start: () => void;
-    /** 停止识别并返回已累积的最终文本 */
+    /** 停止識別並返回已累積的最終文本 */
     stop: () => Promise<string>;
-    /** 取消识别并清空累积文本 */
+    /** 取消識別並清空累積文本 */
     cancel: () => void;
 };
 
 /**
- * 浏览器内置语音识别 Hook（Web Speech API）
- * 第一阶段 MVP 使用：不依赖后端、模型渠道或 API Key，零配置可用
+ * 瀏覽器內建語音識別 Hook（Web Speech API）
+ * 第一階段 MVP 使用：不依賴後端、模型渠道或 API Key，零配置可用
  */
 export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}): UseSpeechRecognitionReturn {
     const { lang = "zh-CN" } = options;
@@ -68,7 +68,7 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}):
     const start = useCallback(() => {
         const Constructor = getSpeechRecognition();
         if (!Constructor) {
-            setError({ code: "unsupported", message: "当前浏览器不支持语音识别，请使用 Chrome 或 Edge" });
+            setError({ code: "unsupported", message: "當前瀏覽器不支援語音識別，請使用 Chrome 或 Edge" });
             return;
         }
         finalTextRef.current = "";
@@ -90,13 +90,13 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}):
         };
         recognition.onerror = (event) => {
             if (event.error === "not-allowed" || event.error === "service-not-allowed") {
-                setError({ code: event.error, message: "麦克风权限被拒绝，请在浏览器设置中允许访问麦克风" });
+                setError({ code: event.error, message: "麥克風許可權被拒絕，請在瀏覽器設定中允許訪問麥克風" });
             } else if (event.error === "no-speech") {
-                setError({ code: event.error, message: "未检测到语音，请重试" });
+                setError({ code: event.error, message: "未檢測到語音，請重試" });
             } else if (event.error === "network") {
-                setError({ code: event.error, message: "语音识别服务不可用，请检查网络后重试" });
+                setError({ code: event.error, message: "語音識別服務不可用，請檢查網路後重試" });
             } else {
-                setError({ code: event.error, message: `语音识别失败（${event.error}）` });
+                setError({ code: event.error, message: `語音識別失敗（${event.error}）` });
             }
         };
         recognition.onend = () => {
@@ -120,7 +120,7 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}):
                 return;
             }
             stopResolveRef.current = resolve;
-            // 兜底：部分浏览器 stop() 后 onend 可能不触发，超时后返回已识别文本
+            // 兜底：部分瀏覽器 stop() 後 onend 可能不觸發，超時後返回已識別文本
             stopTimerRef.current = window.setTimeout(() => {
                 if (stopResolveRef.current) {
                     stopResolveRef.current = null;

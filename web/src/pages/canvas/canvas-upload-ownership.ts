@@ -170,7 +170,7 @@ export async function persistOwnedCanvasUploadNode(
         })) {
             return abandoned;
         }
-        deps.warn?.(error instanceof Error ? `媒体已添加到画布，但素材同步失败：${error.message}` : "媒体已添加到画布，但素材同步失败");
+        deps.warn?.(error instanceof Error ? `媒體已新增到畫布，但素材同步失敗：${error.message}` : "媒體已新增到畫布，但素材同步失敗");
         return { ...abandoned, error };
     }
 }

@@ -71,11 +71,11 @@ export function CanvasAssistantComposer({
         <footer className="canvas-assistant-composer" onDragOver={event => { if (onFiles && !disabled && event.dataTransfer.types.includes("Files")) { event.preventDefault(); event.stopPropagation(); } }}
             onDrop={event => { if (onFiles && !disabled && event.dataTransfer.files.length) { event.preventDefault(); event.stopPropagation(); onFiles([...event.dataTransfer.files]); } }}
             onPasteCapture={event => { const files = [...event.clipboardData.files]; if (onFiles && !disabled && files.length) { event.preventDefault(); event.stopPropagation(); onFiles(files); const text = event.clipboardData.getData("text/plain"); if (text) onChange(value + text); } }}>
-            <input ref={fileInput} type="file" accept="image/*,video/*,audio/*" multiple hidden aria-label="添加参考素材文件" onChange={event => { onFiles?.([...event.target.files || []]); event.target.value = ""; }} />
+            <input ref={fileInput} type="file" accept="image/*,video/*,audio/*" multiple hidden aria-label="新增參考素材檔案" onChange={event => { onFiles?.([...event.target.files || []]); event.target.value = ""; }} />
             {!streaming && selectionAttached && selectedCount > 0 ? <div className="canvas-assistant-chips">
                     <span className="canvas-assistant-chip">
-                        已选 {selectedCount} 个节点
-                        <button type="button" aria-label="这条消息不带已选节点" onClick={onDetachSelection}>
+                        已選 {selectedCount} 個節點
+                        <button type="button" aria-label="這條訊息不帶已選節點" onClick={onDetachSelection}>
                             <X className="size-3" />
                         </button>
                     </span>
@@ -94,39 +94,39 @@ export function CanvasAssistantComposer({
                     className="thin-scrollbar h-full w-full resize-none overflow-y-auto border-none bg-transparent px-3 py-1.5 text-[var(--fs-caption)] leading-[21px] !shadow-none !outline-none !ring-0 focus:!shadow-none focus:!outline-none focus:!ring-0 placeholder:text-[var(--muted-foreground)]"
                     onContentSizeChange={setContentHeight}
                     disabled={disabled}
-                    placeholder={streaming ? "补充这次创作的要求" : "描述你的想法，或用 @ 引用素材"}
-                    aria-label="给助手的消息"
+                    placeholder={streaming ? "補充這次創作的要求" : "描述你的想法，或用 @ 引用素材"}
+                    aria-label="給助手的訊息"
                 />
             </div>
 
             {disabled && disabledReason ? <span className="canvas-assistant-meta">{disabledReason}</span> : null}
 
             <div className="canvas-assistant-composer-tools">
-                {onFiles ? <Tooltip title="添加参考素材"><Button type="text" size="small" aria-label="添加参考素材" disabled={disabled || inputBusy} icon={<Paperclip size={15} />} onClick={() => fileInput.current?.click()} /></Tooltip> : null}
-                {onOpenSkills ? <Tooltip title="选择技能"><Button type="text" size="small" aria-label="选择技能" disabled={disabled} icon={<Sparkles size={15} />} onClick={onOpenSkills} /></Tooltip> : null}
-                {onOpenReferences ? <Button type="text" size="small" disabled={disabled} onClick={onOpenReferences}>画布素材</Button> : null}
+                {onFiles ? <Tooltip title="新增參考素材"><Button type="text" size="small" aria-label="新增參考素材" disabled={disabled || inputBusy} icon={<Paperclip size={15} />} onClick={() => fileInput.current?.click()} /></Tooltip> : null}
+                {onOpenSkills ? <Tooltip title="選擇技能"><Button type="text" size="small" aria-label="選擇技能" disabled={disabled} icon={<Sparkles size={15} />} onClick={onOpenSkills} /></Tooltip> : null}
+                {onOpenReferences ? <Button type="text" size="small" disabled={disabled} onClick={onOpenReferences}>畫布素材</Button> : null}
             </div>
             <div className="canvas-assistant-composer-footer">
                 <div className="canvas-assistant-composer-settings">
                 <CanvasAssistantModelPicker busy={disabled || streaming || Boolean(modelBusy)} />
-                {onPermissionChange ? <Tooltip title={permissionLocked ? "本轮权限已固定，结束后可更改" : "选择助手可访问和修改的范围"}>
-                    <Select className="canvas-assistant-permission" size="small" variant="borderless" aria-label="助手权限" value={permissionMode} disabled={disabled || permissionLocked}
+                {onPermissionChange ? <Tooltip title={permissionLocked ? "本輪許可權已固定，結束後可更改" : "選擇助手可訪問和修改的範圍"}>
+                    <Select className="canvas-assistant-permission" size="small" variant="borderless" aria-label="助手許可權" value={permissionMode} disabled={disabled || permissionLocked}
                         placement="topRight" popupMatchSelectWidth={false} onChange={onPermissionChange} options={[
-                            { value: "read-only", label: "只读", title: "查看和分析，不修改内容" },
-                            { value: "canvas", label: "当前画布", title: "查看素材并修改当前画布" },
-                            { value: "full-access", label: "完全访问", title: "查看素材，可修改所有画布" },
+                            { value: "read-only", label: "只讀", title: "檢視和分析，不修改內容" },
+                            { value: "canvas", label: "當前畫布", title: "檢視素材並修改當前畫布" },
+                            { value: "full-access", label: "完全訪問", title: "檢視素材，可修改所有畫布" },
                         ]} />
                 </Tooltip> : null}
                 </div>
                 <div className="canvas-assistant-composer-actions">
                 {streaming ? (
                     <>
-                        <Button size="small" disabled={!canSend} loading={supplementBusy} onClick={onSend}>补充</Button>
+                        <Button size="small" disabled={!canSend} loading={supplementBusy} onClick={onSend}>補充</Button>
                         <Button size="small" icon={<Square className="size-3" />} onClick={onStop}>停止</Button>
                     </>
                 ) : (
-                    <Tooltip title="Enter 发送 · Shift + Enter 换行" placement="topRight">
-                        <Button className="canvas-assistant-send" shape="circle" type="primary" aria-label="发送" disabled={!canSend} icon={<ArrowUp className="size-4" />} onClick={onSend} />
+                    <Tooltip title="Enter 傳送 · Shift + Enter 換行" placement="topRight">
+                        <Button className="canvas-assistant-send" shape="circle" type="primary" aria-label="傳送" disabled={!canSend} icon={<ArrowUp className="size-4" />} onClick={onSend} />
                     </Tooltip>
                 )}
                 </div>

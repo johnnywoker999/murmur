@@ -36,7 +36,7 @@ const MENU_MARGIN = 8;
 const MENU_ITEM_HEIGHT = 28;
 const CONTROL_TEXT_STYLE: CSSProperties = { fontFamily: "inherit", fontSize: 11, fontWeight: 400, letterSpacing: 0, lineHeight: 1 };
 
-export function CanvasVideoPromptTools({ metadata, frameOptions, onMetadataChange, referenceMode = "frames", referenceSummary, middleFrameSupported = false, endFrameSupported = true, referenceLabel = "工作流参考" }: CanvasVideoPromptToolsProps) {
+export function CanvasVideoPromptTools({ metadata, frameOptions, onMetadataChange, referenceMode = "frames", referenceSummary, middleFrameSupported = false, endFrameSupported = true, referenceLabel = "工作流參考" }: CanvasVideoPromptToolsProps) {
     const theme = canvasThemes[useActiveTheme()];
     const startFrame = metadata?.videoStartFrameNodeId || EMPTY_FRAME_VALUE;
     const endFrame = metadata?.videoEndFrameNodeId || EMPTY_FRAME_VALUE;
@@ -48,7 +48,7 @@ export function CanvasVideoPromptTools({ metadata, frameOptions, onMetadataChang
 
     if (referenceMode === "all") {
         const summary = referenceSummary
-            ? [referenceSummary.imageCount ? `${referenceSummary.imageCount} 图` : "", referenceSummary.videoCount ? `${referenceSummary.videoCount} 视频` : "", referenceSummary.audioCount ? `${referenceSummary.audioCount} 音频` : ""]
+            ? [referenceSummary.imageCount ? `${referenceSummary.imageCount} 圖` : "", referenceSummary.videoCount ? `${referenceSummary.videoCount} 影片` : "", referenceSummary.audioCount ? `${referenceSummary.audioCount} 音訊` : ""]
                   .filter(Boolean)
                   .join(" · ")
             : "";
@@ -57,13 +57,13 @@ export function CanvasVideoPromptTools({ metadata, frameOptions, onMetadataChang
                 className="flex min-h-8 min-w-0 items-center gap-2 rounded-md px-2 py-1.5"
                 data-canvas-no-zoom
                 style={{ background: theme.toolbar.itemHover, color: theme.node.text }}
-                title="已连接的图片、视频和音频会按工作流字段映射传入"
+                title="已連線的圖片、影片和音訊會按工作流欄位對映傳入"
                 onMouseDown={(event) => event.stopPropagation()}
                 onPointerDown={(event) => event.stopPropagation()}
             >
                 <ImageIcon className="size-3.5 shrink-0 opacity-80" />
                 <span className="shrink-0 text-[var(--fs-tiny)] font-medium">{referenceLabel}</span>
-                <span className="min-w-0 truncate text-[var(--fs-micro)] opacity-65">{summary || "尚未连接媒体"}</span>
+                <span className="min-w-0 truncate text-[var(--fs-micro)] opacity-65">{summary || "尚未連線媒體"}</span>
             </div>
         );
     }
@@ -72,15 +72,15 @@ export function CanvasVideoPromptTools({ metadata, frameOptions, onMetadataChang
 
     return (
         <div className="grid min-w-0 grid-cols-2 items-center gap-1" data-canvas-no-zoom onMouseDown={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
-            <FrameMenu label="首帧" value={startFrame} options={frameOptions} theme={theme} onChange={(value) => setFrame("videoStartFrameNodeId", value)} />
-            {endFrameSupported ? <FrameMenu label="尾帧" value={endFrame} options={frameOptions} theme={theme} onChange={(value) => setFrame("videoEndFrameNodeId", value)} /> : null}
+            <FrameMenu label="首幀" value={startFrame} options={frameOptions} theme={theme} onChange={(value) => setFrame("videoStartFrameNodeId", value)} />
+            {endFrameSupported ? <FrameMenu label="尾幀" value={endFrame} options={frameOptions} theme={theme} onChange={(value) => setFrame("videoEndFrameNodeId", value)} /> : null}
             {middleFrameSupported ? (
                 <>
-                    <FrameMenu label="中间帧" value={metadata?.videoMiddleFrameNodeId || EMPTY_FRAME_VALUE} options={frameOptions} theme={theme} onChange={(v) => onMetadataChange(v === EMPTY_FRAME_VALUE ? { videoMiddleFrameNodeId: undefined, videoMiddleFrameTime: undefined } : { videoMiddleFrameNodeId: v })} />
+                    <FrameMenu label="中間幀" value={metadata?.videoMiddleFrameNodeId || EMPTY_FRAME_VALUE} options={frameOptions} theme={theme} onChange={(v) => onMetadataChange(v === EMPTY_FRAME_VALUE ? { videoMiddleFrameNodeId: undefined, videoMiddleFrameTime: undefined } : { videoMiddleFrameNodeId: v })} />
                     <label className="flex min-w-0 items-center gap-1 text-[var(--fs-micro)]">
-                        <span className="shrink-0 whitespace-nowrap">时间（秒）</span>
+                        <span className="shrink-0 whitespace-nowrap">時間（秒）</span>
                         <input
-                            aria-label="中间帧时间（秒）"
+                            aria-label="中間幀時間（秒）"
                             className="min-w-0 w-0 flex-1 rounded border px-1"
                             style={{ color: theme.node.text, background: theme.toolbar.itemHover, borderColor: theme.toolbar.border }}
                             type="number"
@@ -90,7 +90,7 @@ export function CanvasVideoPromptTools({ metadata, frameOptions, onMetadataChang
                             onChange={(e) => onMetadataChange({ videoMiddleFrameTime: e.target.value === "" ? undefined : Number(e.target.value) })}
                         />
                     </label>
-                    <span className="col-span-2 text-[var(--fs-micro)] opacity-65">中间帧须同时选择首尾帧，仅支持 480P 和 768P。</span>
+                    <span className="col-span-2 text-[var(--fs-micro)] opacity-65">中間幀須同時選擇首尾幀，僅支援 480P 和 768P。</span>
                 </>
             ) : null}
         </div>

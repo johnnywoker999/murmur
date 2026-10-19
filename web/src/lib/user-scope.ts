@@ -67,7 +67,7 @@ export function setActiveUserScope(userId?: string | null) {
     const epoch = captureUserScopeEpoch(next);
     for (const listener of userScopeListeners) {
         try { listener(epoch); }
-        catch (error) { console.warn("账号切换订阅处理失败", error); }
+        catch (error) { console.warn("賬號切換訂閱處理失敗", error); }
     }
 }
 

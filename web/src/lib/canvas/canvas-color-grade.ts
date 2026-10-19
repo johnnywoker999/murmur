@@ -1,7 +1,7 @@
 import { resourceFileUrl, resourceStorageKey, uploadResourceFile } from "@/services/api/resources";
 import type { ReferenceImage } from "@/types/image";
 
-/** 调色参数，单位与 CSS filter 一致（百分比 / 度） */
+/** 調色引數，單位與 CSS filter 一致（百分比 / 度） */
 export type CanvasColorGrade = {
     brightness: number;
     contrast: number;
@@ -16,15 +16,15 @@ export function isNeutralColorGrade(grade: CanvasColorGrade) {
 }
 
 /**
- * 预览（img 的 CSS filter）与导出（canvas 的 ctx.filter）共用同一个字符串。
- * 两处各写一份的话，用户看到的和生成用的就会悄悄不一致。
+ * 預覽（img 的 CSS filter）與匯出（canvas 的 ctx.filter）共用同一個字串。
+ * 兩處各寫一份的話，使用者看到的和生成用的就會悄悄不一致。
  */
 export function colorGradeCssFilter(grade: CanvasColorGrade) {
     return `brightness(${grade.brightness}%) contrast(${grade.contrast}%) saturate(${grade.saturate}%) hue-rotate(${grade.hueRotate}deg)`;
 }
 
-// 同一张图 + 同一组参数在一次会话内只上传一次。
-// 不做跨会话缓存：那需要往节点 metadata 回写，而构建参考图的路径拿不到写入通道。
+// 同一張圖 + 同一組引數在一次會話內只上傳一次。
+// 不做跨會話快取：那需要往節點 metadata 回寫，而構建參考圖的路徑拿不到寫入通道。
 const publishedCache = new Map<string, { url: string; storageKey: string; type: string }>();
 
 function cacheKey(url: string, grade: CanvasColorGrade) {
@@ -36,7 +36,7 @@ async function renderGradedBlob(url: string, grade: CanvasColorGrade) {
     image.crossOrigin = "anonymous";
     await new Promise<void>((resolve, reject) => {
         image.onload = () => resolve();
-        image.onerror = () => reject(new Error("源图无法读取（可能不允许跨域）"));
+        image.onerror = () => reject(new Error("源圖無法讀取（可能不允許跨域）"));
         image.src = url;
     });
 
@@ -44,23 +44,23 @@ async function renderGradedBlob(url: string, grade: CanvasColorGrade) {
     canvas.width = image.naturalWidth;
     canvas.height = image.naturalHeight;
     const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("无法创建画布上下文");
-    // ctx.filter 在少数浏览器上不存在——那会静默导出一张未调色的图，
-    // 与用户看到的预览不一致。宁可明确失败。
-    if (!("filter" in ctx)) throw new Error("当前浏览器不支持导出调色结果，请换用 Chrome / Edge");
+    if (!ctx) throw new Error("無法建立畫布上下文");
+    // ctx.filter 在少數瀏覽器上不存在——那會靜默匯出一張未調色的圖，
+    // 與使用者看到的預覽不一致。寧可明確失敗。
+    if (!("filter" in ctx)) throw new Error("當前瀏覽器不支援匯出調色結果，請換用 Chrome / Edge");
     ctx.filter = colorGradeCssFilter(grade);
     ctx.drawImage(image, 0, 0);
 
     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
-    if (!blob) throw new Error("调色结果导出失败");
+    if (!blob) throw new Error("調色結果匯出失敗");
     return { blob, width: canvas.width, height: canvas.height };
 }
 
 /**
- * 把调色节点的参考图落地成真实资源——照 resolveCanvasDrawingReference 的做法：
- * 本地渲染 → 上传 → 换成 storageKey/url，让下游按普通图片消费。
+ * 把調色節點的參考圖落地成真實資源——照 resolveCanvasDrawingReference 的做法：
+ * 本地渲染 → 上傳 → 換成 storageKey/url，讓下游按普通圖片消費。
  *
- * 只在生成真正要用它时才调用（见 canvas-node-generation），所以拖滑杆调参数不会产生上传。
+ * 只在生成真正要用它時才呼叫（見 canvas-node-generation），所以拖滑桿調引數不會產生上傳。
  */
 export async function resolveCanvasColorGradeReference(image: ReferenceImage): Promise<ReferenceImage> {
     const source = image.source;
@@ -82,6 +82,6 @@ export async function resolveCanvasColorGradeReference(image: ReferenceImage): P
         publishedCache.set(cacheKey(source.url, source.grade), { url, storageKey, type });
         return { ...image, dataUrl: "", url, storageKey, type };
     } catch (error) {
-        throw new Error(error instanceof Error ? `调色参考图生成失败：${error.message}` : "调色参考图生成失败");
+        throw new Error(error instanceof Error ? `調色參考圖生成失敗：${error.message}` : "調色參考圖生成失敗");
     }
 }

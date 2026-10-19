@@ -6,7 +6,7 @@ import { useLayoutEffect } from "react";
 
 type CanvasThemeStore = { theme: ThemeName; active: boolean; setTheme: (theme?: string) => void };
 
-/** 画布外观是编辑器状态，不能写入用户工作台的全局主题。 */
+/** 畫布外觀是編輯器狀態，不能寫入使用者工作臺的全域性主題。 */
 export const useCanvasThemeStore = create<CanvasThemeStore>()(
     persist(
         (set) => ({ theme: "dark", active: false, setTheme: (theme) => set({ theme: normalizeTheme(theme) }) }),
@@ -20,7 +20,7 @@ export const useCanvasThemeStore = create<CanvasThemeStore>()(
     ),
 );
 
-/** 编辑器卸载后自动恢复工作台的主题偏好；包括 body 上的 AntD 浮层。 */
+/** 編輯器解除安裝後自動恢復工作臺的主題偏好；包括 body 上的 AntD 浮層。 */
 export function useCanvasThemeScope() {
     useLayoutEffect(() => {
         useCanvasThemeStore.setState({ active: true });

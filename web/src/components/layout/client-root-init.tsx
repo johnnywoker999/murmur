@@ -40,7 +40,7 @@ export function ClientRootInit({ children }: { children: ReactNode }) {
         const controller = new AbortController();
         void runStartupEnvironmentCheck(controller.signal).then((report) => {
             if (useUserStore.getState().user?.id === userId && report?.checks.some((check) => check.status === "error" || check.status === "warning")) {
-                message.warning("环境检查发现可能影响创作的问题，可在设置的问题诊断中查看。", 8);
+                message.warning("環境檢查發現可能影響創作的問題，可在設定的問題診斷中檢視。", 8);
             }
         });
         return () => {
@@ -54,7 +54,7 @@ export function ClientRootInit({ children }: { children: ReactNode }) {
         const confirm = () => {
             if (updateStartupConfirmed.current || !useAssetStore.persist.hasHydrated() || !useCanvasStore.persist.hasHydrated()) return;
             updateStartupConfirmed.current = true;
-            void confirmDesktopUpdateStartup().catch((error) => console.warn("升级文件清理将在下次启动时重试", error));
+            void confirmDesktopUpdateStartup().catch((error) => console.warn("升級檔案清理將在下次啟動時重試", error));
         };
         const stopAssets = useAssetStore.persist.onFinishHydration(confirm);
         const stopCanvases = useCanvasStore.persist.onFinishHydration(confirm);
@@ -85,7 +85,7 @@ export function ClientRootInit({ children }: { children: ReactNode }) {
                         for (const state of migrated) states[state.pluginId] = state;
                         for (const pluginId of legacyEnabledIds) statuses[pluginId] = states[pluginId]?.effectiveEnabled ? "enabled" : "disabled";
                     } catch (error) {
-                        console.warn("迁移用户插件启用状态失败，已保留服务端状态", error);
+                        console.warn("遷移使用者外掛啟用狀態失敗，已保留服務端狀態", error);
                     }
                 }
                 if (!cancelled && useUserStore.getState().user?.id === userId) {
@@ -115,7 +115,7 @@ export function ClientRootInit({ children }: { children: ReactNode }) {
         localMediaCleanupScope.current = scope;
         void useAssetStore.getState().cleanupImages().catch((error) => {
             // Cache cleanup is best effort; it must never block opening the local workspace.
-            console.warn("本地媒体缓存清理失败，已保留当前工作区", { scope, error });
+            console.warn("本地媒體快取清理失敗，已保留當前工作區", { scope, error });
         });
     }, [assetsHydrated, canvasHydrated, localMode]);
 
@@ -129,7 +129,7 @@ export function ClientRootInit({ children }: { children: ReactNode }) {
             if (event.pointerType === "mouse" && event.button !== 0) return;
             const target = event.target instanceof Element ? event.target.closest<HTMLElement>(interactiveSelector) : null;
             if (!target || target.hasAttribute("disabled") || target.getAttribute("aria-disabled") === "true") return;
-            // 浏览器可能把鼠标点击误判为 :focus-visible；下一帧只清掉这次指针点击产生的焦点。
+            // 瀏覽器可能把滑鼠點選誤判為 :focus-visible；下一幀只清掉這次指標點選產生的焦點。
             window.requestAnimationFrame(() => {
                 if (document.activeElement === target) target.blur();
             });
@@ -162,12 +162,12 @@ export function ClientRootInit({ children }: { children: ReactNode }) {
                             }
                           : channel,
                   )
-                : [createModelChannel({ id: "default", name: "默认渠道", baseUrl: baseUrl || undefined })],
+                : [createModelChannel({ id: "default", name: "預設渠道", baseUrl: baseUrl || undefined })],
         );
         if (baseUrl) updateConfig("baseUrl", baseUrl);
         navigateToSettings({ section: "channels" });
-        if (ignoredApiKey) message.warning("出于安全考虑，链接中的 API Key 已忽略，请在配置中手动填写");
-        else message.success("已导入本地直连地址");
+        if (ignoredApiKey) message.warning("出於安全考慮，連結中的 API Key 已忽略，請在配置中手動填寫");
+        else message.success("已匯入本地直連地址");
     }, [config.channels, message, updateConfig]);
 
     return <>{children}</>;

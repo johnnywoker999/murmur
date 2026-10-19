@@ -22,7 +22,7 @@ type CanvasFolderCardProps = {
     opening?: boolean;
 };
 
-/** 画布库中的文件夹封面：单一卡片表面承载预览和信息，避免相邻卡片互相侵入。 */
+/** 畫布庫中的資料夾封面：單一卡片表面承載預覽和資訊，避免相鄰卡片互相侵入。 */
 export function CanvasFolderCard({ project, projectName, folders = [], onMoveToFolder, onDuplicate, onDelete, onClick, onPrefetch, opening = false }: CanvasFolderCardProps) {
     const { message } = App.useApp();
     const renameProject = useCanvasStore((state) => state.renameProject);
@@ -47,8 +47,8 @@ export function CanvasFolderCard({ project, projectName, folders = [], onMoveToF
         const file = event.target.files?.[0];
         event.target.value = "";
         if (!file) return;
-        if (!file.type.startsWith("image/")) { message.error("封面请选择图片文件"); return; }
-        if (file.size > 12 * 1024 * 1024) { message.error("封面图片不能超过 12 MB"); return; }
+        if (!file.type.startsWith("image/")) { message.error("封面請選擇圖片檔案"); return; }
+        if (file.size > 12 * 1024 * 1024) { message.error("封面圖片不能超過 12 MB"); return; }
         const reader = new FileReader();
         reader.onload = () => {
             const image = new Image();
@@ -61,7 +61,7 @@ export function CanvasFolderCard({ project, projectName, folders = [], onMoveToF
                 const dataUrl = canvas.toDataURL("image/jpeg", 0.84);
                 setCoverUrl(dataUrl);
                 try { localStorage.setItem(`beeftv-project-cover:${project.id}`, dataUrl); } catch { /* quota */ }
-                message.success("项目封面已更新");
+                message.success("專案封面已更新");
             };
             image.src = String(reader.result);
         };
@@ -76,12 +76,12 @@ export function CanvasFolderCard({ project, projectName, folders = [], onMoveToF
             renameProject(project.id, editingTitle);
             await flushCanvasStorePersistence();
             if (hasRemoteUserDataSyncSession()) await saveRemoteUserDataNow();
-        } catch (error) { message.error(error instanceof Error ? error.message : "重命名失败"); }
+        } catch (error) { message.error(error instanceof Error ? error.message : "重新命名失敗"); }
     };
 
     return (
         <LibraryCardShell
-            ariaLabel={`打开画布 ${project.title}`}
+            ariaLabel={`開啟畫布 ${project.title}`}
             onboardingProjectId={project.id}
             className={cn("canvas-collection-card", selected && "is-selected", editing && "is-editing", opening && "is-opening")}
             updatedAt={project.updatedAt}
@@ -94,7 +94,7 @@ export function CanvasFolderCard({ project, projectName, folders = [], onMoveToF
                 <div className="canvas-collection-preview-content">
                     <ProjectPreview project={{ id: project.id, nodes: project.previewNodes }} emptyVariant="libtv" />
                     {coverUrl ? <img className="canvas-collection-custom-cover" src={coverUrl} alt="" /> : null}
-                    {opening ? <div className="canvas-collection-opening"><LoaderCircle className="size-5 animate-spin" /><span>正在打开</span></div> : null}
+                    {opening ? <div className="canvas-collection-opening"><LoaderCircle className="size-5 animate-spin" /><span>正在開啟</span></div> : null}
                 </div>
             }
             title={editing ? (
@@ -117,7 +117,7 @@ export function CanvasFolderCard({ project, projectName, folders = [], onMoveToF
                     type="checkbox"
                     checked={selected}
                     onChange={(event) => toggleSelected(project.id, event.target.checked)}
-                    aria-label={`选择 ${project.title}`}
+                    aria-label={`選擇 ${project.title}`}
                 />
                 </span>
 
@@ -129,17 +129,17 @@ export function CanvasFolderCard({ project, projectName, folders = [], onMoveToF
                     menu={{
                         onClick: ({ domEvent }) => domEvent.stopPropagation(),
                         items: [
-                            { key: "open", label: "打开", onClick: onClick },
-                            { key: "rename", label: "重命名", onClick: () => startEditing(project.id, project.title) },
+                            { key: "open", label: "開啟", onClick: onClick },
+                            { key: "rename", label: "重新命名", onClick: () => startEditing(project.id, project.title) },
                             { key: "cover", label: "修改封面", onClick: () => coverInputRef.current?.click() },
-                            { key: "duplicate", label: "创建副本", onClick: () => void onDuplicate?.() },
-                            { key: "move", label: "移动至文件夹", children: [{ key: "root", label: "未分类", onClick: () => onMoveToFolder?.(undefined) }, ...folders.map((folder) => ({ key: folder.id, label: folder.name, onClick: () => onMoveToFolder?.(folder.id) }))] },
+                            { key: "duplicate", label: "建立副本", onClick: () => void onDuplicate?.() },
+                            { key: "move", label: "移動至資料夾", children: [{ key: "root", label: "未分類", onClick: () => onMoveToFolder?.(undefined) }, ...folders.map((folder) => ({ key: folder.id, label: folder.name, onClick: () => onMoveToFolder?.(folder.id) }))] },
                             { type: "divider" },
-                            { key: "delete", danger: true, label: "删除项目", onClick: () => onDelete?.() },
+                            { key: "delete", danger: true, label: "刪除專案", onClick: () => onDelete?.() },
                         ],
                     }}
                 >
-                    <button type="button" className="product-icon-button canvas-collection-more" aria-label={`${project.title} 画布操作`} title="更多操作" onClick={(event) => event.stopPropagation()}>
+                    <button type="button" className="product-icon-button canvas-collection-more" aria-label={`${project.title} 畫布操作`} title="更多操作" onClick={(event) => event.stopPropagation()}>
                         <MoreHorizontal />
                     </button>
                 </Dropdown>

@@ -5,11 +5,11 @@ import type { CanvasAlignmentMode } from "@/lib/canvas/canvas-layout";
 import type { CanvasBackgroundMode } from "@/lib/canvas-theme";
 import type { CanvasNodeData, CanvasNodeMetadata, CanvasNodeTypeId, CanvasToolMode, CanvasWorkspaceMode } from "@/types/canvas";
 
-/** 工具栏标识——每个工具栏有独立的注册表与偏好 */
+/** 工具欄標識——每個工具欄有獨立的登入檔與偏好 */
 export type ToolbarId = "main" | "selection" | "node-hover" | "add-node-menu";
 export type NodeToolbarGroup = "primary" | "portrait" | "viewpoint" | "lighting" | "panorama" | "process" | "workspace" | "utility" | "more";
 
-/** 工具分类——用于分组渲染、危险隔离与 separator 自动插入 */
+/** 工具分類——用於分組渲染、危險隔離與 separator 自動插入 */
 export type ToolCategory =
     | "navigation"
     | "history"
@@ -22,15 +22,15 @@ export type ToolCategory =
     | "node-state"
     | "resource";
 
-/** 所有工具栏回调的聚合类型。工具定义通过 ctx.handlers.onXxx 访问 */
+/** 所有工具欄回撥的聚合型別。工具定義通過 ctx.handlers.onXxx 訪問 */
 export type ToolbarHandlers = {
-    // 主工具栏——画布操作
+    // 主工具欄——畫布操作
     onToolChange: (tool: CanvasToolMode) => void;
     onDeselect: () => void;
     onUndo: () => void;
     onRedo: () => void;
     onClear: () => void;
-    // 主工具栏——创建节点
+    // 主工具欄——建立節點
     onAddText: () => void;
     onAddImage: () => void;
     onAddVideo: () => void;
@@ -41,38 +41,38 @@ export type ToolbarHandlers = {
     onAddDrawing: () => void;
     onAddWorkflow: () => void;
     /**
-     * 扩展节点（Markdown / SVG / HTML / 全景 / 对比 / 图表 / 调色）统一走这一个入口。
-     * 不给每种扩展节点单开一个 onAddXxx —— 那会让 ToolbarHandlers 随节点数线性膨胀，
-     * 而它们的创建逻辑完全一致（都只是 createNode(type)）。
+     * 擴充套件節點（Markdown / SVG / HTML / 全景 / 對比 / 圖表 / 調色）統一走這一個入口。
+     * 不給每種擴充套件節點單開一個 onAddXxx —— 那會讓 ToolbarHandlers 隨節點數線性膨脹，
+     * 而它們的建立邏輯完全一致（都只是 createNode(type)）。
      */
     onAddExtensionNode: (type: CanvasNodeTypeId) => void;
     onChooseStyle: () => void;
     onOpenDirector: () => void;
-    // 主工具栏——资源
+    // 主工具欄——資源
     onUpload: () => void;
     onOpenMyAssets: () => void;
     onOpenProjectCharacters: () => void;
     onOpenGenerationHistory: () => void;
     onOpenShortcuts: () => void;
-    // 主工具栏——外观
+    // 主工具欄——外觀
     onBackgroundModeChange: (mode: CanvasBackgroundMode) => void;
     onShowImageInfoChange: (show: boolean) => void;
-    // 主工具栏——面板开关（组件内部状态，由组件实现）
+    // 主工具欄——面板開關（元件內部狀態，由元件實現）
     onToggleAddPanel: (event: MouseEvent<HTMLElement>) => void;
     onToggleAppearancePanel: (event: MouseEvent<HTMLElement>) => void;
     onToggleSettingsPanel: () => void;
-    // 主工具栏——删除选中
+    // 主工具欄——刪除選中
     onDeleteSelected: () => void;
-    // 多选工具栏
+    // 多選工具欄
     onAlign: (mode: CanvasAlignmentMode) => void;
     onArrange: (mode: "row" | "column" | "grid" | "flow") => void;
     onCreateStoryboard: () => void;
     onCreateReferenceGroup: () => void;
     onBatchConnect: () => void;
     onMergeVideos: () => void;
-    /** 只有画布页的多选工具栏提供这个入口；主工具栏不装配它。 */
+    /** 只有畫布頁的多選工具欄提供這個入口；主工具欄不裝配它。 */
     onAskAssistant?: () => void;
-    // 节点悬停工具栏——节点操作（均接收当前节点）
+    // 節點懸停工具欄——節點操作（均接收當前節點）
     onNodeInfo: (node: CanvasNodeData) => void;
     onNodeDelete: (node: CanvasNodeData) => void;
     onNodeRetry: (node: CanvasNodeData) => void;
@@ -107,7 +107,7 @@ export type ToolbarHandlers = {
     onNodeCopyPrompt: (node: CanvasNodeData) => void;
 };
 
-/** 工具运行时可见的上下文。工具定义通过纯函数读取状态 */
+/** 工具執行時可見的上下文。工具定義通過純函式讀取狀態 */
 export type ToolContext = {
     selectedCount: number;
     selectedNodeTypes: Set<CanvasNodeTypeId>;
@@ -117,29 +117,29 @@ export type ToolContext = {
     isProjectLinked: boolean;
     canUndo: boolean;
     canRedo: boolean;
-    /** 节点悬停工具栏专用——当前悬停/选中的节点 */
+    /** 節點懸停工具欄專用——當前懸停/選中的節點 */
     node?: CanvasNodeData;
-    /** 便捷访问 node.metadata（node 为空时为 undefined） */
+    /** 便捷訪問 node.metadata（node 為空時為 undefined） */
     nodeMetadata?: CanvasNodeMetadata;
-    /** 视频画面提取中（节点悬停工具栏用） */
+    /** 影片畫面提取中（節點懸停工具欄用） */
     extractingVideoFrames: boolean;
-    /** 视频音频提取/片段截取进行中（节点悬停工具栏用） */
+    /** 影片音訊提取/片段擷取進行中（節點懸停工具欄用） */
     extractingAudio: boolean;
     trimmingVideo: boolean;
-    /** 合并视频中（多选工具栏用） */
+    /** 合併影片中（多選工具欄用） */
     mergingVideos: boolean;
-    /** 主工具栏面板开关状态（仅主工具栏使用） */
+    /** 主工具欄面板開關狀態（僅主工具欄使用） */
     addPanelOpen: boolean;
     appearancePanelOpen: boolean;
     settingsPanelOpen: boolean;
     handlers: ToolbarHandlers;
 };
 
-/** 添加节点菜单只依赖创建动作，避免右键菜单为工具栏状态补无意义字段。 */
+/** 新增節點選單隻依賴建立動作，避免右鍵選單為工具欄狀態補無意義欄位。 */
 export type AddNodeMenuContext = {
     workspaceMode: CanvasWorkspaceMode;
     isProjectLinked: boolean;
-    /** 内置应用插件的启用状态；未声明时视为未提供 gating 信息。 */
+    /** 內建應用外掛的啟用狀態；未宣告時視為未提供 gating 資訊。 */
     enabledPluginIds?: ReadonlySet<string>;
     handlers: Pick<ToolbarHandlers,
         | "onAddText"
@@ -161,20 +161,20 @@ export type AddNodeMenuContext = {
     >;
 };
 
-/** 工具定义——注册表的基本单元 */
+/** 工具定義——登入檔的基本單元 */
 export type ToolDefinition = {
     id: string;
     toolbar: ToolbarId;
     category: ToolCategory;
     label: string | ((ctx: ToolContext) => string);
-    /** Dock 标签模式下的短文案，缺省用 label */
+    /** Dock 標籤模式下的短文案，預設用 label */
     displayLabel?: string | ((ctx: ToolContext) => string);
     icon: ReactNode | ((ctx: ToolContext) => ReactNode);
-    /** 用户默认可见（可被 prefs 覆盖） */
+    /** 使用者預設可見（可被 prefs 覆蓋） */
     defaultVisible: boolean;
-    /** 默认排序权重，升序 */
+    /** 預設排序權重，升序 */
     defaultOrder: number;
-    /** 节点工具条的展示层级；由注册表统一决定，避免组件按工具 ID 二次编排。 */
+    /** 節點工具條的展示層級；由登入檔統一決定，避免元件按工具 ID 二次編排。 */
     nodeToolbar?: {
         group: NodeToolbarGroup | ((ctx: ToolContext) => NodeToolbarGroup);
         order?: number | ((ctx: ToolContext) => number);
@@ -183,43 +183,43 @@ export type ToolDefinition = {
     };
     active?: (ctx: ToolContext) => boolean;
     disabled?: (ctx: ToolContext) => boolean;
-    /** 危险操作——渲染时隔离到独立分组 */
+    /** 危險操作——渲染時隔離到獨立分組 */
     danger?: boolean;
-    /** 主入口强调态——用于保持画布核心动作的视觉优先级。 */
+    /** 主入口強調態——用於保持畫布核心動作的視覺優先順序。 */
     prominent?: boolean;
-    /** 面板展开型工具——使用 aria-expanded 而非 aria-pressed */
+    /** 面板展開型工具——使用 aria-expanded 而非 aria-pressed */
     expands?: boolean;
-    /** 互斥开关：在 dock 中渲染为分段切换，而不是两个独立按钮 */
+    /** 互斥開關：在 dock 中渲染為分段切換，而不是兩個獨立按鈕 */
     switchGroup?: {
         value: (ctx: ToolContext) => string;
         options: Array<{ id: string; label: string; icon: ReactNode; value: string }>;
         onChange: (ctx: ToolContext, value: string) => void;
     };
-    /** 上下文可见性谓词——返回 false 时工具不渲染（不受 prefs 控制） */
+    /** 上下文可見性謂詞——返回 false 時工具不渲染（不受 prefs 控制） */
     applicable?: (ctx: ToolContext) => boolean;
-    /** 执行动作。event 来自 Dock 按钮点击 */
+    /** 執行動作。event 來自 Dock 按鈕點選 */
     run: (ctx: ToolContext, event?: MouseEvent<HTMLElement>) => void;
 };
 
-/** 添加节点菜单命令：项目级动作与真正的节点创建分开呈现。 */
+/** 新增節點選單命令：專案級動作與真正的節點建立分開呈現。 */
 export type AddNodeMenuCommand = {
     id: string;
     label: string;
     icon: ReactNode;
     badge?: string;
-    /** 前端保留入口但暂时不可用时的说明；不会执行 run。 */
+    /** 前端保留入口但暫時不可用時的說明；不會執行 run。 */
     disabledReason?: string;
-    // extension：展示与加工类扩展节点。单独一区，避免挤散 node 区调好的四列网格。
+    // extension：展示與加工類擴充套件節點。單獨一區，避免擠散 node 區調好的四列網格。
     section: "node" | "workflow" | "project" | "resource";
     defaultOrder: number;
     applicable?: (ctx: AddNodeMenuContext) => boolean;
     run: (ctx: AddNodeMenuContext) => void;
 };
 
-/** 用户偏好——排序与显隐 */
+/** 使用者偏好——排序與顯隱 */
 export type ToolbarPrefs = {
-    /** 工具 id 按显示顺序排列 */
+    /** 工具 id 按顯示順序排列 */
     order: string[];
-    /** 用户隐藏的工具 id */
+    /** 使用者隱藏的工具 id */
     hidden: string[];
 };

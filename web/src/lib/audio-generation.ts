@@ -28,22 +28,22 @@ export const audioFormatOptions = [
 export const minimaxAudioFormatOptions = audioFormatOptions.filter((item) => item.value !== "opus");
 
 // BeefAPI MiniMax speech: voice is a MiniMax system/cloned ID, not OpenAI alloy.
-// Documented example is male-qn-qingse; these are the T2A 系统音色.
+// Documented example is male-qn-qingse; these are the T2A 系統音色.
 export const minimaxSpeechVoiceOptions = [
-    { value: "male-qn-qingse", label: "青涩青年" },
+    { value: "male-qn-qingse", label: "青澀青年" },
     { value: "male-qn-jingying", label: "精英青年" },
     { value: "male-qn-badao", label: "霸道青年" },
-    { value: "male-qn-daxuesheng", label: "青年大学生" },
+    { value: "male-qn-daxuesheng", label: "青年大學生" },
     { value: "female-shaonv", label: "少女" },
     { value: "female-yujie", label: "御姐" },
     { value: "female-chengshu", label: "成熟女性" },
     { value: "female-tianmei", label: "甜美女性" },
     { value: "presenter_male", label: "男主持人" },
     { value: "presenter_female", label: "女主持人" },
-    { value: "audiobook_male_1", label: "男有声书 1" },
-    { value: "audiobook_male_2", label: "男有声书 2" },
-    { value: "audiobook_female_1", label: "女有声书 1" },
-    { value: "audiobook_female_2", label: "女有声书 2" },
+    { value: "audiobook_male_1", label: "男有聲書 1" },
+    { value: "audiobook_male_2", label: "男有聲書 2" },
+    { value: "audiobook_female_1", label: "女有聲書 1" },
+    { value: "audiobook_female_2", label: "女有聲書 2" },
 ];
 
 export type AudioSpeechKind = "openai" | "minimax-speech" | "minimax-music";
@@ -226,7 +226,7 @@ export function audioSettingsSummary(config: { model?: string; audioVoice?: stri
     if (profile.showVoice) parts.push(audioVoiceLabel(config.audioVoice || "", model));
     parts.push(audioFormatLabel(config.audioFormat || "", model));
     if (profile.showSpeed) parts.push(audioSpeedLabel(config.audioSpeed || "", model));
-    if (profile.showPitch) parts.push(`音调${audioPitchLabel(config.audioPitch || "")}`);
+    if (profile.showPitch) parts.push(`音調${audioPitchLabel(config.audioPitch || "")}`);
     if (profile.showVolume) parts.push(`音量${audioVolumeLabel(config.audioVolume || "")}`);
     return parts.join(" · ");
 }

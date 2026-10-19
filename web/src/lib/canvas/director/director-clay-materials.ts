@@ -1,12 +1,12 @@
 import { Mesh, MeshStandardMaterial, Scene, type Material } from "three";
 
 /**
- * 将场景整体切换为白膜材质，返回恢复函数；恢复时销毁共享的 clay 材质。
+ * 將場景整體切換為白膜材質，返回恢復函式；恢復時銷燬共享的 clay 材質。
  *
- * 两类 mesh 必须跳过，否则切换本身会破坏渲染：
- * - directorActor mesh 的材质由展示层按展示状态自行管理；
- * - 带 uniforms 的 ShaderMaterial（drei Grid/Line 等）由组件自身 useFrame 逐帧读写 uniforms，
- *   换成 clay 后渲染循环会逐帧抛错、画布冻结，白膜录制只剩启动前手动渲染的首帧。
+ * 兩類 mesh 必須跳過，否則切換本身會破壞渲染：
+ * - directorActor mesh 的材質由展示層按展示狀態自行管理；
+ * - 帶 uniforms 的 ShaderMaterial（drei Grid/Line 等）由元件自身 useFrame 逐幀讀寫 uniforms，
+ *   換成 clay 後渲染迴圈會逐幀拋錯、畫布凍結，白膜錄製只剩啟動前手動渲染的首幀。
  */
 export function applyClaySceneMaterials(scene: Scene) {
     const clayMaterial = new MeshStandardMaterial({ color: "#d6d9dd", roughness: 0.88, metalness: 0 });

@@ -40,7 +40,7 @@ export async function waitForPresentedVideoFrame(video: HTMLVideoElement, timeou
         }
         const isSeekingToEnd = Number.isFinite(video.duration) && video.duration - video.currentTime <= VIDEO_TAIL_PRESENTATION_EPSILON_SECONDS;
         const presented = isSeekingToEnd
-            ? waitForVideoEvent(video, "ended", "视频尾帧解码超时", timeoutMs)
+            ? waitForVideoEvent(video, "ended", "影片尾幀解碼超時", timeoutMs)
             : new Promise<void>((resolve, reject) => {
                   let settled = false;
                   const finish = (error?: unknown) => {
@@ -50,7 +50,7 @@ export async function waitForPresentedVideoFrame(video: HTMLVideoElement, timeou
                       if (error) reject(error);
                       else resolve();
                   };
-                  const timer = globalThis.setTimeout(() => finish(new Error("视频画面解码超时")), timeoutMs);
+                  const timer = globalThis.setTimeout(() => finish(new Error("影片畫面解碼超時")), timeoutMs);
                   video.requestVideoFrameCallback(() => finish());
               });
         await video.play();
@@ -79,27 +79,27 @@ export async function captureVideoFrames(source: Blob | string, timesMs: number[
     video.preload = "auto";
 
     try {
-        const loaded = waitForVideoEvent(video, "loadeddata", "视频读取超时或编码不受浏览器支持");
+        const loaded = waitForVideoEvent(video, "loadeddata", "影片讀取超時或編碼不受瀏覽器支援");
         video.src = objectUrl;
         video.load();
         await loaded;
 
-        if (!Number.isFinite(video.duration) || video.duration <= 0) throw new Error("无法确定视频时长");
-        if (!video.videoWidth || !video.videoHeight) throw new Error("无法读取视频画面尺寸");
+        if (!Number.isFinite(video.duration) || video.duration <= 0) throw new Error("無法確定影片時長");
+        if (!video.videoWidth || !video.videoHeight) throw new Error("無法讀取影片畫面尺寸");
         const normalizedTimes = normalizeVideoFrameTimes(timesMs, video.duration * 1000);
-        if (!normalizedTimes.length) throw new Error("请至少选择一个有效时间点");
+        if (!normalizedTimes.length) throw new Error("請至少選擇一個有效時間點");
         const canvas = document.createElement("canvas");
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         const context = canvas.getContext("2d");
-        if (!context) throw new Error("浏览器无法创建图片画布");
+        if (!context) throw new Error("瀏覽器無法建立圖片畫布");
         const frames: CapturedVideoFrame[] = [];
         const failures: VideoFrameCaptureFailure[] = [];
         for (const timeMs of normalizedTimes) {
             try {
                 const targetSeconds = videoFrameSeekSeconds(timeMs, video.duration * 1000);
                 if (Math.abs(video.currentTime - targetSeconds) > 0.0005) {
-                    const seeked = waitForVideoEvent(video, "seeked", `无法定位到 ${formatVideoFrameTime(timeMs)}`);
+                    const seeked = waitForVideoEvent(video, "seeked", `無法定位到 ${formatVideoFrameTime(timeMs)}`);
                     video.currentTime = targetSeconds;
                     await seeked;
                 }
@@ -107,10 +107,10 @@ export async function captureVideoFrames(source: Blob | string, timesMs: number[
                 context.drawImage(video, 0, 0, canvas.width, canvas.height);
                 frames.push({ timeMs, blob: await canvasToPngBlob(canvas), width: canvas.width, height: canvas.height });
             } catch (error) {
-                failures.push({ timeMs, error: error instanceof Error ? error.message : "画面提取失败" });
+                failures.push({ timeMs, error: error instanceof Error ? error.message : "畫面提取失敗" });
             }
         }
-        if (!frames.length) throw new Error(failures[0]?.error || "画面提取失败");
+        if (!frames.length) throw new Error(failures[0]?.error || "畫面提取失敗");
         return { frames, failures };
     } finally {
         video.pause();
@@ -157,7 +157,7 @@ async function readVideoBlob(source: Blob | string) {
         if (!response.ok) throw new Error(String(response.status));
         return await response.blob();
     } catch {
-        throw new Error("无法读取视频文件，请重新上传视频后再提取画面");
+        throw new Error("無法讀取影片檔案，請重新上傳影片後再提取畫面");
     }
 }
 
@@ -192,5 +192,5 @@ function waitForVideoEvent(video: HTMLVideoElement, eventName: "loadeddata" | "s
 }
 
 function canvasToPngBlob(canvas: HTMLCanvasElement) {
-    return new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("画面图片编码失败"))), "image/png"));
+    return new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("畫面圖片編碼失敗"))), "image/png"));
 }

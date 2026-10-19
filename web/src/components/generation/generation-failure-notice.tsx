@@ -48,7 +48,7 @@ export function GenerationFailureNotice({ explanation, context, compact, onRetry
                         onMouseDown={(event) => event.stopPropagation()}
                     >
                         <Eye className="size-3.5" />
-                        {explanation.uncertain ? "查看原任务" : "查看详情"}
+                        {explanation.uncertain ? "檢視原任務" : "檢視詳情"}
                     </button>
                 ) : null}
                 {diagnostics ? (
@@ -62,7 +62,7 @@ export function GenerationFailureNotice({ explanation, context, compact, onRetry
                         onMouseDown={(event) => event.stopPropagation()}
                     >
                         <Copy className="size-3.5" />
-                        {copyState === "copied" ? "已复制" : copyState === "failed" ? "复制失败" : "复制排查信息"}
+                        {copyState === "copied" ? "已複製" : copyState === "failed" ? "複製失敗" : "複製排查資訊"}
                     </button>
                 ) : null}
                 {showRetry ? (

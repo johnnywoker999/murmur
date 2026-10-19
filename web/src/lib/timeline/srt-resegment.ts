@@ -10,10 +10,10 @@ const CJK_PUNCTUATION = "，。；！？、：";
 const LATIN_PUNCTUATION = ",.;!?:";
 
 /**
- * 在 text 中为 targetLen 附近找最佳断点。
- * 返回切分位置 cut（前段为 text.slice(0, cut)，后段为 text.slice(cut)）。
- * 优先级：中文标点 > 英文标点 > 空格 > 硬切 targetLen。
- * 在同一优先级内选最靠右的位置（靠近 targetLen）。
+ * 在 text 中為 targetLen 附近找最佳斷點。
+ * 返回切分位置 cut（前段為 text.slice(0, cut)，後段為 text.slice(cut)）。
+ * 優先順序：中文標點 > 英文標點 > 空格 > 硬切 targetLen。
+ * 在同一優先順序內選最靠右的位置（靠近 targetLen）。
  */
 export function findBestBreakPoint(text: string, targetLen: number): number {
     if (text.length <= targetLen) {
@@ -23,36 +23,36 @@ export function findBestBreakPoint(text: string, targetLen: number): number {
     const windowStart = Math.max(1, Math.floor(targetLen * 0.6));
     const windowEnd = targetLen;
 
-    // 优先级 1：中文标点 — 从右向左扫描，最靠右优先
+    // 優先順序 1：中文標點 — 從右向左掃描，最靠右優先
     for (let i = windowEnd - 1; i >= windowStart - 1; i -= 1) {
         if (CJK_PUNCTUATION.includes(text[i])) {
             return i + 1;
         }
     }
 
-    // 优先级 2：英文标点
+    // 優先順序 2：英文標點
     for (let i = windowEnd - 1; i >= windowStart - 1; i -= 1) {
         if (LATIN_PUNCTUATION.includes(text[i])) {
             return i + 1;
         }
     }
 
-    // 优先级 3：空格
+    // 優先順序 3：空格
     for (let i = windowEnd - 1; i >= windowStart - 1; i -= 1) {
         if (text[i] === " ") {
             return i + 1;
         }
     }
 
-    // 优先级 4：硬切
+    // 優先順序 4：硬切
     return targetLen;
 }
 
 /**
- * 对已切分好的段列表应用最小时长约束（MIN_SEGMENT_DURATION_MS）。
- * 逐段检查：若某段时长不足，将其 endMs 向后推，同时把下一段的 startMs 相应推移。
- * 最后一段的 endMs 始终等于原始 entry.endMs，不做调整。
- * 若总时长本身不足以满足所有段的最小时长，接受违规（不崩溃，不重排）。
+ * 對已切分好的段列表應用最小時長約束（MIN_SEGMENT_DURATION_MS）。
+ * 逐段檢查：若某段時長不足，將其 endMs 向後推，同時把下一段的 startMs 相應推移。
+ * 最後一段的 endMs 始終等於原始 entry.endMs，不做調整。
+ * 若總時長本身不足以滿足所有段的最小時長，接受違規（不崩潰，不重排）。
  */
 function enforceMinDuration(segments: SrtEntry[], originalEndMs: number): SrtEntry[] {
     if (segments.length <= 1) {
@@ -63,21 +63,21 @@ function enforceMinDuration(segments: SrtEntry[], originalEndMs: number): SrtEnt
         const dur = result[i].endMs - result[i].startMs;
         if (dur < MIN_SEGMENT_DURATION_MS) {
             const needed = MIN_SEGMENT_DURATION_MS - dur;
-            // 最多能推到下一段结束（即 originalEndMs 对于最后两段），但不超过 originalEndMs
+            // 最多能推到下一段結束（即 originalEndMs 對於最後兩段），但不超過 originalEndMs
             const cap = Math.min(result[i + 1].endMs, originalEndMs);
             const newEnd = Math.min(result[i].endMs + needed, cap);
             result[i].endMs = newEnd;
             result[i + 1].startMs = newEnd;
         }
     }
-    // 确保末段 endMs 不变
+    // 確保末段 endMs 不變
     result[result.length - 1].endMs = originalEndMs;
     return result;
 }
 
 /**
- * 把一个超长 entry 切成若干不超过 maxChars 的子 entry，递归切分。
- * 时间按字符数等比分配，最终应用 MIN_SEGMENT_DURATION_MS 下限。
+ * 把一個超長 entry 切成若干不超過 maxChars 的子 entry，遞迴切分。
+ * 時間按字元數等比分配，最終應用 MIN_SEGMENT_DURATION_MS 下限。
  */
 export function splitLongEntry(entry: SrtEntry, maxChars: number): SrtEntry[] {
     if (entry.text.length <= maxChars) {
@@ -89,7 +89,7 @@ export function splitLongEntry(entry: SrtEntry, maxChars: number): SrtEntry[] {
     let backText = entry.text.slice(cut).replace(/^\s+/, "");
 
     if (frontText.length === 0 || backText.length === 0) {
-        // 退化情况：空白裁剪后一侧为空，回退到硬切
+        // 退化情況：空白裁剪後一側為空，回退到硬切
         frontText = entry.text.slice(0, maxChars);
         backText = entry.text.slice(maxChars);
     }
@@ -120,7 +120,7 @@ export function splitLongEntry(entry: SrtEntry, maxChars: number): SrtEntry[] {
 }
 
 /**
- * 遍历 entries，对每条超长的调用 splitLongEntry，最后重新编号 index 为 1..N。
+ * 遍歷 entries，對每條超長的呼叫 splitLongEntry，最後重新編號 index 為 1..N。
  */
 export function resegmentSrtEntries(entries: SrtEntry[], maxChars: number): SrtEntry[] {
     const split: SrtEntry[] = [];

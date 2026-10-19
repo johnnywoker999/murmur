@@ -32,17 +32,17 @@ import type { TimelineProject } from "@/types/timeline";
 const EDITOR_TIMELINE_KEY = "editor-timeline";
 
 /**
- * 为尚未产生本地时间线的项目建立一个可编辑的初始时间线。
- * 该时间线只写入当前用户与项目作用域的本地存储，不代表服务端已有成片数据。
+ * 為尚未產生本地時間線的專案建立一個可編輯的初始時間線。
+ * 該時間線只寫入當前使用者與專案作用域的本地儲存，不代表服務端已有成片資料。
  */
 function createEmptyEditorTimeline(): TimelineProject {
-    // 没有真实素材时返回空时间线，避免把不存在的 demo node 当成可剪辑资产。
-    // 用户添加素材后由编辑器命令创建轨道和片段；空项目不应被伪造为已有成片。
+    // 沒有真實素材時返回空時間線，避免把不存在的 demo node 當成可剪輯資產。
+    // 使用者新增素材後由編輯器命令建立軌道和片段；空專案不應被偽造為已有成片。
     return normalizeTimelineProject({ version: 2, tracks: [], clips: [], durationMs: 0 });
 }
 
-/** 插槽堆叠：只渲染通过权限检查的插件贡献；无可用插件时显示明确的缺失能力提示。
- *  缺权限插件不渲染，改为一行诊断提示；无贡献时显示空态（停用插件可见）。 */
+/** 插槽堆疊：只渲染通過許可權檢查的外掛貢獻；無可用外掛時顯示明確的缺失能力提示。
+ *  缺許可權外掛不渲染，改為一行診斷提示；無貢獻時顯示空態（停用外掛可見）。 */
 function SlotStack({ slots, emptyHint }: { slots: EditorSlotRegistration[]; emptyHint: string }) {
     const allowed = slots.filter((slot) => pluginMayRenderEditorSlot(slot.pluginId, slot.slot).allowed);
     const denied = slots.filter((slot) => !pluginMayRenderEditorSlot(slot.pluginId, slot.slot).allowed);
@@ -67,14 +67,14 @@ function SlotStack({ slots, emptyHint }: { slots: EditorSlotRegistration[]; empt
                 return (
                     <div
                         key={slot.id}
-                        title={`插件 ${slot.pluginId} 缺少 ${missing ?? "注册"}，已按 fail-closed 拒绝渲染`}
+                        title={`外掛 ${slot.pluginId} 缺少 ${missing ?? "註冊"}，已按 fail-closed 拒絕渲染`}
                         className="flex min-h-8 shrink-0 items-center gap-2 bg-[var(--director-danger)]/10 px-3 text-[11px] text-[var(--director-danger)]"
                     >
                         <AlertTriangle className="size-3 shrink-0" />
                         <span className="truncate">
                             {missing
-                                ? `插件 ${slot.pluginId} 缺少 ${missing} 权限，已停用该面板。`
-                                : `插件 ${slot.pluginId} 未注册，已停用该面板。`}
+                                ? `外掛 ${slot.pluginId} 缺少 ${missing} 許可權，已停用該面板。`
+                                : `外掛 ${slot.pluginId} 未註冊，已停用該面板。`}
                         </span>
                     </div>
                 );
@@ -83,7 +83,7 @@ function SlotStack({ slots, emptyHint }: { slots: EditorSlotRegistration[]; empt
     );
 }
 
-/** 面板 Tab 条（Concat 式分类/属性切换）：只渲染激活槽，全部槽始终注册。 */
+/** 面板 Tab 條（Concat 式分類/屬性切換）：只渲染啟用槽，全部槽始終註冊。 */
 function PanelTabs({
     tabs,
     active,
@@ -117,7 +117,7 @@ function PanelTabs({
     );
 }
 
-/** 顶部工具栏（Concat 主菜单区）：项目名 + 全局撤销/重做 + 保存状态 + 导出主按钮。 */
+/** 頂部工具欄（Concat 主選單區）：專案名 + 全域性撤銷/重做 + 儲存狀態 + 匯出主按鈕。 */
 function EditorTopBar({
     onExport,
     isFullscreen,
@@ -139,8 +139,8 @@ function EditorTopBar({
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--director-sequencer-border)] bg-[var(--director-sequencer-surface-raised)] px-3">
             <button
                 type="button"
-                aria-label="撤销"
-                title="撤销（Cmd/Ctrl+Z）"
+                aria-label="撤銷"
+                title="撤銷（Cmd/Ctrl+Z）"
                 onClick={undo}
                 disabled={!canUndo}
                 className="grid size-8 place-items-center rounded-md text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)] disabled:pointer-events-none disabled:opacity-35"
@@ -159,22 +159,22 @@ function EditorTopBar({
             </button>
             <div className="flex-1" />
             <div className="flex items-center gap-1.5">
-                <span className="grid size-8 place-items-center" title={saveError ?? (saving ? "保存中" : isDirty ? "有未保存的更改" : "已保存")}>
+                <span className="grid size-8 place-items-center" title={saveError ?? (saving ? "儲存中" : isDirty ? "有未儲存的更改" : "已儲存")}>
                     {saveError ? (
-                        <AlertTriangle className="size-4 text-[var(--director-danger)]" aria-label="保存失败" />
+                        <AlertTriangle className="size-4 text-[var(--director-danger)]" aria-label="儲存失敗" />
                     ) : saving ? (
-                        <Loader2 className="size-4 animate-spin text-[var(--director-dock-fg)]" aria-label="保存中" />
+                        <Loader2 className="size-4 animate-spin text-[var(--director-dock-fg)]" aria-label="儲存中" />
                     ) : isDirty ? (
-                        <CircleDot className="size-3.5 text-[var(--director-warning)]" aria-label="未保存" />
+                        <CircleDot className="size-3.5 text-[var(--director-warning)]" aria-label="未儲存" />
                     ) : (
-                        <Check className="size-4 text-[var(--director-success)]" aria-label="已保存" />
+                        <Check className="size-4 text-[var(--director-success)]" aria-label="已儲存" />
                     )}
                 </span>
                 <button
                     type="button"
-                    aria-label="AI 剪辑助手"
+                    aria-label="AI 剪輯助手"
                     aria-pressed={aiOpen}
-                    title="AI 剪辑助手（编辑意图转时间线指令）"
+                    title="AI 剪輯助手（編輯意圖轉時間線指令）"
                     onClick={onToggleAi}
                     className={`grid size-8 place-items-center rounded-md transition-colors ${
                         aiOpen
@@ -186,8 +186,8 @@ function EditorTopBar({
                 </button>
                 <button
                     type="button"
-                    aria-label={isFullscreen ? "退出全屏" : "全屏编辑"}
-                    title={isFullscreen ? "退出全屏（Esc）" : "全屏编辑"}
+                    aria-label={isFullscreen ? "退出全屏" : "全屏編輯"}
+                    title={isFullscreen ? "退出全屏（Esc）" : "全屏編輯"}
                     onClick={onToggleFullscreen}
                     className="grid size-8 place-items-center rounded-md text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)]"
                 >
@@ -195,8 +195,8 @@ function EditorTopBar({
                 </button>
                 <button
                     type="button"
-                    aria-label="导出"
-                    title="导出"
+                    aria-label="匯出"
+                    title="匯出"
                     onClick={onExport}
 className="grid size-8 place-items-center rounded-md text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)] hover:text-[var(--director-dock-fg-strong)]"
                 >
@@ -207,7 +207,7 @@ className="grid size-8 place-items-center rounded-md text-[var(--director-dock-f
     );
 }
 
-/** 底部状态栏：时长 / 片段数 / 轨道数 / 快捷键提示。 */
+/** 底部狀態列：時長 / 片段數 / 軌道數 / 快捷鍵提示。 */
 function EditorStatusBar({ projectName }: { projectName: string }) {
     const { project } = useEditorStoreContext();
     const clipCount = project?.clips.length ?? 0;
@@ -217,17 +217,17 @@ function EditorStatusBar({ projectName }: { projectName: string }) {
     return (
         <footer className="flex h-7 shrink-0 items-center gap-4 border-t border-[var(--director-sequencer-border)] bg-[var(--director-sequencer-surface-raised)] px-3 text-[10px] text-[var(--director-dock-fg)]">
             <span className="truncate text-[var(--director-dock-fg-strong)]">{projectName}</span>
-            <span className="tabular-nums">时长 {formatTimelineTime(durationMs)}</span>
+            <span className="tabular-nums">時長 {formatTimelineTime(durationMs)}</span>
             <span>片段 {clipCount}</span>
-            <span>轨道 {trackCount}</span>
+            <span>軌道 {trackCount}</span>
             <div className="flex-1" />
-            <span className="hidden sm:inline">⌘Z 撤销 · ⇧⌘Z 重做 · 拖拽移动 / 边缘裁剪片段</span>
+            <span className="hidden sm:inline">⌘Z 撤銷 · ⇧⌘Z 重做 · 拖拽移動 / 邊緣裁剪片段</span>
         </footer>
     );
 }
 
 export default function ProjectEditorView({ detail }: { detail: ProjectDetail }) {
-    // 插槽注册（全部 8 种始终注册；左/右栏 Tab 决定当前渲染哪个）。
+    // 插槽註冊（全部 8 種始終註冊；左/右欄 Tab 決定當前渲染哪個）。
     const previewSlots = useEditorSlots("preview-renderer");
     const timelineSlots = useEditorSlots("timeline-panel");
     const assetSlots = useEditorSlots("asset-ingest");
@@ -244,7 +244,7 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
     const [assets, setAssets] = useState<ProjectAsset[]>(detail.assets);
     const workbenchRef = useRef<HTMLDivElement | null>(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
-    // AI 助手浮层由顶栏按钮打开，支持 Esc 和遮罩点击关闭，避免长期遮挡编辑区。
+    // AI 助手浮層由頂欄按鈕開啟，支援 Esc 和遮罩點選關閉，避免長期遮擋編輯區。
     const [aiOpen, setAiOpen] = useState(false);
     useEffect(() => {
         if (!aiOpen) return;
@@ -255,7 +255,7 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
         return () => window.removeEventListener("keydown", onKey);
     }, [aiOpen]);
 
-    // 底部时间线高度（px）：分隔条拖拽调整（120–480）。
+    // 底部時間線高度（px）：分隔條拖拽調整（120–480）。
     const [timelineH, setTimelineH] = useState(240);
     const splitterRef = useRef<{ startY: number; startH: number } | null>(null);
     const scope = getActiveUserScope();
@@ -271,7 +271,7 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
         assetRefreshSequenceRef.current = requestSequence;
         try {
             const list = (await listProjectAssets(projectId)).assets;
-            // 项目、账号或刷新序号变化都说明当前响应已经过期；旧响应不得覆盖新上下文的素材快照。
+            // 專案、賬號或重新整理序號變化都說明當前響應已經過期；舊響應不得覆蓋新上下文的素材快照。
             if (
                 activeAssetOwnerKeyRef.current !== requestedOwnerKey ||
                 assetRefreshSequenceRef.current !== requestSequence
@@ -281,11 +281,11 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
             setAssets(list);
             return list;
         } catch (error) {
-            // 过期请求的错误不属于当前编辑器上下文，也不应产生误导性告警。
+            // 過期請求的錯誤不屬於當前編輯器上下文，也不應產生誤導性告警。
             if (activeAssetOwnerKeyRef.current !== requestedOwnerKey) return null;
-            // 资产列表属于读展示路径：保留当前快照，避免网络抖动让编辑器清空素材。
-            // 但不能把快照当成同步成功；记录项目上下文，便于定位并在下次进入时重试。
-            console.warn("刷新项目素材列表失败，已保留当前快照", { projectId, scope, error });
+            // 資產列表屬於讀展示路徑：保留當前快照，避免網路抖動讓編輯器清空素材。
+            // 但不能把快照當成同步成功；記錄專案上下文，便於定位並在下次進入時重試。
+            console.warn("重新整理專案素材列表失敗，已保留當前快照", { projectId, scope, error });
             return null;
         }
     }, [assetOwnerKey, projectId, scope]);
@@ -301,20 +301,20 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
             ? document.exitFullscreen()
             : workbenchRef.current?.requestFullscreen();
         void operation?.catch((error) => {
-            console.warn("切换编辑器全屏状态失败", { projectId, error });
+            console.warn("切換編輯器全屏狀態失敗", { projectId, error });
         });
     };
 
     const detailAssetsRef = useRef(detail.assets);
     detailAssetsRef.current = detail.assets;
 
-    // 挂载、切换项目或切换账号时先恢复详情快照，再以服务端列表校准。
-    // detail.assets 只用于切换瞬间占位；refreshAssets 内部负责丢弃过期和乱序响应。
+    // 掛載、切換專案或切換賬號時先恢復詳情快照，再以服務端列表校準。
+    // detail.assets 只用於切換瞬間佔位；refreshAssets 內部負責丟棄過期和亂序響應。
     useEffect(() => {
         setAssets(detailAssetsRef.current);
         void refreshAssets();
         return () => {
-            // 使当前 owner 下仍在途的请求失效，避免组件卸载后提交 state。
+            // 使當前 owner 下仍在途的請求失效，避免元件解除安裝後提交 state。
             assetRefreshSequenceRef.current += 1;
         };
     }, [assetOwnerKey, refreshAssets]);
@@ -331,23 +331,23 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
 
     useEffect(() => {
         const unregister = registerDesktopUpdatePreparation(async () => {
-            if (store.getState().inPreview) throw new Error("请先完成当前剪辑操作。");
+            if (store.getState().inPreview) throw new Error("請先完成當前剪輯操作。");
             await store.getState().flushSave();
             const saved = store.getState();
             // The editor records save failures in state rather than rejecting.
-            if (saved.isDirty || saved.saving || saved.saveError) throw new Error("剪辑内容尚未保存完成。");
+            if (saved.isDirty || saved.saving || saved.saveError) throw new Error("剪輯內容尚未儲存完成。");
         }, () => store.getState().hasActiveSave());
         return () => {
             // Start the final write before unregistering so the update guard
             // keeps observing it after this editor disappears.
             void store.getState().flushSave().catch(error => {
-                console.error("编辑器卸载前保存时间线失败，待下次操作重试", { error });
+                console.error("編輯器解除安裝前儲存時間線失敗，待下次操作重試", { error });
             });
             unregister();
         };
     }, [store]);
 
-    // 进入编辑器时只加载当前用户和项目作用域的本地时间线；没有真实数据时保持空时间线，禁止注入虚构片段。
+    // 進入編輯器時只加載當前使用者和專案作用域的本地時間線；沒有真實資料時保持空時間線，禁止注入虛構片段。
     useEffect(() => {
         let cancelled = false;
         void (async () => {
@@ -359,9 +359,9 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
                     try {
                         loaded = normalizeTimelineProject(JSON.parse(raw));
                     } catch (error) {
-                        // 本地历史数据属于读展示路径：坏记录不能阻塞编辑器启动，
-                        // 但必须记录项目和存储键，后续可按键清理或迁移，而不是把坏数据伪装成有效时间线。
-                        console.warn("读取编辑器本地时间线失败，已使用空时间线", {
+                        // 本地歷史資料屬於讀展示路徑：壞記錄不能阻塞編輯器啟動，
+                        // 但必須記錄專案和儲存鍵，後續可按鍵清理或遷移，而不是把壞資料偽裝成有效時間線。
+                        console.warn("讀取編輯器本地時間線失敗，已使用空時間線", {
                             projectId,
                             storageKey: `${EDITOR_TIMELINE_KEY}:${projectId}`,
                             error,
@@ -370,8 +370,8 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
                 }
                 if (!cancelled) store.getState().load(loaded);
             } catch (error) {
-                // IndexedDB/localforage 不可用时不写入空时间线，避免覆盖可能仍可恢复的本地数据。
-                console.error("读取编辑器本地时间线存储失败，保留编辑器初始状态", { projectId, error });
+                // IndexedDB/localforage 不可用時不寫入空時間線，避免覆蓋可能仍可恢復的本地資料。
+                console.error("讀取編輯器本地時間線儲存失敗，保留編輯器初始狀態", { projectId, error });
             }
         })();
         return () => {
@@ -379,12 +379,12 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
         };
     }, [scope, projectId, store]);
 
-    // 画布产物自动同步：detail.shotArtifacts 中当前采用(storyboard/action_board/
-    // 分镜/导出成片，且 ready + 有资源)尚未作为素材进本项目时，自动
-    // linkProjectAsset(source=canvas) 并入素材库 —— 剪辑器“素材选项”直接可用画布产物。
-    // 后端幂等（已链接直接返回）；单个失败不阻塞其余资源，但会记录告警，
-    // 下次进入编辑器时再次尝试补同步。
-    // 该集合只表示“当前用户、当前项目会话已处理过”，切换账号或项目时必须清空，避免跨作用域复用 resource ID。
+    // 畫布產物自動同步：detail.shotArtifacts 中當前採用(storyboard/action_board/
+    // 分鏡/匯出成片，且 ready + 有資源)尚未作為素材進本專案時，自動
+    // linkProjectAsset(source=canvas) 併入素材庫 —— 剪輯器“素材選項”直接可用畫布產物。
+    // 後端冪等（已連結直接返回）；單個失敗不阻塞其餘資源，但會記錄告警，
+    // 下次進入編輯器時再次嘗試補同步。
+    // 該集合只表示“當前使用者、當前專案會話已處理過”，切換賬號或專案時必須清空，避免跨作用域複用 resource ID。
     const syncedCanvasResourcesRef = useRef<Set<string>>(new Set());
     const syncedAssetOwnerKeyRef = useRef(assetOwnerKey);
     useEffect(() => {
@@ -405,8 +405,8 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
     useEffect(() => {
         if (!canvasSyncKeys) return;
         const keys = canvasSyncKeys.split(",");
-        // 已同步过的(本会话 ref)或已存在于项目素材的(storageKey 命中)均跳过 ——
-        // storageKey 与 assetFromUploadedResource 合成格式一致(resource:<id>)。
+        // 已同步過的(本會話 ref)或已存在於專案素材的(storageKey 命中)均跳過 ——
+        // storageKey 與 assetFromUploadedResource 合成格式一致(resource:<id>)。
         const existing = new Set(assets.map((a) => a.storageKey));
         const pending = keys.filter((key) => !syncedCanvasResourcesRef.current.has(key) && !existing.has(key));
         if (!pending.length) return;
@@ -417,17 +417,17 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
                 const resourceId = key.slice("resource:".length);
                 try {
                     await linkProjectAsset(projectId, { assetId: resourceId, category: "material", source: "canvas" });
-                    // 请求返回时组件可能已经切换项目；旧请求不能把结果记入新项目的会话集合。
+                    // 請求返回時元件可能已經切換專案；舊請求不能把結果記入新專案的會話集合。
                     if (cancelled) break;
                     syncedCanvasResourcesRef.current.add(key);
                 } catch (error) {
-                    // 单个资源同步失败不阻塞其他资源；失败项不加入已完成集合，
-                    // 这样下次进入编辑器仍会重试，而不是把未同步伪装成成功。
-                    console.warn("画布产物同步到项目素材失败", { projectId, resourceId, error });
+                    // 單個資源同步失敗不阻塞其他資源；失敗項不加入已完成集合，
+                    // 這樣下次進入編輯器仍會重試，而不是把未同步偽裝成成功。
+                    console.warn("畫布產物同步到專案素材失敗", { projectId, resourceId, error });
                 }
             }
             if (!cancelled) {
-                // 统一经过带 owner 与请求序号校验的刷新入口，防止同步后的旧请求覆盖新项目快照。
+                // 統一經過帶 owner 與請求序號校驗的重新整理入口，防止同步後的舊請求覆蓋新專案快照。
                 await refreshAssets();
             }
         })();
@@ -446,11 +446,11 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
                     aiOpen={aiOpen}
                     onToggleAi={() => setAiOpen((v) => !v)}
                 />
-                {/* AI 助手浮层：常驻挂载、随开关显隐，关闭再开保留会话与输入（状态在 SlotStack 内）。 */}
+                {/* AI 助手浮層：常駐掛載、隨開關顯隱，關閉再開保留會話與輸入（狀態在 SlotStack 內）。 */}
                 <div className={aiOpen ? "contents" : "hidden"}>
                     <button
                         type="button"
-                        aria-label="关闭 AI 助手"
+                        aria-label="關閉 AI 助手"
                         tabIndex={-1}
                         className="fixed inset-0 z-30 cursor-default bg-transparent"
                         onClick={() => setAiOpen(false)}
@@ -458,15 +458,15 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
                     <div className="absolute right-2 top-14 z-40 flex h-[640px] max-h-[calc(100%-3.75rem)] w-[460px] max-w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-xl border border-[var(--director-sequencer-border)] bg-[var(--director-sequencer-surface)] shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
                         <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[var(--director-sequencer-border)] px-3">
                             <Sparkles className="size-4 text-[var(--director-dock-fg)]/80" />
-                            <span className="text-xs font-medium text-[var(--director-dock-fg-strong)]">AI 剪辑助手</span>
+                            <span className="text-xs font-medium text-[var(--director-dock-fg-strong)]">AI 剪輯助手</span>
                             <span className="hidden truncate text-[10px] text-[var(--director-dock-fg)]/45 sm:inline">
-                                编辑意图 → 时间线指令（宿主校验）
+                                編輯意圖 → 時間線指令（宿主校驗）
                             </span>
                             <div className="flex-1" />
                             <button
                                 type="button"
-                                aria-label="关闭"
-                                title="关闭（Esc）"
+                                aria-label="關閉"
+                                title="關閉（Esc）"
                                 onClick={() => setAiOpen(false)}
                                 className="grid size-7 place-items-center rounded-md text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)]"
                             >
@@ -474,43 +474,43 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
                             </button>
                         </div>
                         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-                            <SlotStack slots={aiSlots} emptyHint="AI 助手插件未加载。" />
+                            <SlotStack slots={aiSlots} emptyHint="AI 助手外掛未載入。" />
                         </div>
                     </div>
                 </div>
 
                 <div className="flex min-h-0 flex-1 flex-col gap-2 p-2">
-                    {/* 上区：左栏 + 预览 + 右栏 */}
+                    {/* 上區：左欄 + 預覽 + 右欄 */}
                     <div className="flex min-h-0 flex-1 gap-2">
-                        {/* 左栏：素材 / 转写（Tab 化） */}
+                        {/* 左欄：素材 / 轉寫（Tab 化） */}
                         <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden rounded-xl bg-[var(--director-sequencer-surface)] shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
                             <PanelTabs
                                 tabs={[
                                     { id: "asset", label: "素材" },
-                                    { id: "transcription", label: "转写" },
+                                    { id: "transcription", label: "轉寫" },
                                 ]}
                                 active={leftTab}
                                 onChange={setLeftTab}
                             />
                             {leftTab === "asset" ? (
-                                <SlotStack slots={assetSlots} emptyHint="素材库插件未加载。" />
+                                <SlotStack slots={assetSlots} emptyHint="素材庫外掛未載入。" />
                             ) : (
-                                <SlotStack slots={transcriptionSlots} emptyHint="转写插件未加载。" />
+                                <SlotStack slots={transcriptionSlots} emptyHint="轉寫外掛未載入。" />
                             )}
                         </aside>
 
-                        {/* 中栏：预览（占满剩余高度） */}
+                        {/* 中欄：預覽（佔滿剩餘高度） */}
                         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-xl bg-[var(--director-sequencer-surface)] shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
-                            <SlotStack slots={previewSlots} emptyHint="预览插件未加载。" />
+                            <SlotStack slots={previewSlots} emptyHint="預覽外掛未載入。" />
                         </main>
 
-                        {/* 右栏：检查 / 字幕 / 导出（Tab 化，可折叠为窄条；AI 助手已移至顶栏浮层） */}
+                        {/* 右欄：檢查 / 字幕 / 匯出（Tab 化，可摺疊為窄條；AI 助手已移至頂欄浮層） */}
                         {rightCollapsed ? (
                             <aside className="flex h-full w-9 shrink-0 flex-col items-center overflow-hidden rounded-xl bg-[var(--director-sequencer-surface)] shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
                                 <button
                                     type="button"
-                                    aria-label="展开检查器"
-                                    title="展开检查器"
+                                    aria-label="展開檢查器"
+                                    title="展開檢查器"
                                     onClick={() => setRightCollapsed(false)}
                                     className="mt-1.5 grid size-8 place-items-center rounded-md text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)]"
                                 >
@@ -521,17 +521,17 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
                             <aside className="flex h-full w-80 shrink-0 flex-col overflow-hidden rounded-xl bg-[var(--director-sequencer-surface)] shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
                                 <PanelTabs
                                     tabs={[
-                                        { id: "inspector", label: "检查" },
+                                        { id: "inspector", label: "檢查" },
                                         { id: "subtitle", label: "字幕" },
-                                        { id: "export", label: "导出" },
+                                        { id: "export", label: "匯出" },
                                     ]}
                                     active={rightTab}
                                     onChange={setRightTab}
                                     trailing={
                                         <button
                                             type="button"
-                                            aria-label="折叠检查器"
-                                            title="折叠检查器"
+                                            aria-label="摺疊檢查器"
+                                            title="摺疊檢查器"
                                             onClick={() => setRightCollapsed(true)}
                                             className="grid size-7 place-items-center rounded-md text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)]"
                                         >
@@ -540,22 +540,22 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
                                     }
                                 />
                                 {rightTab === "inspector" ? (
-                                    <SlotStack slots={inspectorSlots} emptyHint="检查器插件未加载。" />
+                                    <SlotStack slots={inspectorSlots} emptyHint="檢查器外掛未載入。" />
                                 ) : rightTab === "subtitle" ? (
-                                    <SlotStack slots={subtitleSlots} emptyHint="字幕工具插件未加载。" />
+                                    <SlotStack slots={subtitleSlots} emptyHint="字幕工具外掛未載入。" />
                                 ) : (
-                                    <SlotStack slots={exportSlots} emptyHint="导出插件未加载。" />
+                                    <SlotStack slots={exportSlots} emptyHint="匯出外掛未載入。" />
                                 )}
                             </aside>
                         )}
                     </div>
 
-                    {/* 预览/时间线拖拽分隔条（pointer capture，data-canvas-no-zoom 防画布缩放） */}
+                    {/* 預覽/時間線拖拽分隔條（pointer capture，data-canvas-no-zoom 防畫布縮放） */}
                     <div
                         className="group relative z-10 -my-1 flex h-3 shrink-0 cursor-row-resize touch-none items-center justify-center"
                         role="separator"
                         aria-orientation="horizontal"
-                        aria-label="调整时间线高度"
+                        aria-label="調整時間線高度"
                         data-canvas-no-zoom
                         onPointerDown={(e) => {
                             splitterRef.current = { startY: e.clientY, startH: timelineH };
@@ -577,9 +577,9 @@ export default function ProjectEditorView({ detail }: { detail: ProjectDetail })
                         <div className="h-1 w-10 rounded-full bg-[var(--director-sequencer-border)] transition-colors group-hover:bg-[var(--director-dock-fg-strong)]/60" />
                     </div>
 
-                    {/* 时间线：横跨编辑面板全宽（左栏到右栏） */}
+                    {/* 時間線：橫跨編輯面板全寬（左欄到右欄） */}
                     <div className="flex h-full shrink-0 flex-col overflow-hidden rounded-xl bg-[var(--director-sequencer-surface)] shadow-[0_1px_2px_rgba(0,0,0,0.3)]" style={{ height: `${timelineH}px` }}>
-                        <SlotStack slots={timelineSlots} emptyHint="时间线面板插件未加载。" />
+                        <SlotStack slots={timelineSlots} emptyHint="時間線面板外掛未載入。" />
                     </div>
                 </div>
 

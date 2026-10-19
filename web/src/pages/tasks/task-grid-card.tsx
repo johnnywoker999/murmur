@@ -28,16 +28,16 @@ export function TaskGridCard({ task, actingId, onOpen, onRetry }: { task: Genera
                     <Icon />
                 )}
                 <div className="task-grid-overlay">
-                    <Tooltip title="查看详情">
-                        <IconButton size="sm" variant="ghost" icon={Eye} aria-label="查看详情" onClick={onOpen} />
+                    <Tooltip title="檢視詳情">
+                        <IconButton size="sm" variant="ghost" icon={Eye} aria-label="檢視詳情" onClick={onOpen} />
                     </Tooltip>
                     {isFailed ? (
-                        <Tooltip title={retryDisabled ? "请先查看原因，不要立即重新提交" : "重试任务"}>
+                        <Tooltip title={retryDisabled ? "請先檢視原因，不要立即重新提交" : "重試任務"}>
                             <Button
                                 type="text"
                                 size="small"
                                 icon={<RotateCcw className="size-3.5" />}
-                                aria-label="重试任务"
+                                aria-label="重試任務"
                                 loading={actingId === task.id}
                                 disabled={retryDisabled}
                                 onClick={onRetry}
@@ -48,7 +48,7 @@ export function TaskGridCard({ task, actingId, onOpen, onRetry }: { task: Genera
             </div>
             <div className="task-grid-body">
                 <button type="button" className="task-grid-title" title={task.prompt} onClick={onOpen}>
-                    {task.prompt || "未命名任务"}
+                    {task.prompt || "未命名任務"}
                 </button>
                 <div className="task-grid-meta">
                     <span className={`task-grid-status ${isFailed ? "is-failed" : isActive ? "is-active" : task.status === "succeeded" ? "is-success" : ""}`}>
@@ -60,7 +60,7 @@ export function TaskGridCard({ task, actingId, onOpen, onRetry }: { task: Genera
                     </span>
                 </div>
                 {isActive ? (
-                    <div className="task-grid-progress" role="progressbar" aria-label={task.stage || "任务生成进度"} aria-valuemin={0} aria-valuemax={100} aria-valuenow={task.progress || 0}>
+                    <div className="task-grid-progress" role="progressbar" aria-label={task.stage || "任務生成進度"} aria-valuemin={0} aria-valuemax={100} aria-valuenow={task.progress || 0}>
                         <span>{task.stage || "正在生成"}</span>
                         <strong>{task.progress || 0}%</strong>
                         <i><b style={{ width: `${task.progress || 0}%` }} /></i>

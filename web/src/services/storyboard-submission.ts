@@ -23,7 +23,7 @@ export async function submitStoryboardTask(request: CreateTaskInput, options: {
         if (connectionError) throw connectionError;
         assertCurrent();
 		const approved = await api.approve(run.id, { ...guard, submissionIds: [submission.id] }, signal);
-        if (!approved.submissions.some((item) => item.id === submission.id && item.approvedAt)) throw new Error("本地任务准入回执不完整，尚未提交拆镜任务");
+        if (!approved.submissions.some((item) => item.id === submission.id && item.approvedAt)) throw new Error("本地任務准入回執不完整，尚未提交拆鏡任務");
         signal.throwIfAborted();
         assertCurrent();
         return await api.execute(run.id, { ...guard, submissionId: submission.id }, signal);

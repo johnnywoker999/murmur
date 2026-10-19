@@ -3,30 +3,30 @@ import { useLayoutEffect, useRef, type InputHTMLAttributes, type ReactNode } fro
 import { cn } from "@/lib/utils";
 
 /**
- * Checkbox — 复选框（自研，原生 input + 自绘 glyph，无依赖）。
+ * Checkbox — 核取方塊（自研，原生 input + 自繪 glyph，無依賴）。
  *
- * 设计约束（对齐 ui/README 与 ADR-0008）：
- * - 原生 <input type="checkbox"> 承载语义与键盘（简单件不走 react-aria-components）；
- *   hidden input + peer 视觉盒：:focus-visible ring 落在盒上，aria 状态由原生保证。
- * - 只消费三层 token：box border-border / 选中 bg-foreground + text-background（中性反色），
- *   hover 加深 border、焦点 ring-ring、禁用 opacity；无裸色。
- * - indeterminate：非受控 DOM 属性，useLayoutEffect 同步到 input.indeterminate
- *   （样式经 data-indeterminate 落在视觉盒上）。
- * - API 对齐 AntD Checkbox：checked/defaultChecked/disabled/indeterminate/onChange/children，
- *   可直接替换；value 传 string 时随原生 input 提交。
- * 对标：AntD Checkbox；boardui base/checkbox。
+ * 設計約束（對齊 ui/README 與 ADR-0008）：
+ * - 原生 <input type="checkbox"> 承載語義與鍵盤（簡單件不走 react-aria-components）；
+ *   hidden input + peer 視覺盒：:focus-visible ring 落在盒上，aria 狀態由原生保證。
+ * - 只消費三層 token：box border-border / 選中 bg-foreground + text-background（中性反色），
+ *   hover 加深 border、焦點 ring-ring、停用 opacity；無裸色。
+ * - indeterminate：非受控 DOM 屬性，useLayoutEffect 同步到 input.indeterminate
+ *   （樣式經 data-indeterminate 落在視覺盒上）。
+ * - API 對齊 AntD Checkbox：checked/defaultChecked/disabled/indeterminate/onChange/children，
+ *   可直接替換；value 傳 string 時隨原生 input 提交。
+ * 對標：AntD Checkbox；boardui base/checkbox。
  */
 
 export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "size"> {
-    /** 复选框尺寸（视觉盒）。默认 md。 */
+    /** 核取方塊尺寸（視覺盒）。預設 md。 */
     size?: "sm" | "md";
-    /** 半选态（视觉 + input.indeterminate） */
+    /** 半選態（視覺 + input.indeterminate） */
     indeterminate?: boolean;
-    /** 右侧标签 */
+    /** 右側標籤 */
     children?: ReactNode;
-    /** bare：不渲染 label 根（外层已由调用方提供 label/点击区时用，避免 label 嵌套） */
+    /** bare：不渲染 label 根（外層已由呼叫方提供 label/點選區時用，避免 label 巢狀） */
     bare?: boolean;
-    /** 类名附加到根元素 */
+    /** 類名附加到根元素 */
     className?: string;
 }
 
@@ -60,11 +60,11 @@ export function Checkbox({ size = "md", indeterminate = false, children, bare = 
                     BOX_SIZE[size],
                 )}
             >
-                {/* checked 勾（indeterminate 时隐藏，改显短横线） */}
+                {/* checked 勾（indeterminate 時隱藏，改顯短橫線） */}
                 <svg viewBox="0 0 12 12" className={cn("size-3 stroke-current stroke-[2.2]", indeterminate ? "hidden" : "block")}>
                     <path d="M2.5 6.5 L5 9 L9.5 3.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                {/* indeterminate 短横线 */}
+                {/* indeterminate 短橫線 */}
                 <svg viewBox="0 0 12 12" className={cn("size-3 stroke-current stroke-[2]", indeterminate ? "block" : "hidden")}>
                     <path d="M2.8 6 H9.2" fill="none" strokeLinecap="round" />
                 </svg>

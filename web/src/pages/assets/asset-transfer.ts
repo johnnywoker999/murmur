@@ -33,7 +33,7 @@ export async function exportAssets(assets: Asset[]): Promise<OwnedMediaSaveResul
             if (asset.kind !== "image" && asset.kind !== "video" && asset.kind !== "audio" && asset.kind !== "model") return;
             const storageKey = asset.data.storageKey;
             if (!storageKey) {
-                missingFiles.push({ owner: asset.title || asset.id, reference: "媒体文件" });
+                missingFiles.push({ owner: asset.title || asset.id, reference: "媒體檔案" });
                 return;
             }
             if (seenKeys.has(storageKey)) return;
@@ -42,7 +42,7 @@ export async function exportAssets(assets: Asset[]): Promise<OwnedMediaSaveResul
             try {
                 blob = asset.kind === "image" ? await getImageBlob(storageKey) : await getMediaBlob(storageKey);
             } catch {
-                missingFiles.push({ owner: asset.title || asset.id, reference: `${storageKey}（读取失败）` });
+                missingFiles.push({ owner: asset.title || asset.id, reference: `${storageKey}（讀取失敗）` });
                 return;
             }
             if (!blob || blob.size === 0) {
@@ -58,7 +58,7 @@ export async function exportAssets(assets: Asset[]): Promise<OwnedMediaSaveResul
     if (missingFiles.length) throw new ExportIntegrityError(missingFiles);
     assertUniqueArchiveNames(["assets.json", ...zipFiles.map((file) => file.name)]);
     for (const file of files) {
-        if (!file.storageKey || file.path === file.storageKey) throw new Error("备份未完成：文件引用不一致，未生成备份。");
+        if (!file.storageKey || file.path === file.storageKey) throw new Error("備份未完成：檔案引用不一致，未生成備份。");
     }
 
     const exportedAssets = isLocalWorkspaceMode() ? assets.map(normalizeLocalAsset) : assets;
@@ -73,7 +73,7 @@ export async function readAssetPackage(file: File) {
     if (!assetFile) throw new Error("missing assets.json");
     const data = JSON.parse(await assetFile.text()) as AssetExportFile;
     const missingFiles = data.files.filter((item) => !zip.get(item.path));
-    if (missingFiles.length) throw new Error(`导入未完成，压缩包缺少文件：${missingFiles.map((item) => item.path).join("、")}`);
+    if (missingFiles.length) throw new Error(`匯入未完成，壓縮包缺少檔案：${missingFiles.map((item) => item.path).join("、")}`);
     await Promise.all(
         data.files.map(async (item) => {
             const blob = zip.get(item.path);

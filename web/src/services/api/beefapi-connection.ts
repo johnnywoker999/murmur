@@ -60,35 +60,35 @@ export function beefAPIConnectionLabel(summary: BeefAPIConnectionSummary | null 
     const state = summary?.state || "disconnected";
     switch (state) {
         case "connecting":
-            return summary?.errorReason || "正在连接 MURMUR AI";
+            return summary?.errorReason || "正在連線 MURMUR AI";
         case "connection_error":
-            return summary?.errorReason || "无法连接 MURMUR AI 服务，请检查网络后重试";
+            return summary?.errorReason || "無法連線 MURMUR AI 服務，請檢查網路後重試";
         case "pending":
-            return summary?.errorReason || (summary?.userCode ? `请在浏览器中确认 ${summary.userCode}` : "请在浏览器中确认授权");
+            return summary?.errorReason || (summary?.userCode ? `請在瀏覽器中確認 ${summary.userCode}` : "請在瀏覽器中確認授權");
         case "connected":
             return connectedAccountLabel(summary);
         case "expired":
-            return "授权已过期，请重新连接";
+            return "授權已過期，請重新連線";
         case "cancelled":
-            return "已取消本次连接";
+            return "已取消本次連線";
         case "rejected":
-            return "授权被拒绝";
+            return "授權被拒絕";
         case "store_error":
-            return "保存连接失败，请重试";
+            return "儲存連線失敗，請重試";
         case "catalog_failed":
-            return "模型列表读取失败，请重试";
+            return "模型列表讀取失敗，請重試";
         case "revoked":
-            return "连接已失效，请重新连接";
+            return "連線已失效，請重新連線";
         default:
-            return "未连接";
+            return "未連線";
     }
 }
 
 function connectedAccountLabel(summary: BeefAPIConnectionSummary | null | undefined) {
     const account = summary?.account;
     const name = account?.email || account?.display_name || account?.username;
-    if (name && summary?.balance === "zero") return `已连接 ${name}，余额为 0`;
-    if (name) return `已连接 ${name}`;
-    if (summary?.balance === "zero") return "已连接，余额为 0";
-    return "已连接";
+    if (name && summary?.balance === "zero") return `已連線 ${name}，餘額為 0`;
+    if (name) return `已連線 ${name}`;
+    if (summary?.balance === "zero") return "已連線，餘額為 0";
+    return "已連線";
 }

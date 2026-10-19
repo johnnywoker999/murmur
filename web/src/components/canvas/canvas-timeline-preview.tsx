@@ -28,14 +28,14 @@ const PREVIEW_HEIGHT = 168;
 const AUTO_ADVANCE_GAP_MS = 500;
 
 /**
- * 时间线弹窗的所见即所得预览：显示播放头所在视频片段，并叠加当前字幕。
- * 播放时以视频时间为基准推进播放头；暂停时播放头（标尺跳转）驱动视频画面。
+ * 時間線彈窗的所見即所得預覽：顯示播放頭所在影片片段，併疊加當前字幕。
+ * 播放時以影片時間為基準推進播放頭；暫停時播放頭（標尺跳轉）驅動影片畫面。
  */
 export function CanvasTimelinePreview({ clips, nodes, playheadMs, playing, theme, onTogglePlay, onPlayheadChange }: CanvasTimelinePreviewProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [videoUrl, setVideoUrl] = useState("");
     const [videoSize, setVideoSize] = useState<{ width: number; height: number } | null>(null);
-    // 源内定位目标（秒）；视频换源后 metadata 尚未加载时先记录，loadedmetadata 后再应用。
+    // 源內定位目標（秒）；影片換源後 metadata 尚未載入時先記錄，loadedmetadata 後再應用。
     const targetSeekSecRef = useRef<number | null>(null);
 
     const videoClips = useMemo(() => clips.filter((clip) => clip.kind === "video").sort((a, b) => a.startMs - b.startMs), [clips]);
@@ -45,11 +45,11 @@ export function CanvasTimelinePreview({ clips, nodes, playheadMs, playing, theme
     const subtitleStyle = activeNode?.metadata?.subtitleStyle || createDefaultSubtitleStyle();
     const activeHighlight = useMemo(() => {
         if (!activeSubtitleClip || activeSubtitleClip.subtitleEntryIndex === undefined || activeSubtitleClip.subtitleEntryIndex < 0 || !activeNode) return undefined;
-        // subtitleEntryIndex 与字幕条目 index 同为 1 基，直接匹配，不再 +1（此前高亮永远匹配不上）。
+        // subtitleEntryIndex 與字幕條目 index 同為 1 基，直接匹配，不再 +1（此前高亮永遠匹配不上）。
         return (activeNode.metadata?.subtitleHighlights || []).find((item) => item.entryIndex === activeSubtitleClip.subtitleEntryIndex);
     }, [activeNode, activeSubtitleClip]);
 
-    // 解析当前片段视频地址（与字幕弹窗同一套缓存/回退策略）。
+    // 解析當前片段影片地址（與字幕彈窗同一套快取/回退策略）。
     useEffect(() => {
         const node = activeNode;
         const media = activeVideoClip?.directMedia;
@@ -57,7 +57,7 @@ export function CanvasTimelinePreview({ clips, nodes, playheadMs, playing, theme
         setVideoSize(null);
         if (!node && !media) return;
         let cancelled = false;
-        // 直连媒体片段（directMedia，不落画布）与画布节点走同一套缓存/回退解析策略
+        // 直連媒體片段（directMedia，不落畫布）與畫布節點走同一套快取/回退解析策略
         const storageKey = node?.metadata?.storageKey || media?.storageKey || "";
         const fallback = node?.metadata?.content || media?.url || "";
         const applyUrl = (url: string) => {
@@ -84,8 +84,8 @@ export function CanvasTimelinePreview({ clips, nodes, playheadMs, playing, theme
         };
     }, [activeNode, activeVideoClip]);
 
-    // 播放/暂停与外部跳转（标尺拖动）时同步视频位置；播放前先定位到片段源内起点，
-    // 避免裁剪后的片段从原始视频 0s 开始播放；播放期间视频时间反向驱动播放头，不做回跳。
+    // 播放/暫停與外部跳轉（標尺拖動）時同步影片位置；播放前先定位到片段源內起點，
+    // 避免裁剪後的片段從原始影片 0s 開始播放；播放期間影片時間反向驅動播放頭，不做回跳。
     useEffect(() => {
         const video = videoRef.current;
         if (!video || !activeVideoClip || !videoUrl) return;
@@ -104,7 +104,7 @@ export function CanvasTimelinePreview({ clips, nodes, playheadMs, playing, theme
         }
     }, [activeVideoClip, playheadMs, playing, videoUrl]);
 
-    // 视频换源后元数据加载完成，应用之前记录的源内定位目标。
+    // 影片換源後後設資料載入完成，應用之前記錄的源內定位目標。
     const handleVideoLoadedMetadata = (video: HTMLVideoElement) => {
         if (video.videoWidth > 0 && video.videoHeight > 0) setVideoSize({ width: video.videoWidth, height: video.videoHeight });
         if (targetSeekSecRef.current != null && video.readyState >= 1) {
@@ -154,7 +154,7 @@ export function CanvasTimelinePreview({ clips, nodes, playheadMs, playing, theme
                         <button
                             type="button"
                             className="absolute inset-0 z-10 grid place-items-center"
-                            aria-label={playing ? "暂停预览" : "播放预览"}
+                            aria-label={playing ? "暫停預覽" : "播放預覽"}
                             onClick={(event) => {
                                 event.stopPropagation();
                                 onTogglePlay();
@@ -166,18 +166,18 @@ export function CanvasTimelinePreview({ clips, nodes, playheadMs, playing, theme
                         </button>
                     </>
                 ) : (
-                    <div className="px-4 text-center text-xs opacity-55">该位置无视频片段</div>
+                    <div className="px-4 text-center text-xs opacity-55">該位置無影片片段</div>
                 )}
             </div>
             <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 text-xs">
                     <span className="truncate font-semibold" style={{ color: theme.accent.primary }}>
-                        {activeVideoClip?.title || "无视频片段"}
+                        {activeVideoClip?.title || "無影片片段"}
                     </span>
                     <span className="opacity-45 tabular-nums">{activeVideoClip ? `${formatTimelineTime(activeVideoClip.startMs)} ~ ${formatTimelineTime(activeVideoClip.startMs + activeVideoClip.durationMs)}` : ""}</span>
                 </div>
                 <div className="mt-1.5 max-h-16 min-h-10 overflow-y-auto rounded-lg border px-2.5 py-1.5 text-xs leading-5" style={{ borderColor: theme.toolbar.border, background: theme.node.fill }}>
-                    {activeSubtitleClip ? activeSubtitleClip.text : <span className="opacity-40">此处无字幕，点选字幕片段后在下方编辑</span>}
+                    {activeSubtitleClip ? activeSubtitleClip.text : <span className="opacity-40">此處無字幕，點選字幕片段後在下方編輯</span>}
                 </div>
             </div>
         </div>

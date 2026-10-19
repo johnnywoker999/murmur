@@ -98,7 +98,7 @@ export function InfiniteCanvas({ interactive = true, containerRef, viewport, app
             viewportRef.current = viewport;
             scaleRef.current = viewport.k;
         }
-        // React 更新内层倍率后，同帧重新计算外层补偿，避免旧倍率重复缩放。
+        // React 更新內層倍率後，同幀重新計算外層補償，避免舊倍率重複縮放。
         applyCanvasLiveViewport(containerRef.current, viewportRef.current, !interactingRef.current);
     }, [containerRef, viewport]);
 
@@ -191,12 +191,12 @@ export function InfiniteCanvas({ interactive = true, containerRef, viewport, app
             const absY = Math.abs(deltaY);
             const isPinchZoom = event.ctrlKey || event.metaKey;
             if (target?.closest(CANVAS_WHEEL_IGNORE_SELECTOR) && !isPinchZoom) {
-                // 内部区域保留纵向滚动，但横向手势不能泄漏为 macOS 浏览器前进/后退。
+                // 內部區域保留縱向滾動，但橫向手勢不能洩漏為 macOS 瀏覽器前進/後退。
                 if (event.shiftKey || absX > absY) event.preventDefault();
                 return;
             }
 
-            // Ctrl/Meta + 滚轮在画布内始终由画布接管，避免浮层区域触发浏览器页面缩放。
+            // Ctrl/Meta + 滾輪在畫布內始終由畫布接管，避免浮層區域觸發瀏覽器頁面縮放。
             event.preventDefault();
             interactingRef.current = true;
             const current = viewportRef.current;
@@ -239,7 +239,7 @@ export function InfiniteCanvas({ interactive = true, containerRef, viewport, app
     const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
         if (!interactive) return;
         const target = event.target instanceof Element ? event.target : null;
-        // AntD 浮层通过 Portal 渲染到节点 DOM 之外；若不统一排除，会被误判为画布空白并捕获指针。
+        // AntD 浮層通過 Portal 渲染到節點 DOM 之外；若不統一排除，會被誤判為畫布空白並捕獲指標。
         if (target?.closest(CANVAS_POINTER_IGNORE_SELECTOR)) return;
         const isBackgroundClick = !target?.closest("[data-node-id],[data-connection-id]");
         const isTouch = event.pointerType === "touch";
@@ -480,7 +480,7 @@ function CanvasGrid({ appearance, mode }: { appearance?: CanvasAppearance; mode:
             data-canvas-grid-layer
             className="pointer-events-none absolute"
             style={{
-                // 装饰网格固定在屏幕坐标，避免缩放时改变密度或产生亚像素位移闪烁。
+                // 裝飾網格固定在螢幕座標，避免縮放時改變密度或產生亞畫素位移閃爍。
                 inset: 0,
                 backgroundImage,
                 backgroundSize: "48px 48px",

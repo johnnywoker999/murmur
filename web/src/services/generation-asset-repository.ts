@@ -50,16 +50,16 @@ function runWithBrowserStorageLock<T>(scope: string, operation: () => Promise<T>
     const locks = typeof window !== "undefined" && typeof navigator !== "undefined" ? (navigator.locks as AsyncStorageLock | undefined) : undefined;
     if (locks) return locks.request(`${ASSET_STORAGE_LOCK_PREFIX}${scope}`, operation);
     if (options.requireCrossRealmLock && typeof window !== "undefined" && typeof document !== "undefined") {
-        throw new Error("当前浏览器不支持跨标签存储锁，已停止生成素材持久化");
+        throw new Error("當前瀏覽器不支援跨標籤儲存鎖，已停止生成素材持久化");
     }
     return operation();
 }
 
 /**
- * 串行化同一用户作用域的素材目录写入。
+ * 序列化同一使用者作用域的素材目錄寫入。
  *
- * 前一个操作失败不能阻塞后续操作，但当前操作的成功或失败必须原样返回，
- * 因此只处理 predecessor 的 rejected 状态，不吞掉当前 `pending` 的错误。
+ * 前一個操作失敗不能阻塞後續操作，但當前操作的成功或失敗必須原樣返回，
+ * 因此只處理 predecessor 的 rejected 狀態，不吞掉當前 `pending` 的錯誤。
  */
 export function withGenerationAssetStorageLock<T>(scope: string, operation: () => Promise<T>, options: GenerationStorageLockOptions = {}): Promise<T> {
     const previous = assetStorageTails.get(scope) ?? Promise.resolve();
@@ -83,7 +83,7 @@ export function withGenerationArtifactCommitLock<T>(scope: string, operation: ()
             const locks = typeof window !== "undefined" && typeof navigator !== "undefined" ? (navigator.locks as AsyncStorageLock | undefined) : undefined;
             if (locks) return locks.request(`${ARTIFACT_COMMIT_LOCK_PREFIX}${scope}`, operation);
             if (options.requireCrossRealmLock && typeof window !== "undefined" && typeof document !== "undefined") {
-                throw new Error("当前浏览器不支持跨标签存储锁，已停止生成文件提交");
+                throw new Error("當前瀏覽器不支援跨標籤儲存鎖，已停止生成檔案提交");
             }
             return operation();
         });
@@ -125,7 +125,7 @@ export async function insertOrReturnGenerationAsset<TAsset extends GenerationAss
             throwIfAborted(dependencies.signal);
             const persistedAssets = await dependencies.readPersistedAssets();
             throwIfAborted(dependencies.signal);
-            if (dependencies.isAssetDeleted?.()) throw new Error("生成素材已被用户删除");
+            if (dependencies.isAssetDeleted?.()) throw new Error("生成素材已被使用者刪除");
             const existing = persistedAssets.find((asset) => asset.metadata?.generationEffectKey === dependencies.effectKey);
             if (existing) {
                 const hydratedExisting = dependencies.readAssets().find((asset) => asset.id === existing.id && asset.metadata?.generationEffectKey === dependencies.effectKey);
@@ -133,7 +133,7 @@ export async function insertOrReturnGenerationAsset<TAsset extends GenerationAss
                 return existing.id;
             }
             if (persistedAssets.some((asset) => asset.id === dependencies.assetId)) {
-                throw new Error("生成素材幂等键冲突");
+                throw new Error("生成素材冪等鍵衝突");
             }
             const assets = [dependencies.createAsset(), ...persistedAssets];
             throwIfAborted(dependencies.signal);

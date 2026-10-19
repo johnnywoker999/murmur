@@ -2,25 +2,25 @@ import type { DirectorCamera, DirectorObject, DirectorScene, DirectorShot } from
 import { directorColorLabel, directorPoseLabel } from "@/lib/canvas/director/director-scene";
 
 const shotSizeLabels: Record<DirectorShot["shotSize"], string> = {
-    extreme_wide: "大远景",
-    wide: "远景",
+    extreme_wide: "大遠景",
+    wide: "遠景",
     full: "全身景",
     medium: "中景",
-    close_up: "近景特写",
-    extreme_close_up: "大特写",
+    close_up: "近景特寫",
+    extreme_close_up: "大特寫",
 };
 
 const cameraMoveLabels: Record<DirectorShot["cameraMove"], string> = {
-    static: "固定机位",
-    push_in: "镜头缓慢推进",
-    pull_out: "镜头缓慢拉远",
-    pan_left: "镜头向左横摇",
-    pan_right: "镜头向右横摇",
-    tilt_up: "镜头向上摇摄",
-    tilt_down: "镜头向下摇摄",
-    orbit_left: "镜头向左环绕主体",
-    orbit_right: "镜头向右环绕主体",
-    handheld: "克制的手持摄影运动",
+    static: "固定機位",
+    push_in: "鏡頭緩慢推進",
+    pull_out: "鏡頭緩慢拉遠",
+    pan_left: "鏡頭向左橫搖",
+    pan_right: "鏡頭向右橫搖",
+    tilt_up: "鏡頭向上搖攝",
+    tilt_down: "鏡頭向下搖攝",
+    orbit_left: "鏡頭向左環繞主體",
+    orbit_right: "鏡頭向右環繞主體",
+    handheld: "剋制的手持攝影運動",
 };
 
 export function compileDirectorPrompt(scene: DirectorScene, shot: DirectorShot) {
@@ -32,18 +32,18 @@ export function compileDirectorPrompt(scene: DirectorScene, shot: DirectorShot) 
             || key.transform.rotation.some((value, axis) => Math.abs(value - previous.rotation[axis]) > 1e-4);
     });
     const cameraMove = hasKeyframedMotion
-        ? `按 ${cameraKeys.length} 个关键帧执行机位轨迹，${formatNumber(cameraKeys[0].time)} 秒位于 ${formatPosition(cameraKeys[0].transform.position)}，${formatNumber(cameraKeys.at(-1)!.time)} 秒位于 ${formatPosition(cameraKeys.at(-1)!.transform.position)}`
+        ? `按 ${cameraKeys.length} 個關鍵幀執行機位軌跡，${formatNumber(cameraKeys[0].time)} 秒位於 ${formatPosition(cameraKeys[0].transform.position)}，${formatNumber(cameraKeys.at(-1)!.time)} 秒位於 ${formatPosition(cameraKeys.at(-1)!.transform.position)}`
         : cameraMoveLabels[shot.cameraMove];
     const visibleObjects = scene.objects.filter((item) => item.visible);
     const actors = visibleObjects.filter((item) => item.kind === "actor" || item.primitive === "character");
     return [
         shot.prompt.trim(),
-        `镜头设计：${shotSizeLabels[shot.shotSize]}，${cameraMove}，时长 ${formatNumber(shot.duration)} 秒。`,
+        `鏡頭設計：${shotSizeLabels[shot.shotSize]}，${cameraMove}，時長 ${formatNumber(shot.duration)} 秒。`,
         camera ? cameraPrompt(camera) : "",
-        actors.length ? `角色颜色映射：${actors.map((actor) => `${directorColorLabel(actor.color)}人偶（${actor.color}）代表${actor.name}`).join("；")}。生成视频时严格按颜色识别角色，不交换人物身份。` : "",
-        visibleObjects.length ? `空间调度：${visibleObjects.map(objectPrompt).join("；")}。` : "",
-        `灯光：${scene.lights.map((light) => `${light.name}${formatNumber(light.intensity)}强度${light.color}`).join("，")}。`,
-        "保持角色、道具、空间方向、光线方向和镜头轴线连续，遵循真实摄影机透视与物理遮挡。",
+        actors.length ? `角色顏色對映：${actors.map((actor) => `${directorColorLabel(actor.color)}人偶（${actor.color}）代表${actor.name}`).join("；")}。生成影片時嚴格按顏色識別角色，不交換人物身份。` : "",
+        visibleObjects.length ? `空間排程：${visibleObjects.map(objectPrompt).join("；")}。` : "",
+        `燈光：${scene.lights.map((light) => `${light.name}${formatNumber(light.intensity)}強度${light.color}`).join("，")}。`,
+        "保持角色、道具、空間方向、光線方向和鏡頭軸線連續，遵循真實攝影機透視與物理遮擋。",
     ]
         .filter(Boolean)
         .join("\n");
@@ -52,17 +52,17 @@ export function compileDirectorPrompt(scene: DirectorScene, shot: DirectorShot) 
 function cameraPrompt(camera: DirectorCamera) {
     const [x, y, z] = camera.transform.position;
     const [tx, ty, tz] = camera.target;
-    const height = y < ty - 0.4 ? "低机位" : y > ty + 1.2 ? "高机位" : "平视机位";
-    const side = x < tx - 0.8 ? "主体左前侧" : x > tx + 0.8 ? "主体右前侧" : "主体正面";
+    const height = y < ty - 0.4 ? "低機位" : y > ty + 1.2 ? "高機位" : "平視機位";
+    const side = x < tx - 0.8 ? "主體左前側" : x > tx + 0.8 ? "主體右前側" : "主體正面";
     const distance = Math.hypot(x - tx, y - ty, z - tz);
-    return `摄影机：${formatNumber(camera.focalLength)}mm 焦段，f/${formatNumber(camera.aperture)} 光圈，焦点距离 ${formatNumber(camera.focusDistance)} 米，${height}，位于${side}，机位距离约 ${formatNumber(distance)} 米，焦点指向 (${formatNumber(tx)}, ${formatNumber(ty)}, ${formatNumber(tz)})，景深遵循真实镜头光学。`;
+    return `攝影機：${formatNumber(camera.focalLength)}mm 焦段，f/${formatNumber(camera.aperture)} 光圈，焦點距離 ${formatNumber(camera.focusDistance)} 米，${height}，位於${side}，機位距離約 ${formatNumber(distance)} 米，焦點指向 (${formatNumber(tx)}, ${formatNumber(ty)}, ${formatNumber(tz)})，景深遵循真實鏡頭光學。`;
 }
 
 function objectPrompt(object: DirectorObject) {
     const [x, y, z] = object.transform.position;
-    const pose = object.pose ? `，姿势${directorPoseLabel(object.pose)}` : "";
-    const color = object.kind === "actor" || object.primitive === "character" ? `，${directorColorLabel(object.color)}参考人偶` : "";
-    return `${object.name}${color}位于 (${formatNumber(x)}, ${formatNumber(y)}, ${formatNumber(z)})${pose}`;
+    const pose = object.pose ? `，姿勢${directorPoseLabel(object.pose)}` : "";
+    const color = object.kind === "actor" || object.primitive === "character" ? `，${directorColorLabel(object.color)}參考人偶` : "";
+    return `${object.name}${color}位於 (${formatNumber(x)}, ${formatNumber(y)}, ${formatNumber(z)})${pose}`;
 }
 
 function formatNumber(value: number) {

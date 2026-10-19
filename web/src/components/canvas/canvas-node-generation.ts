@@ -70,8 +70,8 @@ export function buildNodeGenerationContext(nodeId: string, nodes: CanvasNodeData
     const pendingConversion = findPendingMediaConversionInput(nodeId, nodes, connections);
     if (pendingConversion) {
         const status = pendingConversion.metadata?.mediaConversion?.status;
-        const reason = status === "stale" ? "输入或方式已变化" : status === "processing" ? "仍在处理中" : "尚未完成本地转换";
-        throw new Error(`转换节点「${pendingConversion.title || pendingConversion.id}」${reason}，完成后才能执行下游生成`);
+        const reason = status === "stale" ? "輸入或方式已變化" : status === "processing" ? "仍在處理中" : "尚未完成本地轉換";
+        throw new Error(`轉換節點「${pendingConversion.title || pendingConversion.id}」${reason}，完成後才能執行下游生成`);
     }
     const connectedInputs = withArkAssetReferenceInputs(buildNodeGenerationInputs(nodeId, nodes, connections), nodes, assets);
     const sourceNode = nodes.find((node) => node.id === nodeId);
@@ -81,8 +81,8 @@ export function buildNodeGenerationContext(nodeId: string, nodes: CanvasNodeData
               return image ? [{ nodeId: sourceNode.id, type: "image" as const, title: sourceNode.title, image }] : [];
           })()
         : [];
-    // 显式 @ 引用必须与提示词面板展示的资源集合一致；默认自动输入仍只取入边，
-    // 避免已有图片在没有 @图片N 时被悄悄当作自身参考图。
+    // 顯式 @ 引用必須與提示詞面板展示的資源集合一致；預設自動輸入仍只取入邊，
+    // 避免已有圖片在沒有 @圖片N 時被悄悄當作自身參考圖。
     const mentionInputs = withArkAssetReferenceInputs(mergeGenerationInputs(buildNodeMentionGenerationInputs(nodeId, nodes, connections), portraitTextureInput, buildAssetGenerationInputs(assets)), nodes, assets);
     const storyboardInputs = getConnectedStoryboardRows(nodeId, nodes, connections);
     assertResolvableGenerationMentions(prompt, mentionInputs);
@@ -94,7 +94,7 @@ export function buildNodeGenerationContext(nodeId: string, nodes: CanvasNodeData
         return buildComposerGenerationContext(
             mentionInputs,
             prompt,
-            // 工作流节点由字段映射接收全部连线媒体；视频节点的历史首尾帧字段不能再额外追加参考图。
+            // 工作流節點由欄位對映接收全部連線媒體；影片節點的歷史首尾幀欄位不能再額外追加參考圖。
             autoIncludeWorkflowMedia || (promptOnly && hasConnectedMedia) ? [] : [sourceNode?.metadata?.videoStartFrameNodeId, sourceNode?.metadata?.videoEndFrameNodeId].filter((id): id is string => Boolean(id)),
             promptOnly,
             autoIncludeWorkflowMedia || (promptOnly && hasConnectedMedia),
@@ -130,8 +130,8 @@ export function buildNodeGenerationContext(nodeId: string, nodes: CanvasNodeData
 }
 
 /**
- * 转换节点允许提前连到下游，但只有与当前唯一媒体输入匹配的已物化结果才能进入生成请求。
- * 沿上游链路检查也覆盖“生成节点 -> 配置节点 -> 转换节点”的接法。
+ * 轉換節點允許提前連到下游，但只有與當前唯一媒體輸入匹配的已物化結果才能進入生成請求。
+ * 沿上游鏈路檢查也覆蓋“生成節點 -> 配置節點 -> 轉換節點”的接法。
  */
 export function findPendingMediaConversionInput(nodeId: string, nodes: CanvasNodeData[], connections: CanvasConnection[]) {
     const nodesById = new Map(nodes.map((node) => [node.id, node]));
@@ -202,8 +202,8 @@ function buildComposerGenerationContext(
     let nextPrompt = "";
 
     if (autoIncludeWorkflowMedia) {
-        // 先固定“图片1/视频1”等提示词标签的顺序，和工作流槽位保持一致；
-        // 用户先 @ 第二张图时，提示词也不会把它误标成第一张。
+        // 先固定“圖片1/影片1”等提示詞標籤的順序，和工作流槽位保持一致；
+        // 使用者先 @ 第二張圖時，提示詞也不會把它誤標成第一張。
         workflowMediaInputs.forEach((input) => {
             if (input.type === "text" || labelByNodeId.has(input.nodeId)) return;
             const labelKind = input.sourceKind === "drawing" ? "drawing" : input.type;
@@ -231,13 +231,13 @@ function buildComposerGenerationContext(
     }
 
     nextPrompt += normalizedPrompt.slice(lastIndex);
-    // 显式 @文本 引用是用户写进输入框的内容，必须内联真实文本；promptOnly 只拦自动上游文本。
+    // 顯式 @文本 引用是使用者寫進輸入框的內容，必須內聯真實文本；promptOnly 只攔自動上游文本。
     if (textBlocks.length) nextPrompt = `${nextPrompt.trim()}\n\n${textBlocks.join("\n\n")}`;
     if (autoIncludeWorkflowMedia) {
-        // RunningHub/ComfyUI 工作流按保存的字段槽位接收图片、视频和音频；
-        // 配置节点不能因为提示词里没有逐个 @ 就丢失已连接媒体。
-        // 先按连线顺序放入媒体，避免用户在提示词里 @图片2 后改变工作流槽位的索引；
-        // 素材库中的显式 @ 引用仍保留在后面，不会被自动模式吞掉。
+        // RunningHub/ComfyUI 工作流按儲存的欄位槽位接收圖片、影片和音訊；
+        // 配置節點不能因為提示詞裡沒有逐個 @ 就丟失已連線媒體。
+        // 先按連線順序放入媒體，避免使用者在提示詞裡 @圖片2 後改變工作流槽位的索引；
+        // 素材庫中的顯式 @ 引用仍保留在後面，不會被自動模式吞掉。
         const explicitInputs = selectedInputs.splice(0);
         const selectedNodeIds = new Set<string>();
         workflowMediaInputs.forEach((input) => {
@@ -251,7 +251,7 @@ function buildComposerGenerationContext(
             selectedNodeIds.add(input.nodeId);
         });
     }
-    // 首尾帧是结构化生成参数，不受提示词中的 @ 引用筛选影响。
+    // 首尾幀是結構化生成引數，不受提示詞中的 @ 引用篩選影響。
     const selectedNodeIds = new Set(selectedInputs.map((input) => input.nodeId));
     videoFrameNodeIds.forEach((nodeId) => {
         const input = nodeInputById.get(nodeId);
@@ -295,7 +295,7 @@ function buildComposerGenerationContext(
     };
 }
 
-const GENERATION_MENTION_PATTERN = /@\[(node|asset):([^\]]+)\]|@(图片|视频|音频|文本|角色|绘图)(\d+)/g;
+const GENERATION_MENTION_PATTERN = /@\[(node|asset):([^\]]+)\]|@(圖片|影片|音訊|文本|角色|繪圖)(\d+)/g;
 
 export function generationInputMentionLabel(input: NodeGenerationInput, inputs: NodeGenerationInput[]) {
     const entry = generationSlotEntries(inputs).find((item) => item.input.nodeId === input.nodeId);
@@ -317,7 +317,7 @@ function hasResolvableGenerationMention(prompt: string, inputs: NodeGenerationIn
 function assertResolvableGenerationMentions(prompt: string, inputs: NodeGenerationInput[]) {
     const { unresolved } = inspectGenerationMentions(prompt, inputs);
     if (!unresolved.length) return;
-    throw new Error(`提示词中的 ${unresolved.join("、")} 没有对应的画布资源，请重新选择引用后再生成`);
+    throw new Error(`提示詞中的 ${unresolved.join("、")} 沒有對應的畫布資源，請重新選擇引用後再生成`);
 }
 
 function inspectGenerationMentions(prompt: string, inputs: NodeGenerationInput[]) {
@@ -382,8 +382,8 @@ function buildGenerationInputs(resourceNodes: CanvasNodeData[], nodes: CanvasNod
         const character = readCharacterReference(node);
         if (character) return [{ nodeId: node.id, type: "character" as const, title: node.title, character }];
         const image = readReferenceImage(node, nodes, connections);
-        // sourceKind 只是「标签用绘图N而不是参考图N」的覆盖开关，不是来源全集。
-        // 调色节点在下游就是一张普通参考图，按 image 标签即正确。
+        // sourceKind 只是「標籤用繪圖N而不是參考圖N」的覆蓋開關，不是來源全集。
+        // 調色節點在下游就是一張普通參考圖，按 image 標籤即正確。
         if (image) return [{ nodeId: node.id, type: "image" as const, sourceKind: image.source?.kind === "drawing" ? "drawing" : undefined, title: node.title, image }];
         const video = readReferenceVideo(node);
         if (video) return [{ nodeId: node.id, type: "video" as const, title: node.title, previewUrl: canvasNodeVideoPreviewUrl(node), video }];
@@ -418,8 +418,8 @@ function buildAssetGenerationInputs(assets: Asset[]): NodeGenerationInput[] {
     });
 }
 
-// 图片节点绑定的素材若已录入方舟素材 ID，把 ID 附加到参考图上；是否改用 asset:// 引用
-// 由 generation-task 按视频渠道决定，非方舟渠道与本地回退路径不受影响。
+// 圖片節點繫結的素材若已錄入方舟素材 ID，把 ID 附加到參考圖上；是否改用 asset:// 引用
+// 由 generation-task 按影片渠道決定，非方舟渠道與本地回退路徑不受影響。
 function withArkAssetReferenceInputs(inputs: NodeGenerationInput[], nodes: CanvasNodeData[], assets: Asset[]): NodeGenerationInput[] {
     if (!assets.length) return inputs;
     const nodeById = new Map(nodes.map((node) => [node.id, node]));
@@ -450,23 +450,23 @@ function getConnectedStoryboardRows(nodeId: string, nodes: CanvasNodeData[], con
         seen.add(inputId);
         const characters = (row.characters || []).map((character) => [character.characterName, character.characterDescription].filter(Boolean).join("：")).filter(Boolean).join("、");
         const text = [
-            `【分镜 ${row.shotNumber}】`,
-            `时长：${row.durationSeconds} 秒`,
-            row.plotDescription && `画面描述：${row.plotDescription}`,
-            row.dialogue && `台词/旁白：${row.dialogue}`,
+            `【分鏡 ${row.shotNumber}】`,
+            `時長：${row.durationSeconds} 秒`,
+            row.plotDescription && `畫面描述：${row.plotDescription}`,
+            row.dialogue && `臺詞/旁白：${row.dialogue}`,
             characters && `角色：${characters}`,
-            row.shotSize && `景别：${row.shotSize}`,
-            row.emotion && `情绪：${row.emotion}`,
-            row.lightingAndAtmosphere && `光影氛围：${row.lightingAndAtmosphere}`,
+            row.shotSize && `景別：${row.shotSize}`,
+            row.emotion && `情緒：${row.emotion}`,
+            row.lightingAndAtmosphere && `光影氛圍：${row.lightingAndAtmosphere}`,
             row.audioEffects && `音效：${row.audioEffects}`,
-            row.camera && `镜头设计：${row.camera}`,
-            row.motion && `运镜：${row.motion}`,
-            row.timeBeats && `时间节拍：${row.timeBeats}`,
-            row.imageGenerationPrompt && `图片提示词：${row.imageGenerationPrompt}`,
-            row.videoMotionPrompt && `视频提示词：${row.videoMotionPrompt}`,
-            row.negativePrompt && `负面要求：${row.negativePrompt}`,
+            row.camera && `鏡頭設計：${row.camera}`,
+            row.motion && `運鏡：${row.motion}`,
+            row.timeBeats && `時間節拍：${row.timeBeats}`,
+            row.imageGenerationPrompt && `圖片提示詞：${row.imageGenerationPrompt}`,
+            row.videoMotionPrompt && `影片提示詞：${row.videoMotionPrompt}`,
+            row.negativePrompt && `負面要求：${row.negativePrompt}`,
         ].filter(Boolean).join("\n");
-        return [{ nodeId: inputId, type: "text", title: `${scriptNode.title} · 镜头 ${row.shotNumber}`, text, alwaysIncludeText: true }];
+        return [{ nodeId: inputId, type: "text", title: `${scriptNode.title} · 鏡頭 ${row.shotNumber}`, text, alwaysIncludeText: true }];
     });
 }
 
@@ -503,7 +503,7 @@ export async function hydrateNodeGenerationContext(context: NodeGenerationContex
         }),
     );
     if (!context.characterReferences.length) return { ...context, referenceImages };
-    if (!domainProjectId) throw new Error("角色引用未关联短剧项目，无法解析角色版本");
+    if (!domainProjectId) throw new Error("角色引用未關聯短劇專案，無法解析角色版本");
     const { getProjectCharacter } = await import("@/services/api/projects");
     const { getResource, resourceFileUrl, resourceStorageKey } = await import("@/services/api/resources");
     const details = await Promise.all(context.characterReferences.map((reference) => getProjectCharacter(domainProjectId, reference.assetId)));
@@ -512,7 +512,7 @@ export async function hydrateNodeGenerationContext(context: NodeGenerationContex
         const representation = preferredCharacterRepresentation(detail.character.representations);
         return representation ? [{ ...representation, sourceNodeId: context.characterReferences[index]!.nodeId }] : [];
     });
-    if (selected.length > remainingBudget) throw new Error(`当前模型参考图容量不足：角色至少需要 ${selected.length} 张主参考图`);
+    if (selected.length > remainingBudget) throw new Error(`當前模型參考圖容量不足：角色至少需要 ${selected.length} 張主參考圖`);
     const usedResourceIds = new Set(selected.map((item) => item.resourceId));
     const supplements = details.flatMap((detail, index) => detail.character.representations.filter((item) => {
         if (!["front", "side", "back", "turnaround_sheet"].includes(item.role) || usedResourceIds.has(item.resourceId)) return false;
@@ -548,12 +548,12 @@ export async function hydrateNodeGenerationContext(context: NodeGenerationContex
             voiceAge: voiceAge || undefined,
             timbre: timbre || undefined,
             deliveryInstructions: deliveryInstructions || undefined,
-            instructions: [language && `语言与口音：${language}`, voiceAge && `声音年龄感：${voiceAge}`, timbre && `音色气质：${timbre}`, deliveryInstructions].filter(Boolean).join("；"),
+            instructions: [language && `語言與口音：${language}`, voiceAge && `聲音年齡感：${voiceAge}`, timbre && `音色氣質：${timbre}`, deliveryInstructions].filter(Boolean).join("；"),
         }];
     });
     const usedAudioResourceIds = new Set(context.referenceAudios.map((audio) => resourceIdFromStorageKey(audio.storageKey)).filter(Boolean));
     const voiceSamples: ResolvedCharacterVoice[] = [];
-    // 视频模型接收声音样本；独立配音任务仍通过 voiceKey 选音色，不能把两种协议混用。
+    // 影片模型接收聲音樣本；獨立配音任務仍通過 voiceKey 選音色，不能把兩種協議混用。
     if (mode === "video" && includeCharacterVoiceSamples) {
         resolvedCharacterVoices.forEach((voice) => {
             if (!voice.sampleResourceId || usedAudioResourceIds.has(voice.sampleResourceId)) return;
@@ -562,14 +562,14 @@ export async function hydrateNodeGenerationContext(context: NodeGenerationContex
         });
     }
     const maxAudios = referenceLimits?.maxAudios ?? 3;
-    if (context.referenceAudios.length + voiceSamples.length > maxAudios) throw new Error(`当前模型参考音频容量不足：已连接 ${context.referenceAudios.length} 个音频，角色声音样本还需要 ${voiceSamples.length} 个名额`);
+    if (context.referenceAudios.length + voiceSamples.length > maxAudios) throw new Error(`當前模型參考音訊容量不足：已連線 ${context.referenceAudios.length} 個音訊，角色聲音樣本還需要 ${voiceSamples.length} 個名額`);
     const characterVoiceAudios = await Promise.all(voiceSamples.map(async (voice) => {
         const resource = await getResource(voice.sampleResourceId!);
         const extension = audioFileExtension(resource.mimeType, resource.objectKey);
         return resolveReferenceMediaDuration({
             id: `character-voice-${voice.assetId}`,
             sourceNodeId: context.characterReferences.find((reference) => reference.assetId === voice.assetId)?.nodeId,
-            name: `${voice.characterName}-声音样本.${extension}`,
+            name: `${voice.characterName}-聲音樣本.${extension}`,
             type: resource.mimeType || "audio/mpeg",
             url: resourceFileUrl(voice.sampleResourceId!),
             storageKey: resourceStorageKey(voice.sampleResourceId!),
@@ -608,11 +608,11 @@ function preferredCharacterRepresentation(representations: Array<{ id: string; r
 
 function compileResolvedVoicePrompt(voice: ResolvedCharacterVoice) {
     return [
-        `【角色声音：${voice.characterName}】`,
-        voice.language && `语言与口音：${voice.language}`,
-        voice.voiceAge && `声音年龄感：${voice.voiceAge}`,
-        voice.timbre && `音色气质：${voice.timbre}`,
-        voice.deliveryInstructions && `表演与朗读要求：${voice.deliveryInstructions}`,
+        `【角色聲音：${voice.characterName}】`,
+        voice.language && `語言與口音：${voice.language}`,
+        voice.voiceAge && `聲音年齡感：${voice.voiceAge}`,
+        voice.timbre && `音色氣質：${voice.timbre}`,
+        voice.deliveryInstructions && `表演與朗讀要求：${voice.deliveryInstructions}`,
     ].filter(Boolean).join("\n");
 }
 
@@ -626,9 +626,9 @@ function readSkillInput(node: CanvasNodeData) {
     return [
         `【技能：${skill.name}】`,
         skill.description ? `用途：${skill.description}` : "",
-        `执行模板：\n${skill.template}`,
-        skill.outputContract ? `输出约束：\n${skill.outputContract}` : "",
-        "请严格执行该技能，只输出结果，不要输出解释性套话。",
+        `執行模板：\n${skill.template}`,
+        skill.outputContract ? `輸出約束：\n${skill.outputContract}` : "",
+        "請嚴格執行該技能，只輸出結果，不要輸出解釋性套話。",
     ]
         .filter(Boolean)
         .join("\n\n");
@@ -636,7 +636,7 @@ function readSkillInput(node: CanvasNodeData) {
 
 function generationLabel(type: NodeGenerationInput["type"] | "drawing", index: number) {
     if (type === "character") return `角色${index + 1}`;
-    if (type === "drawing") return `绘图${index + 1}`;
+    if (type === "drawing") return `繪圖${index + 1}`;
     if (type === "image") return imageReferenceLabel(index);
     if (type === "video") return seedanceReferenceLabel("video", index);
     if (type === "audio") return seedanceReferenceLabel("audio", index);
@@ -647,7 +647,7 @@ function readReferenceImage(node: CanvasNodeData, nodes: CanvasNodeData[], conne
     if (node.type === CanvasNodeType.Drawing && node.metadata?.drawingId) {
         return {
             id: node.id,
-            name: node.title || `绘图-${node.id}`,
+            name: node.title || `繪圖-${node.id}`,
             type: "image/png",
             dataUrl: "",
             source: {
@@ -659,23 +659,23 @@ function readReferenceImage(node: CanvasNodeData, nodes: CanvasNodeData[], conne
         };
     }
     if (node.type === CanvasNodeType.ColorGrade) {
-        // 调色节点自己不存图：源图在上游，参数在 metadata。没连线就跳过这条输入，
-        // 而不是抛错——画布上放一个还没连线的调色节点是很正常的中间状态。
-        // 判据与节点渲染保持一致（都要求上游是带 content 的图片），
-        // 否则会出现「预览里看到了、生成时却没用上」这类不报错的偏差。
+        // 調色節點自己不存圖：源圖在上游，引數在 metadata。沒連線就跳過這條輸入，
+        // 而不是拋錯——畫布上放一個還沒連線的調色節點是很正常的中間狀態。
+        // 判據與節點渲染保持一致（都要求上游是帶 content 的圖片），
+        // 否則會出現「預覽裡看到了、生成時卻沒用上」這類不報錯的偏差。
         const source = getContextResourceNodes(node.id, nodes, connections).find((item) => getNodeResourceKind(item) === "image" && item.metadata?.content);
         const url = source?.metadata?.content;
         if (!source || !url) return null;
 
         const grade = node.metadata?.colorGrade;
-        // 未调色时直接透传源图，省掉一次渲染与上传（也就不占文件容量）。
+        // 未調色時直接透傳源圖，省掉一次渲染與上傳（也就不佔檔案容量）。
         if (!grade || isNeutralColorGrade(grade)) {
             const passthrough = nodeReferenceImage(source);
-            return passthrough ? { ...passthrough, id: node.id, name: node.title || `调色-${node.id}` } : null;
+            return passthrough ? { ...passthrough, id: node.id, name: node.title || `調色-${node.id}` } : null;
         }
         return {
             id: node.id,
-            name: node.title || `调色-${node.id}`,
+            name: node.title || `調色-${node.id}`,
             type: "image/png",
             dataUrl: "",
             source: { kind: "colorgrade", url, grade },

@@ -1,12 +1,12 @@
-// 浏览器内近似预览：真实媒体帧（storageKey → resolveMediaUrl）+ 播放头 + 时间码。
-// 预览只保证时序一致；最终画面、编码和滤镜结果以语义计划导出为准。
+// 瀏覽器內近似預覽：真實媒體幀（storageKey → resolveMediaUrl）+ 播放頭 + 時間碼。
+// 預覽只保證時序一致；最終畫面、編碼和濾鏡結果以語義計劃匯出為準。
 //
-// 播放模型：时间线 transport（store.transportMs）与监视器共享。
-// - 本地 playbackRef 以 rAF 逐帧推进（60fps 时间码），节流回写 store（~80ms），
-//   驱动时间线播放头；外部 scrub（时间线标尺）经 transportMs 回推本地时钟。
-// - <video> 元素从动于时钟：播放时 play()、暂停时 pause()、位置偏差 > 阈值才硬 seek，
-//   播放速率同步 playbackRate —— 画面与声音由浏览器管线真实推进（不再纯读时间码）。
-// - 静音跟随所在音频/视频轨道（muted），不再硬编码 muted（否则"有声音"永远不成立）。
+// 播放模型：時間線 transport（store.transportMs）與監視器共享。
+// - 本地 playbackRef 以 rAF 逐幀推進（60fps 時間碼），節流回寫 store（~80ms），
+//   驅動時間線播放頭；外部 scrub（時間線標尺）經 transportMs 回推本地時鐘。
+// - <video> 元素從動於時鍾：播放時 play()、暫停時 pause()、位置偏差 > 閾值才硬 seek，
+//   播放速率同步 playbackRate —— 畫面與聲音由瀏覽器管線真實推進（不再純讀時間碼）。
+// - 靜音跟隨所在音訊/影片軌道（muted），不再硬編碼 muted（否則"有聲音"永遠不成立）。
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
@@ -36,15 +36,15 @@ import { useResourceVideoPlayback } from "@/hooks/use-resource-video-playback";
 import { resourceFileUrl, resourceIdFromStorageKey } from "@/services/api/resources";
 import type { TimelineClip, TimelineProject } from "@/types/timeline";
 
-// 本地播放时钟 → store.transportMs 的回写节流（毫秒）。太密会让时间线面板每帧重渲染。
+// 本地播放時鐘 → store.transportMs 的回寫節流（毫秒）。太密會讓時間線面板每幀重渲染。
 const STORE_PUSH_INTERVAL_MS = 80;
-// 外部 seek 与本地时钟差超过该值（毫秒）视为"拖动跳转"：先暂停再跟随，避免播放中抢时钟。
+// 外部 seek 與本地時鐘差超過該值（毫秒）視為"拖動跳轉"：先暫停再跟隨，避免播放中搶時鐘。
 const SEEK_JUMP_MS = 500;
-// 视频元素位置校正阈值（秒）：仅当偏差超过该值才硬 seek，避免逐帧写 currentTime。
+// 影片元素位置校正閾值（秒）：僅當偏差超過該值才硬 seek，避免逐幀寫 currentTime。
 const VIDEO_SEEK_TOLERANCE_S = 0.35;
 
 function getClipAtTime(project: TimelineProject, timeMs: number): TimelineClip | null {
-    // 隐藏轨道（visible === false）上的片段不参与预览合成。
+    // 隱藏軌道（visible === false）上的片段不參與預覽合成。
     const hiddenTrackIds = new Set(project.tracks.filter((t) => t.visible === false).map((t) => t.id));
     const visible = (clip: TimelineClip) => !hiddenTrackIds.has(clip.trackId);
     return (
@@ -79,7 +79,7 @@ function useClipMediaUrl(clip: TimelineClip | null): string | null {
     return url;
 }
 
-/** clip 内部当前应播放的源时间（毫秒）：transport 相对 clip 起点 + 源起点偏移。 */
+/** clip 內部當前應播放的源時間（毫秒）：transport 相對 clip 起點 + 源起點偏移。 */
 function clipSourceTimeMs(clip: TimelineClip, transportMs: number): number {
     return Math.max(0, transportMs - clip.startMs + (clip.sourceStartMs ?? 0));
 }
@@ -87,11 +87,11 @@ function clipSourceTimeMs(clip: TimelineClip, transportMs: number): number {
 function clipKindLabel(kind: TimelineClip["kind"]): string {
     switch (kind) {
         case "video":
-            return "视频";
+            return "影片";
         case "image":
-            return "图片";
+            return "圖片";
         case "audio":
-            return "音频";
+            return "音訊";
         case "subtitle":
             return "字幕";
         case "text":
@@ -113,7 +113,7 @@ export function EditorPreviewMonitor() {
     const { project, transportMs, setTransportMs } = useEditorStoreContext();
     const durationMs = project?.durationMs ?? 0;
 
-    // 本地播放时钟（毫秒）：逐帧刷新本组件；播放态节流回写 store 驱动时间线播放头。
+    // 本地播放時鐘（毫秒）：逐幀重新整理本元件；播放態節流回寫 store 驅動時間線播放頭。
     const [playbackMs, setPlaybackMs] = useState(0);
     const playbackRef = useRef(0);
     const [playing, setPlaying] = useState(false);
@@ -140,7 +140,7 @@ export function EditorPreviewMonitor() {
     };
     const videoSrc = isVideoClip ? videoPlayback.url : null;
     const imageSrc = activeClip?.kind === "image" ? activeMediaUrl : null;
-    const mediaErrorHint = videoPlayback.error || (videoPlayback.loading ? "正在准备视频预览…" : null);
+    const mediaErrorHint = videoPlayback.error || (videoPlayback.loading ? "正在準備影片預覽…" : null);
 
     const videoMuted = activeTrack?.muted === true;
 
@@ -168,13 +168,13 @@ export function EditorPreviewMonitor() {
         setTransportMs(playbackRef.current);
     }, [setTransportMs]);
 
-    // 外部 transport 变化（时间线标尺 scrub / 跳转）：回推本地时钟；
-    // 播放中大幅跳动视为拖动跳转，先暂停避免与本地时钟互相抢写。
+    // 外部 transport 變化（時間線標尺 scrub / 跳轉）：回推本地時鐘；
+    // 播放中大幅跳動視為拖動跳轉，先暫停避免與本地時鐘互相搶寫。
     useEffect(() => {
         if (transportMs === playbackRef.current) return;
         if (playingRef.current) {
-            // 播放中收到的 transport 写入只可能是自身节流回写或外部 scrub；
-            // 大幅跳动视为拖动/跳转：暂停并跟随。小幅忽略，避免本地时钟被旧回写值拉回（回跳）。
+            // 播放中收到的 transport 寫入只可能是自身節流回寫或外部 scrub；
+            // 大幅跳動視為拖動/跳轉：暫停並跟隨。小幅忽略，避免本地時鐘被舊回寫值拉回（回跳）。
             if (Math.abs(transportMs - playbackRef.current) > SEEK_JUMP_MS) {
                 stop();
                 playbackRef.current = transportMs;
@@ -184,7 +184,7 @@ export function EditorPreviewMonitor() {
         }
         playbackRef.current = transportMs;
         setPlaybackMs(transportMs);
-        // stop 已是最新引用；transportMs 为唯一驱动源
+        // stop 已是最新引用；transportMs 為唯一驅動源
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [transportMs]);
 
@@ -194,7 +194,7 @@ export function EditorPreviewMonitor() {
             stop();
             return;
         }
-        // 停在末尾再点播放：从头开始。
+        // 停在末尾再點播放：從頭開始。
         if (playbackRef.current >= durationMs - 50) {
             playbackRef.current = 0;
             setPlaybackMs(0);
@@ -223,7 +223,7 @@ export function EditorPreviewMonitor() {
         rafRef.current = requestAnimationFrame(tick);
     }, [durationMs, project, stop, setTransportMs]);
 
-    // 项目切换/时长变化时重置播放
+    // 專案切換/時長變化時重置播放
     useEffect(() => {
         syncPlayback(0);
         stop();
@@ -242,7 +242,7 @@ export function EditorPreviewMonitor() {
         setSpeed(next);
     };
 
-    // —— <video> 从动驱动 ——
+    // —— <video> 從動驅動 ——
 
     const applyVideoPosition = (v: HTMLVideoElement) => {
         if (!activeClip || activeClip.kind !== "video") return;
@@ -252,7 +252,7 @@ export function EditorPreviewMonitor() {
         if (Math.abs(v.currentTime - t) > VIDEO_SEEK_TOLERANCE_S) v.currentTime = t;
     };
 
-    // 时钟推进/外部 seek：校正视频位置（播放同速时偏差小，几乎不触发硬 seek）。
+    // 時鐘推進/外部 seek：校正影片位置（播放同速時偏差小，幾乎不觸發硬 seek）。
     useEffect(() => {
         const v = videoRef.current;
         if (!v || !isVideoClip) return;
@@ -261,14 +261,14 @@ export function EditorPreviewMonitor() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [playbackMs, videoSrc, activeClip?.id]);
 
-    // 播放/暂停：真实驱动浏览器管线（画面 + 声音）。
+    // 播放/暫停：真實驅動瀏覽器管線（畫面 + 聲音）。
     useEffect(() => {
         const v = videoRef.current;
         if (!v || !isVideoClip) return;
         if (playing) {
             const p = v.play();
             if (p) p.catch(() => {
-                // 浏览器 autoplay/格式限制：onError 已接管提示与回退。
+                // 瀏覽器 autoplay/格式限制：onError 已接管提示與回退。
             });
         } else if (!v.paused) {
             v.pause();
@@ -276,7 +276,7 @@ export function EditorPreviewMonitor() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [playing, activeClip?.id, videoSrc]);
 
-    // 变速：同步视频播放速率，保持音画与时钟一致。
+    // 變速：同步影片播放速率，保持音畫與時鐘一致。
     useEffect(() => {
         const v = videoRef.current;
         if (v && isVideoClip) v.playbackRate = speed;
@@ -293,7 +293,7 @@ export function EditorPreviewMonitor() {
         }
     };
 
-    // 源素材比片段短：video 提前播完 → 把时钟对齐到片段结尾，让后续片段/结束自然衔接。
+    // 源素材比片段短：video 提前播完 → 把時鐘對齊到片段結尾，讓後續片段/結束自然銜接。
     const handleVideoEnded = () => {
         if (!activeClip || activeClip.kind !== "video") return;
         const clipEndMs = activeClip.startMs + activeClip.durationMs;
@@ -305,8 +305,8 @@ export function EditorPreviewMonitor() {
         }
     };
 
-    // 播放条随监视器面板宽度自适应：窄面板逐级隐藏次要信息（先“/ 总时长”，再时间码与速度文字/箭头），
-    // 极窄时让整条可横向滚动兜底；走带按钮始终固定尺寸，不缩小、不重叠。阈值即对应内容的最小显示宽度。
+    // 播放條隨監視器面板寬度自適應：窄面板逐級隱藏次要資訊（先“/ 總時長”，再時間碼與速度文字/箭頭），
+    // 極窄時讓整條可橫向滾動兜底；走帶按鈕始終固定尺寸，不縮小、不重疊。閾值即對應內容的最小顯示寬度。
     const transportRef = useRef<HTMLDivElement | null>(null);
     const [transportWidth, setTransportWidth] = useState(Number.POSITIVE_INFINITY);
     useLayoutEffect(() => {
@@ -327,7 +327,7 @@ export function EditorPreviewMonitor() {
 
     return (
         <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[var(--director-sequencer-surface)]">
-            {/* 顶部信息条：媒体标题/元数据常驻在画面外的标题栏，不再悬浮遮挡画面内容 */}
+            {/* 頂部資訊條：媒體標題/後設資料常駐在畫面外的標題欄，不再懸浮遮擋畫面內容 */}
             <div className="flex h-9 shrink-0 items-center gap-2 border-b border-[var(--director-sequencer-border)] bg-[var(--director-sequencer-surface-raised)] px-3">
                 <div className="flex min-w-0 flex-1 items-center gap-2">
                     {activeClip ? (
@@ -346,7 +346,7 @@ export function EditorPreviewMonitor() {
                             )}
                         </>
                     ) : (
-                        <span className="truncate text-xs text-[var(--director-dock-fg)]/40">预览监视器</span>
+                        <span className="truncate text-xs text-[var(--director-dock-fg)]/40">預覽監視器</span>
                     )}
                 </div>
                 {mediaErrorHint && (
@@ -360,12 +360,12 @@ export function EditorPreviewMonitor() {
                             <AlertTriangle className="size-3 shrink-0" />
                         )}
                         <span className="truncate">{mediaErrorHint}</span>
-                        {videoPlayback.error && <button type="button" onClick={videoPlayback.retry}>重新加载</button>}
+                        {videoPlayback.error && <button type="button" onClick={videoPlayback.retry}>重新載入</button>}
                         {mediaResourceId && (
                             <a
                                 href={resourceFileUrl(mediaResourceId)}
                                 download
-                                title="下载原片，用本地播放器观看"
+                                title="下載原片，用本地播放器觀看"
                                 className="grid size-4 shrink-0 place-items-center rounded hover:bg-[var(--director-danger)]/15"
                             >
                                 <Download className="size-3" />
@@ -374,7 +374,7 @@ export function EditorPreviewMonitor() {
                     </span>
                 )}
             </div>
-            {/* 预览画面：恒黑舞台，占满控制条以上剩余空间（Concat 监视器风格） */}
+            {/* 預覽畫面：恆黑舞臺，佔滿控制條以上剩餘空間（Concat 監視器風格） */}
             <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-black p-6">
                 {showEmpty ? (
                     <div className="flex flex-col items-center gap-3 text-center">
@@ -384,9 +384,9 @@ export function EditorPreviewMonitor() {
                         <div className="max-w-xs text-xs leading-relaxed text-white/70">
                             {project && project.clips.length > 0
                                 ? activeClip
-                                    ? "当前时间点没有可显示画面（字幕或音频片段）"
-                                    : "播放头位于空白处"
-                                : "时间线暂无片段，导入素材后在此预览"}
+                                    ? "當前時間點沒有可顯示畫面（字幕或音訊片段）"
+                                    : "播放頭位於空白處"
+                                : "時間線暫無片段，匯入素材後在此預覽"}
                         </div>
                     </div>
                 ) : isVideoClip && videoSrc ? (
@@ -413,9 +413,9 @@ export function EditorPreviewMonitor() {
                 ) : null}
             </div>
 
-            {/* 播放控制条：画面下方的独立一行（Concat 布局），不悬浮叠加、无进度条；
-                播放/暂停用反白块 + 图标形态（Play/Pause）表达状态，图标保持中性（无 accent 蓝）。
-                宽度自适应见上方 transportWidth 逻辑。 */}
+            {/* 播放控制條：畫面下方的獨立一行（Concat 佈局），不懸浮疊加、無進度條；
+                播放/暫停用反白塊 + 圖示形態（Play/Pause）表達狀態，圖示保持中性（無 accent 藍）。
+                寬度自適應見上方 transportWidth 邏輯。 */}
             <div
                 ref={transportRef}
                 className={`grid h-11 shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 border-t border-[var(--director-sequencer-border)] bg-[var(--director-sequencer-surface-raised)] px-3 ${
@@ -431,8 +431,8 @@ export function EditorPreviewMonitor() {
                 <div className="flex shrink-0 items-center gap-0.5">
                     <button
                         type="button"
-                        aria-label="回到开头"
-                        title="回到开头"
+                        aria-label="回到開頭"
+                        title="回到開頭"
                         onClick={() => syncPlayback(0)}
                         disabled={!project || durationMs <= 0}
                         className="grid size-7 place-items-center rounded-md text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)] disabled:pointer-events-none disabled:opacity-40"
@@ -441,8 +441,8 @@ export function EditorPreviewMonitor() {
                     </button>
                     <button
                         type="button"
-                        aria-label="后退 1 秒"
-                        title="后退 1 秒"
+                        aria-label="後退 1 秒"
+                        title="後退 1 秒"
                         onClick={() => stepBy(-1000)}
                         disabled={!project || durationMs <= 0}
                         className="grid size-7 place-items-center rounded-md text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)] disabled:pointer-events-none disabled:opacity-40"
@@ -451,7 +451,7 @@ export function EditorPreviewMonitor() {
                     </button>
                     <button
                         type="button"
-                        aria-label={playing ? "暂停" : "播放"}
+                        aria-label={playing ? "暫停" : "播放"}
                         onClick={toggle}
                         disabled={durationMs <= 0}
                         className={`grid size-7 place-items-center rounded-md transition-colors disabled:pointer-events-none disabled:opacity-40 ${
@@ -464,8 +464,8 @@ export function EditorPreviewMonitor() {
                     </button>
                     <button
                         type="button"
-                        aria-label="前进 1 秒"
-                        title="前进 1 秒"
+                        aria-label="前進 1 秒"
+                        title="前進 1 秒"
                         onClick={() => stepBy(1000)}
                         disabled={!project || durationMs <= 0}
                         className="grid size-7 place-items-center rounded-md text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)] disabled:pointer-events-none disabled:opacity-40"
@@ -474,8 +474,8 @@ export function EditorPreviewMonitor() {
                     </button>
                     <button
                         type="button"
-                        aria-label="跳到结尾"
-                        title="跳到结尾"
+                        aria-label="跳到結尾"
+                        title="跳到結尾"
                         onClick={() => syncPlayback(durationMs)}
                         disabled={!project || durationMs <= 0}
                         className="grid size-7 place-items-center rounded-md text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)] disabled:pointer-events-none disabled:opacity-40"

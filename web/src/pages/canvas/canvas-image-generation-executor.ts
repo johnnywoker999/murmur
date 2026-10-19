@@ -76,16 +76,16 @@ export async function executeImageGeneration({
     const retired = reuseSourceNode && sourceNode ? retireImageBatchChildren(sourceNode, canvasNodes, canvasConnections) : { nodes: canvasNodes, connections: canvasConnections, removedIds: [] as string[] };
     const workingNodes = retired.nodes;
     const workingConnections = retired.connections;
-    // 已有图片生成新结果并保留旧版本；参考图只来自入边，避免把旧结果误当成自身输入。
+    // 已有圖片生成新結果並保留舊版本；參考圖只來自入邊，避免把舊結果誤當成自身輸入。
     const referenceImages = generationContext.referenceImages;
     const generationType = referenceImages.length ? ("edit" as const) : ("generation" as const);
     const generationMetadata = buildImageGenerationMetadata(generationType, generationConfig, count, referenceImages);
     const parentConfig = NODE_DEFAULT_SIZE[isConfigNode ? CanvasNodeType.Config : isImageNode ? CanvasNodeType.Image : CanvasNodeType.Text];
     const imageDefaults = NODE_DEFAULT_SIZE[CanvasNodeType.Image];
-    // 生成中占位框按设置比例显示，避免 16:9 任务显示成默认 340x240。
+    // 生成中佔位框按設定比例顯示，避免 16:9 任務顯示成預設 340x240。
     const requestedImageSize = nodeSizeFromRatio(generationConfig.size || "auto", imageDefaults.width, imageDefaults.height);
     const imageConfig = requestedImageSize || imageDefaults;
-    // auto 图生图沿用来源节点尺寸；用户明确选择比例时必须以目标比例创建节点。
+    // auto 圖生圖沿用來源節點尺寸；使用者明確選擇比例時必須以目標比例建立節點。
     const referenceNode = referenceImages.length === 1 ? canvasNodes.find((node) => node.id === referenceImages[0].id && node.type === CanvasNodeType.Image) : undefined;
     const imageSizeSource = requestedImageSize ? undefined : isImageNode && sourceNode?.metadata?.content ? sourceNode : referenceNode;
     const outputNodeSize = imageSizeSource ? { width: imageSizeSource.width, height: imageSizeSource.height } : imageConfig;
@@ -188,7 +188,7 @@ export async function executeImageGeneration({
         ...childNodes,
     ];
 
-    // 任务提交前的保存屏障读取 store；不能等 React updater 执行后才发布新节点。
+    // 任務提交前的儲存屏障讀取 store；不能等 React updater 執行後才釋出新節點。
     const removed = new Set(retired.removedIds);
     const nextConnections = [...canvasConnections.filter((connection) => !removed.has(connection.fromNodeId) && !removed.has(connection.toNodeId)), ...batchConnections];
     if (projectId) useCanvasStore.getState().updateProject(projectId, { nodes: nextNodes, connections: nextConnections });
@@ -243,7 +243,7 @@ export async function executeImageGeneration({
                                 },
                             },
                         );
-                        if (!completed) throw new Error("生成任务缺少成功终态");
+                        if (!completed) throw new Error("生成任務缺少成功終態");
                         return completed;
                     })();
                     const completed = await nativeTask;
@@ -358,7 +358,7 @@ export async function executeImageGeneration({
                         status: node.metadata?.content ? NODE_STATUS_SUCCESS : NODE_STATUS_ERROR,
                         resourceReloadAvailable: true,
                         generationSubmissionState: node.metadata?.taskId ? "accepted" as const : "unknown" as const,
-                        errorDetails: "已停止等待，任务已保留，请继续查询原任务",
+                        errorDetails: "已停止等待，任務已保留，請繼續查詢原任務",
                     },
                 } : node);
                 if (projectId) useCanvasStore.getState().updateProject(projectId, { nodes: next });
@@ -373,7 +373,7 @@ export async function executeImageGeneration({
         });
         return;
     }
-    if (hasFailure) showError(isKeptGenerationResultCode(representativeFailure?.generationErrorCode) ? representativeFailure?.errorDetails || "生成结果已保留，请点击「继续取回」" : saveFailureMessage || (hasSuccess ? "部分图片生成失败" : "全部图片生成失败"));
+    if (hasFailure) showError(isKeptGenerationResultCode(representativeFailure?.generationErrorCode) ? representativeFailure?.errorDetails || "生成結果已保留，請點選「繼續取回」" : saveFailureMessage || (hasSuccess ? "部分圖片生成失敗" : "全部圖片生成失敗"));
     setNodes((current) => {
         const next = current.map((node) => {
             if (node.id === nodeId && isConfigNode) {
@@ -382,7 +382,7 @@ export async function executeImageGeneration({
                     metadata: {
                         ...node.metadata,
                         status: hasSuccess ? NODE_STATUS_SUCCESS : generationFailureNodeStatus(isExistingImageNode),
-                        ...(hasSuccess ? { errorDetails: undefined, generationErrorCode: undefined, failedPromptFingerprint: undefined, failedInputFingerprint: undefined } : representativeFailure || { errorDetails: "全部图片生成失败" }),
+                        ...(hasSuccess ? { errorDetails: undefined, generationErrorCode: undefined, failedPromptFingerprint: undefined, failedInputFingerprint: undefined } : representativeFailure || { errorDetails: "全部圖片生成失敗" }),
                     },
                 };
             }
@@ -393,7 +393,7 @@ export async function executeImageGeneration({
                         ...node.metadata,
                         status: hasSuccess ? NODE_STATUS_SUCCESS : NODE_STATUS_ERROR,
                         batchFailedCount: count > 1 ? failureCount : undefined,
-                        ...(hasSuccess ? { errorDetails: undefined, generationErrorCode: undefined, failedPromptFingerprint: undefined, failedInputFingerprint: undefined } : representativeFailure || { errorDetails: "全部图片生成失败" }),
+                        ...(hasSuccess ? { errorDetails: undefined, generationErrorCode: undefined, failedPromptFingerprint: undefined, failedInputFingerprint: undefined } : representativeFailure || { errorDetails: "全部圖片生成失敗" }),
                     },
                 };
             }

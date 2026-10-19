@@ -458,11 +458,11 @@ async function commitPendingAssetStorePersistenceLocked(scope: string, epoch = c
         const queued = queuedAssetPersists.get(namespace);
         if (!queued) return committed;
 
-        // 读取旧版本时允许隔离历史坏记录；真正写回前，queued.assets 已经由 persistAssetState 严格校验。
-        // 这样既不会用伪造默认值掩盖坏数据，也不会让一条旧记录阻断整库的后续写入。
+        // 讀取舊版本時允許隔離歷史壞記錄；真正寫回前，queued.assets 已經由 persistAssetState 嚴格校驗。
+        // 這樣既不會用偽造預設值掩蓋壞資料，也不會讓一條舊記錄阻斷整庫的後續寫入。
         const recovery = parseAssetStorageDocumentRecovering(await storage.getItem(queued.name), queued.baseAssets);
         if (recovery.invalid.length) {
-            console.warn("素材本地缓存包含无法恢复的历史记录，写回时将隔离这些记录", {
+            console.warn("素材本地快取包含無法恢復的歷史記錄，寫回時將隔離這些記錄", {
                 scope,
                 invalid: recovery.invalid,
             });
@@ -508,7 +508,7 @@ async function writeQueuedAssetPersist(scope: string, epoch: number, _token: num
 async function readPersistedAssetDocumentForScope(scope: string) {
     const recovery = parseAssetStorageDocumentRecovering(await localForageStorageForScope(scope).getItem(ASSET_STORE_KEY));
     if (recovery.invalid.length) {
-        console.warn("素材本地缓存包含无法恢复的历史记录，已隔离并保留其诊断信息", {
+        console.warn("素材本地快取包含無法恢復的歷史記錄，已隔離並保留其診斷資訊", {
             scope,
             invalid: recovery.invalid,
         });
@@ -517,11 +517,11 @@ async function readPersistedAssetDocumentForScope(scope: string) {
 }
 
 /**
- * 登记一个素材写操作，供登出、切换账号和页面卸载前统一冲刷。
+ * 登記一個素材寫操作，供登出、切換賬號和頁面解除安裝前統一沖刷。
  *
- * 这里不能直接对 finally 返回的 Promise 放任不管：原操作失败时，finally 派生的
- * Promise 也会拒绝并产生未处理拒绝。用 then 的成功/失败分支做同一个清理动作，
- * 既保留原 Promise 给调用方观察真实错误，也不会制造第二条未处理错误链。
+ * 這裡不能直接對 finally 返回的 Promise 放任不管：原操作失敗時，finally 派生的
+ * Promise 也會拒絕併產生未處理拒絕。用 then 的成功/失敗分支做同一個清理動作，
+ * 既保留原 Promise 給呼叫方觀察真實錯誤，也不會製造第二條未處理錯誤鏈。
  */
 function trackAssetOperation<T>(operation: Promise<T>, captured: CapturedUserScope) {
     assetOperations.set(operation, captured);
@@ -638,14 +638,14 @@ const assetStorage: PersistStorage<AssetStore> = {
         }
         const recovery = parseAssetStorageDocumentRecovering(value);
         if (recovery.invalid.length) {
-            console.warn("素材本地缓存包含无法恢复的历史记录，已隔离并保留其诊断信息", {
+            console.warn("素材本地快取包含無法恢復的歷史記錄，已隔離並保留其診斷資訊", {
                 scope,
                 invalid: recovery.invalid,
             });
         }
         const document = recovery.document;
-        // 持久化恢复只恢复结构化记录，不能为每个 resource: key 逐条读取资源元数据或 Blob。
-        // 远程资源直接使用受鉴权的 file URL；本地 legacy key 仍恢复为 Blob URL，避免兼容性回归。
+        // 持久化恢復只恢復結構化記錄，不能為每個 resource: key 逐條讀取資源後設資料或 Blob。
+        // 遠端資源直接使用受鑑權的 file URL；本地 legacy key 仍恢復為 Blob URL，避免相容性迴歸。
         const assets = await Promise.all(document.state.assets.map((asset) => normalizePersistedAsset(asset)));
         const hydratedDocument = { ...document, state: { assets } };
         assetMemoryStates.set(scope, { assets });
@@ -669,8 +669,8 @@ async function normalizePersistedAsset(asset: Asset): Promise<Asset> {
         if (asset.kind === "image") return { ...asset, coverUrl: asset.coverUrl.startsWith("blob:") ? url : asset.coverUrl, data: { ...asset.data, dataUrl: url } };
     }
 
-    // 非 resource: key 是早期本地存储格式，必须继续从 localForage 恢复，
-    // 但只在确有本地 key 时读取，不让远程资源重新走逐条网络查询。
+    // 非 resource: key 是早期本地儲存格式，必須繼續從 localForage 恢復，
+    // 但只在確有本地 key 時讀取，不讓遠端資源重新走逐條網路查詢。
     if (asset.kind === "video" && storageKey) return { ...asset, data: { ...asset.data, url: await resolveMediaUrl(storageKey, asset.data.url) } };
     if (asset.kind === "audio" && storageKey) return { ...asset, data: { ...asset.data, url: await resolveMediaUrl(storageKey, asset.data.url) } };
     if (asset.kind === "model" && storageKey) return { ...asset, data: { ...asset.data, url: await resolveMediaUrl(storageKey, asset.data.url) } };
@@ -800,8 +800,8 @@ export const useAssetStore = create<AssetStore>()(
                     return { assets };
                 });
                 markAssetStoreDraft(id, "delete");
-                // 没有本地媒体定位时没有需要由该删除动作回收的 Blob；跳过全库扫描，
-                // 避免纯文本/远程资源删除依赖浏览器 IndexedDB 驱动。
+                // 沒有本地媒體定位時沒有需要由該刪除動作回收的 Blob；跳過全庫掃描，
+                // 避免純文本/遠端資源刪除依賴瀏覽器 IndexedDB 驅動。
                 if (options?.cleanupMedia === false) return;
                 if (!removedAsset || (!collectImageStorageKeys(removedAsset).size && !collectMediaStorageKeys(removedAsset).size)) return;
                 await get().cleanupImages({ assets: remainingAssets });
@@ -815,7 +815,7 @@ export const useAssetStore = create<AssetStore>()(
                     window.setTimeout(() =>
                         withGenerationArtifactCommitLock(scope, async () => {
                             const syncDrafts = await readAllCanvasSyncDrafts(scope);
-                            // 固定锁序：artifact -> Canvas（释放）-> Asset，避免跨 store 锁重入。
+                            // 固定鎖序：artifact -> Canvas（釋放）-> Asset，避免跨 store 鎖重入。
                             const canvasProjects = await withCanvasStorePersistenceLock(scope, async () => {
                                 await commitPendingCanvasStorePersistenceLocked(scope);
                                 const durableCanvas = parseCanvasStorageDocument(await localForageStorageForScope(scope).getItem(CANVAS_STORE_KEY));

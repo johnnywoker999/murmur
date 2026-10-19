@@ -103,7 +103,7 @@ export function CanvasTopBar({
     const theme = canvasThemes[useCanvasThemeStore((state) => state.theme)];
     const dockStyle = canvasDockStyle(theme, theme.node.text);
     const currentCanvasIndex = Math.max(0, projectCanvases.findIndex((canvas) => canvas.id === currentCanvasId));
-    const currentCanvasLabel = projectCanvases[currentCanvasIndex]?.title || `画布 ${currentCanvasIndex + 1}`;
+    const currentCanvasLabel = projectCanvases[currentCanvasIndex]?.title || `畫布 ${currentCanvasIndex + 1}`;
     const titleRef = useRef<HTMLDivElement>(null);
     const renameCanvasInputRef = useRef<HTMLInputElement>(null);
     const [renameCanvas, setRenameCanvas] = useState<{ id: string; title: string } | null>(null);
@@ -137,17 +137,17 @@ export function CanvasTopBar({
     if (libtvReadonlyChrome) {
         return (
             <div className="canvas-libtv-readonly-bar" data-canvas-no-zoom>
-                <div className="canvas-libtv-readonly-title" title={title}>{title === "未命名工作区" ? "BLUE NIGHT蓝色奇妙夜" : title}</div>
+                <div className="canvas-libtv-readonly-title" title={title}>{title === "未命名工作區" ? "BLUE NIGHT藍色奇妙夜" : title}</div>
                 <div className="canvas-libtv-readonly-center" aria-hidden="true">
                     <span className="canvas-libtv-readonly-center-button is-active"><Workflow className="size-4" /></span>
                     <span className="canvas-libtv-readonly-center-button"><Columns2 className="size-4" /></span>
                 </div>
                 <div className="canvas-libtv-readonly-actions">
-                    <span className="canvas-libtv-readonly-hint">只读模式，如需创建请点击</span>
+                    <span className="canvas-libtv-readonly-hint">只讀模式，如需建立請點選</span>
                     <button type="button" className="canvas-libtv-readonly-copy" onClick={() => void onDuplicateProject?.()}>
-                        <CopyPlus className="size-4" />复制项目
+                        <CopyPlus className="size-4" />複製專案
                     </button>
-                    <Link to="/canvas" className="canvas-libtv-readonly-close" aria-label="关闭只读画布"><X className="size-5" /></Link>
+                    <Link to="/canvas" className="canvas-libtv-readonly-close" aria-label="關閉只讀畫布"><X className="size-5" /></Link>
                 </div>
             </div>
         );
@@ -174,15 +174,15 @@ export function CanvasTopBar({
                             overlayClassName="canvas-project-primary-menu"
                             menu={{
                                 items: [
-                                    { key: "home", label: <Link to="/">回到主页</Link> },
-                                    { key: "projects", label: <Link to="/canvas">全部项目</Link> },
+                                    { key: "home", label: <Link to="/">回到主頁</Link> },
+                                    { key: "projects", label: <Link to="/canvas">全部專案</Link> },
                                     { type: "divider" },
-                                    { key: "new", label: <Link to="/canvas?mode=new">创建新项目</Link> },
-                                    { key: "delete", danger: true, label: "删除当前画布", onClick: onDeleteProject },
+                                    { key: "new", label: <Link to="/canvas?mode=new">建立新專案</Link> },
+                                    { key: "delete", danger: true, label: "刪除當前畫布", onClick: onDeleteProject },
                                 ],
                             }}
                         >
-                            <button type="button" className="canvas-topbar-project-menu-button canvas-topbar-action inline-flex size-9 items-center justify-center gap-0.5 rounded-full" style={{ color: theme.node.text }} aria-label="打开画布菜单">
+                            <button type="button" className="canvas-topbar-project-menu-button canvas-topbar-action inline-flex size-9 items-center justify-center gap-0.5 rounded-full" style={{ color: theme.node.text }} aria-label="開啟畫布選單">
                                 {libtvChrome ? (
                                     <span className="canvas-topbar-libtv-brand-mark" aria-hidden="true" />
                                 ) : (
@@ -206,20 +206,20 @@ export function CanvasTopBar({
                                 }}
                                 className="h-8 w-auto min-w-12 max-w-[min(280px,42vw)] appearance-none border-0 bg-transparent p-0 text-left text-base font-semibold tracking-normal outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                                 style={{ color: theme.node.text, caretColor: theme.accent.primary, border: 0, boxShadow: "none", outline: "none" }}
-                                aria-label="画布名称"
+                                aria-label="畫布名稱"
                             />
                         ) : (
                             <div className="canvas-topbar-title-row flex min-w-0 items-center gap-0.5">
-                                <button type="button" className="min-w-0 flex-1 truncate text-left text-base font-semibold tracking-normal transition-opacity hover:opacity-75" onClick={onStartTitleEditing} title="点击修改画布名称">
+                                <button type="button" className="min-w-0 flex-1 truncate text-left text-base font-semibold tracking-normal transition-opacity hover:opacity-75" onClick={onStartTitleEditing} title="點選修改畫布名稱">
                                     {title}
                                 </button>
-                                <CanvasTopBarTooltip label="重命名画布">
+                                <CanvasTopBarTooltip label="重新命名畫布">
                                     <button
                                         type="button"
                                         className="canvas-topbar-rename-button canvas-topbar-action grid size-7 shrink-0 place-items-center rounded-md opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2"
                                         style={{ color: theme.node.text }}
                                         onClick={onStartTitleEditing}
-                                        aria-label="重命名画布"
+                                        aria-label="重新命名畫布"
                                     >
                                         <Pencil className="size-3.5" />
                                     </button>
@@ -228,15 +228,15 @@ export function CanvasTopBar({
                         )}
                         {projectContext && !isTitleEditing ? (
                             <div className="canvas-topbar-project-context mt-0.5 flex w-full min-w-0 items-center gap-1.5 overflow-hidden text-[var(--fs-tiny)]" style={{ color: theme.node.muted }}>
-                                <Link to={`/projects/${projectContext.projectId}/overview`} className="inline-flex min-w-0 items-center gap-1 hover:underline" title={`返回项目：${projectContext.projectName}`}>
+                                <Link to={`/projects/${projectContext.projectId}/overview`} className="inline-flex min-w-0 items-center gap-1 hover:underline" title={`返回專案：${projectContext.projectName}`}>
                                     <FolderKanban className="size-3 shrink-0" />
                                     <span className="max-w-[120px] truncate">{projectContext.projectName}</span>
                                 </Link>
                                 <span aria-hidden>·</span>
-                                <button type="button" className="min-w-0 truncate hover:underline" onClick={onOpenSearch} title="搜索并定位章节或镜头">
-                                    {projectContext.chapterLabel || `${projectContext.nodeCount} 个节点`}
+                                <button type="button" className="min-w-0 truncate hover:underline" onClick={onOpenSearch} title="搜尋並定位章節或鏡頭">
+                                    {projectContext.chapterLabel || `${projectContext.nodeCount} 個節點`}
                                     {projectContext.shotLabel ? ` · ${projectContext.shotLabel}` : ""}
-                                    {projectContext.selectedCount ? ` · 已选 ${projectContext.selectedCount}` : ""}
+                                    {projectContext.selectedCount ? ` · 已選 ${projectContext.selectedCount}` : ""}
                                 </button>
                             </div>
                         ) : null}
@@ -255,8 +255,8 @@ export function CanvasTopBar({
                                 onPointerDown={(event) => event.stopPropagation()}
                             >
                                 <div className="canvas-topbar-canvas-menu-header">
-                                    <span className="canvas-topbar-canvas-menu-heading">画布</span>
-                                    <button type="button" className="canvas-topbar-canvas-menu-add" onClick={onCreateCanvas} aria-label="新建画布">
+                                    <span className="canvas-topbar-canvas-menu-heading">畫布</span>
+                                    <button type="button" className="canvas-topbar-canvas-menu-add" onClick={onCreateCanvas} aria-label="新建畫布">
                                         <Plus className="size-6" />
                                     </button>
                                 </div>
@@ -264,7 +264,7 @@ export function CanvasTopBar({
                                     {projectCanvases.map((canvas, index) => {
                                         const selected = canvas.id === currentCanvasId;
                                         const actionsOpen = canvasActionMenuId === canvas.id;
-                                        const canvasLabel = canvas.title || `画布 ${index + 1}`;
+                                        const canvasLabel = canvas.title || `畫布 ${index + 1}`;
                                         return (
                                             <div key={canvas.id} className={`canvas-topbar-canvas-menu-row${selected ? " is-current" : ""}${actionsOpen ? " is-actions-open" : ""}${renameCanvas?.id === canvas.id ? " is-renaming" : ""}`}>
                                                 {renameCanvas?.id === canvas.id ? (
@@ -273,7 +273,7 @@ export function CanvasTopBar({
                                                         className="canvas-topbar-canvas-menu-rename-input"
                                                         value={renameCanvas.title}
                                                         maxLength={60}
-                                                        aria-label={`重命名画布：${canvasLabel}`}
+                                                        aria-label={`重新命名畫布：${canvasLabel}`}
                                                         onPointerDown={(event) => event.stopPropagation()}
                                                         onClick={(event) => event.stopPropagation()}
                                                         onChange={(event) => setRenameCanvas((current) => current ? { ...current, title: event.target.value } : current)}
@@ -292,7 +292,7 @@ export function CanvasTopBar({
                                                     </button>
                                                 )}
                                                 <span className="canvas-topbar-canvas-menu-end">
-                                                    {selected ? <Check className="canvas-topbar-canvas-menu-check size-5" aria-label="当前画布" /> : null}
+                                                    {selected ? <Check className="canvas-topbar-canvas-menu-check size-5" aria-label="當前畫布" /> : null}
                                                     <Dropdown
                                                         trigger={["hover", "click"]}
                                                         placement="bottomLeft"
@@ -302,14 +302,14 @@ export function CanvasTopBar({
                                                         }}
                                                         menu={{
                                                             items: [
-                                                                { key: "new-window", label: "在新窗口打开", onClick: () => onOpenCanvasInNewWindow?.(canvas.id) },
-                                                                { key: "rename", label: "重命名画布", onClick: () => { setCanvasMenuOpen(true); setRenameCanvas({ id: canvas.id, title: canvasLabel }); } },
-                                                                { key: "duplicate", label: "复制画布", onClick: () => void onDuplicateCanvas?.(canvas.id) },
-                                                                { key: "delete", danger: true, label: "删除画布", onClick: () => void onDeleteCanvas?.(canvas.id) },
+                                                                { key: "new-window", label: "在新視窗開啟", onClick: () => onOpenCanvasInNewWindow?.(canvas.id) },
+                                                                { key: "rename", label: "重新命名畫布", onClick: () => { setCanvasMenuOpen(true); setRenameCanvas({ id: canvas.id, title: canvasLabel }); } },
+                                                                { key: "duplicate", label: "複製畫布", onClick: () => void onDuplicateCanvas?.(canvas.id) },
+                                                                { key: "delete", danger: true, label: "刪除畫布", onClick: () => void onDeleteCanvas?.(canvas.id) },
                                                             ],
                                                         }}
                                                     >
-                                                        <button type="button" className="canvas-topbar-canvas-menu-more" aria-label={`画布操作：${canvasLabel}`} onClick={(event) => event.stopPropagation()}>
+                                                        <button type="button" className="canvas-topbar-canvas-menu-more" aria-label={`畫布操作：${canvasLabel}`} onClick={(event) => event.stopPropagation()}>
                                                             <MoreHorizontal className="size-5" />
                                                         </button>
                                                     </Dropdown>
@@ -321,7 +321,7 @@ export function CanvasTopBar({
                             </div>
                         )}
                     >
-                        <button type="button" className="canvas-topbar-canvas-switch canvas-topbar-action inline-flex h-7 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-1.5 text-xs opacity-75 hover:opacity-100" style={{ color: theme.node.text }} aria-label="切换画布">
+                        <button type="button" className="canvas-topbar-canvas-switch canvas-topbar-action inline-flex h-7 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-1.5 text-xs opacity-75 hover:opacity-100" style={{ color: theme.node.text }} aria-label="切換畫布">
                             <span>{currentCanvasLabel}</span>{canvasMenuOpen ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
                         </button>
                     </Dropdown>
@@ -331,10 +331,10 @@ export function CanvasTopBar({
 
                 {readOnly ? (
                     <div className="canvas-topbar-readonly-banner pointer-events-auto absolute right-6 flex items-center gap-3 rounded-lg px-2 text-xs" role="status">
-                        <span>只读模式，如需创建请点击</span>
+                        <span>只讀模式，如需建立請點選</span>
                         {onDuplicateProject ? (
-                            <Button type="primary" size="small" icon={<CopyPlus className="size-3.5" />} onClick={() => void onDuplicateProject()} aria-label="复制项目">
-                                复制项目
+                            <Button type="primary" size="small" icon={<CopyPlus className="size-3.5" />} onClick={() => void onDuplicateProject()} aria-label="複製專案">
+                                複製專案
                             </Button>
                         ) : null}
                     </div>
@@ -356,21 +356,21 @@ export function CanvasTopBar({
                             </Button>
                         </CanvasTopBarTooltip>
                     ) : null}
-                    {!libtvChrome ? <CanvasTopBarTooltip label="版本记录"><Button type="text" className="canvas-topbar-action !h-9 !w-9 !min-w-9 !rounded-xl !p-0" style={{ color: theme.node.text, background: versionsOpen ? theme.toolbar.activeBg : undefined }} icon={<History className="size-4" />} onClick={onToggleVersions} aria-label="版本记录" aria-pressed={versionsOpen} /></CanvasTopBarTooltip> : null}
+                    {!libtvChrome ? <CanvasTopBarTooltip label="版本記錄"><Button type="text" className="canvas-topbar-action !h-9 !w-9 !min-w-9 !rounded-xl !p-0" style={{ color: theme.node.text, background: versionsOpen ? theme.toolbar.activeBg : undefined }} icon={<History className="size-4" />} onClick={onToggleVersions} aria-label="版本記錄" aria-pressed={versionsOpen} /></CanvasTopBarTooltip> : null}
                 </div>
 
                 <div className="canvas-topbar-cluster canvas-topbar-tools-cluster pointer-events-auto flex items-center gap-1.5 lg:hidden" style={dockStyle}>
-                    <CanvasTopBarTooltip label="搜索画布节点">
+                    <CanvasTopBarTooltip label="搜尋畫布節點">
                         <Button
                             type="text"
                             className="canvas-topbar-action !hidden !h-10 !w-10 !min-w-10 !rounded-xl !p-0 lg:!inline-flex"
                             style={{ color: theme.node.text }}
                             icon={<Search className="size-4" />}
                             onClick={onOpenSearch}
-                            aria-label="搜索画布节点"
+                            aria-label="搜尋畫布節點"
                         />
                     </CanvasTopBarTooltip>
-                    <CanvasTopBarTooltip label="媒体性能模式">
+                    <CanvasTopBarTooltip label="媒體效能模式">
                         <Dropdown
                             trigger={["click"]}
                             menu={{
@@ -378,27 +378,27 @@ export function CanvasTopBar({
                                 selectedKeys: [mediaPerformanceMode],
                                 onClick: ({ key }) => onMediaPerformanceModeChange(key as CanvasMediaPerformanceMode),
                                 items: [
-                                    { key: "auto", label: "自动性能" },
-                                    { key: "quality", label: "画质优先" },
-                                    { key: "performance", label: "性能优先" },
+                                    { key: "auto", label: "自動效能" },
+                                    { key: "quality", label: "畫質優先" },
+                                    { key: "performance", label: "效能優先" },
                                 ],
                             }}
                         >
-                            <Button type="text" className="canvas-topbar-action !hidden !h-10 !w-10 !min-w-10 !rounded-xl !p-0 lg:!inline-flex" style={{ color: theme.node.text }} icon={<Gauge className="size-4" />} aria-label="媒体性能模式" />
+                            <Button type="text" className="canvas-topbar-action !hidden !h-10 !w-10 !min-w-10 !rounded-xl !p-0 lg:!inline-flex" style={{ color: theme.node.text }} icon={<Gauge className="size-4" />} aria-label="媒體效能模式" />
                         </Dropdown>
                     </CanvasTopBarTooltip>
-                    <CanvasTopBarTooltip label="进入专注模式（Shift + Ctrl/Cmd + F）">
-                        <Button type="text" className="canvas-topbar-action !h-10 !w-10 !min-w-10 !rounded-xl !p-0" style={{ color: theme.node.text }} icon={<Focus className="size-4" />} onClick={onEnterFocusMode} aria-label="进入专注模式" />
+                    <CanvasTopBarTooltip label="進入專注模式（Shift + Ctrl/Cmd + F）">
+                        <Button type="text" className="canvas-topbar-action !h-10 !w-10 !min-w-10 !rounded-xl !p-0" style={{ color: theme.node.text }} icon={<Focus className="size-4" />} onClick={onEnterFocusMode} aria-label="進入專注模式" />
                     </CanvasTopBarTooltip>
                     {shortDramaGuide ? (
-                        <CanvasTopBarTooltip label={shortDramaGuide.collapsed ? "展开短剧流程" : "收起短剧流程"}>
+                        <CanvasTopBarTooltip label={shortDramaGuide.collapsed ? "展開短劇流程" : "收起短劇流程"}>
                             <Button
                                 type="text"
                                 className="canvas-topbar-action !h-10 !rounded-xl !px-2.5 !font-medium"
                                 style={{ color: theme.node.text, background: shortDramaGuide.collapsed ? undefined : theme.toolbar.activeBg }}
                                 icon={<Clapperboard className="size-4" />}
                                 onClick={handleShortDramaGuideToggle}
-                                aria-label="短剧流程"
+                                aria-label="短劇流程"
                                 aria-pressed={!shortDramaGuide.collapsed}
                             >
                                 <span className="tabular-nums">{shortDramaGuide.progress.completedCount}/5</span>
@@ -420,13 +420,13 @@ export function CanvasTopBar({
                             </Button>
                         </CanvasTopBarTooltip>
                     ) : null}
-                    <CanvasTopBarTooltip label="版本记录">
+                    <CanvasTopBarTooltip label="版本記錄">
                         <Button
                             type="text"
                             className="canvas-topbar-action canvas-topbar-version-button !h-10 !rounded-xl !px-2.5 !font-medium"
                             style={{ color: theme.node.text, background: versionsOpen ? theme.toolbar.activeBg : undefined }}
                             icon={<History className="size-4" />}
-                            aria-label="版本记录"
+                            aria-label="版本記錄"
                             aria-pressed={versionsOpen}
                             onClick={onToggleVersions}
                         >
@@ -439,9 +439,9 @@ export function CanvasTopBar({
     );
 }
 
-// 顶栏是 --z-toolbar 上的绝对定位浮层，会为子元素建立层叠上下文。行内绝对定位的提示
-// 无论 z-index 多高都无法越过它，会被顶栏下方 --z-panel-floating 的生成任务面板盖住，
-// 因此提示必须走 portal 的浮层层级。
+// 頂欄是 --z-toolbar 上的絕對定位浮層，會為子元素建立層疊上下文。行內絕對定位的提示
+// 無論 z-index 多高都無法越過它，會被頂欄下方 --z-panel-floating 的生成任務面板蓋住，
+// 因此提示必須走 portal 的浮層層級。
 function CanvasTopBarTooltip({ label, children }: { label: string; children: ReactNode }) {
     return (
         <Tooltip title={label} placement="bottom">
@@ -460,6 +460,6 @@ function MenuLabel({ text, shortcut }: { text: string; shortcut: string }) {
 }
 
 function canvasTitleInputSize(value: string) {
-    const visualLength = Array.from(value || "画布名称").reduce((length, character) => length + (character.codePointAt(0)! > 0xff ? 2 : 1), 0);
+    const visualLength = Array.from(value || "畫布名稱").reduce((length, character) => length + (character.codePointAt(0)! > 0xff ? 2 : 1), 0);
     return Math.min(30, Math.max(5, visualLength));
 }

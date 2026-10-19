@@ -33,7 +33,7 @@ export function resolveVideoImageReferences(images: ReferenceImage[], options?: 
         return images.map((image) => ({ image, role: "reference_image" }));
     }
 
-    // 传统创作页没有帧节点 ID：保留单图首帧、双图首尾帧的历史语义。
+    // 傳統創作頁沒有幀節點 ID：保留單圖首幀、雙圖首尾幀的歷史語義。
     return images.map((image, index) => ({
         image,
         role: index === 0 ? "first_frame" : index === 1 && images.length === 2 ? "last_frame" : "reference_image",

@@ -7,8 +7,8 @@ import { canvasThemes } from "@/lib/canvas-theme";
 import { useThemeStore } from "@/stores/use-theme-store";
 
 /**
- * 语音录制功能测试页面
- * 验证输入行内联波形录制和 STT 转写闭环
+ * 語音錄製功能測試頁面
+ * 驗證輸入行內聯波形錄製和 STT 轉寫閉環
  */
 export default function TestVoiceRecording() {
     const theme = canvasThemes[useThemeStore((state) => state.theme)];
@@ -16,18 +16,18 @@ export default function TestVoiceRecording() {
     const [sending, setSending] = useState(false);
 
     const handleTranscribed = (text: string) => {
-        // 转写结果填入输入框，供用户确认或直接发送
+        // 轉寫結果填入輸入框，供使用者確認或直接傳送
         setPrompt((current) => (current.trim() ? `${current} ${text}` : text));
-        message.success("语音已转写为文字");
+        message.success("語音已轉寫為文字");
     };
 
     const handleSubmit = async () => {
         if (!prompt.trim()) return;
         setSending(true);
         try {
-            // 原型阶段：发送到对话入口由调用方接入；此处仅输出
-            console.log("发送文本:", prompt);
-            message.success("发送成功（原型阶段，仅控制台输出）");
+            // 原型階段：傳送到對話入口由呼叫方接入；此處僅輸出
+            console.log("傳送文本:", prompt);
+            message.success("傳送成功（原型階段，僅控制台輸出）");
             setPrompt("");
         } finally {
             setSending(false);
@@ -42,21 +42,21 @@ export default function TestVoiceRecording() {
                     title={
                         <div className="flex items-center gap-2">
                             <Mic className="size-5" style={{ color: theme.accent.primary }} />
-                            <span>实时对话功能测试（MVP）</span>
+                            <span>即時對話功能測試（MVP）</span>
                         </div>
                     }
                     style={{ background: theme.spatial.elevated, borderColor: theme.toolbar.border }}
                 >
                     <div className="space-y-4">
-                        {/* 文本输入 */}
+                        {/* 文本輸入 */}
                         <div>
                             <label className="mb-2 block text-sm font-medium" style={{ color: theme.node.text }}>
-                                文本输入（语音转写结果会自动填入）
+                                文本輸入（語音轉寫結果會自動填入）
                             </label>
                             <textarea
                                 value={prompt}
                                 onChange={(e) => setPrompt(e.target.value)}
-                                placeholder="输入消息，或点击实时对话按钮用语音输入..."
+                                placeholder="輸入訊息，或點選即時對話按鈕用語音輸入..."
                                 className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition focus:border-current"
                                 style={{
                                     background: theme.node.fill,
@@ -67,9 +67,9 @@ export default function TestVoiceRecording() {
                             />
                         </div>
 
-                        {/* 音频预览 */}
+                        {/* 音訊預覽 */}
 
-                        {/* 控制栏：实时对话按钮（点击后在输入行展开波形录制条） */}
+                        {/* 控制欄：即時對話按鈕（點選後在輸入行展開波形錄製條） */}
                         <div className="flex items-center justify-between gap-2">
                             <div className="flex flex-1 items-center gap-2">
                                 <VoiceRecordingButton onTranscribed={handleTranscribed} />
@@ -82,21 +82,21 @@ export default function TestVoiceRecording() {
                                 onClick={handleSubmit}
                                 style={{ background: theme.accent.primary, borderColor: theme.accent.primary, color: theme.accent.onPrimary }}
                             >
-                                发送
+                                傳送
                             </Button>
                         </div>
 
-                        {/* 说明 */}
+                        {/* 說明 */}
                         <div className="rounded-lg border p-3 text-xs" style={{ background: theme.toolbar.panel, borderColor: theme.toolbar.border, color: theme.node.muted }}>
                             <div className="font-semibold" style={{ color: theme.node.text }}>
-                                使用说明：
+                                使用說明：
                             </div>
                             <ul className="mt-1 list-inside list-disc space-y-1">
-                                <li>点击麦克风按钮，输入行内展开波形录制条并自动开始录音</li>
-                                <li>波形动画实时显示音量变化</li>
-                                <li>点击停止按钮完成录制，自动上传并转写</li>
-                                <li>转写结果自动填入输入框，可编辑后发送</li>
-                                <li>转写失败时在录制条内提示，可点击麦克风重试</li>
+                                <li>點選麥克風按鈕，輸入行內展開波形錄製條並自動開始錄音</li>
+                                <li>波形動畫即時顯示音量變化</li>
+                                <li>點選停止按鈕完成錄製，自動上傳並轉寫</li>
+                                <li>轉寫結果自動填入輸入框，可編輯後傳送</li>
+                                <li>轉寫失敗時在錄製條內提示，可點選麥克風重試</li>
                             </ul>
                         </div>
                     </div>

@@ -30,7 +30,7 @@ export async function requestAudioGeneration(config: AiConfig, prompt: string, o
         return blob.type.startsWith("audio/") ? blob : new Blob([blob], { type: audioMimeType(format) });
     } catch (error) {
         if (error instanceof ChannelResponseError || isChannelCancellation(error)) throw error;
-        throw new Error(readAxiosError(error, "音频生成失败"));
+        throw new Error(readAxiosError(error, "音訊生成失敗"));
     }
 }
 
@@ -38,7 +38,7 @@ async function requestAsyncAudioGeneration(config: AiConfig, payload: Record<str
     const created = await audioTransport(config).postJson<Record<string, unknown>>(aiApiUrl(config, "/audio/tasks"), payload, options);
     let state = asyncAudioPayload(created);
     const taskId = asyncAudioTaskId(state);
-    if (!taskId) throw new Error("异步音频接口没有返回任务 ID");
+    if (!taskId) throw new Error("非同步音訊介面沒有返回任務 ID");
     for (let attempt = 0; attempt < 120; attempt += 1) {
         if (asyncAudioSucceeded(state)) return downloadAsyncAudio(config, taskId, state, format, options);
         const status = String(state.status || "").toLowerCase();
@@ -49,7 +49,7 @@ async function requestAsyncAudioGeneration(config: AiConfig, payload: Record<str
         const polled = await audioTransport(config).get<Record<string, unknown>>(aiApiUrl(config, `/audio/tasks/${encodeURIComponent(taskId)}`), options);
         state = asyncAudioPayload(polled);
     }
-    throw new Error(`异步音频生成超时（任务 ${taskId}）`);
+    throw new Error(`非同步音訊生成超時（任務 ${taskId}）`);
 }
 
 function asyncAudioPayload(payload: Record<string, unknown>): Record<string, unknown> {
@@ -108,7 +108,7 @@ function asyncAudioError(payload: Record<string, unknown>) {
         const message = (error as Record<string, unknown>).message;
         if (typeof message === "string" && message.trim()) return message;
     }
-    return typeof payload.message === "string" && payload.message.trim() ? payload.message : "异步音频生成失败";
+    return typeof payload.message === "string" && payload.message.trim() ? payload.message : "非同步音訊生成失敗";
 }
 
 function waitForAudioPoll(signal?: AbortSignal) {
@@ -135,22 +135,22 @@ export async function storeGeneratedAudio(blob: Blob, format = "mp3"): Promise<U
 }
 
 export function assertAudioConfig(config: AiConfig, selectedModel: string) {
-    if (!selectedModel.trim() && !config.model.trim()) throw new Error("请先配置音频模型");
-    if (!config.baseUrl.trim()) throw new Error("请先配置 Base URL");
+    if (!selectedModel.trim() && !config.model.trim()) throw new Error("請先配置音訊模型");
+    if (!config.baseUrl.trim()) throw new Error("請先配置 Base URL");
     const channel = resolveModelChannel(config, selectedModel || config.model);
     if (!channelHasGenerationCredential(channel, selectedModel || config.model)) {
-        throw new Error(isBuiltinBeefAPIChannel(channel) ? "请先连接 MURMUR AI" : "请先配置 API Key");
+        throw new Error(isBuiltinBeefAPIChannel(channel) ? "請先連線 MURMUR AI" : "請先配置 API Key");
     }
-    if (config.apiFormat === "gemini") throw new Error("Gemini 调用格式暂不支持音频生成，请使用 OpenAI 格式渠道");
+    if (config.apiFormat === "gemini") throw new Error("Gemini 呼叫格式暫不支援音訊生成，請使用 OpenAI 格式渠道");
 }
 
 async function assertAudioBlob(blob: Blob) {
     await assertChannelBlob(blob);
     const mimeType = blob.type.toLowerCase();
-    if (mimeType.startsWith("image/") || mimeType.startsWith("video/") || mimeType.startsWith("text/")) throw new Error(`上游返回了非音频内容：${mimeType}`);
+    if (mimeType.startsWith("image/") || mimeType.startsWith("video/") || mimeType.startsWith("text/")) throw new Error(`上游返回了非音訊內容：${mimeType}`);
 }
 
 function readAxiosError(error: unknown, fallback: string) {
-    if (error instanceof DOMException && error.name === "AbortError") return "请求已取消";
+    if (error instanceof DOMException && error.name === "AbortError") return "請求已取消";
     return error instanceof Error ? error.message : fallback;
 }

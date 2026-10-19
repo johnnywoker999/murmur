@@ -76,51 +76,51 @@ export function CanvasAppearanceControls({
 
     return (
         <>
-            <div className="mt-3 text-[var(--fs-micro)] font-semibold uppercase opacity-45">主题模式</div>
+            <div className="mt-3 text-[var(--fs-micro)] font-semibold uppercase opacity-45">主題模式</div>
             <div className="mt-1 grid grid-cols-3 gap-1 rounded-[var(--dock-item-radius-labeled)] border p-1" style={{ background: theme.spatial.surface, borderColor: theme.toolbar.border }}>
-                <ThemeButton active={draft.mode === "light"} label="浅色" theme={theme} onClick={() => selectFixedTheme("light")}><Sun className="size-3.5" /></ThemeButton>
+                <ThemeButton active={draft.mode === "light"} label="淺色" theme={theme} onClick={() => selectFixedTheme("light")}><Sun className="size-3.5" /></ThemeButton>
                 <ThemeButton active={draft.mode === "dark"} label="深色" theme={theme} onClick={() => selectFixedTheme("dark")}><Moon className="size-3.5" /></ThemeButton>
-                <ThemeButton active={draft.mode === "custom"} label="自定义" theme={theme} onClick={selectCustomTheme}><Paintbrush className="size-3.5" /></ThemeButton>
+                <ThemeButton active={draft.mode === "custom"} label="自定義" theme={theme} onClick={selectCustomTheme}><Paintbrush className="size-3.5" /></ThemeButton>
             </div>
 
             {draft.mode === "custom" && draft.custom ? (
                 <div className="mt-2.5 space-y-2.5 rounded-[var(--dock-item-radius-labeled)] border p-2.5" style={{ background: theme.spatial.surface, borderColor: theme.toolbar.border }}>
                     <div className="flex items-center justify-between gap-2">
-                        <span className="text-[var(--fs-tiny)] font-semibold">背景预设</span>
-                        <span className="text-[var(--fs-micro)] opacity-50">{draft.custom.baseTheme === "light" ? "浅色界面" : "深色界面"}</span>
+                        <span className="text-[var(--fs-tiny)] font-semibold">背景預設</span>
+                        <span className="text-[var(--fs-micro)] opacity-50">{draft.custom.baseTheme === "light" ? "淺色介面" : "深色介面"}</span>
                     </div>
                     <div className="grid grid-cols-4 gap-1.5">
                         {presets.map((color) => (
-                            <button key={color} type="button" className="h-7 rounded-md border transition-transform hover:scale-[1.04] focus-visible:outline focus-visible:outline-2 motion-reduce:transition-none motion-reduce:hover:scale-100" style={{ background: color, borderColor: draft.custom?.backgroundColor === color ? theme.node.activeStroke : theme.toolbar.border }} aria-label={`使用背景颜色 ${color}`} title={color} onClick={() => updateCustom({ backgroundColor: color, backgroundBrightness: 0 })} />
+                            <button key={color} type="button" className="h-7 rounded-md border transition-transform hover:scale-[1.04] focus-visible:outline focus-visible:outline-2 motion-reduce:transition-none motion-reduce:hover:scale-100" style={{ background: color, borderColor: draft.custom?.backgroundColor === color ? theme.node.activeStroke : theme.toolbar.border }} aria-label={`使用背景顏色 ${color}`} title={color} onClick={() => updateCustom({ backgroundColor: color, backgroundBrightness: 0 })} />
                         ))}
                     </div>
-                    <ColorField label="画布背景" value={draft.custom.backgroundColor} theme={theme} onChange={(backgroundColor) => updateCustom({ backgroundColor, backgroundBrightness: 0 })} />
+                    <ColorField label="畫布背景" value={draft.custom.backgroundColor} theme={theme} onChange={(backgroundColor) => updateCustom({ backgroundColor, backgroundBrightness: 0 })} />
                     <SliderField label="明亮度" value={draft.custom.backgroundBrightness} min={-30} max={30} suffix="%" onChange={(backgroundBrightness) => updateCustom({ backgroundBrightness })} />
-                    <ColorField label="网格颜色" value={draft.custom.gridColor} theme={theme} onChange={(gridColor) => updateCustom({ gridColor })} />
-                    <SliderField label="网格强度" value={draft.custom.gridOpacity} min={0} max={100} suffix="%" onChange={(gridOpacity) => updateCustom({ gridOpacity })} />
-                    <Button block size="small" type="text" icon={<RotateCcw className="size-3.5" />} onClick={resetCustom}>从继承主题重新开始</Button>
-                    <Button block size="small" type="primary" icon={<Save className="size-3.5" />} onClick={saveAsDefault}>保存为默认</Button>
+                    <ColorField label="網格顏色" value={draft.custom.gridColor} theme={theme} onChange={(gridColor) => updateCustom({ gridColor })} />
+                    <SliderField label="網格強度" value={draft.custom.gridOpacity} min={0} max={100} suffix="%" onChange={(gridOpacity) => updateCustom({ gridOpacity })} />
+                    <Button block size="small" type="text" icon={<RotateCcw className="size-3.5" />} onClick={resetCustom}>從繼承主題重新開始</Button>
+                    <Button block size="small" type="primary" icon={<Save className="size-3.5" />} onClick={saveAsDefault}>儲存為預設</Button>
                 </div>
             ) : null}
 
-            <div className="mt-3 text-[var(--fs-micro)] font-semibold uppercase opacity-45">空间网格</div>
+            <div className="mt-3 text-[var(--fs-micro)] font-semibold uppercase opacity-45">空間網格</div>
             <Segmented
                 className="mt-1 w-full !rounded-[var(--dock-item-radius-labeled)] !p-0.5 [&_.ant-segmented-group]:!flex [&_.ant-segmented-item]:!min-h-7 [&_.ant-segmented-item]:!flex-1 [&_.ant-segmented-item-label]:!min-h-7 [&_.ant-segmented-item-label]:!text-[var(--fs-tiny)] [&_.ant-segmented-item-label]:!leading-7"
                 value={backgroundMode}
                 onChange={(value) => onBackgroundModeChange(value as CanvasBackgroundMode)}
                 options={[
-                    { value: "dots", label: <span className="inline-flex items-center gap-1.5"><CircleDot className="size-3.5" />点</span> },
-                    { value: "lines", label: <span className="inline-flex items-center gap-1.5"><Grid2x2 className="size-3.5" />线</span> },
+                    { value: "dots", label: <span className="inline-flex items-center gap-1.5"><CircleDot className="size-3.5" />點</span> },
+                    { value: "lines", label: <span className="inline-flex items-center gap-1.5"><Grid2x2 className="size-3.5" />線</span> },
                     { value: "blank", label: <span className="inline-flex items-center gap-1.5"><Square className="size-3.5" />空白</span> },
                 ]}
             />
             <div className="mt-2 flex items-center justify-between rounded-[var(--dock-item-radius-labeled)] border px-2.5 py-2 text-[var(--fs-tiny)]" style={{ background: theme.spatial.surface, borderColor: theme.toolbar.border }}>
-                <span className="font-medium">网格吸附 <span className="ml-1 opacity-45">16px</span></span>
-                <Switch size="sm" checked={snapToGrid} onChange={onSnapToGridChange} aria-label="网格吸附" />
+                <span className="font-medium">網格吸附 <span className="ml-1 opacity-45">16px</span></span>
+                <Switch size="sm" checked={snapToGrid} onChange={onSnapToGridChange} aria-label="網格吸附" />
             </div>
             <div className="mt-2 flex items-center justify-between rounded-[var(--dock-item-radius-labeled)] border px-2.5 py-2 text-[var(--fs-tiny)]" style={{ background: theme.spatial.surface, borderColor: theme.toolbar.border }}>
-                <span className="inline-flex items-center gap-1.5 font-medium"><Link2 className="size-3.5 opacity-65" />显示连线</span>
-                <Switch size="sm" checked={showConnections} onChange={onShowConnectionsChange} aria-label="显示连线" />
+                <span className="inline-flex items-center gap-1.5 font-medium"><Link2 className="size-3.5 opacity-65" />顯示連線</span>
+                <Switch size="sm" checked={showConnections} onChange={onShowConnectionsChange} aria-label="顯示連線" />
             </div>
         </>
     );
@@ -128,7 +128,7 @@ export function CanvasAppearanceControls({
 
 function ThemeButton({ active, label, theme, onClick, children }: { active: boolean; label: string; theme: CanvasTheme; onClick: () => void; children: ReactNode }) {
     return (
-        <button type="button" className="inline-flex h-8 min-w-0 items-center justify-center gap-1 rounded-[var(--dock-item-radius)] px-1 text-[var(--fs-tiny)] font-semibold transition-colors" style={active ? { background: theme.node.text, color: theme.node.panel } : { color: theme.toolbar.item }} aria-label={`切换到${label}主题`} aria-pressed={active} title={`切换到${label}主题`} onClick={onClick}>
+        <button type="button" className="inline-flex h-8 min-w-0 items-center justify-center gap-1 rounded-[var(--dock-item-radius)] px-1 text-[var(--fs-tiny)] font-semibold transition-colors" style={active ? { background: theme.node.text, color: theme.node.panel } : { color: theme.toolbar.item }} aria-label={`切換到${label}主題`} aria-pressed={active} title={`切換到${label}主題`} onClick={onClick}>
             {children}<span className="truncate">{label}</span>
         </button>
     );
@@ -154,7 +154,7 @@ function ColorField({ label, value, theme, onChange }: { label: string; value: s
         <label className="grid grid-cols-[72px_28px_minmax(0,1fr)] items-center gap-1.5 text-[var(--fs-tiny)] font-medium">
             <span>{label}</span>
             <ColorPicker disabledAlpha size="small" value={value} onChange={(color) => onChange(color.toHexString().toUpperCase())} />
-            <Input size="small" value={textValue} aria-label={`${label}色码`} style={{ color: theme.node.text }} onFocus={() => setEditing(true)} onChange={(event) => {
+            <Input size="small" value={textValue} aria-label={`${label}色碼`} style={{ color: theme.node.text }} onFocus={() => setEditing(true)} onChange={(event) => {
                 const next = event.target.value;
                 setTextValue(next);
                 const normalized = normalizeHexColor(next);

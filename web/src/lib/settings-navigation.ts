@@ -9,7 +9,7 @@ export function settingsPath(section: SettingsSection = "channels", continueCrea
 }
 
 /**
- * 画布深层组件没有路由上下文出口时统一跳转到正式设置页，避免重新引入全局配置弹窗。
+ * 畫布深層元件沒有路由上下文出口時統一跳轉到正式設定頁，避免重新引入全域性配置彈窗。
  */
 export function navigateToSettings(options?: { section?: SettingsSection; continueCreation?: boolean }) {
     const to = settingsPath(options?.section, options?.continueCreation);

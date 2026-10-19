@@ -13,7 +13,7 @@ export function CanvasDeleteProjectsDialog() {
     const setDeleteIds = useCanvasUiStore((state) => state.setDeleteProjectIds);
     const removeSelectedIds = useCanvasUiStore((state) => state.removeSelectedProjectIds);
     const cleanupImages = useAssetStore((state) => state.cleanupImages);
-    const deletionLabel = isLocalWorkspaceMode() ? "本地画布" : "画布";
+    const deletionLabel = isLocalWorkspaceMode() ? "本地畫布" : "畫布";
     const confirm = async (assertCurrent: () => void) => {
         const selected = [...useCanvasUiStore.getState().deleteProjectIds];
         if (!selected.length) return;
@@ -21,10 +21,10 @@ export function CanvasDeleteProjectsDialog() {
         assertCurrent();
         void cleanupImages();
         removeSelectedIds(selected);
-        message.success(`已删除 ${selected.length} 个${deletionLabel}`);
+        message.success(`已刪除 ${selected.length} 個${deletionLabel}`);
     };
     if (!scope || !ids.length) return null;
-    return <CanvasDeleteConfirmation scope={scope} title={`删除${deletionLabel}？`}
-        description={`将删除 ${ids.length} 个${deletionLabel}，里面的节点和连线也会一起移除。`}
+    return <CanvasDeleteConfirmation scope={scope} title={`刪除${deletionLabel}？`}
+        description={`將刪除 ${ids.length} 個${deletionLabel}，裡面的節點和連線也會一起移除。`}
         onCancel={() => setDeleteIds([])} onConfirm={confirm} />;
 }

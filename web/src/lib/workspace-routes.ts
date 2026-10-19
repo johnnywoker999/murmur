@@ -1,5 +1,5 @@
 export function isSpatialWorkbenchPath(pathname: string) {
-    // 画布列表属于用户工作台，只有具体画布编辑器与运营后台保留各自现有视觉契约。
+    // 畫佈列表屬於使用者工作臺，只有具體畫布編輯器與運營後臺保留各自現有視覺契約。
     const canvasEditor = /^\/canvas\/[^/]+(?:\/|$)/.test(pathname);
     return !canvasEditor && !pathname.startsWith("/admin");
 }

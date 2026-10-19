@@ -5,7 +5,7 @@ const STORYBOARD_ADD_ROW_HEIGHT = 36;
 export const STORYBOARD_COMPOSER_MIN_HEIGHT = 104;
 const STORYBOARD_COMPOSER_MAX_HEIGHT = 180;
 
-// 布局计算属于画布领域逻辑，独立于 React 节点组件，避免纯函数测试加载完整 UI 依赖。
+// 佈局計算屬於畫布領域邏輯，獨立於 React 節點元件，避免純函式測試載入完整 UI 依賴。
 function normalizedComposerHeight(composerHeight: number) {
     return Math.min(STORYBOARD_COMPOSER_MAX_HEIGHT, Math.max(STORYBOARD_COMPOSER_MIN_HEIGHT, composerHeight));
 }

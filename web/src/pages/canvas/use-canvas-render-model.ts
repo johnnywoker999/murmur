@@ -105,8 +105,8 @@ export function useCanvasRenderModel({
             }
 
             if (node.metadata?.isBatchRoot) batchRoots.push(node);
-            // 资产托盘与节点渲染共用同一份可视内容：生成结果在资源尚未
-            // 完成持久化时可能只有 previewContent，不能因此从“当前画布”中消失。
+            // 資產托盤與節點渲染共用同一份可視內容：生成結果在資源尚未
+            // 完成持久化時可能只有 previewContent，不能因此從“當前畫布”中消失。
             if (node.type === CanvasNodeType.Image && (node.metadata?.content || node.metadata?.previewContent) && !collapsedBatchChildIds.has(node.id) && !(parent && isFrameNode(parent) && parent.metadata?.frame?.collapsed)) {
                 canvasImageNodes.push(node);
             }

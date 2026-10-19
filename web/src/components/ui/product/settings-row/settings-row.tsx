@@ -12,11 +12,11 @@ export interface SettingsRowProps {
 }
 
 /**
- * SettingsRow —— 设置项行（左侧标签/说明 + 右侧控件）。
+ * SettingsRow —— 設定項行（左側標籤/說明 + 右側控制元件）。
  *
- * 用途：设置页与偏好面板内"一行一个设置项"的排版，替代 Form.Item 的纵向大块布局。
- *   行间以细分隔线区分，信息密度高、便于扫读；最后一行自动去掉分隔线。
- * token：分隔线 border-foreground/10，标签 text-foreground，说明 text-foreground/55。
+ * 用途：設定頁與偏好面板內"一行一個設定項"的排版，替代 Form.Item 的縱向大塊佈局。
+ *   行間以細分隔線區分，資訊密度高、便於掃讀；最後一行自動去掉分隔線。
+ * token：分隔線 border-foreground/10，標籤 text-foreground，說明 text-foreground/55。
  */
 export function SettingsRow({ label, description, control, align = "center", className, controlClassName }: SettingsRowProps) {
     return (

@@ -4,12 +4,12 @@ import { decodeChannelModel, encodeChannelModel, isBuiltinBeefAPIChannel, normal
 export const MANAGED_ASSISTANT_MODELS = ["gpt-6-astra", "claude-opus-5-5", "deepseek-v4.1-flash", "glm-5.3", "gemini-3.8-flash"] as const;
 
 /**
- * 画布助手只能走这三种对话协议：它需要多轮工具调用，
- * 生图/视频/音频协议和单轮补全协议都无法承载这个回路。
+ * 畫布助手只能走這三種對話協議：它需要多輪工具呼叫，
+ * 生圖/影片/音訊協議和單輪補全協議都無法承載這個迴路。
  */
 export const ASSISTANT_MODEL_PROTOCOLS: ModelProtocol[] = ["chat-completion", "claude-api", "openai-response", "responses"];
 
-/** 文本能力未显式声明协议时，渠道层按 chat-completion 发起请求，因此同样可选。 */
+/** 文本能力未顯式宣告協議時，渠道層按 chat-completion 發起請求，因此同樣可選。 */
 const DEFAULT_TEXT_PROTOCOL: ModelProtocol = "chat-completion";
 
 function protocolSupported(protocol: ModelProtocol | undefined) {
@@ -36,7 +36,7 @@ function channelAssistantModels(channel: ModelChannel, defaultTextModel: string)
     return models.map((model) => encodeChannelModel(channel.id, model));
 }
 
-/** 助手可选模型包含自定义渠道里没有能力档案的默认文本模型。 */
+/** 助手可選模型包含自定義渠道里沒有能力檔案的預設文本模型。 */
 export function assistantModelOptions(config: AiConfig): string[] {
     const seen = new Set<string>();
     const options: string[] = [];
@@ -52,8 +52,8 @@ export function assistantModelOptions(config: AiConfig): string[] {
 }
 
 /**
- * 归一化已保存的助手模型：空值表示跟随默认文本模型，
- * 无效值返回空值供界面提示，不代表可以改用另一模型。
+ * 歸一化已儲存的助手模型：空值表示跟隨預設文本模型，
+ * 無效值返回空值供介面提示，不代表可以改用另一模型。
  */
 export function normalizeAssistantModel(config: AiConfig, value: unknown): string {
     const candidate = normalizeModelOptionValue(value, config.channels);
@@ -61,7 +61,7 @@ export function normalizeAssistantModel(config: AiConfig, value: unknown): strin
     return assistantModelOptions(config).includes(candidate) ? candidate : "";
 }
 
-/** 助手实际使用的模型：未单独选择时跟随默认文本模型。 */
+/** 助手實際使用的模型：未單獨選擇時跟隨預設文本模型。 */
 export function resolveAssistantModel(config: AiConfig): string {
     return normalizeAssistantModel(config, config.assistantModel || config.textModel);
 }

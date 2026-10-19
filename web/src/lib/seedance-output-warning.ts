@@ -22,6 +22,6 @@ export function seedanceOutputWarning(inputJson: string | undefined, width?: num
         const match = /^(\d+):(\d+)$/.exec(ratio);
         if (!match || Number(match[2]) <= 0) return undefined;
         if (Math.abs(width / height / (Number(match[1]) / Number(match[2])) - 1) <= 0.02) return undefined;
-        return `视频已生成，但画幅与设置不一致：要求 ${ratio}，实际 ${width}×${height}。原片已保留。`;
+        return `影片已生成，但畫幅與設定不一致：要求 ${ratio}，實際 ${width}×${height}。原片已保留。`;
     } catch { return undefined; }
 }

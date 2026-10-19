@@ -16,8 +16,8 @@ const POSITION_STYLE: Record<SubtitleStyle["position"], CSSProperties> = {
 };
 
 /**
- * 画布视频节点上的实时字幕叠加层：按字幕样式定位到视频画面内。
- * 纯展示层（pointer-events-none），不拦截画布拖拽与播放器控件。
+ * 畫布影片節點上的即時字幕疊加層：按字幕樣式定位到影片畫面內。
+ * 純展示層（pointer-events-none），不攔截畫布拖拽與播放器控制元件。
  */
 export function CanvasSubtitleOverlay({ text, highlight, style }: CanvasSubtitleOverlayProps) {
     return (

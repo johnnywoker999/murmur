@@ -70,14 +70,14 @@ export function LibTVImportDialog({ open, projectId, viewport, viewportSize, onC
 
     const load = async () => {
         if (!uuid) {
-            message.error("请填写 LibTV 画布 UUID 或链接");
+            message.error("請填寫 LibTV 畫布 UUID 或連結");
             return;
         }
         setLoading(true);
         try {
             setResult(await importLibTVCanvas(projectId, uuid));
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "读取 LibTV 画布失败");
+            message.error(error instanceof Error ? error.message : "讀取 LibTV 畫布失敗");
         } finally {
             setLoading(false);
         }
@@ -90,9 +90,9 @@ export function LibTVImportDialog({ open, projectId, viewport, viewportSize, onC
             await onApply(buildCanvasNodes(result, viewport, viewportSize), result.connections);
             reset();
             onClose();
-            message.success(`已导入 ${result.importedNodeCount} 个节点和 ${result.importedConnectionCount} 条连接`);
+            message.success(`已匯入 ${result.importedNodeCount} 個節點和 ${result.importedConnectionCount} 條連線`);
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "保存导入结果失败");
+            message.error(error instanceof Error ? error.message : "儲存匯入結果失敗");
         } finally {
             setLoading(false);
         }
@@ -103,32 +103,32 @@ export function LibTVImportDialog({ open, projectId, viewport, viewportSize, onC
             className="workspace-modal"
             open={open}
             onCancel={close}
-            title="导入 LibTV 画布"
+            title="匯入 LibTV 畫布"
             width={620}
             footer={
                 result ? (
                     [
                         <Button key="close" onClick={close}>
-                            关闭
+                            關閉
                         </Button>,
                         <Button key="apply" type="primary" icon={<Import className="size-4" />} loading={loading} onClick={() => void apply()}>
-                            确认导入
+                            確認匯入
                         </Button>,
                     ]
                 ) : (
                     <Button type="primary" loading={loading} onClick={() => void load()}>
-                        读取画布
+                        讀取畫布
                     </Button>
                 )
             }
         >
             <div className="space-y-4">
                 <div>
-                    <label className="mb-2 block text-sm font-medium">LibTV 画布 UUID 或链接</label>
+                    <label className="mb-2 block text-sm font-medium">LibTV 畫布 UUID 或連結</label>
                     <Input
                         value={value}
                         onChange={(event) => changeValue(event.target.value)}
-                        placeholder="粘贴 32 位 UUID、画布链接或分享链接"
+                        placeholder="貼上 32 位 UUID、畫布連結或分享連結"
                         disabled={loading}
                         suffix={uuid && value !== uuid ? <ExternalLink className="size-4 text-foreground/35" /> : null}
                     />
@@ -136,7 +136,7 @@ export function LibTVImportDialog({ open, projectId, viewport, viewportSize, onC
                 {loading && !result ? (
                     <div className="flex items-center gap-2 text-sm text-foreground/55">
                         <LoaderCircle className="size-4 animate-spin" />
-                        正在读取 LibTV 画布…
+                        正在讀取 LibTV 畫布…
                     </div>
                 ) : null}
                 {result ? (
@@ -144,29 +144,29 @@ export function LibTVImportDialog({ open, projectId, viewport, viewportSize, onC
                         <div className="rounded-xl p-4" style={{ background: "var(--library-surface)" }}>
                             <div className="flex flex-wrap items-start justify-between gap-3">
                                 <div>
-                                    <div className="text-sm font-semibold">{result.projectName || "LibTV 画布"}</div>
-                                    <div className="mt-1 text-sm text-foreground/60">可导入 {result.importedNodeCount} 个节点 · {result.importedConnectionCount} 条连线</div>
+                                    <div className="text-sm font-semibold">{result.projectName || "LibTV 畫布"}</div>
+                                    <div className="mt-1 text-sm text-foreground/60">可匯入 {result.importedNodeCount} 個節點 · {result.importedConnectionCount} 條連線</div>
                                 </div>
                                 <Tag color="blue">批次：{formatLibTVBatchTime(result.batchCreatedAt)}</Tag>
                             </div>
-                            <div className="mt-3 text-xs leading-5 text-foreground/50">节点会保留相对位置，并整体放到当前可视区域中心。</div>
+                            <div className="mt-3 text-xs leading-5 text-foreground/50">節點會保留相對位置，並整體放到當前可視區域中心。</div>
                         </div>
                         {result.skippedNodes.length || result.skippedConnections.length || result.multiResultNodeCount || result.staleNodeCount || result.reusedFailedNodeCount || result.placeholderNodeCount || result.convertedSpecialCount ? (
                             <div className="flex items-start gap-2 rounded-lg px-3 py-2.5 text-xs leading-5 text-foreground/60" style={{ background: "var(--surface-hover)" }}>
                                 <CircleAlert className="mt-0.5 size-4 shrink-0" />
                                 <div>
-                                    {result.skippedNodes.length ? <div>{result.skippedNodes.length} 个暂不支持的节点未导入，相关连线已自动忽略。</div> : null}
-                                    {!result.skippedNodes.length && result.skippedConnections.length ? <div>{result.skippedConnections.length} 条无效连线已自动忽略。</div> : null}
-                                    {result.reusedFailedNodeCount ? <div>{result.reusedFailedNodeCount} 个最近任务失败但仍有历史结果的节点已保留。</div> : null}
-                                    {result.placeholderNodeCount ? <div>{result.placeholderNodeCount} 个尚未生成结果的节点已作为占位节点保留。</div> : null}
-                                    {result.convertedSpecialCount ? <div>{result.convertedSpecialCount} 个特殊节点已转换为图片参考节点。</div> : null}
-                                    {result.multiResultNodeCount ? <div>{result.multiResultNodeCount} 个多结果节点已使用首个结果。</div> : null}
-                                    {result.staleNodeCount ? <div>{result.staleNodeCount} 个过期标记节点仍保留现有结果。</div> : null}
+                                    {result.skippedNodes.length ? <div>{result.skippedNodes.length} 個暫不支援的節點未匯入，相關連線已自動忽略。</div> : null}
+                                    {!result.skippedNodes.length && result.skippedConnections.length ? <div>{result.skippedConnections.length} 條無效連線已自動忽略。</div> : null}
+                                    {result.reusedFailedNodeCount ? <div>{result.reusedFailedNodeCount} 個最近任務失敗但仍有歷史結果的節點已保留。</div> : null}
+                                    {result.placeholderNodeCount ? <div>{result.placeholderNodeCount} 個尚未生成結果的節點已作為佔位節點保留。</div> : null}
+                                    {result.convertedSpecialCount ? <div>{result.convertedSpecialCount} 個特殊節點已轉換為圖片參考節點。</div> : null}
+                                    {result.multiResultNodeCount ? <div>{result.multiResultNodeCount} 個多結果節點已使用首個結果。</div> : null}
+                                    {result.staleNodeCount ? <div>{result.staleNodeCount} 個過期標記節點仍保留現有結果。</div> : null}
                                 </div>
                             </div>
                         ) : null}
                         <div className="flex flex-wrap gap-2">
-                            <Tag>等待确认导入</Tag>
+                            <Tag>等待確認匯入</Tag>
                         </div>
                     </div>
                 ) : null}

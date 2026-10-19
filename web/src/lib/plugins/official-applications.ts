@@ -6,10 +6,10 @@ import { RUNNINGHUB_PLUGIN_ID } from "@/lib/plugins/builtin/workflows";
 import { EDITOR_SHELL_PLUGIN_ID } from "./builtin/editor/editor-shell";
 
 /**
- * 官方“应用型”插件清单：这些插件在管理页按用户自主启停处理，而不是系统协议。
+ * 官方“應用型”外掛清單：這些外掛在管理頁按使用者自主啟停處理，而不是系統協議。
  *
- * 之前管理页、用户插件页和后端各自维护一份清单，管理页漏掉 AI 审美分析和剪辑
- * 工作台，导致二者被误判为系统协议并在管理页显示“已停用”。这里收敛为唯一来源。
+ * 之前管理頁、使用者外掛頁和後端各自維護一份清單，管理頁漏掉 AI 審美分析和剪輯
+ * 工作臺，導致二者被誤判為系統協議並在管理頁顯示“已停用”。這裡收斂為唯一來源。
  */
 export const OFFICIAL_APPLICATION_PLUGIN_IDS = [
     RUNNINGHUB_PLUGIN_ID,
@@ -21,7 +21,7 @@ export const OFFICIAL_APPLICATION_PLUGIN_IDS = [
 
 const officialApplicationIdSet = new Set<string>(OFFICIAL_APPLICATION_PLUGIN_IDS);
 
-/** 判断插件是否为官方应用型插件（用户可在插件页自主启停）。 */
+/** 判斷外掛是否為官方應用型外掛（使用者可在外掛頁自主啟停）。 */
 export function isOfficialApplicationPluginId(pluginId: string) {
     return officialApplicationIdSet.has(pluginId);
 }

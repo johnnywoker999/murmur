@@ -14,8 +14,8 @@ export function CanvasCharacterReferenceNodeContent({ node }: { node: CanvasNode
         <div className="shrink-0 border-t border-border/70 px-3 py-2.5">
             <div className="truncate text-sm font-semibold">{node.metadata?.characterName || node.title}</div>
             <div className="mt-2 flex min-w-0 gap-1.5">
-                <State icon={<ImageIcon className="size-3" />} ready={visualReady} label={visualReady ? "形象就绪" : "形象待完善"} />
-                <State icon={<Volume2 className="size-3" />} ready={voiceReady} label={voiceReady ? node.metadata?.characterVoiceName || "声音已绑定" : "声音未绑定"} />
+                <State icon={<ImageIcon className="size-3" />} ready={visualReady} label={visualReady ? "形象就緒" : "形象待完善"} />
+                <State icon={<Volume2 className="size-3" />} ready={voiceReady} label={voiceReady ? node.metadata?.characterVoiceName || "聲音已繫結" : "聲音未繫結"} />
             </div>
         </div>
     </div>;

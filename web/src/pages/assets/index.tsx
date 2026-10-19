@@ -81,12 +81,12 @@ type ImageDraft = ImageAsset["data"] | null;
 const kindOptions = [
     { label: "全部", value: "all" },
     { label: "文本", value: "text" },
-    { label: "图片", value: "image" },
-    { label: "视频", value: "video" },
-    { label: "音频", value: "audio" },
+    { label: "圖片", value: "image" },
+    { label: "影片", value: "video" },
+    { label: "音訊", value: "audio" },
 ];
 
-const categoryOptions = [{ label: "全部分类", value: "all" }, ...ASSET_CATEGORY_OPTIONS];
+const categoryOptions = [{ label: "全部分類", value: "all" }, ...ASSET_CATEGORY_OPTIONS];
 // Bump the preference key so existing installs that persisted list view get
 // the new grid-first default once, while future user choices remain sticky.
 const ASSET_VIEW_MODE_KEY = "infinite-canvas:asset-view-mode:v2";
@@ -364,7 +364,7 @@ function AssetsPageSession() {
     }, [assets, canonicalReads, validAssets, visibleAssetIds]);
 
     const folderSelectOptions = useMemo(() => [
-        { label: "不指定分类", value: "" },
+        { label: "不指定分類", value: "" },
         ...ASSET_CATEGORY_OPTIONS.filter(item => ["character", "environment", "prop"].includes(item.value)).map(item => ({ label: item.label, value: `builtin:${item.value}` })),
         ...folders.map((folder) => ({ label: folder.name, value: folder.id })),
     ], [folders]);
@@ -402,16 +402,16 @@ function AssetsPageSession() {
     };
 
     const uploadFiles = async (files: File[], folderId: string) => {
-        const hideLoading = message.loading("正在上传素材…", 0);
+        const hideLoading = message.loading("正在上傳素材…", 0);
         try {
             const result = await uploadWorkspaceAssetFiles(files, folderId, entryScope);
             if (!userScopeMatches(entryScope)) return;
-            if (result.persistenceError) message.warning(localSavedRemotePendingMessage("部分素材已保存在本地", result.persistenceError));
-            else if (result.completed) message.success(`已上传 ${result.completed} 个素材`);
-            if (result.failed) message.error(`${result.failed} 个素材上传失败`);
+            if (result.persistenceError) message.warning(localSavedRemotePendingMessage("部分素材已儲存在本地", result.persistenceError));
+            else if (result.completed) message.success(`已上傳 ${result.completed} 個素材`);
+            if (result.failed) message.error(`${result.failed} 個素材上傳失敗`);
             await invalidateAssetLibrary(entryScope);
         } catch (error) {
-            if (!shouldSuppressAssetViewError(error, entryScope)) message.error(error instanceof Error ? error.message : "上传失败");
+            if (!shouldSuppressAssetViewError(error, entryScope)) message.error(error instanceof Error ? error.message : "上傳失敗");
         } finally {
             hideLoading();
         }
@@ -447,10 +447,10 @@ function AssetsPageSession() {
             if (!saved) return;
             setFolderEditor(null);
             setFolderName("");
-            message.success(saved === "created" ? "素材分类已创建" : "素材分类已重命名");
+            message.success(saved === "created" ? "素材分類已建立" : "素材分類已重新命名");
         } catch (error) {
             if (shouldSuppressAssetViewError(error, entryScope)) return;
-            message.error(error instanceof Error ? error.message : "素材分类保存失败");
+            message.error(error instanceof Error ? error.message : "素材分類儲存失敗");
         } finally {
             folderSaveInFlight.current = false;
             if (userScopeMatches(entryScope)) setFolderSaving(false);
@@ -470,10 +470,10 @@ function AssetsPageSession() {
             setFolderDeleteConfirmId(null);
             if (folderFilter === folder.id) setFolderFilter("all");
             setPage(1);
-            message.success(`已删除分类「${folder.name}」，其中素材已移至未分类`);
+            message.success(`已刪除分類「${folder.name}」，其中素材已移至未分類`);
         } catch (error) {
             if (shouldSuppressAssetViewError(error, entryScope)) return;
-            message.error(error instanceof Error ? error.message : "素材分类删除失败");
+            message.error(error instanceof Error ? error.message : "素材分類刪除失敗");
             throw error;
         }
     };
@@ -485,7 +485,7 @@ function AssetsPageSession() {
                 if (folderId.startsWith("builtin:")) {
                     for (const id of assetIds) {
                         const asset = validAssets.find(item => item.id === id);
-                        if (!asset) throw new Error("素材信息已变化，请刷新后重试");
+                        if (!asset) throw new Error("素材資訊已變化，請重新整理後重試");
                         updateAsset(id, { category: folderId.slice(8) as AssetCategory, folderId: undefined });
                         await persistWorkspaceAssetLink({ asset: { ...asset, folderId: undefined, category: folderId.slice(8) as AssetCategory } as Asset, category: folderId.slice(8) as AssetCategory, folderId: "", expectedScope: scope });
                     }
@@ -505,10 +505,10 @@ function AssetsPageSession() {
             });
             if (!moved) return;
             setSelectedIds([]);
-            message.success(`已移动 ${assetIds.length} 个素材`);
+            message.success(`已移動 ${assetIds.length} 個素材`);
         } catch (error) {
             if (shouldSuppressAssetViewError(error, entryScope)) return;
-            message.error(error instanceof Error ? error.message : "移动素材失败");
+            message.error(error instanceof Error ? error.message : "移動素材失敗");
         }
     };
 
@@ -519,7 +519,7 @@ function AssetsPageSession() {
         setImageUploading(false);
         setImageUploadProgress(null);
         setFormKind("text");
-        form.setFieldsValue({ kind: "text", category: "other", folderId: folderFilter !== "all" && folderFilter !== "uncategorized" ? folderFilter : "", title: "", coverUrl: "", tags: [], source: "手动添加", note: "", content: "", arkAssetId: "", portraitCertified: false });
+        form.setFieldsValue({ kind: "text", category: "other", folderId: folderFilter !== "all" && folderFilter !== "uncategorized" ? folderFilter : "", title: "", coverUrl: "", tags: [], source: "手動新增", note: "", content: "", arkAssetId: "", portraitCertified: false });
         setIsAssetOpen(true);
     };
 
@@ -534,7 +534,7 @@ function AssetsPageSession() {
                 await invalidateAssetLibrary(scope);
             });
         } catch (error) {
-            if (!shouldSuppressAssetViewError(error, entryScope)) message.error(error instanceof Error ? error.message : "重命名失败");
+            if (!shouldSuppressAssetViewError(error, entryScope)) message.error(error instanceof Error ? error.message : "重新命名失敗");
             throw error;
         }
     };
@@ -557,7 +557,7 @@ function AssetsPageSession() {
                 void queryClient.invalidateQueries({ queryKey: assetStorageUsageQueryKey });
             } catch (error) {
                 if (shouldSuppressAssetViewError(error, entryScope)) return;
-                message.error(error instanceof Error ? error.message : "图片上传失败，请重试");
+                message.error(error instanceof Error ? error.message : "圖片上傳失敗，請重試");
                 return;
             } finally {
                 if (userScopeMatches(entryScope)) {
@@ -583,7 +583,7 @@ function AssetsPageSession() {
         };
 
         if (values.kind !== "text" && !imageData) {
-            message.error("请选择图片文件");
+            message.error("請選擇圖片檔案");
             return;
         }
 
@@ -601,11 +601,11 @@ function AssetsPageSession() {
                 return editingAsset ? "updated" : "created";
             });
             if (!saved) return;
-            message.success(saved === "updated" ? "素材已更新" : "素材已保存");
+            message.success(saved === "updated" ? "素材已更新" : "素材已儲存");
             setIsAssetOpen(false);
         } catch (error) {
             if (shouldSuppressAssetViewError(error, entryScope)) return;
-            message.warning(localSavedRemotePendingMessage(editingAsset ? "素材已在本地更新" : "素材已在本地保存", error));
+            message.warning(localSavedRemotePendingMessage(editingAsset ? "素材已在本地更新" : "素材已在本地儲存", error));
             setIsAssetOpen(false);
         }
     };
@@ -631,7 +631,7 @@ function AssetsPageSession() {
             if (!form.getFieldValue("title")) form.setFieldValue("title", file.name);
         } catch (error) {
             if (shouldSuppressAssetViewError(error, entryScope)) return;
-            message.error(error instanceof Error ? error.message : "读取图片失败，请重试");
+            message.error(error instanceof Error ? error.message : "讀取圖片失敗，請重試");
         }
     };
 
@@ -646,7 +646,7 @@ function AssetsPageSession() {
                     title: file.name.replace(/\.(glb|gltf)$/i, ""),
                     coverUrl: "",
                     tags: ["3D模型"],
-                    source: "手动上传",
+                    source: "手動上傳",
                     data: { url: result.url, storageKey: result.storageKey, bytes: result.bytes, mimeType: result.mimeType, fileName: file.name },
                     metadata: { source: "manual" },
                 });
@@ -662,18 +662,18 @@ function AssetsPageSession() {
                 // The local workspace must never surface a cloud-sync promise, even
                 // if an upload result was created before the session mode finished
                 // hydrating. Hosted mode keeps the retry wording.
-                message.warning(localWorkspace ? "3D 模型已保存在本机" : `3D 模型已保存在本机，等待远端同步${uploaded.remoteUploadError ? `：${uploaded.remoteUploadError}` : ""}`);
+                message.warning(localWorkspace ? "3D 模型已儲存在本機" : `3D 模型已儲存在本機，等待遠端同步${uploaded.remoteUploadError ? `：${uploaded.remoteUploadError}` : ""}`);
             }
-            else message.success("3D 模型已保存");
+            else message.success("3D 模型已儲存");
         } catch (error) {
             if (shouldSuppressAssetViewError(error, entryScope)) return;
-            message.warning(localSavedRemotePendingMessage("3D 模型已在本地保存", error));
+            message.warning(localSavedRemotePendingMessage("3D 模型已在本地儲存", error));
         }
     };
 
     const copyAssetText = async (asset: LibraryAsset) => {
         if (asset.kind !== "text") return;
-        copyText(asset.data.content, "文本已复制");
+        copyText(asset.data.content, "文本已複製");
     };
 
     const downloadImage = (asset: LibraryAsset) => {
@@ -689,7 +689,7 @@ function AssetsPageSession() {
 
     const exportAllAssets = async () => {
         if (!validAssets.length) {
-            message.warning("暂无素材可导出");
+            message.warning("暫無素材可匯出");
             return;
         }
         await reportOwnedMediaSave(message, exportAssets(validAssets));
@@ -716,13 +716,13 @@ function AssetsPageSession() {
                 await persistWorkspaceAssetChanges(entryScope);
             } catch (error) {
                 if (shouldSuppressAssetViewError(error, entryScope)) return;
-                message.warning(localSavedRemotePendingMessage("素材已在本地导入", error));
+                message.warning(localSavedRemotePendingMessage("素材已在本地匯入", error));
             }
             if (!userScopeMatches(entryScope)) return;
-            message.success(`已导入 ${imported} 个素材`);
+            message.success(`已匯入 ${imported} 個素材`);
         } catch (error) {
             if (shouldSuppressAssetViewError(error, entryScope)) return;
-            message.error("导入失败，请选择有效的素材压缩包");
+            message.error("匯入失敗，請選擇有效的素材壓縮包");
         } finally {
             if (userScopeMatches(entryScope) && assetInputRef.current) assetInputRef.current.value = "";
         }
@@ -740,7 +740,7 @@ function AssetsPageSession() {
             return true;
         } catch (error) {
             if (shouldSuppressAssetViewError(error, entryScope)) return;
-            message.error(error instanceof Error ? error.message : "素材删除失败");
+            message.error(error instanceof Error ? error.message : "素材刪除失敗");
             return false;
         }
     };
@@ -757,11 +757,11 @@ function AssetsPageSession() {
                 return true;
             });
             if (!deleted) return;
-            message.success("素材已彻底删除");
+            message.success("素材已徹底刪除");
             setDeletingAsset(null);
         } catch (error) {
             if (shouldSuppressAssetViewError(error, entryScope)) return;
-            message.error(error instanceof Error ? error.message : "素材删除失败");
+            message.error(error instanceof Error ? error.message : "素材刪除失敗");
         } finally {
             deleteInFlight.current = false;
             setDeletePending(false);
@@ -789,7 +789,7 @@ function AssetsPageSession() {
                         deletedIds.push(asset.id);
                     } catch (error) {
                         if (shouldSuppressAssetViewError(error, scope)) throw error;
-                        failures.push(`${asset.title || "未命名素材"}：${error instanceof Error ? error.message : "删除失败"}`);
+                        failures.push(`${asset.title || "未命名素材"}：${error instanceof Error ? error.message : "刪除失敗"}`);
                     }
                 }
                 if (deletedIds.length) reflectDeletedAssets(deletedIds, scope);
@@ -798,18 +798,18 @@ function AssetsPageSession() {
             if (!completed) return;
             setBatchDeleteOpen(false);
             if (failures.length) {
-                message.error(`已删除 ${deletedIds.length} 个，${failures.length} 个未删除。${failures.join("；")}`);
+                message.error(`已刪除 ${deletedIds.length} 個，${failures.length} 個未刪除。${failures.join("；")}`);
             } else {
-                message.success(`已彻底删除 ${deletedIds.length} 个素材`);
+                message.success(`已徹底刪除 ${deletedIds.length} 個素材`);
             }
             // Refresh failure must not turn completed deletions into failed commands.
             try { await refreshDeletedAssets(entryScope); }
             catch (error) {
-                if (!shouldSuppressAssetViewError(error, entryScope)) message.warning("删除结果已保存，列表刷新失败，请重新打开素材库");
+                if (!shouldSuppressAssetViewError(error, entryScope)) message.warning("刪除結果已儲存，列表重新整理失敗，請重新開啟素材庫");
             }
         } catch (error) {
             if (shouldSuppressAssetViewError(error, entryScope)) return;
-            message.error(error instanceof Error ? error.message : "批量删除失败");
+            message.error(error instanceof Error ? error.message : "批次刪除失敗");
 
         } finally {
             deleteInFlight.current = false;
@@ -831,14 +831,14 @@ function AssetsPageSession() {
         if (canonicalReads && historyQuery.isError && historyPage <= 1 && !historyAssets.length) {
             return (
                 <WorkspacePage grid className="library-page assets-library-page canvas-library-page generation-history-page">
-                    <WorkspaceErrorState title="生成历史读取失败" description="请稍后重试。" actionLabel="重试" onRetry={() => void historyQuery.refetch()} />
+                    <WorkspaceErrorState title="生成歷史讀取失敗" description="請稍後重試。" actionLabel="重試" onRetry={() => void historyQuery.refetch()} />
                 </WorkspacePage>
             );
         }
         if (canonicalReads && !historyQuery.isSuccess && historyPage <= 1 && !historyAssets.length) {
             return (
                 <WorkspacePage grid className="library-page assets-library-page canvas-library-page generation-history-page">
-                    <WorkspaceLoadingState label="正在读取生成历史" detail="按页读取已保存的素材。" />
+                    <WorkspaceLoadingState label="正在讀取生成歷史" detail="按頁讀取已儲存的素材。" />
                 </WorkspacePage>
             );
         }
@@ -891,17 +891,17 @@ function AssetsPageSession() {
             <WorkspacePage grid className="library-page assets-library-page canvas-library-page">
                 <div className="studio-band assets-library-hero">
                     <PageHeader
-                        title="个人资产库"
+                        title="個人資產庫"
                         actions={
                             <div className="assets-header-actions">
                                 <div className="assets-header-action-buttons">
                                     <div className="assets-header-compact-actions">
-                                        <ExpandableSearch value={keyword} placeholder="搜索资产" onChange={(value) => { setPage(1); setKeyword(value); }} />
-                                        <button type="button" className={cn("assets-header-compact-button", filtersOpen && "is-active")} aria-label="筛选资产" title="筛选资产" aria-pressed={filtersOpen} onClick={() => setFiltersOpen((open) => !open)}><SlidersHorizontal className="size-4" /></button>
+                                        <ExpandableSearch value={keyword} placeholder="搜尋資產" onChange={(value) => { setPage(1); setKeyword(value); }} />
+                                        <button type="button" className={cn("assets-header-compact-button", filtersOpen && "is-active")} aria-label="篩選資產" title="篩選資產" aria-pressed={filtersOpen} onClick={() => setFiltersOpen((open) => !open)}><SlidersHorizontal className="size-4" /></button>
                                     </div>
                                     <Dropdown trigger={["click"]} menu={{ items: [
-                                        { key: "image", label: "上传资产", onClick: () => assetUploadInputRef.current?.click() },
-                                        { key: "folder", label: "新建文件夹", onClick: () => { setFolderName(""); setFolderEditor("new"); } },
+                                        { key: "image", label: "上傳資產", onClick: () => assetUploadInputRef.current?.click() },
+                                        { key: "folder", label: "新建資料夾", onClick: () => { setFolderName(""); setFolderEditor("new"); } },
                                     ] }}>
                                         <Button className="assets-new-button" style={{ backgroundColor: "#fff", color: "#171717", borderColor: "rgba(255,255,255,.82)" }} icon={<Plus />}>新建</Button>
                                     </Dropdown>
@@ -911,7 +911,7 @@ function AssetsPageSession() {
                     />
                     <div className="assets-secondary-controls is-open">
                         <div className="assets-kind-row">
-                            <nav className="assets-kind-tabs" aria-label="资产类型">
+                            <nav className="assets-kind-tabs" aria-label="資產型別">
                                 {kindOptions.map((option) => (
                                     <button
                                         key={option.value}
@@ -928,16 +928,16 @@ function AssetsPageSession() {
                                 ))}
                             </nav>
                             <div className="assets-kind-actions">
-                            <div className="assets-view-toggle" role="group" aria-label="资产视图">
-                                <button type="button" className={assetViewMode === "grid" ? "is-active" : ""} aria-pressed={assetViewMode === "grid"} title="网格视图" onClick={() => setAssetViewMode("grid")}><LayoutGrid className="size-3.5" /><span className="sr-only">网格视图</span></button>
-                                <button type="button" className={assetViewMode === "list" ? "is-active" : ""} aria-pressed={assetViewMode === "list"} title="列表视图" onClick={() => setAssetViewMode("list")}><List className="size-3.5" /><span className="sr-only">列表视图</span></button>
+                            <div className="assets-view-toggle" role="group" aria-label="資產檢視">
+                                <button type="button" className={assetViewMode === "grid" ? "is-active" : ""} aria-pressed={assetViewMode === "grid"} title="網格檢視" onClick={() => setAssetViewMode("grid")}><LayoutGrid className="size-3.5" /><span className="sr-only">網格檢視</span></button>
+                                <button type="button" className={assetViewMode === "list" ? "is-active" : ""} aria-pressed={assetViewMode === "list"} title="列表檢視" onClick={() => setAssetViewMode("list")}><List className="size-3.5" /><span className="sr-only">列表檢視</span></button>
                             </div>
                             <label className="assets-sort-control">
                                 <Select
                                     value={sortOrder}
                                     className="w-full sm:w-32"
                                     aria-label="排序"
-                                    options={[{ label: "时间倒序", value: "updated_desc" }, { label: "时间正序", value: "updated_asc" }, { label: "名称排序", value: "name_asc" }]}
+                                    options={[{ label: "時間倒序", value: "updated_desc" }, { label: "時間正序", value: "updated_asc" }, { label: "名稱排序", value: "name_asc" }]}
                                     onChange={(value) => setSortOrder(value as AssetSortOrder)}
                                 />
                             </label>
@@ -948,12 +948,12 @@ function AssetsPageSession() {
 
                 <div className="collection-content assets-collection-content">
                     <div className={cn("assets-collection-layout", filtersOpen && "is-filters-open")}>
-                        <aside className="assets-collection-filters" aria-label="素材分类" aria-hidden={!filtersOpen} inert={!filtersOpen}>
+                        <aside className="assets-collection-filters" aria-label="素材分類" aria-hidden={!filtersOpen} inert={!filtersOpen}>
                             <div className="assets-collection-filter-scroll">
                             <section className="collection-filter-group assets-folder-filter">
                                 <div className="collection-folder-heading">
-                                    <span className="collection-filter-label">分类</span>
-                                    <button type="button" className="assets-folder-add" title="新建分类" aria-label="新建分类" onClick={() => { setFolderName(""); setFolderEditor("new"); }}><FolderPlus className="size-3.5" /></button>
+                                    <span className="collection-filter-label">分類</span>
+                                    <button type="button" className="assets-folder-add" title="新建分類" aria-label="新建分類" onClick={() => { setFolderName(""); setFolderEditor("new"); }}><FolderPlus className="size-3.5" /></button>
                                 </div>
                                 <div className="collection-folder-list">
                                     <button type="button" aria-pressed={folderFilter === "all"} className={`assets-filter-item ${folderFilter === "all" ? "is-active" : ""}`} onClick={() => { setFolderFilter("all"); setPage(1); }}>
@@ -971,9 +971,9 @@ function AssetsPageSession() {
                                             disabled={folderEditor !== "new" && folderEditor?.id === folder.id}
                                             menu={{
                                                 items: [
-                                                    { key: "rename", label: "重命名" },
+                                                    { key: "rename", label: "重新命名" },
                                                     { type: "divider" },
-                                                    { key: "delete", label: "删除", danger: true },
+                                                    { key: "delete", label: "刪除", danger: true },
                                                 ],
                                                 onClick: ({ key }) => {
                                                     if (key === "rename") {
@@ -996,7 +996,7 @@ function AssetsPageSession() {
                                                         value={folderName}
                                                         maxLength={40}
                                                         disabled={folderSaving}
-                                                        aria-label={`重命名分类 ${folder.name}`}
+                                                        aria-label={`重新命名分類 ${folder.name}`}
                                                         onChange={(event) => setFolderName(event.target.value)}
                                                         onPressEnter={() => void saveFolder()}
                                                         onBlur={() => {
@@ -1024,15 +1024,15 @@ function AssetsPageSession() {
                                                     <div
                                                         className="assets-folder-delete-confirm"
                                                         role="alertdialog"
-                                                        aria-label={`确认删除分类 ${folder.name}`}
+                                                        aria-label={`確認刪除分類 ${folder.name}`}
                                                         onKeyDown={(event) => {
                                                             if (event.key === "Escape") setFolderDeleteConfirmId(null);
                                                         }}
                                                     >
-                                                        <p>分类中的素材会移至未分类。</p>
+                                                        <p>分類中的素材會移至未分類。</p>
                                                         <div className="assets-folder-delete-actions">
                                                             <button type="button" onClick={() => setFolderDeleteConfirmId(null)}>取消</button>
-                                                            <button type="button" className="is-danger" onClick={() => { setFolderDeleteConfirmId(null); void removeFolder(folder); }}>删除分类</button>
+                                                            <button type="button" className="is-danger" onClick={() => { setFolderDeleteConfirmId(null); void removeFolder(folder); }}>刪除分類</button>
                                                         </div>
                                                     </div>
                                                 ) : null}
@@ -1042,11 +1042,11 @@ function AssetsPageSession() {
                                 </div>
                             </section>
                             {projectOptions.length ? (
-                                <section className="collection-filter-group assets-project-filter" aria-label="项目来源">
-                                    <span className="collection-filter-label">项目来源</span>
+                                <section className="collection-filter-group assets-project-filter" aria-label="專案來源">
+                                    <span className="collection-filter-label">專案來源</span>
                                     <div className="collection-filter-options">
                                         <button type="button" aria-pressed={projectFilter === "all"} className={`assets-filter-item ${projectFilter === "all" ? "is-active" : ""}`} onClick={() => { setProjectFilter("all"); setPage(1); }}>
-                                            <span className="assets-filter-item-label">全部项目</span><span className="assets-filter-count">{allProjectsCount}</span>
+                                            <span className="assets-filter-item-label">全部專案</span><span className="assets-filter-count">{allProjectsCount}</span>
                                         </button>
                                         {projectOptions.map((project) => {
                                             const count = remoteProjectCounts ? remoteProjectCounts[project] ?? 0 : activeAssets.filter((asset) => workspaceAssetProjectLabel(asset) === project).length;
@@ -1072,15 +1072,15 @@ function AssetsPageSession() {
                                 />
                             ) : null}
                             {canonicalReads && assetPageQuery.isError ? (
-                                <WorkspaceErrorState compact title="素材读取失败" description="请稍后重试。" actionLabel="重试" onRetry={() => void assetPageQuery.refetch()} />
+                                <WorkspaceErrorState compact title="素材讀取失敗" description="請稍後重試。" actionLabel="重試" onRetry={() => void assetPageQuery.refetch()} />
                             ) : canonicalReads && !remoteReady ? (
-                                <WorkspaceLoadingState label="正在读取素材" detail="正在加载已保存的素材。" />
+                                <WorkspaceLoadingState label="正在讀取素材" detail="正在載入已儲存的素材。" />
                             ) : libraryEmpty ? (
                                 <AssetsEmptyState onImport={() => assetUploadInputRef.current?.click()} />
                             ) : (
                                 <>
                                     {visibleAssets.length === 0 ? (
-                                        <WorkspaceState icon="assets" compact title="没有匹配的素材" description="调整关键词或左侧分类后再试。" />
+                                        <WorkspaceState icon="assets" compact title="沒有匹配的素材" description="調整關鍵詞或左側分類後再試。" />
                                     ) : (
                                         <CollectionGrid className={cn("library-grid", "assets-library-grid", assetViewMode === "list" && "is-list-view")}>
                                             {orderedVisibleAssets.map((asset) => (
@@ -1119,16 +1119,16 @@ function AssetsPageSession() {
                         </section>
                     </div>
                 </div>
-                <aside className="assets-library-source-rail" aria-label="资产来源导航">
+                <aside className="assets-library-source-rail" aria-label="資產來源導航">
                     <div className="assets-library-source-rail-inner">
                         <button type="button" className="assets-library-source-rail-item" onClick={() => navigate("/assets?tab=history")}>
                             <span className="assets-library-source-rail-icon"><History className="size-3.5" /></span>
-                            <span>生成历史</span>
+                            <span>生成歷史</span>
                             <span className="assets-filter-count">{generationHistoryCount}</span>
                         </button>
                         <button type="button" className="assets-library-source-rail-item is-active" aria-current="page">
                             <span className="assets-library-source-rail-icon"><FolderOpen className="size-3.5" /></span>
-                            <span>个人资产库</span>
+                            <span>個人資產庫</span>
                             <span className="assets-filter-count">{totalAssets}</span>
                         </button>
                     </div>
@@ -1137,13 +1137,13 @@ function AssetsPageSession() {
 
             <Modal
                 className="workspace-modal workspace-modal-wide library-modal"
-                title={editingAsset ? "编辑素材" : "新增素材"}
+                title={editingAsset ? "編輯素材" : "新增素材"}
                 open={isAssetOpen}
                 onCancel={() => {
                     if (!imageUploading) setIsAssetOpen(false);
                 }}
                 onOk={() => void saveAsset()}
-                okText={imageUploading ? "正在上传" : "保存"}
+                okText={imageUploading ? "正在上傳" : "儲存"}
                 cancelText="取消"
                 confirmLoading={imageUploading}
                 cancelButtonProps={{ disabled: imageUploading }}
@@ -1152,59 +1152,59 @@ function AssetsPageSession() {
             >
                 <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
                     <Form form={form} layout="vertical" requiredMark={false} initialValues={{ kind: "text", category: "other", tags: [] }}>
-                        <Form.Item name="kind" label="类型">
+                        <Form.Item name="kind" label="型別">
                             <Select
                                 options={[
                                     { label: "文本", value: "text" },
-                                    { label: "图片", value: "image" },
+                                    { label: "圖片", value: "image" },
                                 ]}
                                 onChange={(value) => setFormKind(value)}
                             />
                         </Form.Item>
-                        <Form.Item name="folderId" label="分类">
+                        <Form.Item name="folderId" label="分類">
                             <Select options={folderSelectOptions} />
                         </Form.Item>
-                        <Form.Item name="title" label="标题" rules={[{ required: true, message: "请输入标题" }]}>
-                            <Input placeholder="给素材起一个容易检索的名字" />
+                        <Form.Item name="title" label="標題" rules={[{ required: true, message: "請輸入標題" }]}>
+                            <Input placeholder="給素材起一個容易檢索的名字" />
                         </Form.Item>
                         <Form.Item name="coverUrl" label="封面 URL">
                             <Space.Compact className="w-full">
-                                <Input placeholder="可粘贴图片 URL，也可以上传本地封面" />
+                                <Input placeholder="可貼上圖片 URL，也可以上傳本地封面" />
                                 <Button icon={<Upload className="size-3.5" />} onClick={() => coverInputRef.current?.click()}>
-                                    上传
+                                    上傳
                                 </Button>
                             </Space.Compact>
                         </Form.Item>
 
                         <div className="grid gap-4 sm:grid-cols-2">
-                            <Form.Item name="arkAssetId" label="方舟素材 ID" rules={[{ pattern: /^asset-[A-Za-z0-9-]+$/, message: "请输入 asset- 开头的方舟素材 ID" }]}>
-                                <Input autoComplete="off" allowClear placeholder="asset-…，需为本人或被授权可用的方舟素材" />
+                            <Form.Item name="arkAssetId" label="方舟素材 ID" rules={[{ pattern: /^asset-[A-Za-z0-9-]+$/, message: "請輸入 asset- 開頭的方舟素材 ID" }]}>
+                                <Input autoComplete="off" allowClear placeholder="asset-…，需為本人或被授權可用的方舟素材" />
                             </Form.Item>
-                            <Form.Item name="portraitCertified" label="人像认证" valuePropName="checked" extra="标记已通过火山方舟实人认证的真人人像素材">
-                                <Switch aria-label="人像认证" />
+                            <Form.Item name="portraitCertified" label="人像認證" valuePropName="checked" extra="標記已通過火山方舟實人認證的真人人畫素材">
+                                <Switch aria-label="人像認證" />
                             </Form.Item>
                         </div>
                         <div className="grid gap-4 sm:grid-cols-2">
-                            <Form.Item name="source" label="来源">
-                                <Input placeholder="手动添加 / 画布 / 任务中心" />
+                            <Form.Item name="source" label="來源">
+                                <Input placeholder="手動新增 / 畫布 / 任務中心" />
                             </Form.Item>
-                            <Form.Item name="note" label="备注">
-                                <Input placeholder="可选" />
+                            <Form.Item name="note" label="備註">
+                                <Input placeholder="可選" />
                             </Form.Item>
                         </div>
                         {formKind === "text" ? (
-                            <Form.Item name="content" label="文本内容" rules={[{ required: true, message: "请输入文本内容" }]}>
-                                <Input.TextArea rows={8} placeholder="保存提示词、说明文案、参考描述等文本素材" />
+                            <Form.Item name="content" label="文本內容" rules={[{ required: true, message: "請輸入文本內容" }]}>
+                                <Input.TextArea rows={8} placeholder="儲存提示詞、說明文案、參考描述等文本素材" />
                             </Form.Item>
                         ) : (
-                            <Form.Item label="图片内容" required>
+                            <Form.Item label="圖片內容" required>
                                 <div className="rounded-lg border border-dashed border-stone-300 p-4 dark:border-stone-700">
                                     <Button disabled={imageUploading} icon={<Upload className="size-4" />} onClick={() => imageInputRef.current?.click()}>
-                                        {imageUploading ? (remoteMode ? "正在上传图片" : "正在保存图片") : "选择图片文件"}
+                                        {imageUploading ? (remoteMode ? "正在上傳圖片" : "正在儲存圖片") : "選擇圖片檔案"}
                                     </Button>
                                     {imageFile ? (
                                         <Tag color="gold" className="ml-3">
-                                            待保存上传
+                                            待儲存上傳
                                         </Tag>
                                     ) : null}
                                     {imageDraft ? (
@@ -1213,7 +1213,7 @@ function AssetsPageSession() {
                                         </Typography.Text>
                                     ) : (
                                         <Typography.Text type="secondary" className="ml-3 text-xs">
-                                            未选择图片
+                                            未選擇圖片
                                         </Typography.Text>
                                     )}
                                 </div>
@@ -1222,7 +1222,7 @@ function AssetsPageSession() {
                     </Form>
                     <div className="lg:pl-4">
                         <Typography.Text strong className="text-xs">
-                            预览
+                            預覽
                         </Typography.Text>
                         <div className="mt-2 overflow-hidden rounded-md bg-stone-100 dark:bg-stone-900">
                             {coverUrl || imageDraft?.dataUrl ? (
@@ -1231,7 +1231,7 @@ function AssetsPageSession() {
                                     {imageUploading && imageUploadProgress ? (
                                         <div className="asset-preview-uploading-panel">
                                             <div className="asset-preview-uploading-copy">
-                                                <span>{imageUploadProgress.phase === "confirming" ? "正在确认资源" : remoteMode ? "正在上传到云端" : "正在保存到本地"}</span>
+                                                <span>{imageUploadProgress.phase === "confirming" ? "正在確認資源" : remoteMode ? "正在上傳到雲端" : "正在儲存到本地"}</span>
                                                 {typeof imageUploadProgress.percent === "number" ? <strong>{imageUploadProgress.percent}%</strong> : null}
                                             </div>
                                             <Progress percent={imageUploadProgress.percent} showInfo={false} size="small" status="active" />
@@ -1239,7 +1239,7 @@ function AssetsPageSession() {
                                     ) : null}
                                 </div>
                             ) : (
-                                <div className="flex aspect-[4/3] items-center justify-center bg-stone-100 p-5 text-center text-sm text-stone-500 dark:bg-stone-900">{content || "暂无封面"}</div>
+                                <div className="flex aspect-[4/3] items-center justify-center bg-stone-100 p-5 text-center text-sm text-stone-500 dark:bg-stone-900">{content || "暫無封面"}</div>
                             )}
                             <div className="bg-background p-3">
                                 <Typography.Text strong ellipsis className="block">
@@ -1278,16 +1278,16 @@ function AssetsPageSession() {
 
             <Modal
                 className="library-modal library-confirm-modal assets-folder-create-modal"
-                title="新建分类"
+                title="新建分類"
                 open={folderEditor === "new"}
                 confirmLoading={folderSaving}
                 onCancel={() => { if (!folderSaving) { setFolderEditor(null); setFolderName(""); } }}
                 onOk={() => void saveFolder()}
                 okButtonProps={{ className: "assets-folder-create-confirm" }}
-                okText="保存"
+                okText="儲存"
                 cancelText="取消"
             >
-                <Input autoFocus value={folderName} maxLength={40} placeholder="例如：角色参考、场景灵感" onChange={(event) => setFolderName(event.target.value)} onPressEnter={() => void saveFolder()} />
+                <Input autoFocus value={folderName} maxLength={40} placeholder="例如：角色參考、場景靈感" onChange={(event) => setFolderName(event.target.value)} onPressEnter={() => void saveFolder()} />
             </Modal>
 
             <input ref={assetInputRef} type="file" accept="application/zip,.zip" className="hidden" onChange={(event) => void importAssetZip(event.target.files?.[0])} />
@@ -1304,17 +1304,17 @@ function AssetsPageSession() {
 
             <Modal
                 className="library-modal library-confirm-modal"
-                title="永久删除素材"
+                title="永久刪除素材"
                 open={batchDeleteOpen}
                 onCancel={() => { if (!deleteInFlight.current) setBatchDeleteOpen(false); }}
                 onOk={() => void confirmBatchDelete()}
                 confirmLoading={deletePending}
-                okText="永久删除"
+                okText="永久刪除"
                 okButtonProps={{ danger: true, disabled: !selectedAssets.length }}
                 cancelButtonProps={{ disabled: deletePending }}
                 cancelText="取消"
             >
-                删除已选择的 {selectedAssets.length} 个素材后将无法恢复。仍被画布或任务引用的文件会保留，其余文件将同步清理。
+                刪除已選擇的 {selectedAssets.length} 個素材後將無法恢復。仍被畫布或任務引用的檔案會保留，其餘檔案將同步清理。
             </Modal>
         </>
     );
@@ -1375,10 +1375,10 @@ function AssetCard({
         onCancelDelete();
     };
     const menuItems: MenuProps["items"] = [
-        { key: "rename", icon: <PencilLine className="size-3.5" />, label: "重命名", onClick: () => { setRenameDraft(asset.title); setRenaming(true); } },
-        ...(asset.kind === "text" ? [{ key: "copy", icon: <Copy className="size-3.5" />, label: "复制文本", onClick: () => void onCopy(asset) }] : []),
-        ...(asset.kind === "image" || asset.kind === "video" || asset.kind === "audio" || asset.kind === "model" ? [{ key: "download", icon: <Download className="size-3.5" />, label: "下载", onClick: () => onDownload(asset) }] : []),
-        { key: "move", icon: <FolderOpen className="size-3.5" />, label: "移动到分类", children: folderOptions.map((folder) => ({ key: folder.value || "uncategorized", label: folder.label, onClick: () => onMoveToFolder(folder.value) })) },
+        { key: "rename", icon: <PencilLine className="size-3.5" />, label: "重新命名", onClick: () => { setRenameDraft(asset.title); setRenaming(true); } },
+        ...(asset.kind === "text" ? [{ key: "copy", icon: <Copy className="size-3.5" />, label: "複製文本", onClick: () => void onCopy(asset) }] : []),
+        ...(asset.kind === "image" || asset.kind === "video" || asset.kind === "audio" || asset.kind === "model" ? [{ key: "download", icon: <Download className="size-3.5" />, label: "下載", onClick: () => onDownload(asset) }] : []),
+        { key: "move", icon: <FolderOpen className="size-3.5" />, label: "移動到分類", children: folderOptions.map((folder) => ({ key: folder.value || "uncategorized", label: folder.label, onClick: () => onMoveToFolder(folder.value) })) },
         { type: "divider" as const },
         { key: "delete", danger: true, icon: <Trash2 className="size-3.5" />, label: (
             <Popover
@@ -1391,15 +1391,15 @@ function AssetCard({
                 overlayClassName="asset-delete-confirm-popover"
                 content={(
                     <div className="asset-delete-confirm-content" onClick={(event) => event.stopPropagation()}>
-                        <p>确定删除该资产吗？删除后不可恢复。</p>
+                        <p>確定刪除該資產嗎？刪除後不可恢復。</p>
                         <div className="asset-delete-confirm-actions">
                             <Button size="small" disabled={deletePending} onClick={closeDeleteConfirm}>取消</Button>
-                            <Button size="small" danger loading={deletePending} onClick={() => void onConfirmDelete()}>永久删除</Button>
+                            <Button size="small" danger loading={deletePending} onClick={() => void onConfirmDelete()}>永久刪除</Button>
                         </div>
                     </div>
                 )}
             >
-                <span className="asset-delete-confirm-trigger">永久删除</span>
+                <span className="asset-delete-confirm-trigger">永久刪除</span>
             </Popover>
         ), onClick: openDeleteConfirm },
     ];
@@ -1416,7 +1416,7 @@ function AssetCard({
             }} />
             <div role="button" tabIndex={0} onKeyDown={event => { if (!renaming && (event.key === "Enter" || event.key === " ")) onOpen(); }} className="asset-collection-body is-compact block w-full px-2.5 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--workspace-accent)]" onClick={() => { if (!renaming) onOpen(); }}>
                 <div className="asset-card-meta">
-                    {renaming ? <input autoFocus aria-label="素材名称" className="asset-inline-title" value={renameDraft} onFocus={event => event.target.select()} onClick={event => event.stopPropagation()} onChange={event => setRenameDraft(event.target.value)} onBlur={() => void finishRename()} onKeyDown={event => { event.stopPropagation(); if (event.key === "Enter") { event.preventDefault(); void finishRename(); } if (event.key === "Escape") { event.preventDefault(); setRenameDraft(asset.title); setRenaming(false); } }} /> : <h2 className="truncate text-[var(--fs-body)] font-semibold text-foreground" title={asset.title}>{asset.title}</h2>}
+                    {renaming ? <input autoFocus aria-label="素材名稱" className="asset-inline-title" value={renameDraft} onFocus={event => event.target.select()} onClick={event => event.stopPropagation()} onChange={event => setRenameDraft(event.target.value)} onBlur={() => void finishRename()} onKeyDown={event => { event.stopPropagation(); if (event.key === "Enter") { event.preventDefault(); void finishRename(); } if (event.key === "Escape") { event.preventDefault(); setRenameDraft(asset.title); setRenaming(false); } }} /> : <h2 className="truncate text-[var(--fs-body)] font-semibold text-foreground" title={asset.title}>{asset.title}</h2>}
                     <span className="asset-collection-date tabular-nums">{formatAssetTime(asset.updatedAt)}</span>
                 </div>
             </div>
@@ -1436,7 +1436,7 @@ function AssetCover({ asset, selected, onSelect, onOpen, menuItems, menuOpen, on
     const isLight = asset.kind === "audio" || asset.kind === "text" || asset.kind === "model";
     return (
         <AssetLibraryCardMedia className={isLight ? "assets-cover is-light" : "assets-cover"}>
-            <button type="button" data-onboarding-asset={asset.id} className="assets-cover-link" onClick={onOpen} aria-label={`查看素材：${asset.title}`}>
+            <button type="button" data-onboarding-asset={asset.id} className="assets-cover-link" onClick={onOpen} aria-label={`檢視素材：${asset.title}`}>
                 {asset.kind === "audio" ? (
                     <AudioWaveCover asset={asset} />
                 ) : asset.kind === "text" ? (
@@ -1463,7 +1463,7 @@ function AssetCover({ asset, selected, onSelect, onOpen, menuItems, menuOpen, on
                 ) : null}
             </button>
             {clock ? <span className="assets-cover-clock">{clock}</span> : null}
-            <input type="checkbox" checked={selected} onClick={(event) => event.stopPropagation()} onChange={(event) => onSelect(event.target.checked)} className="assets-select-check" aria-label={`选择 ${asset.title}`} />
+            <input type="checkbox" checked={selected} onClick={(event) => event.stopPropagation()} onChange={(event) => onSelect(event.target.checked)} className="assets-select-check" aria-label={`選擇 ${asset.title}`} />
             <Dropdown overlayClassName="asset-actions-menu" trigger={["click"]} open={menuOpen} onOpenChange={onMenuOpenChange} menu={{ items: menuItems, onClick: ({ key }) => onMenuAction(key) }}>
                 <button
                     type="button"
@@ -1529,28 +1529,28 @@ function AssetsBatchBar({
     onMoveToFolder: (folderId: string) => void;
 }) {
     return (
-        <div className="assets-batch-bar" role="toolbar" aria-label="批量操作">
+        <div className="assets-batch-bar" role="toolbar" aria-label="批次操作">
             <span className="assets-batch-count">
-                已选择 <strong>{count}</strong> 个素材
+                已選擇 <strong>{count}</strong> 個素材
             </span>
             <div className="assets-batch-actions">
                 <Button size="small" icon={<CheckCheck className="size-3.5" />} disabled={allSelected} onClick={onSelectAll}>
-                    全选
+                    全選
                 </Button>
                 <Button size="small" onClick={onClear}>
-                    取消选择
+                    取消選擇
                 </Button>
                 <Button size="small" icon={<Download className="size-3.5" />} onClick={onExport}>
-                    导出
+                    匯出
                 </Button>
                 <Dropdown
                     trigger={["click"]}
                     menu={{ items: folderOptions.map((folder) => ({ key: folder.value || "uncategorized", label: folder.label, onClick: () => onMoveToFolder(folder.value) })) }}
                 >
-                    <Button size="small" icon={<FolderOpen className="size-3.5" />}>移动到文件夹</Button>
+                    <Button size="small" icon={<FolderOpen className="size-3.5" />}>移動到資料夾</Button>
                 </Dropdown>
                 <Button size="small" danger icon={<Trash2 className="size-3.5" />} onClick={onDelete}>
-                    永久删除
+                    永久刪除
                 </Button>
             </div>
         </div>
@@ -1627,7 +1627,7 @@ function GenerationHistorySurface({
         video: generatedKindCounts.video || 0,
         audio: generatedKindCounts.audio || 0,
     };
-    const typeTabs: Array<[GenerationHistoryKind, string, number]> = [["all", "全部", counts.all], ["image", "图片", counts.image], ["video", "视频", counts.video], ["audio", "音频", counts.audio]];
+    const typeTabs: Array<[GenerationHistoryKind, string, number]> = [["all", "全部", counts.all], ["image", "圖片", counts.image], ["video", "影片", counts.video], ["audio", "音訊", counts.audio]];
     const typeFilteredHistory = kind != null ? historyAssets : (activeType === "all" ? historyAssets : historyAssets.filter((asset) => asset.kind === activeType));
     const visibleHistoryAssets = typeFilteredHistory;
     const visibleGroups = [...new Set(visibleHistoryAssets.map((asset) => historyDay(asset.updatedAt)))];
@@ -1643,14 +1643,14 @@ function GenerationHistorySurface({
         <WorkspacePage grid className="library-page assets-library-page canvas-library-page generation-history-page">
             <div className="studio-band assets-library-hero">
                 <PageHeader
-                    title="生成历史"
+                    title="生成歷史"
                     actions={
                         <div className="assets-header-actions">
-                            <button type="button" className="assets-header-compact-button" aria-label={sortDescending ? "按时间倒序" : "按时间正序"} title={sortDescending ? "最新优先" : "最早优先"} onClick={() => setSortDescending((value) => !value)}><ArrowDownUp className="size-4" /></button>
+                            <button type="button" className="assets-header-compact-button" aria-label={sortDescending ? "按時間倒序" : "按時間正序"} title={sortDescending ? "最新優先" : "最早優先"} onClick={() => setSortDescending((value) => !value)}><ArrowDownUp className="size-4" /></button>
                         </div>
                     }
                 />
-                <div className="generation-history-type-tabs" role="tablist" aria-label="生成类型">
+                <div className="generation-history-type-tabs" role="tablist" aria-label="生成型別">
                     {typeTabs.map(([value, label, count]) => (
                         <button key={value} type="button" className={cn("generation-history-type-tab", activeType === value && "is-active")} role="tab" aria-selected={activeType === value} onClick={() => setActiveType(value)}>
                             <span>{label}</span><strong>{count}</strong>
@@ -1659,62 +1659,62 @@ function GenerationHistorySurface({
                 </div>
             </div>
             <div className="generation-history-content">
-                {selectedHistoryAssets.length ? <div className="generation-history-batch-bar" role="toolbar" aria-label="生成历史批量操作">
-                    <span>已选择 {selectedHistoryAssets.length} 项</span>
-                    <button type="button" onClick={() => selectedHistoryAssets.forEach(onDownload)}><Download className="size-3.5" />下载</button>
-                    <button type="button" className="is-danger" onClick={() => setPendingDelete(selectedHistoryAssets)}><Trash2 className="size-3.5" />永久删除</button>
-                    <button type="button" className="is-clear" onClick={clearHistorySelection}>取消选择</button>
+                {selectedHistoryAssets.length ? <div className="generation-history-batch-bar" role="toolbar" aria-label="生成歷史批次操作">
+                    <span>已選擇 {selectedHistoryAssets.length} 項</span>
+                    <button type="button" onClick={() => selectedHistoryAssets.forEach(onDownload)}><Download className="size-3.5" />下載</button>
+                    <button type="button" className="is-danger" onClick={() => setPendingDelete(selectedHistoryAssets)}><Trash2 className="size-3.5" />永久刪除</button>
+                    <button type="button" className="is-clear" onClick={clearHistorySelection}>取消選擇</button>
                 </div> : null}
                 {visibleGroups.length ? visibleGroups.map((date) => (
                     <section key={date} className="generation-history-group">
                         <h2>{date}</h2>
                         <div className="generation-history-grid">
                             {visibleHistoryAssets.filter((asset) => historyDay(asset.updatedAt) === date).map((asset) => (
-                                <article key={asset.id} data-onboarding-task-id={asset.metadata?.taskId} className="generation-history-card" title={asset.title} aria-label={`查看生成结果：${asset.title}`} role="button" tabIndex={0} onClick={() => setPreviewAsset(asset)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setPreviewAsset(asset); } }}>
+                                <article key={asset.id} data-onboarding-task-id={asset.metadata?.taskId} className="generation-history-card" title={asset.title} aria-label={`檢視生成結果：${asset.title}`} role="button" tabIndex={0} onClick={() => setPreviewAsset(asset)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setPreviewAsset(asset); } }}>
                                     <div className="generation-history-thumb">
                                         <AssetMediaPreview asset={asset} alt={asset.title} className="size-full object-cover" hoverPlayDelayMs={100} fallback={<GenerationHistoryMissingPreview asset={asset} />} />
                                         <span className="generation-history-badge">AI生成</span>
                                         {asset.kind === "video" || asset.kind === "audio" ? <span className={cn("generation-history-duration", asset.kind === "video" && "is-video-duration")}>{formatAssetClock(asset.data.durationMs)}</span> : null}
-                                        <button type="button" className={cn("generation-history-select", selectedHistoryIds.has(asset.id) && "is-selected")} aria-label={`选择 ${asset.title}`} aria-pressed={selectedHistoryIds.has(asset.id)} onClick={(event) => { event.stopPropagation(); toggleHistorySelection(asset.id); }}>{selectedHistoryIds.has(asset.id) ? <Check className="size-4" /> : null}</button>
-                                        <div className="generation-history-hover-actions" aria-label="生成结果操作">
-                                            <button type="button" aria-label={`下载 ${asset.title}`} title="下载" onClick={(event) => { event.stopPropagation(); onDownload(asset); }}><Download className="size-4" /></button>
-                                            <button type="button" aria-label={`永久删除 ${asset.title}`} title="永久删除" onClick={(event) => { event.stopPropagation(); setPendingDelete([asset]); }}><Trash2 className="size-4" /></button>
+                                        <button type="button" className={cn("generation-history-select", selectedHistoryIds.has(asset.id) && "is-selected")} aria-label={`選擇 ${asset.title}`} aria-pressed={selectedHistoryIds.has(asset.id)} onClick={(event) => { event.stopPropagation(); toggleHistorySelection(asset.id); }}>{selectedHistoryIds.has(asset.id) ? <Check className="size-4" /> : null}</button>
+                                        <div className="generation-history-hover-actions" aria-label="生成結果操作">
+                                            <button type="button" aria-label={`下載 ${asset.title}`} title="下載" onClick={(event) => { event.stopPropagation(); onDownload(asset); }}><Download className="size-4" /></button>
+                                            <button type="button" aria-label={`永久刪除 ${asset.title}`} title="永久刪除" onClick={(event) => { event.stopPropagation(); setPendingDelete([asset]); }}><Trash2 className="size-4" /></button>
                                         </div>
                                     </div>
-                                    <div className="generation-history-card-meta"><strong>{asset.title}</strong><span>{asset.kind === "video" ? "视频" : asset.kind === "audio" ? "音频" : "图片"} · 本地</span></div>
+                                    <div className="generation-history-card-meta"><strong>{asset.title}</strong><span>{asset.kind === "video" ? "影片" : asset.kind === "audio" ? "音訊" : "圖片"} · 本地</span></div>
                                 </article>
                             ))}
                         </div>
                     </section>
-                )) : <WorkspaceState icon="assets" compact title={historyAssets.length ? "没有匹配的生成结果" : "暂无生成历史"} description={historyAssets.length ? "切换类型后再试。" : "本地生成结果会自动出现在这里。"} />}
+                )) : <WorkspaceState icon="assets" compact title={historyAssets.length ? "沒有匹配的生成結果" : "暫無生成歷史"} description={historyAssets.length ? "切換型別後再試。" : "本地生成結果會自動出現在這裡。"} />}
                 {visibleGroups.length ? (
                     hasMore ? (
                         <div className="generation-history-more">
                             <button type="button" onClick={onLoadMore} disabled={loadingMore || !onLoadMore}>
-                                {loadingMore ? "正在加载" : loadMoreError ? "加载失败，点击重试" : "加载更多"}
+                                {loadingMore ? "正在載入" : loadMoreError ? "載入失敗，點選重試" : "載入更多"}
                             </button>
                         </div>
                     ) : (
-                        <p className="generation-history-end">没有更多了</p>
+                        <p className="generation-history-end">沒有更多了</p>
                     )
                 ) : null}
             </div>
-            <aside className="assets-library-source-rail" aria-label="资产来源导航">
+            <aside className="assets-library-source-rail" aria-label="資產來源導航">
                 <div className="assets-library-source-rail-inner">
                     <button type="button" className="assets-library-source-rail-item is-active" aria-current="page">
                         <span className="assets-library-source-rail-icon"><History className="size-3.5" /></span>
-                        <span>生成历史</span><span className="assets-filter-count">{counts.all}</span>
+                        <span>生成歷史</span><span className="assets-filter-count">{counts.all}</span>
                     </button>
                     <button type="button" className="assets-library-source-rail-item" onClick={onSelectPersonal}>
                         <span className="assets-library-source-rail-icon"><FolderOpen className="size-3.5" /></span>
-                        <span>个人资产库</span><span className="assets-filter-count">{libraryTotal}</span>
+                        <span>個人資產庫</span><span className="assets-filter-count">{libraryTotal}</span>
                     </button>
                 </div>
             </aside>
         </WorkspacePage>
         <Modal
             className="library-modal library-confirm-modal"
-            title="永久删除生成素材"
+            title="永久刪除生成素材"
             open={pendingDelete.length > 0}
             onCancel={() => { if (!deleteInFlight.current) setPendingDelete([]); }}
             onOk={() => void confirmHistoryDelete()}
@@ -1722,22 +1722,22 @@ function GenerationHistorySurface({
             closable={!deleting}
             cancelButtonProps={{ disabled: deleting }}
             okButtonProps={{ danger: true }}
-            okText="永久删除"
+            okText="永久刪除"
             cancelText="取消"
         >
-            {pendingDelete.length === 1 ? `删除「${pendingDelete[0].title}」后将无法恢复。` : `删除已选择的 ${pendingDelete.length} 个素材后将无法恢复。`}仍被画布或任务引用的文件会保留，其余文件将同步清理。
+            {pendingDelete.length === 1 ? `刪除「${pendingDelete[0].title}」後將無法恢復。` : `刪除已選擇的 ${pendingDelete.length} 個素材後將無法恢復。`}仍被畫布或任務引用的檔案會保留，其餘檔案將同步清理。
         </Modal>
-        <Drawer className="assets-generation-preview-drawer" open={Boolean(previewAsset)} title={previewAsset?.title || "生成结果预览"} onClose={() => setPreviewAsset(null)} size="default">
-            {previewAsset ? <div className="generation-history-preview"><AssetMediaPreview asset={previewAsset} alt={previewAsset.title} className="generation-history-preview-media" fallback={<GenerationHistoryMissingPreview asset={previewAsset} />} /><div className="generation-history-preview-meta"><strong>{previewAsset.title}</strong><span>{previewAsset.kind === "video" ? "视频" : previewAsset.kind === "audio" ? "音频" : "图片"} · 本地生成</span><span>来源：{previewAsset.source || "生成任务"}</span>{typeof previewAsset.metadata?.taskId === "string" ? <span>任务 ID：{previewAsset.metadata.taskId}</span> : null}{typeof previewAsset.metadata?.generationEffectKey === "string" ? <span>生成标识：{previewAsset.metadata.generationEffectKey}</span> : null}</div></div> : null}
+        <Drawer className="assets-generation-preview-drawer" open={Boolean(previewAsset)} title={previewAsset?.title || "生成結果預覽"} onClose={() => setPreviewAsset(null)} size="default">
+            {previewAsset ? <div className="generation-history-preview"><AssetMediaPreview asset={previewAsset} alt={previewAsset.title} className="generation-history-preview-media" fallback={<GenerationHistoryMissingPreview asset={previewAsset} />} /><div className="generation-history-preview-meta"><strong>{previewAsset.title}</strong><span>{previewAsset.kind === "video" ? "影片" : previewAsset.kind === "audio" ? "音訊" : "圖片"} · 本地生成</span><span>來源：{previewAsset.source || "生成任務"}</span>{typeof previewAsset.metadata?.taskId === "string" ? <span>任務 ID：{previewAsset.metadata.taskId}</span> : null}{typeof previewAsset.metadata?.generationEffectKey === "string" ? <span>生成標識：{previewAsset.metadata.generationEffectKey}</span> : null}</div></div> : null}
         </Drawer>
         </>
     );
 }
 
 function GenerationHistoryMissingPreview({ asset }: { asset: LibraryAsset }) {
-    const kind = asset.kind === "video" ? "视频" : asset.kind === "audio" ? "音频" : "图片";
-    const taskId = typeof asset.metadata?.taskId === "string" ? asset.metadata.taskId : "任务记录存在";
-    return <div className="generation-history-missing-preview"><strong>生成{kind}暂不可用</strong><span>{taskId}</span><small>原始生成资源未找到或已失效</small></div>;
+    const kind = asset.kind === "video" ? "影片" : asset.kind === "audio" ? "音訊" : "圖片";
+    const taskId = typeof asset.metadata?.taskId === "string" ? asset.metadata.taskId : "任務記錄存在";
+    return <div className="generation-history-missing-preview"><strong>生成{kind}暫不可用</strong><span>{taskId}</span><small>原始生成資源未找到或已失效</small></div>;
 }
 
 function AssetsEmptyState({ onImport }: { onImport: () => void }) {
@@ -1745,10 +1745,10 @@ function AssetsEmptyState({ onImport }: { onImport: () => void }) {
         <div className="assets-empty assets-empty-workspace">
             <div className="assets-empty-copy">
                 <span className="assets-empty-icon"><FileX2 /></span>
-                <strong>当前暂无资产</strong>
+                <strong>當前暫無資產</strong>
             </div>
             <button type="button" className="assets-empty-primary" onClick={onImport}>
-                <span>上传资产</span>
+                <span>上傳資產</span>
             </button>
         </div>
     );
@@ -1818,8 +1818,8 @@ export function AssetVideoPreview({ storageKey, url, title, className }: { stora
                             setVolume(event.currentTarget.volume);
                         }}
                     />
-                    <div className="asset-video-controls" aria-label="视频播放控制">
-                        <button type="button" className="asset-video-control-button" aria-label={playing ? "暂停" : "播放"} onClick={() => {
+                    <div className="asset-video-controls" aria-label="影片播放控制">
+                        <button type="button" className="asset-video-control-button" aria-label={playing ? "暫停" : "播放"} onClick={() => {
                             const video = videoRef.current;
                             if (!video) return;
                             if (video.paused) void video.play().catch(() => playback.fail());
@@ -1835,7 +1835,7 @@ export function AssetVideoPreview({ storageKey, url, title, className }: { stora
                             max={Math.max(duration, 0.1)}
                             step={0.1}
                             value={Math.min(currentTime, duration || 0)}
-                            aria-label="播放进度"
+                            aria-label="播放進度"
                             onChange={(event) => {
                                 const time = Number(event.currentTarget.value);
                                 if (videoRef.current) videoRef.current.currentTime = time;
@@ -1844,7 +1844,7 @@ export function AssetVideoPreview({ storageKey, url, title, className }: { stora
                         />
                         <span className="asset-video-time">{formatAssetClock(duration * 1000) || "0:00"}</span>
                         <div className="asset-video-volume">
-                            <button type="button" className="asset-video-control-button" aria-label={muted || volume === 0 ? "开启声音" : "静音"} onClick={() => {
+                            <button type="button" className="asset-video-control-button" aria-label={muted || volume === 0 ? "開啟聲音" : "靜音"} onClick={() => {
                                 const video = videoRef.current;
                                 if (!video) return;
                                 video.muted = !video.muted;
@@ -1877,11 +1877,11 @@ export function AssetVideoPreview({ storageKey, url, title, className }: { stora
                     </div>
                 </>
             ) : null}
-            {!source && !error ? <span className="text-sm text-white/65">正在加载视频…</span> : null}
+            {!source && !error ? <span className="text-sm text-white/65">正在載入影片…</span> : null}
             {error ? (
                 <div className="absolute inset-0 grid place-content-center justify-items-center gap-3 bg-black px-4 text-center text-sm text-white/80">
-                    <span>视频加载失败，请检查资源服务后重试。</span>
-                    <Button size="small" onClick={playback.retry}>重试</Button>
+                    <span>影片載入失敗，請檢查資源服務後重試。</span>
+                    <Button size="small" onClick={playback.retry}>重試</Button>
                 </div>
             ) : null}
         </div>
@@ -1913,7 +1913,7 @@ function AssetDrawer({ asset, onClose, onCopy, onDownload }: { asset: LibraryAss
                 <div className="space-y-4">
                     <div className="asset-archive-header">
                         <h2 className="asset-archive-title min-w-0">{asset.title}</h2>
-                        <Button type="text" className="asset-detail-close" icon={<X className="size-4" />} aria-label="关闭资产详情" onClick={onClose} />
+                        <Button type="text" className="asset-detail-close" icon={<X className="size-4" />} aria-label="關閉資產詳情" onClick={onClose} />
                     </div>
                     <div className="asset-archive-preview">
                         {asset.kind === "text" ? (
@@ -1938,7 +1938,7 @@ function AssetDrawer({ asset, onClose, onCopy, onDownload }: { asset: LibraryAss
                     <div className="flex flex-wrap gap-1.5">
 
                         {asset.arkAssetId ? (
-                            <Tag className="m-0" color="geekblue" title="火山方舟素材 ID，生成视频时可直接 asset:// 引用">
+                            <Tag className="m-0" color="geekblue" title="火山方舟素材 ID，生成影片時可直接 asset:// 引用">
                                 方舟 {asset.arkAssetId}
                             </Tag>
                         ) : null}
@@ -1955,14 +1955,14 @@ function AssetDrawer({ asset, onClose, onCopy, onDownload }: { asset: LibraryAss
                     </div>
                     {asset.note ? (
                         <div className="asset-archive-section">
-                            <span className="asset-archive-section-title">备注</span>
+                            <span className="asset-archive-section-title">備註</span>
                             <p className="asset-archive-section-body">{asset.note}</p>
                         </div>
                     ) : null}
                     <div className="asset-archive-actions">
                         {asset.kind === "text" ? (
                             <Button type="primary" icon={<Copy className="size-4" />} onClick={() => onCopy(asset)}>
-                                复制文本
+                                複製文本
                             </Button>
                         ) : null}
                         {asset.kind === "image" || asset.kind === "video" || asset.kind === "audio" || asset.kind === "model" ? (
@@ -1995,14 +1995,14 @@ function AssetImageZoom({ asset }: { asset: LibraryAsset & { kind: "image" } }) 
                 decoding="async"
                 className="asset-archive-preview-media asset-zoom-image"
                 style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})` }}
-                loadingFallback={<span className="text-sm text-white/65">正在加载图片…</span>}
-                fallback={<div className="grid justify-items-center gap-3 text-sm text-white/75"><span>图片加载失败，请重试。</span><Button size="small" onClick={() => setRetry((value) => value + 1)}>重试</Button></div>}
+                loadingFallback={<span className="text-sm text-white/65">正在載入圖片…</span>}
+                fallback={<div className="grid justify-items-center gap-3 text-sm text-white/75"><span>圖片載入失敗，請重試。</span><Button size="small" onClick={() => setRetry((value) => value + 1)}>重試</Button></div>}
             />
             <div className="asset-zoom-controls" data-canvas-no-zoom>
-                <button type="button" title="缩小" aria-label="缩小" onClick={() => setScale((value) => Math.max(.25, value / 1.25))}><ZoomOut className="size-4" /></button>
-                <button type="button" title="恢复适应" aria-label="恢复适应" onClick={reset}>{Math.round(scale * 100)}%</button>
+                <button type="button" title="縮小" aria-label="縮小" onClick={() => setScale((value) => Math.max(.25, value / 1.25))}><ZoomOut className="size-4" /></button>
+                <button type="button" title="恢復適應" aria-label="恢復適應" onClick={reset}>{Math.round(scale * 100)}%</button>
                 <button type="button" title="放大" aria-label="放大" onClick={() => setScale((value) => Math.min(4, value * 1.25))}><ZoomIn className="size-4" /></button>
-                <button type="button" title="查看原图尺寸" aria-label="查看原图尺寸" onClick={() => setScale(1)}><Maximize2 className="size-4" /></button>
+                <button type="button" title="檢視原圖尺寸" aria-label="檢視原圖尺寸" onClick={() => setScale(1)}><Maximize2 className="size-4" /></button>
             </div>
         </div>
     );
@@ -2010,21 +2010,21 @@ function AssetImageZoom({ asset }: { asset: LibraryAsset & { kind: "image" } }) 
 
 function assetArchiveFacts(asset: LibraryAsset) {
     const facts: Array<{ label: string; value: string }> = [
-        { label: "类型", value: assetKindLabel(asset.kind) },
-        { label: "分类", value: assetCategoryLabel(asset.category) },
+        { label: "型別", value: assetKindLabel(asset.kind) },
+        { label: "分類", value: assetCategoryLabel(asset.category) },
     ];
     if (asset.kind === "image" || asset.kind === "video") {
         facts.push({ label: "尺寸", value: assetSizeLabel(asset.data.width, asset.data.height) });
     }
     if (asset.kind === "video" || asset.kind === "audio") {
-        facts.push({ label: "时长", value: formatAssetClock(asset.data.durationMs) || "未知" });
+        facts.push({ label: "時長", value: formatAssetClock(asset.data.durationMs) || "未知" });
     }
     if (asset.kind !== "text") {
         facts.push({ label: "大小", value: formatBytes(asset.data.bytes) });
         facts.push({ label: "格式", value: asset.data.mimeType });
     }
-    facts.push({ label: "来源", value: asset.source || "未标注" });
-    facts.push({ label: "创建", value: formatAssetDateTime(asset.createdAt) });
+    facts.push({ label: "來源", value: asset.source || "未標註" });
+    facts.push({ label: "建立", value: formatAssetDateTime(asset.createdAt) });
     return facts;
 }
 
@@ -2037,14 +2037,14 @@ function assetSearchText(asset: LibraryAsset) {
 }
 
 function assetKindLabel(kind: AssetKind) {
-    return kind === "image" ? "图片" : kind === "video" ? "视频" : kind === "audio" ? "音频" : kind === "model" ? "模型" : "文本";
+    return kind === "image" ? "圖片" : kind === "video" ? "影片" : kind === "audio" ? "音訊" : kind === "model" ? "模型" : "文本";
 }
 
 function assetDownloadLabel(asset: LibraryAsset) {
-    if (asset.kind === "video") return "下载视频";
-    if (asset.kind === "audio") return "下载音频";
-    if (asset.kind === "model") return "下载模型";
-    return "下载图片";
+    if (asset.kind === "video") return "下載影片";
+    if (asset.kind === "audio") return "下載音訊";
+    if (asset.kind === "model") return "下載模型";
+    return "下載圖片";
 }
 
 function readAssetViewMode(): "grid" | "list" {
@@ -2055,8 +2055,8 @@ function readAssetViewMode(): "grid" | "list" {
 function assetCountMap<T extends { label: string; value: string }>(options: T[], remote: Record<string, number> | undefined, fallback: LibraryAsset[], valueOf: (asset: LibraryAsset) => string) {
     const result = new Map<string, number>();
     options.forEach((option) => {
-        // 列表只展示 LibraryAsset（entity 角色卡被排除）；"全部"计数只能累加选项里声明的类型，
-        // 否则远端 facets 里的 entity 会计入"全部"，出现计数 30 但列表为空的矛盾。
+        // 列表只展示 LibraryAsset（entity 角色卡被排除）；"全部"計數只能累加選項裡宣告的型別，
+        // 否則遠端 facets 裡的 entity 會計入"全部"，出現計數 30 但列表為空的矛盾。
         if (remote) result.set(option.value, option.value === "all" ? options.reduce((sum, item) => item.value === "all" ? sum : sum + (remote[item.value] || 0), 0) : remote[option.value] || 0);
         else result.set(option.value, option.value === "all" ? fallback.length : fallback.filter((asset) => valueOf(asset) === option.value).length);
     });

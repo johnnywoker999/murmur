@@ -43,7 +43,7 @@ export function SkillEditorDrawer({ open, skill, onClose, onSaved }: { open: boo
             onClose();
             return;
         }
-        modal.confirm({ title: "放弃未保存的修改？", content: "当前填写内容不会保留。", okText: "放弃修改", okButtonProps: { danger: true }, cancelText: "继续编辑", onOk: onClose });
+        modal.confirm({ title: "放棄未儲存的修改？", content: "當前填寫內容不會保留。", okText: "放棄修改", okButtonProps: { danger: true }, cancelText: "繼續編輯", onOk: onClose });
     };
 
     const submit = async (values: SkillFormValues) => {
@@ -61,10 +61,10 @@ export function SkillEditorDrawer({ open, skill, onClose, onSaved }: { open: boo
             };
             const result = skill ? await updateSkill(skill.skillId, input) : await createSkill(input);
             setDirty(false);
-            message.success(skill ? "技能已更新" : "技能已创建");
+            message.success(skill ? "技能已更新" : "技能已建立");
             onSaved(result.skill);
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "技能保存失败");
+            message.error(error instanceof Error ? error.message : "技能儲存失敗");
         } finally {
             setSaving(false);
         }
@@ -73,11 +73,11 @@ export function SkillEditorDrawer({ open, skill, onClose, onSaved }: { open: boo
     const draftFromIdea = async () => {
         const idea = draftIdea.trim();
         if (!idea) {
-            message.warning("请先描述你想沉淀的技能");
+            message.warning("請先描述你想沉澱的技能");
             return;
         }
         if (!useConfigStore.getState().isAiConfigReady(effectiveConfig, effectiveConfig.model)) {
-            message.info("尚未配置可用的文本模型，请先到设置页配置");
+            message.info("尚未配置可用的文本模型，請先到設定頁配置");
             navigateToSettings({ section: "models", continueCreation: true });
             return;
         }
@@ -91,21 +91,21 @@ export function SkillEditorDrawer({ open, skill, onClose, onSaved }: { open: boo
                 ...(draft.tag ? { tag: draft.tag } : {}),
             });
             setDirty(true);
-            message.success("草稿已生成，请检查并调整后保存");
+            message.success("草稿已生成，請檢查並調整後儲存");
         } catch (error) {
-            message.error(error instanceof Error ? `起草失败：${error.message}` : "起草失败");
+            message.error(error instanceof Error ? `起草失敗：${error.message}` : "起草失敗");
         } finally {
             setDrafting(false);
         }
     };
 
     return (
-        <AppDrawer className="library-drawer" open={open} size={720} mask={{ closable: !dirty }} title={skill ? "编辑技能" : "创建技能"} onClose={requestClose} extra={<Button type="primary" loading={saving} icon={<Save className="size-4" />} onClick={() => form.submit()}>保存技能</Button>}>
+        <AppDrawer className="library-drawer" open={open} size={720} mask={{ closable: !dirty }} title={skill ? "編輯技能" : "建立技能"} onClose={requestClose} extra={<Button type="primary" loading={saving} icon={<Save className="size-4" />} onClick={() => form.submit()}>儲存技能</Button>}>
             {!isPackageSkill ? <div className="mb-4 rounded-xl border bg-foreground/[.02] p-3">
                 <div className="mb-2 flex items-center gap-1.5 text-sm font-medium">
                     <Wand2 className="size-4" />
                     AI 起草
-                    <span className="font-normal text-foreground/45">描述想法，一键生成名称、简介与指令草稿（可再编辑）</span>
+                    <span className="font-normal text-foreground/45">描述想法，一鍵生成名稱、簡介與指令草稿（可再編輯）</span>
                 </div>
                 <Input.TextArea
                     value={draftIdea}
@@ -114,37 +114,37 @@ export function SkillEditorDrawer({ open, skill, onClose, onSaved }: { open: boo
                     maxLength={2000}
                     showCount
                     disabled={drafting}
-                    placeholder="例如：我要一个竖屏短剧分镜技能——输入剧本段落，输出按景别排列的分镜表，每个镜头包含画面、台词、时长与转场…"
+                    placeholder="例如：我要一個豎屏短劇分鏡技能——輸入劇本段落，輸出按景別排列的分鏡表，每個鏡頭包含畫面、臺詞、時長與轉場…"
                 />
                 <div className="mt-2 flex items-center justify-between gap-2">
-                    <span className="text-xs text-foreground/45">将使用你的文本模型生成一次草稿</span>
+                    <span className="text-xs text-foreground/45">將使用你的文本模型生成一次草稿</span>
                     <Button type="primary" loading={drafting} disabled={!draftIdea.trim()} icon={<Wand2 className="size-4" />} onClick={() => void draftFromIdea()}>生成草稿</Button>
                 </div>
-            </div> : <div className="mb-4 rounded-xl border bg-foreground/[.02] p-3 text-sm leading-6 text-foreground/58">这是多文件技能包。这里仅编辑名称、简介、分类和展示信息；技能正文请更新 ZIP，或在 GitHub 仓库修改后执行同步。</div>}
+            </div> : <div className="mb-4 rounded-xl border bg-foreground/[.02] p-3 text-sm leading-6 text-foreground/58">這是多檔案技能包。這裡僅編輯名稱、簡介、分類和展示資訊；技能正文請更新 ZIP，或在 GitHub 倉庫修改後執行同步。</div>}
             <Form form={form} layout="vertical" requiredMark="optional" onFinish={submit} onValuesChange={() => setDirty(true)}>
                 <div className="grid gap-x-4 sm:grid-cols-2">
-                    <Form.Item name="skillName" label="技能名称" rules={[{ required: true, message: "请填写技能名称" }, { max: 80, message: "最多 80 个字符" }]}>
-                        <Input maxLength={80} showCount placeholder="例如：短剧导演分镜" autoComplete="off" />
+                    <Form.Item name="skillName" label="技能名稱" rules={[{ required: true, message: "請填寫技能名稱" }, { max: 80, message: "最多 80 個字元" }]}>
+                        <Input maxLength={80} showCount placeholder="例如：短劇導演分鏡" autoComplete="off" />
                     </Form.Item>
-                    <Form.Item name="tag" label="技能分类" rules={[{ required: true, message: "请选择技能分类" }]}>
+                    <Form.Item name="tag" label="技能分類" rules={[{ required: true, message: "請選擇技能分類" }]}>
                         <Select options={fallbackSkillCategories.map(({ value, label }) => ({ value, label }))} />
                     </Form.Item>
                 </div>
 
-                <Form.Item name="description" label="技能简介" rules={[{ required: true, message: "请填写技能简介" }, { max: 500, message: "最多 500 个字符" }]}>
-                    <Input.TextArea autoSize={{ minRows: 3, maxRows: 6 }} maxLength={500} showCount placeholder="说明适用场景、输入条件和最终产出" />
+                <Form.Item name="description" label="技能簡介" rules={[{ required: true, message: "請填寫技能簡介" }, { max: 500, message: "最多 500 個字元" }]}>
+                    <Input.TextArea autoSize={{ minRows: 3, maxRows: 6 }} maxLength={500} showCount placeholder="說明適用場景、輸入條件和最終產出" />
                 </Form.Item>
 
-                {!isPackageSkill ? <Form.Item name="instruction" label="技能指令" rules={[{ required: true, message: "请填写技能指令" }, { max: 100000, message: "最多 100000 个字符" }]} extra="单文件技能会作为 SKILL.md 安装，Agent 按任务需要读取。">
-                    <Input.TextArea className="font-mono text-xs leading-5" autoSize={{ minRows: 14, maxRows: 28 }} maxLength={100000} showCount placeholder="使用 Markdown 编写角色、约束、流程、检查清单和输出格式" />
+                {!isPackageSkill ? <Form.Item name="instruction" label="技能指令" rules={[{ required: true, message: "請填寫技能指令" }, { max: 100000, message: "最多 100000 個字元" }]} extra="單檔案技能會作為 SKILL.md 安裝，Agent 按任務需要讀取。">
+                    <Input.TextArea className="font-mono text-xs leading-5" autoSize={{ minRows: 14, maxRows: 28 }} maxLength={100000} showCount placeholder="使用 Markdown 編寫角色、約束、流程、檢查清單和輸出格式" />
                 </Form.Item> : null}
 
                 <div className="grid gap-x-4 sm:grid-cols-[minmax(0,1fr)_180px]">
-                    <Form.Item name="markdownUrl" label={isPackageSkill ? "来源地址" : "Markdown 地址"} rules={[{ type: "url", message: "请输入有效的 HTTP(S) 链接" }]}>
+                    <Form.Item name="markdownUrl" label={isPackageSkill ? "來源地址" : "Markdown 地址"} rules={[{ type: "url", message: "請輸入有效的 HTTP(S) 連結" }]}>
                         <Input type="url" inputMode="url" spellCheck={false} placeholder="https://example.com/SKILL.md" />
                     </Form.Item>
-                    <Form.Item name="is_public" label="公开状态" valuePropName="checked" extra="公开后其他用户可以加入使用。">
-                        <Switch checkedChildren="公开" unCheckedChildren="私有" />
+                    <Form.Item name="is_public" label="公開狀態" valuePropName="checked" extra="公開後其他使用者可以加入使用。">
+                        <Switch checkedChildren="公開" unCheckedChildren="私有" />
                     </Form.Item>
                 </div>
 
@@ -152,19 +152,19 @@ export function SkillEditorDrawer({ open, skill, onClose, onSaved }: { open: boo
                     {(fields, { add, remove }) => (
                         <section aria-labelledby="skill-media-title">
                             <div className="mb-3 flex items-center justify-between">
-                                <div><h3 id="skill-media-title" className="text-sm font-medium">展示媒体</h3><p className="mt-1 text-xs text-foreground/50">可选，最多 8 个公开图片或视频链接。</p></div>
-                                <Button disabled={fields.length >= 8} icon={<Plus className="size-4" />} onClick={() => add(emptyMedia())}>添加媒体</Button>
+                                <div><h3 id="skill-media-title" className="text-sm font-medium">展示媒體</h3><p className="mt-1 text-xs text-foreground/50">可選，最多 8 個公開圖片或影片連結。</p></div>
+                                <Button disabled={fields.length >= 8} icon={<Plus className="size-4" />} onClick={() => add(emptyMedia())}>新增媒體</Button>
                             </div>
                             <div className="space-y-2">
                                 {fields.map((field) => (
                                     <div key={field.key} className="grid grid-cols-[112px_minmax(0,1fr)_36px] gap-2">
-                                        <Form.Item {...field} name={[field.name, "type"]} className="mb-0" rules={[{ required: true, message: "选择类型" }]}>
-                                            <Select options={[{ value: "image", label: "图片" }, { value: "video", label: "视频" }]} />
+                                        <Form.Item {...field} name={[field.name, "type"]} className="mb-0" rules={[{ required: true, message: "選擇型別" }]}>
+                                            <Select options={[{ value: "image", label: "圖片" }, { value: "video", label: "影片" }]} />
                                         </Form.Item>
-                                        <Form.Item {...field} name={[field.name, "showcaseUrl"]} className="mb-0" rules={[{ required: true, message: "请填写媒体链接" }, { type: "url", message: "链接格式无效" }]}>
+                                        <Form.Item {...field} name={[field.name, "showcaseUrl"]} className="mb-0" rules={[{ required: true, message: "請填寫媒體連結" }, { type: "url", message: "連結格式無效" }]}>
                                             <Input type="url" inputMode="url" spellCheck={false} placeholder="https://example.com/media" />
                                         </Form.Item>
-                                        <Button aria-label="移除媒体" title="移除媒体" icon={<Minus className="size-4" />} onClick={() => remove(field.name)} />
+                                        <Button aria-label="移除媒體" title="移除媒體" icon={<Minus className="size-4" />} onClick={() => remove(field.name)} />
                                         <Form.Item {...field} name={[field.name, "showcaseUri"]} hidden><Input /></Form.Item>
                                     </div>
                                 ))}
@@ -173,8 +173,8 @@ export function SkillEditorDrawer({ open, skill, onClose, onSaved }: { open: boo
                     )}
                 </Form.List>
 
-                <Form.Item name="extraInfo" label="补充信息" className="mt-5" rules={[{ max: 2000, message: "最多 2000 个字符" }]}>
-                    <Input.TextArea autoSize={{ minRows: 2, maxRows: 5 }} maxLength={2000} showCount placeholder="版本说明、依赖工具或使用注意事项" />
+                <Form.Item name="extraInfo" label="補充資訊" className="mt-5" rules={[{ max: 2000, message: "最多 2000 個字元" }]}>
+                    <Input.TextArea autoSize={{ minRows: 2, maxRows: 5 }} maxLength={2000} showCount placeholder="版本說明、依賴工具或使用注意事項" />
                 </Form.Item>
             </Form>
         </AppDrawer>

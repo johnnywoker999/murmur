@@ -40,7 +40,7 @@ export function CanvasVersionPreview({ preview, busy = false, onReturn, onShowVe
                 if (active) setLocalMedia((current) => ({ ...current, [node.id]: url }));
             })
             .catch(() => {
-                if (active) setMediaError("本机媒体读取失败，可下载草稿后检查素材");
+                if (active) setMediaError("本機媒體讀取失敗，可下載草稿後檢查素材");
             });
         return () => {
             active = false;
@@ -98,24 +98,24 @@ export function CanvasVersionPreview({ preview, busy = false, onReturn, onShowVe
             <header data-canvas-no-zoom className="grid shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-sidebar px-5 py-3 text-foreground sm:flex">
                 <Eye size={16} className="text-muted-foreground" />
                 <div className="min-w-0 flex-1">
-                    <strong className="text-sm">{preview.label} · 只读预览</strong>
+                    <strong className="text-sm">{preview.label} · 只讀預覽</strong>
                     <p className="mt-1 text-xs text-muted-foreground">{new Date(preview.date).toLocaleString("zh-CN")}</p>
                 </div>
                 <Button type="text" className="lg:!hidden" icon={<History size={15} />} disabled={busy} onClick={onShowVersions}>
                     版本
                 </Button>
                 <Button className="col-span-3" icon={<ArrowLeft size={15} />} disabled={busy} onClick={onReturn}>
-                    返回当前画布
+                    返回當前畫布
                 </Button>
             </header>
             {preview.error ? (
                 <div role="alert" className="grid flex-1 place-content-center gap-4 p-6 text-center text-sm text-destructive">
                     <p>{preview.error}</p>
-                    <Button onClick={onShowVersions}>重新选择版本</Button>
+                    <Button onClick={onShowVersions}>重新選擇版本</Button>
                 </div>
             ) : !project ? (
                 <div className="grid flex-1 place-items-center">
-                    <Spin tip="正在读取版本内容">
+                    <Spin tip="正在讀取版本內容">
                         <div className="p-10" />
                     </Spin>
                 </div>
@@ -185,7 +185,7 @@ export function CanvasVersionPreview({ preview, busy = false, onReturn, onShowVe
                     </CanvasNodeActionContext.Provider>
                     {!nodes.length ? (
                         <div className="pointer-events-none absolute inset-0 grid place-items-center">
-                            <EmptyState description="此版本没有节点" />
+                            <EmptyState description="此版本沒有節點" />
                         </div>
                     ) : null}
                     {mediaError ? (
@@ -194,12 +194,12 @@ export function CanvasVersionPreview({ preview, busy = false, onReturn, onShowVe
                         </p>
                     ) : null}
                     <div data-canvas-no-zoom className="absolute bottom-5 left-5 flex items-center gap-1 rounded-lg border border-border bg-sidebar p-1 text-foreground shadow-sm">
-                        <Button type="text" aria-label="缩小预览" icon={<Minus size={15} />} onClick={() => zoom(viewport.k / 1.2)} />
-                        <span className="w-12 text-center text-xs tabular-nums" aria-label="预览缩放比例">
+                        <Button type="text" aria-label="縮小預覽" icon={<Minus size={15} />} onClick={() => zoom(viewport.k / 1.2)} />
+                        <span className="w-12 text-center text-xs tabular-nums" aria-label="預覽縮放比例">
                             {Math.round(viewport.k * 100)}%
                         </span>
-                        <Button type="text" aria-label="放大预览" icon={<Plus size={15} />} onClick={() => zoom(viewport.k * 1.2)} />
-                        <Button type="text" aria-label="适应预览内容" icon={<Maximize size={15} />} onClick={fit} />
+                        <Button type="text" aria-label="放大預覽" icon={<Plus size={15} />} onClick={() => zoom(viewport.k * 1.2)} />
+                        <Button type="text" aria-label="適應預覽內容" icon={<Maximize size={15} />} onClick={fit} />
                     </div>
                 </div>
             )}
@@ -217,13 +217,13 @@ function renderReadOnlyContent(node: CanvasNodeData) {
                     ? rows.map((row) => (
                           <div key={row.id} className="mb-3 border-b border-border pb-3">
                               <p className="text-xs text-muted-foreground">
-                                  镜头 {row.shotNumber} · {row.durationSeconds}s
+                                  鏡頭 {row.shotNumber} · {row.durationSeconds}s
                               </p>
                               <p>{row.plotDescription}</p>
                               <p>{row.dialogue}</p>
                           </div>
                       ))
-                    : node.metadata?.content || node.metadata?.composerContent || node.metadata?.prompt || "此节点没有文本内容"}
+                    : node.metadata?.content || node.metadata?.composerContent || node.metadata?.prompt || "此節點沒有文本內容"}
             </div>
         </div>
     );

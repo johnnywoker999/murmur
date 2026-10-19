@@ -11,7 +11,7 @@ export type DeletedCanvasHistoryItem = {
     deletedAt: string;
     nodeCount: number;
     coverUrl?: string;
-    /** 完整快照仅用于本地软删除恢复；旧历史记录可没有该字段。 */
+    /** 完整快照僅用於本地軟刪除恢復；舊歷史記錄可沒有該欄位。 */
     project?: CanvasProject;
 };
 
@@ -41,7 +41,7 @@ export const useCanvasHistoryStore = create<CanvasHistoryStore>()(
                 const now = new Date().toISOString();
                 const newItems: DeletedCanvasHistoryItem[] = projects.map((p) => ({
                     id: p.id,
-                    title: p.title || "未命名画布",
+                    title: p.title || "未命名畫布",
                     createdAt: p.createdAt || p.updatedAt || now,
                     updatedAt: p.updatedAt || now,
                     deletedAt: now,

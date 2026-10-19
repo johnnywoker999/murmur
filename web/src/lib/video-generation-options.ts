@@ -36,7 +36,7 @@ export function normalizeVideoResolution(value: string | number | undefined) {
     const resolution = Number(token.replace(/p$/i, ""));
     if (Number.isFinite(resolution) && resolution > 0) return String(Math.floor(resolution));
     // Channel-declared values are opaque enums, not necessarily numeric tiers.
-    // Preserve them verbatim so values such as `768p竖` remain selectable and
+    // Preserve them verbatim so values such as `768p豎` remain selectable and
     // can be sent back to the provider without being collapsed to 720p.
     return raw;
 }

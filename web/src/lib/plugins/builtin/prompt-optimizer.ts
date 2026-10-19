@@ -15,28 +15,28 @@ import type {
 export const PROMPT_OPTIMIZER_PLUGIN_ID = "prompt-optimizer";
 
 const modeLabels: Record<PromptOptimizationMode, string> = {
-    expand: "扩展想法",
-    refine: "精修已有提示词",
-    style: "强化视觉风格",
-    "model-adapt": "适配当前模型",
-    reference: "结合参考素材",
+    expand: "擴充套件想法",
+    refine: "精修已有提示詞",
+    style: "強化視覺風格",
+    "model-adapt": "適配當前模型",
+    reference: "結合參考素材",
 };
 
 const optimizerTool: PluginTextTool = {
     type: "function",
     function: {
         name: "optimize_prompt",
-        description: "返回结构化的 AI 生图或生视频提示词优化结果。",
+        description: "返回結構化的 AI 生圖或生影片提示詞最佳化結果。",
         strict: true,
         parameters: {
             type: "object",
             additionalProperties: false,
             required: ["optimizedPrompt", "negativePrompt", "changes", "assumptions", "variants"],
             properties: {
-                optimizedPrompt: { type: "string", description: "可直接用于生成的正向提示词。" },
-                negativePrompt: { type: "string", description: "需要规避的内容；没有时返回空字符串。" },
-                changes: { type: "array", items: { type: "string" }, description: "相较输入提示词做出的关键变化。" },
-                assumptions: { type: "array", items: { type: "string" }, description: "对模糊需求做出的假设；没有时返回空数组。" },
+                optimizedPrompt: { type: "string", description: "可直接用於生成的正向提示詞。" },
+                negativePrompt: { type: "string", description: "需要規避的內容；沒有時返回空字串。" },
+                changes: { type: "array", items: { type: "string" }, description: "相較輸入提示詞做出的關鍵變化。" },
+                assumptions: { type: "array", items: { type: "string" }, description: "對模糊需求做出的假設；沒有時返回空陣列。" },
                 variants: {
                     type: "array",
                     items: {
@@ -48,7 +48,7 @@ const optimizerTool: PluginTextTool = {
                             prompt: { type: "string" },
                         },
                     },
-                    description: "最多两个可选的提示词版本。",
+                    description: "最多兩個可選的提示詞版本。",
                 },
             },
         },
@@ -57,11 +57,11 @@ const optimizerTool: PluginTextTool = {
 
 const manifest: PluginManifest = {
     id: PROMPT_OPTIMIZER_PLUGIN_ID,
-    name: "AI 提示词优化器",
+    name: "AI 提示詞最佳化器",
     version: "0.3.0",
     apiVersion: "beeftv.plugin/v1",
-    description: "把模糊的生图想法整理成可执行、可比较、适配当前模型的提示词。",
-    author: "内置工具",
+    description: "把模糊的生圖想法整理成可執行、可比較、適配當前模型的提示詞。",
+    author: "內建工具",
     permissions: ["canvas.read", "canvas.write", "ai.text"],
     trusted: true,
     runtime: { web: "trusted-backend" },
@@ -69,13 +69,13 @@ const manifest: PluginManifest = {
 };
 
 const systemPrompt = [
-    "你是当前创作工作台里的提示词导演，负责把用户模糊的视觉想法整理成可以直接交给生成模型的提示词。",
-    "只优化表达和可执行性，不擅自改变用户明确写出的主体、身份、动作、数量、时代、地点、画幅比例或安全边界。",
-    "优先使用具体可视化语言：主体与关系、构图与景别、动作、环境、材质、光线、色彩、镜头和风格。",
-    "如果输入已经足够明确，保持原意并做克制的精修；如果信息不足，把不确定项写入 assumptions，不要假装知道。",
-    "根据 generationMode 选择表达：图片侧重静态画面、构图和材质，视频侧重动作连续性、时长感、镜头运动和首尾衔接。",
-    "当优化模式是适配当前模型时，先结合 targetProtocol 和 targetModel 判断模型族，再严格执行模型适配策略；不要编造不存在的参数、权重语法或模型能力。",
-    "最终必须调用 optimize_prompt 工具，不要输出 Markdown，不要在工具调用之外解释。",
+    "你是當前創作工作臺裡的提示詞導演，負責把使用者模糊的視覺想法整理成可以直接交給生成模型的提示詞。",
+    "只最佳化表達和可執行性，不擅自改變使用者明確寫出的主體、身份、動作、數量、時代、地點、畫幅比例或安全邊界。",
+    "優先使用具體視覺化語言：主體與關係、構圖與景別、動作、環境、材質、光線、色彩、鏡頭和風格。",
+    "如果輸入已經足夠明確，保持原意並做剋制的精修；如果資訊不足，把不確定項寫入 assumptions，不要假裝知道。",
+    "根據 generationMode 選擇表達：圖片側重靜態畫面、構圖和材質，影片側重動作連續性、時長感、鏡頭運動和首尾銜接。",
+    "當最佳化模式是適配當前模型時，先結合 targetProtocol 和 targetModel 判斷模型族，再嚴格執行模型適配策略；不要編造不存在的引數、權重語法或模型能力。",
+    "最終必須呼叫 optimize_prompt 工具，不要輸出 Markdown，不要在工具呼叫之外解釋。",
 ].join("\n");
 
 type ModelAdaptationProfile = {
@@ -88,18 +88,18 @@ type ModelAdaptationProfile = {
 
 const genericImageProfile: ModelAdaptationProfile = {
     id: "generic-image",
-    label: "通用图片模型",
-    promptShape: "自然语言描述，按主体与动作 → 环境 → 构图 → 光线与材质 → 风格排列。",
-    rules: ["先锁定主体、数量、身份和动作，再补充可见的画面细节。", "把重要的比例、文字、位置和一致性要求写明确。"],
-    avoid: ["不要臆造供应商参数或控制语法。", "关键规避项不要只放在 negativePrompt 中，正向提示词也要表达清楚。"],
+    label: "通用圖片模型",
+    promptShape: "自然語言描述，按主體與動作 → 環境 → 構圖 → 光線與材質 → 風格排列。",
+    rules: ["先鎖定主體、數量、身份和動作，再補充可見的畫面細節。", "把重要的比例、文字、位置和一致性要求寫明確。"],
+    avoid: ["不要臆造供應商引數或控制語法。", "關鍵規避項不要只放在 negativePrompt 中，正向提示詞也要表達清楚。"],
 };
 
 const genericVideoProfile: ModelAdaptationProfile = {
     id: "generic-video",
-    label: "通用视频模型",
-    promptShape: "单镜头时序描述，按起始画面 → 主体动作 → 镜头运动 → 环境变化 → 结尾状态排列。",
-    rules: ["每个动作使用可观察、连续的动词，避免一段话塞入互不相连的多个镜头。", "明确主体、镜头和环境谁在运动，并保持角色、服装和场景一致。"],
-    avoid: ["不要把静态摄影参数堆成关键词列表。", "不要新增用户未要求的转场、角色或剧情。"],
+    label: "通用影片模型",
+    promptShape: "單鏡頭時序描述，按起始畫面 → 主體動作 → 鏡頭運動 → 環境變化 → 結尾狀態排列。",
+    rules: ["每個動作使用可觀察、連續的動詞，避免一段話塞入互不相連的多個鏡頭。", "明確主體、鏡頭和環境誰在運動，並保持角色、服裝和場景一致。"],
+    avoid: ["不要把靜態攝影引數堆成關鍵詞列表。", "不要新增使用者未要求的轉場、角色或劇情。"],
 };
 
 function containsAny(value: string, keywords: string[]) {
@@ -112,73 +112,73 @@ function resolveModelAdaptationProfile(input: PromptOptimizationInput): ModelAda
         if (containsAny(model, ["gemini", "imagen", "nano-banana", "nanobanana"])) {
             return {
                 id: "gemini-image",
-                label: "Gemini / Imagen 图片模型",
-                promptShape: "清晰的自然语言场景描述，按主体 → 背景与上下文 → 风格与摄影细节组织。",
-                rules: ["优先使用完整句子和具体视觉事实，参考图只描述确实可见的内容。", "如果画面含文字，保留原文并明确位置、层级和字数，避免无关装饰。", "控制提示词长度，先保留主体、上下文和风格这三个核心层次。"],
-                avoid: ["不要使用 SD 权重、反向提示词标签或未确认的供应商参数。"],
+                label: "Gemini / Imagen 圖片模型",
+                promptShape: "清晰的自然語言場景描述，按主體 → 背景與上下文 → 風格與攝影細節組織。",
+                rules: ["優先使用完整句子和具體視覺事實，參考圖只描述確實可見的內容。", "如果畫面含文字，保留原文並明確位置、層級和字數，避免無關裝飾。", "控制提示詞長度，先保留主體、上下文和風格這三個核心層次。"],
+                avoid: ["不要使用 SD 權重、反向提示詞標籤或未確認的供應商引數。"],
             };
         }
         if (containsAny(model, ["gpt-image", "dall-e", "dalle", "openai-image", "openai"])) {
             return {
                 id: "openai-image",
-                label: "OpenAI 图片模型",
-                promptShape: "简洁、完整的自然语言描述，先说要生成什么，再补充构图、光线、材质和风格。",
-                rules: ["使用模型能直接理解的画面描述，不把提示词写成控制台参数。", "对画面中的文字、位置、数量和主体关系使用明确句子。"],
-                avoid: ["不要添加 SD 权重、逗号关键词堆叠或 -- 参数。", "不要依赖单独 negativePrompt，重要限制要写进正向描述。"],
+                label: "OpenAI 圖片模型",
+                promptShape: "簡潔、完整的自然語言描述，先說要生成什麼，再補充構圖、光線、材質和風格。",
+                rules: ["使用模型能直接理解的畫面描述，不把提示詞寫成控制台引數。", "對畫面中的文字、位置、數量和主體關係使用明確句子。"],
+                avoid: ["不要新增 SD 權重、逗號關鍵詞堆疊或 -- 引數。", "不要依賴單獨 negativePrompt，重要限制要寫進正向描述。"],
             };
         }
         if (containsAny(model, ["grok-image", "grok-imagine"])) {
             return {
                 id: "grok-image",
-                label: "Grok 图片模型",
-                promptShape: "简洁的自然语言画面描述，主体、动作、环境和视觉风格清晰分层。",
-                rules: ["保留明确的主体关系、构图和风格意图，避免把提示词写成参数清单。", "有参考图时说明要保留的主体或风格特征，不臆测看不见的细节。"],
-                avoid: ["不要添加 SD 权重、Midjourney 参数或模型未确认支持的控制语法。"],
+                label: "Grok 圖片模型",
+                promptShape: "簡潔的自然語言畫面描述，主體、動作、環境和視覺風格清晰分層。",
+                rules: ["保留明確的主體關係、構圖和風格意圖，避免把提示詞寫成引數清單。", "有參考圖時說明要保留的主體或風格特徵，不臆測看不見的細節。"],
+                avoid: ["不要新增 SD 權重、Midjourney 引數或模型未確認支援的控制語法。"],
             };
         }
         if (containsAny(model, ["seedream", "jimeng", "doubao", "volcengine-ark-image", "volcengine-ark-agent-plan-image", "volcengine-jimeng-image"])) {
             return {
                 id: "seedream-image",
-                label: "Seedream / 即梦 / 火山图片模型",
-                promptShape: "中文自然语言镜头描述，按主体与动作 → 构图 → 光影 → 材质与风格组织。",
-                rules: ["优先写清人物或主体的外观、动作、空间关系和画面重点。", "需要人物一致性时重复关键外观特征，避免只写抽象的‘保持一致’。", "中文需求保持中文表达，英文专有名词只在确实有帮助时保留。"],
-                avoid: ["不要套用 SD 的权重语法、质量词串或无意义的英文标签。", "不要把多个镜头和互相冲突的动作混在一条提示词里。"],
+                label: "Seedream / 即夢 / 火山圖片模型",
+                promptShape: "中文自然語言鏡頭描述，按主體與動作 → 構圖 → 光影 → 材質與風格組織。",
+                rules: ["優先寫清人物或主體的外觀、動作、空間關係和畫面重點。", "需要人物一致性時重複關鍵外觀特徵，避免只寫抽象的‘保持一致’。", "中文需求保持中文表達，英文專有名詞只在確實有幫助時保留。"],
+                avoid: ["不要套用 SD 的權重語法、質量詞串或無意義的英文標籤。", "不要把多個鏡頭和互相沖突的動作混在一條提示詞裡。"],
             };
         }
         if (containsAny(model, ["flux"])) {
             return {
                 id: "flux-image",
-                label: "FLUX 图片模型",
-                promptShape: "自然语言段落 + 少量明确的视觉关键词，主体和动作放在前面。",
-                rules: ["用具体关系描述主体、位置、材质和光线，而不是重复质量形容词。", "保留用户指定的风格和构图，不主动添加模型参数。"],
-                avoid: ["不要输出很长的逗号标签清单或堆叠 negative prompt。", "不要添加未经用户要求的 LoRA、采样器或权重标记。"],
+                label: "FLUX 圖片模型",
+                promptShape: "自然語言段落 + 少量明確的視覺關鍵詞，主體和動作放在前面。",
+                rules: ["用具體關係描述主體、位置、材質和光線，而不是重複質量形容詞。", "保留使用者指定的風格和構圖，不主動新增模型引數。"],
+                avoid: ["不要輸出很長的逗號標籤清單或堆疊 negative prompt。", "不要新增未經使用者要求的 LoRA、取樣器或權重標記。"],
             };
         }
         if (containsAny(model, ["sdxl", "stable-diffusion", "stable diffusion", "sd3", "stable3"])) {
             return {
                 id: "stable-diffusion-image",
-                label: "Stable Diffusion / SDXL 图片模型",
-                promptShape: "紧凑的分层关键词或短句，按主体 → 构图 → 光线 → 风格与质量组织。",
-                rules: ["只保留能影响画面的关键词，主体和构图优先。", "如果原提示词已经使用括号权重，只在确有必要时保留并少量调整。", "将画面主体和反向规避项分开表达，避免互相冲突。"],
-                avoid: ["不要盲目添加过多质量词、艺术家名或模型专属标签。", "不确定权重语法是否被当前渠道支持时，不要主动新增。"],
+                label: "Stable Diffusion / SDXL 圖片模型",
+                promptShape: "緊湊的分層關鍵詞或短句，按主體 → 構圖 → 光線 → 風格與質量組織。",
+                rules: ["只保留能影響畫面的關鍵詞，主體和構圖優先。", "如果原提示詞已經使用括號權重，只在確有必要時保留並少量調整。", "將畫面主體和反向規避項分開表達，避免互相沖突。"],
+                avoid: ["不要盲目新增過多質量詞、藝術家名或模型專屬標籤。", "不確定權重語法是否被當前渠道支援時，不要主動新增。"],
             };
         }
         if (containsAny(model, ["midjourney", "mid-journey"])) {
             return {
                 id: "midjourney-image",
-                label: "Midjourney 图片模型",
-                promptShape: "精炼的视觉描述，主体、场景、构图和风格清晰，参数放在末尾。",
-                rules: ["优先写画面内容和视觉方向，保持短而有辨识度。", "只有用户原本提供或明确要求时才保留 --ar、--stylize 等参数。"],
-                avoid: ["不要臆造 Midjourney 参数或把所有摄影术语都堆上去。", "不要使用与当前工作台协议无关的命令前缀。"],
+                label: "Midjourney 圖片模型",
+                promptShape: "精煉的視覺描述，主體、場景、構圖和風格清晰，引數放在末尾。",
+                rules: ["優先寫畫面內容和視覺方向，保持短而有辨識度。", "只有使用者原本提供或明確要求時才保留 --ar、--stylize 等引數。"],
+                avoid: ["不要臆造 Midjourney 引數或把所有攝影術語都堆上去。", "不要使用與當前工作臺協議無關的命令字首。"],
             };
         }
         if (containsAny(model, ["ideogram", "recraft"])) {
             return {
                 id: "design-image",
-                label: "设计与文字图片模型",
-                promptShape: "先说明画布、主体和版式，再说明文字内容、位置、层级、字体气质和配色。",
-                rules: ["画面文字保留精确原文并控制字数，明确文字与主体的空间关系。", "区分内容、版式和视觉风格，避免只给抽象审美词。"],
-                avoid: ["不要擅自改写品牌名、标题、数字或标语。"],
+                label: "設計與文字圖片模型",
+                promptShape: "先說明畫布、主體和版式，再說明文字內容、位置、層級、字型氣質和配色。",
+                rules: ["畫面文字保留精確原文並控制字數，明確文字與主體的空間關係。", "區分內容、版式和視覺風格，避免只給抽象審美詞。"],
+                avoid: ["不要擅自改寫品牌名、標題、數字或標語。"],
             };
         }
         return genericImageProfile;
@@ -187,37 +187,37 @@ function resolveModelAdaptationProfile(input: PromptOptimizationInput): ModelAda
     if (containsAny(model, ["seedance", "doubao-seedance", "volcengine-ark-video", "volcengine-ark-agent-plan-video", "volcengine-jimeng-video", "jimeng-video"])) {
         return {
             id: "seedance-video",
-            label: "Seedance / 即梦视频模型",
-            promptShape: "单镜头时序描述，明确起始构图、动作节拍、镜头运动、环境变化和结尾状态。",
-            rules: ["用连续动作描述主体如何开始、发展和结束，保持镜头内的因果关系。", "人物、服装、场景和道具的一致性优先于堆叠风格词。", "有首帧或参考图时，明确哪些内容必须保持、哪些内容允许变化。"],
-            avoid: ["不要在一条提示词中拼接多个无关镜头。", "不要把静态图片参数当成视频动作指令。"],
+            label: "Seedance / 即夢影片模型",
+            promptShape: "單鏡頭時序描述，明確起始構圖、動作節拍、鏡頭運動、環境變化和結尾狀態。",
+            rules: ["用連續動作描述主體如何開始、發展和結束，保持鏡頭內的因果關係。", "人物、服裝、場景和道具的一致性優先於堆疊風格詞。", "有首幀或參考圖時，明確哪些內容必須保持、哪些內容允許變化。"],
+            avoid: ["不要在一條提示詞中拼接多個無關鏡頭。", "不要把靜態圖片引數當成影片動作指令。"],
         };
     }
     if (containsAny(model, ["veo", "gemini-veo"])) {
         return {
             id: "veo-video",
-            label: "Veo 视频模型",
-            promptShape: "电影化的自然语言镜头描述，按主体、动作、镜头、环境和节奏组织。",
-            rules: ["把想法拆成可观察的动作和镜头运动，并补充时间顺序。", "用景别、机位、运镜、光线和环境声等可视化要素控制镜头。"],
-            avoid: ["不要只写情绪和抽象风格，不给动作或镜头变化。", "不要加入用户未要求的多镜头转场。"],
+            label: "Veo 影片模型",
+            promptShape: "電影化的自然語言鏡頭描述，按主體、動作、鏡頭、環境和節奏組織。",
+            rules: ["把想法拆成可觀察的動作和鏡頭運動，並補充時間順序。", "用景別、機位、運鏡、光線和環境聲等視覺化要素控制鏡頭。"],
+            avoid: ["不要只寫情緒和抽象風格，不給動作或鏡頭變化。", "不要加入使用者未要求的多鏡頭轉場。"],
         };
     }
     if (containsAny(model, ["kling"])) {
         return {
             id: "kling-video",
-            label: "Kling 视频模型",
-            promptShape: "简洁、连续的动作指令，明确主体运动和摄像机运动。",
-            rules: ["每个动作都写清主体、方向、速度或结果，避免互相冲突的动作。", "优先保证物理连续性、角色一致性和镜头稳定。"],
-            avoid: ["不要加入过多抽象叙事或无法在短片段中完成的事件。"],
+            label: "Kling 影片模型",
+            promptShape: "簡潔、連續的動作指令，明確主體運動和攝像機運動。",
+            rules: ["每個動作都寫清主體、方向、速度或結果，避免互相沖突的動作。", "優先保證物理連續性、角色一致性和鏡頭穩定。"],
+            avoid: ["不要加入過多抽象敘事或無法在短片段中完成的事件。"],
         };
     }
     if (containsAny(model, ["runway", "gen-3", "gen3", "minimax-video", "hailuo", "wan", "ltx-video", "hunyuan-video"])) {
         return {
             id: "general-video-family",
-            label: "通用视频模型",
-            promptShape: "以单个镜头为单位描述起始画面、动作过程、摄影机和结束画面。",
-            rules: ["动作使用连续动词，明确运动主体和摄像机，不把结果写成静态形容词。", "保持角色、服装、场景和光线的连续性。"],
-            avoid: ["不要堆砌静态图片关键词或一次安排过多动作。"],
+            label: "通用影片模型",
+            promptShape: "以單個鏡頭為單位描述起始畫面、動作過程、攝影機和結束畫面。",
+            rules: ["動作使用連續動詞，明確運動主體和攝像機，不把結果寫成靜態形容詞。", "保持角色、服裝、場景和光線的連續性。"],
+            avoid: ["不要堆砌靜態圖片關鍵詞或一次安排過多動作。"],
         };
     }
     return genericVideoProfile;
@@ -225,39 +225,39 @@ function resolveModelAdaptationProfile(input: PromptOptimizationInput): ModelAda
 
 function buildUserMessage(input: PromptOptimizationInput, modelProfile: ModelAdaptationProfile | null = input.mode === "model-adapt" ? resolveModelAdaptationProfile(input) : null): PluginTextMessage {
     const textParts = [
-        `优化模式：${modeLabels[input.mode]}`,
-        `目标类型：${input.generationMode === "image" ? "图片" : "视频"}`,
-        `目标生成模型：${input.targetModel?.trim() || "未指定"}`,
-        `目标接口协议：${input.targetProtocol?.trim() || "未指定"}`,
+        `最佳化模式：${modeLabels[input.mode]}`,
+        `目標型別：${input.generationMode === "image" ? "圖片" : "影片"}`,
+        `目標生成模型：${input.targetModel?.trim() || "未指定"}`,
+        `目標介面協議：${input.targetProtocol?.trim() || "未指定"}`,
         "",
-        "用户原始提示词：",
-        input.prompt.trim() || "（用户还没有写出具体提示词，请从参考上下文中提炼一个可执行版本）",
+        "使用者原始提示詞：",
+        input.prompt.trim() || "（使用者還沒有寫出具體提示詞，請從參考上下文中提煉一個可執行版本）",
     ];
     if (modelProfile) {
         textParts.push(
             "",
-            `模型适配策略：${modelProfile.label}`,
-            `建议提示词结构：${modelProfile.promptShape}`,
-            "必须遵守：",
+            `模型適配策略：${modelProfile.label}`,
+            `建議提示詞結構：${modelProfile.promptShape}`,
+            "必須遵守：",
             ...modelProfile.rules.map((rule) => `- ${rule}`),
             "避免：",
             ...modelProfile.avoid.map((rule) => `- ${rule}`),
-            "请在 changes 中明确说明已经采用的模型适配要点。",
+            "請在 changes 中明確說明已經採用的模型適配要點。",
         );
     }
     if (input.context?.texts?.length) {
-        textParts.push("", "已连接的文本上下文：", ...input.context.texts.map((item) => `- ${item.title}：${item.text}`));
+        textParts.push("", "已連線的文本上下文：", ...input.context.texts.map((item) => `- ${item.title}：${item.text}`));
     }
     if (input.context?.images?.length) {
-        textParts.push("", "已连接的参考图已作为图片输入，请只在确实可见的内容上做判断：", ...input.context.images.map((item) => `- ${item.title}`));
+        textParts.push("", "已連線的參考圖已作為圖片輸入，請只在確實可見的內容上做判斷：", ...input.context.images.map((item) => `- ${item.title}`));
     }
     textParts.push(
         "",
-        "输出要求：",
-        "1. optimizedPrompt 是一段可以直接复制到当前生成节点的提示词。",
-        "2. negativePrompt 只填写明确有帮助的规避项，没有就留空。",
-        "3. changes 和 assumptions 使用简短中文条目。",
-        "4. variants 最多给出两个明显不同但仍忠于原意的版本，没有必要时返回空数组。",
+        "輸出要求：",
+        "1. optimizedPrompt 是一段可以直接複製到當前生成節點的提示詞。",
+        "2. negativePrompt 只填寫明確有幫助的規避項，沒有就留空。",
+        "3. changes 和 assumptions 使用簡短中文條目。",
+        "4. variants 最多給出兩個明顯不同但仍忠於原意的版本，沒有必要時返回空陣列。",
     );
 
     const content: PluginTextContentPart[] = [{ type: "text", text: textParts.join("\n") }];
@@ -281,7 +281,7 @@ function parseJsonObject(value: string) {
             const parsed: unknown = JSON.parse(candidate);
             if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return parsed as Record<string, unknown>;
         } catch {
-            // 某些兼容模型会在 JSON 外包一层解释，继续尝试截取对象部分。
+            // 某些相容模型會在 JSON 外包一層解釋，繼續嘗試擷取物件部分。
         }
     }
     return null;
@@ -302,9 +302,9 @@ function variants(value: unknown): PromptOptimizationVariant[] {
         .flatMap((item): PromptOptimizationVariant[] => {
             if (!item || typeof item !== "object") return [];
             const record = item as Record<string, unknown>;
-            const label = typeof record.label === "string" ? record.label.trim() : "备选版本";
+            const label = typeof record.label === "string" ? record.label.trim() : "備選版本";
             const prompt = typeof record.prompt === "string" ? record.prompt.trim() : "";
-            return prompt ? [{ label: label || "备选版本", prompt }] : [];
+            return prompt ? [{ label: label || "備選版本", prompt }] : [];
         })
         .slice(0, 2);
 }
@@ -324,7 +324,7 @@ function normalizeResult(value: Record<string, unknown> | null, sourcePrompt: st
 
 function createPromptOptimizer(context: Parameters<NonNullable<RegisteredPlugin["createPromptOptimizer"]>>[0]): PromptOptimizerProvider {
     const textService = context.services?.ai?.text;
-    if (!textService) throw new Error("提示词优化器暂未获得文本模型服务");
+    if (!textService) throw new Error("提示詞最佳化器暫未獲得文本模型服務");
 
     return {
         optimize: async (input, options) => {

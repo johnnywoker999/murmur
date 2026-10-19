@@ -31,9 +31,9 @@ export type AppRoutingRuntime = {
     history?: { replaceState: (data: unknown, unused: string, url: string) => void };
 };
 
-// 原生 Wails 2.16 把未命中的前端路径交给 desktopAssetHandler，非 /api 即 404；
-// 运行时注入只发生在 / 与 index.html。官方路由指南要求 React 使用 hash 路由。
-// 浏览器部署继续用 History API，避免把 /api 与媒体地址改成 hash。
+// 原生 Wails 2.16 把未命中的前端路徑交給 desktopAssetHandler，非 /api 即 404；
+// 執行時注入只發生在 / 與 index.html。官方路由指南要求 React 使用 hash 路由。
+// 瀏覽器部署繼續用 History API，避免把 /api 與媒體地址改成 hash。
 export function defaultAppRoutingRuntime(): AppRoutingRuntime {
     if (typeof window === "undefined") {
         return { location: { protocol: "http:", hostname: "localhost", pathname: "/", search: "", hash: "", href: "http://localhost/", origin: "http://localhost" } };

@@ -2,8 +2,8 @@ import { Button } from "antd";
 import { RotateCcw } from "lucide-react";
 import type { ReactNode } from "react";
 
-/** 内容库的浏览控件，不复用后台表格的筛选外框。 */
-export function CollectionToolbar({ children, trailing, active, onReset, label = "搜索与筛选" }: {
+/** 內容庫的瀏覽控制元件，不復用後臺表格的篩選外框。 */
+export function CollectionToolbar({ children, trailing, active, onReset, label = "搜尋與篩選" }: {
     children: ReactNode;
     trailing?: ReactNode;
     active?: boolean;

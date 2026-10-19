@@ -43,7 +43,7 @@ export function UploadPluginModal({ open, onClose, onUpload }: UploadPluginModal
     return (
         <Modal
             className="workspace-modal workspace-modal-wide plugin-upload-modal"
-            title="上传插件"
+            title="上傳外掛"
             open={open}
             centered
             footer={null}
@@ -59,8 +59,8 @@ export function UploadPluginModal({ open, onClose, onUpload }: UploadPluginModal
                     <div className="plugin-upload-panel-heading">
                         <span className="plugin-upload-panel-icon"><CloudUpload className="size-5" /></span>
                         <div>
-                            <h2>安装插件包</h2>
-                            <p>选择统一站点插件包，安装后会立即进入插件中心。</p>
+                            <h2>安裝外掛包</h2>
+                            <p>選擇統一站點外掛包，安裝後會立即進入外掛中心。</p>
                         </div>
                     </div>
                     <div
@@ -81,13 +81,13 @@ export function UploadPluginModal({ open, onClose, onUpload }: UploadPluginModal
                             }}
                         >
                             <CloudUpload className="plugin-upload-dropzone-icon" />
-                            <p className="ant-upload-text">{isDraggingPlugin ? "释放文件以上传插件" : "点击选择插件文件，也可拖拽到此处"}</p>
-                            <p className="ant-upload-hint">支持 .beeftv-plugin 包 · 大小不超过 48 MiB</p>
+                            <p className="ant-upload-text">{isDraggingPlugin ? "釋放檔案以上傳外掛" : "點選選擇外掛檔案，也可拖拽到此處"}</p>
+                            <p className="ant-upload-hint">支援 .beeftv-plugin 包 · 大小不超過 48 MiB</p>
                         </Upload.Dragger>
                     </div>
                     <div className="plugin-upload-notice">
                         <ShieldCheck className="size-4" />
-                        <span>上传前请确认插件来源可信。Web 入口只能进入声明的隔离运行时，不会获得主页面权限；密钥也不会从清单读取。</span>
+                        <span>上傳前請確認外掛來源可信。Web 入口只能進入宣告的隔離執行時，不會獲得主頁面許可權；金鑰也不會從清單讀取。</span>
                     </div>
                 </aside>
             </div>

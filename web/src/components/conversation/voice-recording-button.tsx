@@ -10,16 +10,16 @@ import { canvasThemes } from "@/lib/canvas-theme";
 import { useActiveTheme } from "@/stores/canvas/use-canvas-theme-store";
 
 type VoiceRecordingButtonProps = {
-    /** 转写完成回调，返回转写文本 */
+    /** 轉寫完成回撥，返回轉寫文本 */
     onTranscribed: (text: string) => void;
-    /** 是否禁用（如发送中或未连接） */
+    /** 是否停用（如傳送中或未連線） */
     disabled?: boolean;
     className?: string;
 };
 
 /**
- * 语音输入按钮：点击后在输入行内展开波形录制条，录制完成自动 STT 转写
- * 使用局部状态，多个输入行可独立使用
+ * 語音輸入按鈕：點選後在輸入行內展開波形錄製條，錄製完成自動 STT 轉寫
+ * 使用區域性狀態，多個輸入行可獨立使用
  */
 export function VoiceRecordingButton({ onTranscribed, disabled, className }: VoiceRecordingButtonProps) {
     const theme = canvasThemes[useActiveTheme()];
@@ -27,7 +27,7 @@ export function VoiceRecordingButton({ onTranscribed, disabled, className }: Voi
 
     return (
         <>
-            <Tooltip title="实时对话">
+            <Tooltip title="即時對話">
                 <Button
                     type="text"
                     shape="circle"
@@ -36,7 +36,7 @@ export function VoiceRecordingButton({ onTranscribed, disabled, className }: Voi
                     style={className ? undefined : { color: theme.node.muted }}
                     icon={<Mic className="size-4" />}
                     onClick={() => setOpen(true)}
-                    aria-label="实时对话"
+                    aria-label="即時對話"
                 />
             </Tooltip>
             {open ? (

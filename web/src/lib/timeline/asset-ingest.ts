@@ -1,6 +1,6 @@
-// 资产到时间线片段的纯转换：只做类型映射和结构组装，不读取网络或修改编辑器状态。
-// 资产是"仅时间线作用域"的直连媒体：nodeId 用 `asset:<id>` 前缀（不指向画布节点），
-// 预览/导出从 directMedia 解析媒体，不回画布查节点。
+// 資產到時間線片段的純轉換：只做型別對映和結構組裝，不讀取網路或修改編輯器狀態。
+// 資產是"僅時間線作用域"的直連媒體：nodeId 用 `asset:<id>` 字首（不指向畫布節點），
+// 預覽/匯出從 directMedia 解析媒體，不回畫布查節點。
 
 import type { ProjectAsset } from "@/services/api/projects";
 import type { TimelineClip, TimelineClipKind } from "@/types/timeline";
@@ -17,20 +17,20 @@ export function assetToClipKind(mediaType: string): TimelineClipKind | null {
 }
 
 export type MakeClipFromAssetOptions = {
-    /** 目标轨道 id（调用方已按 kind 选好轨道）。 */
+    /** 目標軌道 id（呼叫方已按 kind 選好軌道）。 */
     trackId: string;
-    /** 时间线起点（毫秒，通常为该轨道当前末尾）。 */
+    /** 時間線起點（毫秒，通常為該軌道當前末尾）。 */
     startMs: number;
-    /** 默认时长（毫秒）；资产无时长元数据时使用。 */
+    /** 預設時長（毫秒）；資產無時長後設資料時使用。 */
     defaultDurationMs?: number;
-    /** 时间线内唯一 id（调用方负责去重，通常 `asset:<id>:<n>`）。 */
+    /** 時間線內唯一 id（呼叫方負責去重，通常 `asset:<id>:<n>`）。 */
     id?: string;
 };
 
 export function makeClipFromAsset(asset: ProjectAsset, options: MakeClipFromAssetOptions): TimelineClip | null {
     const kind = assetToClipKind(asset.mediaType);
     if (!kind) return null;
-    if (kind === "text") return null; // 文本资产不直接入轨（走字幕/文字工具）
+    if (kind === "text") return null; // 文本資產不直接入軌（走字幕/文字工具）
     return {
         id: options.id ?? `asset:${asset.id}`,
         kind,

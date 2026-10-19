@@ -4,7 +4,7 @@ import { LoaderCircle } from "lucide-react";
 import { formatDuration } from "@/lib/image-utils";
 import { cn } from "@/lib/utils";
 
-const pendingMessages = ["正在创建图片", "马上就好了", "再等等", "正在整理细节"];
+const pendingMessages = ["正在建立圖片", "馬上就好了", "再等等", "正在整理細節"];
 
 export function ImageGenerationPending({ className, label, compact = false }: { className?: string; label?: string; compact?: boolean }) {
     const [tick, setTick] = useState(0);

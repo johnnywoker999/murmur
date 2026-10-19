@@ -10,13 +10,13 @@ export const seedanceResolutionOptions = [
 ] as const;
 
 export const seedanceRatioOptions = [
-    { value: "16:9", label: "横屏" },
-    { value: "9:16", label: "竖屏" },
+    { value: "16:9", label: "橫屏" },
+    { value: "9:16", label: "豎屏" },
     { value: "1:1", label: "方形" },
-    { value: "4:3", label: "标准横屏" },
-    { value: "3:4", label: "标准竖屏" },
-    { value: "21:9", label: "宽银幕" },
-    { value: "adaptive", label: "自适应" },
+    { value: "4:3", label: "標準橫屏" },
+    { value: "3:4", label: "標準豎屏" },
+    { value: "21:9", label: "寬銀幕" },
+    { value: "adaptive", label: "自適應" },
 ] as const;
 
 export const seedanceDurationOptions = VIDEO_DURATION_OPTIONS;
@@ -50,7 +50,7 @@ const seedancePixels = {
 
 export function isSeedanceVideoConfig(config: AiConfig | Pick<AiConfig, "model" | "videoModel" | "baseUrl">) {
     const requestConfig = "channels" in config ? resolveModelRequestConfig(config, config.model || config.videoModel) : config;
-    // Agent Plan 图片与视频共用 /api/plan/v3；按协议排除图片，避免 Seedream 误判为 Seedance。
+    // Agent Plan 圖片與影片共用 /api/plan/v3；按協議排除圖片，避免 Seedream 誤判為 Seedance。
     if ("interfaceType" in requestConfig) {
         const interfaceType = requestConfig.interfaceType;
         if (interfaceType === "volcengine-ark-image" || interfaceType === "volcengine-ark-agent-plan-image") return false;
@@ -113,7 +113,7 @@ export function normalizeSeedanceRatio(value: string) {
 export function seedancePixelLabel(resolution: string, ratio: string) {
     const normalizedResolution = normalizeSeedanceResolution(resolution) as keyof typeof seedancePixels;
     const normalizedRatio = normalizeSeedanceRatio(ratio) as keyof (typeof seedancePixels)[typeof normalizedResolution] | "adaptive";
-    if (normalizedRatio === "adaptive") return "自动匹配";
+    if (normalizedRatio === "adaptive") return "自動匹配";
     return seedancePixels[normalizedResolution]?.[normalizedRatio] || "";
 }
 
@@ -124,13 +124,13 @@ export function boolConfig(value: string | undefined, fallback: boolean) {
 }
 
 export function seedanceReferenceLabel(kind: "image" | "video" | "audio", index: number) {
-    if (kind === "image") return `图片${index + 1}`;
-    if (kind === "video") return `视频${index + 1}`;
-    return `音频${index + 1}`;
+    if (kind === "image") return `圖片${index + 1}`;
+    if (kind === "video") return `影片${index + 1}`;
+    return `音訊${index + 1}`;
 }
 
 export function buildSeedancePromptText(prompt: string, _images: ReferenceImage[], _videos: ReferenceVideo[], _audios: ReferenceAudio[]) {
     return prompt.trim();
 }
 
-export const seedanceVideoReferenceHint = "参考视频需为 mp4/mov，H.264/H.265，FPS 24-60；含真人人脸素材请使用火山授权 asset:// 素材。";
+export const seedanceVideoReferenceHint = "參考影片需為 mp4/mov，H.264/H.265，FPS 24-60；含真人人臉素材請使用火山授權 asset:// 素材。";

@@ -1,29 +1,29 @@
-# 上传统一插件包
+# 上傳統一外掛包
 
-宿主只有一种插件：一个版本化 Manifest 描述一个插件包可以向宿主贡献的全部能力。Provider、工作流、画布节点、媒体转换、素材源、Agent 和命令都写在同一个 `contributes` 下；运行时可以不同，但不会再出现“协议插件”和“UI 插件”两套清单。
+宿主只有一種外掛：一個版本化 Manifest 描述一個外掛包可以向宿主貢獻的全部能力。Provider、工作流、畫布節點、媒體轉換、素材源、Agent 和命令都寫在同一個 `contributes` 下；執行時可以不同，但不會再出現“協議外掛”和“UI 外掛”兩套清單。
 
 ## 1. 包格式
 
-上传文件必须是 `.beeftv-plugin` ZIP 包，大小不超过 48 MiB。包内必须有根目录 `manifest.json`；不能上传裸 JSON。清单和可选的 Web 运行时代码、静态资源属于同一个版本、权限和生命周期：
+上傳檔案必須是 `.beeftv-plugin` ZIP 包，大小不超過 48 MiB。包內必須有根目錄 `manifest.json`；不能上傳裸 JSON。清單和可選的 Web 執行時程式碼、靜態資源屬於同一個版本、許可權和生命週期：
 
 ```text
 my-plugin.beeftv-plugin
 ├── manifest.json
-├── web/entry.js       # 可选；必须配合 runtime.web=sandbox 或 worker
-├── web/assets/...     # 可选静态资源
-└── docs/...           # 可选文档
+├── web/entry.js       # 可選；必須配合 runtime.web=sandbox 或 worker
+├── web/assets/...     # 可選靜態資源
+└── docs/...           # 可選檔案
 ```
 
-后端 Provider 只使用清单中的声明式映射，不执行包内代码。UI/功能代码必须声明 `entry`，由宿主隔离运行时加载；不能把脚本注入主应用页面。当前版本先完成包校验、存储和入口合同，未授权的 Web 代码不会自动进入主页面。
+後端 Provider 只使用清單中的宣告式對映，不執行包內程式碼。UI/功能程式碼必須宣告 `entry`，由宿主隔離執行時載入；不能把指令碼注入主應用頁面。當前版本先完成包校驗、儲存和入口合同，未授權的 Web 程式碼不會自動進入主頁面。
 
-## 2. 最小清单
+## 2. 最小清單
 
-`manifest.json` 必须是 UTF-8 JSON。插件 ID 使用小写 kebab-case。Manifest 不得包含 Cookie、Token 或 API Key。`entry` 只能指向包内 `web/` 文件。
+`manifest.json` 必須是 UTF-8 JSON。外掛 ID 使用小寫 kebab-case。Manifest 不得包含 Cookie、Token 或 API Key。`entry` 只能指向包內 `web/` 檔案。
 
 ```json
 {
   "apiVersion": "beeftv.plugin/v1",
-  "id": "acme-comfyui", "name": "Acme ComfyUI", "version": "1.0.0", "author": "Acme", "description": "通过工作流贡献提供视频生成能力",
+  "id": "acme-comfyui", "name": "Acme ComfyUI", "version": "1.0.0", "author": "Acme", "description": "通過工作流貢獻提供影片生成能力",
   "permissions": ["generation.run", "media.read"],
   "configuration": { "fields": [{ "name": "apiKey", "type": "secret", "label": "API Token", "required": true }] },
   "contributes": {
@@ -35,7 +35,7 @@ my-plugin.beeftv-plugin
       "response": { "taskIdPaths": ["data.task_id"], "statusPaths": ["data.status"], "resultPaths": ["data.results"], "resultKind": "video", "resultEphemeral": true }
     }],
     "workflows": [{
-      "id": "minimax-h3", "label": "MiniMax H3 文生视频", "providerId": "acme-comfyui", "capability": "video",
+      "id": "minimax-h3", "label": "MiniMax H3 文生影片", "providerId": "acme-comfyui", "capability": "video",
       "parameters": [{ "name": "duration", "type": "number", "required": true }, { "name": "resolution", "type": "string", "values": ["720p", "1080p"] }],
       "defaults": { "duration": 5, "resolution": "720p" }
     }]
@@ -43,7 +43,7 @@ my-plugin.beeftv-plugin
 }
 ```
 
-带 Web 功能的插件在同一份清单中增加：
+帶 Web 功能的外掛在同一份清單中增加：
 
 ```json
 {
@@ -53,27 +53,27 @@ my-plugin.beeftv-plugin
 }
 ```
 
-## 3. Contribution 规则
+## 3. Contribution 規則
 
-- `providers` 声明上游能力和字段映射。鉴权、Base URL、超时、私网校验、轮询、下载和计费由宿主负责。
-- `workflows` 声明一个 provider 下的具体工作流或模型入口。AutoDL/ComfyUI 等工作流型 API 必须在这里扩展，不能为每个工作流新增宿主代码。
-- `canvasNodes` 声明节点 ID、默认尺寸和 schema。`renderer` 为 `declarative` 时使用宿主 schema renderer；`sandbox` 由隔离运行时承载。
-- `transforms` 声明媒体或生成请求转换，必须匹配清单权限和受控 runtime。
-- `assetSources`、`usageObservers`、`agents`、`commands` 和 `importExport` 是同一清单的其他贡献面。
+- `providers` 宣告上游能力和欄位對映。鑑權、Base URL、超時、私網校驗、輪詢、下載和計費由宿主負責。
+- `workflows` 宣告一個 provider 下的具體工作流或模型入口。AutoDL/ComfyUI 等工作流型 API 必須在這裡擴充套件，不能為每個工作流新增宿主程式碼。
+- `canvasNodes` 宣告節點 ID、預設尺寸和 schema。`renderer` 為 `declarative` 時使用宿主 schema renderer；`sandbox` 由隔離執行時承載。
+- `transforms` 宣告媒體或生成請求轉換，必須匹配清單許可權和受控 runtime。
+- `assetSources`、`usageObservers`、`agents`、`commands` 和 `importExport` 是同一清單的其他貢獻面。
 
-一个插件可以同时声明多种贡献，但 ID 必须在插件包内唯一，并且所有贡献共享同一个安装、启停、权限和版本生命周期。
+一個外掛可以同時宣告多種貢獻，但 ID 必須在外掛包內唯一，並且所有貢獻共享同一個安裝、啟停、許可權和版本生命週期。
 
-## 4. Provider 与工作流
+## 4. Provider 與工作流
 
-请求字段右侧只能引用宿主统一请求，例如 `request.prompt`、`request.model`、`request.duration`、`request.extra`。声明式字段也支持安全的对象/数组路径（例如 `request.images.0.url`）和通用字符串变换（`|trim`、`|lower`、`|upper`），不执行插件代码。渠道声明的枚举值由画布完整保留，插件可使用通用大小写变换适配上游，不应要求宿主增加渠道专用归一化。字段解析为空时会省略该字段，适合映射可选参考素材。Provider 如果把 `requiresPublicMediaUrls` 设为 `true`，宿主会在请求前把用户资源转换为短期签名公网 URL。响应映射支持对象路径和数组下标，并可用 `errorPaths` 声明上游错误码路径。同步 provider 只需要 `create` 和 `response`；异步 provider 再声明 `poll`。
+請求欄位右側只能引用宿主統一請求，例如 `request.prompt`、`request.model`、`request.duration`、`request.extra`。宣告式欄位也支援安全的物件/陣列路徑（例如 `request.images.0.url`）和通用字串變換（`|trim`、`|lower`、`|upper`），不執行外掛程式碼。渠道宣告的列舉值由畫布完整保留，外掛可使用通用大小寫變換適配上游，不應要求宿主增加渠道專用歸一化。欄位解析為空時會省略該欄位，適合對映可選參考素材。Provider 如果把 `requiresPublicMediaUrls` 設為 `true`，宿主會在請求前把使用者資源轉換為短期簽名公網 URL。響應對映支援物件路徑和陣列下標，並可用 `errorPaths` 宣告上游錯誤碼路徑。同步 provider 只需要 `create` 和 `response`；非同步 provider 再宣告 `poll`。
 
-结果 URL 如果是短期地址，必须设置 `resultEphemeral: true`。宿主会在任务完成后立即下载并保存资源，画布和任务记录只保存宿主资源引用。
+結果 URL 如果是短期地址，必須設定 `resultEphemeral: true`。宿主會在任務完成後立即下載並儲存資源，畫布和任務記錄只儲存宿主資源引用。
 
-## 5. 安全与运行边界
+## 5. 安全與執行邊界
 
-- API Key 只在渠道配置中输入和保存，不进入 Manifest、URL、日志或任务正文。
-- 上传插件不能请求 `host:` 执行器，不能执行任意浏览器脚本。
-- 外部请求必须通过后端 provider runtime，宿主统一执行 SSRF、防重放、超时、并发、错误和计费策略。
-- 插件声明的权限是最小权限；没有对应权限的 contribution 不会被激活。
+- API Key 只在渠道配置中輸入和儲存，不進入 Manifest、URL、日誌或任務正文。
+- 上傳外掛不能請求 `host:` 執行器，不能執行任意瀏覽器指令碼。
+- 外部請求必須通過後端 provider runtime，宿主統一執行 SSRF、防重放、超時、併發、錯誤和計費策略。
+- 外掛宣告的許可權是最小許可權；沒有對應許可權的 contribution 不會被啟用。
 
-上传、启用、停用和卸载都作用于同一个插件 registry record。清单校验失败时整包不会安装，不会留下半激活的 provider、节点或工作流。
+上傳、啟用、停用和解除安裝都作用於同一個外掛 registry record。清單校驗失敗時整包不會安裝，不會留下半啟用的 provider、節點或工作流。

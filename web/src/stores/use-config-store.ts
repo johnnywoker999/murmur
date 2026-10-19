@@ -104,7 +104,7 @@ function normalizeWorkflowFieldSourceName(value: unknown, capability?: RunningHu
         audioinstructions: "audioInstructions",
     };
     if (normalized === "resolution") return capability === "video" ? "vquality" : "size";
-    // 工作流的 quality 可能是连续数值（例如 0.1-3），不能按视频分辨率处理。
+    // 工作流的 quality 可能是連續數值（例如 0.1-3），不能按影片解析度處理。
     if (normalized === "quality") return "quality";
     return aliases[normalized] || source;
 }
@@ -151,7 +151,7 @@ function shouldRepairLegacyWorkflowSource(fieldName: string, source: string, inf
     const key = fieldName.toLowerCase().replace(/[\s_-]/g, "");
     const wasMistakenForMedia = ["referenceImage", "referenceVideo", "referenceAudio"].includes(source);
     if (wasMistakenForMedia && (workflowDimensionSource(key) || inferredSource === "aspectRatio" || inferredSource === "vquality")) return true;
-    // 旧版把通用 resolution 固定识别为图片尺寸；视频条目必须恢复为视频清晰度。
+    // 舊版把通用 resolution 固定識別為圖片尺寸；影片條目必須恢復為影片清晰度。
     if (key === "resolution" && capability === "video" && source === "size") return true;
     if (key === "resolution" && capability === "image" && source === "vquality") return true;
     if (key === "quality" && source === "vquality") return true;
@@ -166,7 +166,7 @@ export function normalizeWorkflowFieldMappings(value: unknown, capability?: Runn
         const nodeId = String(raw.nodeId || raw.node || raw.node_id || "").trim();
         const fieldName = String(raw.fieldName || raw.input || raw.inputName || raw.input_name || "").trim();
         if (!nodeId || !fieldName) return [];
-        // source 明确存在但为空，表示用户要求保留工作流默认值；只有旧数据完全缺少来源字段时才自动补绑定。
+        // source 明確存在但為空，表示使用者要求保留工作流預設值；只有舊資料完全缺少來源欄位時才自動補繫結。
         const sourceKey = ["source", "bind", "from"].find((key) => Object.prototype.hasOwnProperty.call(raw, key));
         const sourceConfigured = Boolean(sourceKey);
         const configuredSource = sourceKey ? raw[sourceKey] : raw.bindPrompt === true || raw.bind_prompt === true ? "prompt" : "";
@@ -187,8 +187,8 @@ export function normalizeWorkflowFieldMappings(value: unknown, capability?: Runn
         } else if (shouldRepairLegacyWorkflowSource(fieldName, source, inferredSource, capability)) {
             source = inferredSource;
         }
-        // 比例、清晰度、时长等标量必须按 nodeId + fieldName 独立配置。
-        // 旧版自动来源会把两个同类字段折叠到同一个全局参数，重新归一化为直接字段值。
+        // 比例、清晰度、時長等標量必須按 nodeId + fieldName 獨立配置。
+        // 舊版自動來源會把兩個同類欄位摺疊到同一個全域性引數，重新歸一化為直接欄位值。
         if (sourceAutomatic && !["prompt", "referenceImage", "referenceVideo", "referenceAudio", "mask"].includes(source)) {
             source = "";
             sourceAutomatic = false;
@@ -277,7 +277,7 @@ export function mergeWorkflowFieldMappings(current: unknown, incoming: unknown, 
         policyKeys.forEach((key) => {
             if (Object.prototype.hasOwnProperty.call(source, key)) target[key] = source[key];
         });
-        // 字段类型、枚举和数值范围属于上游协议。只有本次拉取未返回时，才沿用本地补充配置。
+        // 欄位型別、列舉和數值範圍屬於上游協議。只有本次拉取未返回時，才沿用本地補充配置。
         if (!field.fieldType && previous.fieldType) merged.fieldType = previous.fieldType;
         if (!field.options?.length && previous.options?.length) {
             merged.options = previous.options;
@@ -286,7 +286,7 @@ export function mergeWorkflowFieldMappings(current: unknown, incoming: unknown, 
         if (field.min === undefined && previous.min !== undefined) merged.min = previous.min;
         if (field.max === undefined && previous.max !== undefined) merged.max = previous.max;
         if (field.step === undefined && previous.step !== undefined) merged.step = previous.step;
-        // 首次获得角色信息时采用服务端的内部参数默认值；之后才保留用户明确的启用选择。
+        // 首次獲得角色資訊時採用服務端的內部引數預設值；之後才保留使用者明確的啟用選擇。
         if (field.role === "internal" && previous.role !== "internal") merged.enabled = field.enabled;
         if (field.safeToOverride === false) merged.enabled = false;
         return merged;
@@ -330,7 +330,7 @@ export type RunningHubConfig = {
     baseUrl: string;
     apiKey: string;
     walletApiKey: string;
-    /** 仅用于 RunningHub 参考素材上传，通常填写企业级 API Key。 */
+    /** 僅用於 RunningHub 參考素材上傳，通常填寫企業級 API Key。 */
     uploadApiKey?: string;
     useWallet: boolean;
     capability: RunningHubCapability;
@@ -344,7 +344,7 @@ export type WorkflowGraphPreview = {
     edges: Array<{ from: string; to: string }>;
 };
 
-// 兼容仍在使用旧目录标识的会话恢复和模型选择器。
+// 相容仍在使用舊目錄標識的會話恢復和模型選擇器。
 export const PUBLIC_MODEL_CATALOG_ID = "managed";
 
 export type ModelChannel = {
@@ -360,7 +360,7 @@ export type ModelChannel = {
     apiFormat: ApiCallFormat;
     interfaceType?: ChannelInterfaceType;
     models: string[];
-    // 仅平台目录使用：将已保存的旧 SKU 选择重定向到当前模型家族。
+    // 僅平臺目錄使用：將已儲存的舊 SKU 選擇重定向到當前模型家族。
     modelAliases?: Record<string, string>;
     scope?: "system" | "user";
     enabled?: boolean;
@@ -396,14 +396,14 @@ export type AiConfig = {
     apiFormat: ApiCallFormat;
     channels: ModelChannel[];
     runningHub: RunningHubConfig;
-    /** 仅用于单次生成任务路由，不属于全局渠道启用状态。 */
+    /** 僅用於單次生成任務路由，不屬於全域性渠道啟用狀態。 */
     taskWorkflowProvider?: "model" | "runninghub";
     model: string;
     imageModel: string;
     videoModel: string;
     textModel: string;
     audioModel: string;
-    /** 画布助手模型；为空表示跟随 `textModel`。取值与其他默认模型一致，形如 `channelId::modelId`。 */
+    /** 畫布助手模型；為空表示跟隨 `textModel`。取值與其他預設模型一致，形如 `channelId::modelId`。 */
     assistantModel: string;
     audioVoice: string;
     audioFormat: string;
@@ -441,7 +441,7 @@ export const defaultConfig: AiConfig = {
     baseUrl: OPENAI_BASE_URL,
     apiKey: "",
     apiFormat: "openai",
-    // 创作端模型目录只能来自后台公开逻辑模型和用户自定义渠道，不能内置供应商模型。
+    // 創作端模型目錄只能來自後臺公開邏輯模型和使用者自定義渠道，不能內建供應商模型。
     channels: [],
     runningHub: { enabled: false, baseUrl: "https://www.runninghub.cn", apiKey: "", walletApiKey: "", uploadApiKey: "", useWallet: false, capability: "image", selectedKind: "workflow", workflowId: "", workflows: [] },
     taskWorkflowProvider: "model",
@@ -608,24 +608,24 @@ export function filterModelsByCapability(models: string[], capability?: ModelCap
         const channel = decoded ? lookup?.byId.get(decoded.channelId) : undefined;
         const modelName = decoded?.model || modelOptionName(model);
         const costEntry = channelModelProfile(channel, modelName);
-        // 协议层优先级最高：协议决定 API 端点，明确属于其他能力时直接排除，
-        // 防止用户将 video/image/audio 协议的模型误标为 text 后混入文本下拉。
+        // 協議層優先順序最高：協議決定 API 端點，明確屬於其他能力時直接排除，
+        // 防止使用者將 video/image/audio 協議的模型誤標為 text 後混入文本下拉。
         const protocolCapability = modelProtocolCapability(costEntry?.protocol);
         if (protocolCapability) return protocolCapability === capability;
-        // 渠道接口层：渠道级协议推断能力
+        // 渠道介面層：渠道級協議推斷能力
         const channelCapability = capabilityForChannelInterface(channel?.interfaceType);
         if (channelCapability) return channelCapability === capability;
-        // 配置能力层：用户显式标记的 capability
+        // 配置能力層：使用者顯式標記的 capability
         const configuredCapability = costEntry?.capability;
         if (configuredCapability) return configuredCapability === capability;
-        // 模型名启发式：最后回退
+        // 模型名啟發式：最後回退
         return modelMatchesCapability(model, capability);
     });
 }
 
 export function selectableModelsByCapability(config: AiConfig, capability?: ModelCapability) {
-    // 选项目录只从当前有效渠道重建，不能信任旧快照里残留的 config.models。
-    // 这样旧版本内置模型、未绑定渠道的裸模型不会再次进入创作端。
+    // 選專案錄只從當前有效渠道重建，不能信任舊快照裡殘留的 config.models。
+    // 這樣舊版本內建模型、未繫結渠道的裸模型不會再次進入創作端。
     const models = modelOptionsFromChannels(config.channels);
     if (!capability) return models;
     return filterModelsByCapability(models, capability, config.channels);
@@ -680,7 +680,7 @@ export const useConfigStore = create<ConfigStore>()(
                         createModelChannel({
                             ...channel,
                             id: channel.id || `system-${index + 1}`,
-                            name: channel.name || `系统渠道 ${index + 1}`,
+                            name: channel.name || `系統渠道 ${index + 1}`,
                             scope: "system",
                             apiKey: channel.apiKey || "system",
                         }),
@@ -717,7 +717,7 @@ export function configWithoutCachedSecrets(config: AiConfig): AiConfig {
 }
 
 export function normalizeConfigSnapshot(snapshot: ConfigStoreSnapshot | undefined = {}) {
-    // 坏存储/旧版本快照可能是 undefined 或缺 config，兜底为 defaultConfig，保证渲染不崩溃
+    // 壞儲存/舊版本快照可能是 undefined 或缺 config，兜底為 defaultConfig，保證渲染不崩潰
     const persistedConfig = (snapshot?.config || {}) as Partial<AiConfig>;
     const persistedRunningHub = persistedConfig.runningHub;
     const runningHubCapability = normalizeRunningHubCapability(persistedRunningHub?.capability, defaultConfig.runningHub.capability);
@@ -777,8 +777,8 @@ export function normalizeConfigSnapshot(snapshot: ConfigStoreSnapshot | undefine
             videoModel: normalizeSelectedModel(config.videoModel, channels, videoModels),
             textModel: normalizeSelectedModel(config.textModel || model, channels, textModels),
             audioModel: normalizeSelectedModel(config.audioModel || defaultConfig.audioModel, channels, audioModels),
-            // 助手模型允许为空（跟随默认文本模型），因此这里只保证类型，
-            // 协议与渠道有效性由 `lib/assistant-model` 在读取时裁决。
+            // 助手模型允許為空（跟隨預設文本模型），因此這裡只保證型別，
+            // 協議與渠道有效性由 `lib/assistant-model` 在讀取時裁決。
             assistantModel: typeof config.assistantModel === "string" ? config.assistantModel.trim() : "",
             audioVoice: config.audioVoice || defaultConfig.audioVoice,
             audioFormat: config.audioFormat || defaultConfig.audioFormat,
@@ -786,7 +786,7 @@ export function normalizeConfigSnapshot(snapshot: ConfigStoreSnapshot | undefine
             audioPitch: config.audioPitch || defaultConfig.audioPitch,
             audioVolume: config.audioVolume || defaultConfig.audioVolume,
             audioInstructions: config.audioInstructions || "",
-            // 旧版全局 systemPrompt 会跨任务污染请求；提示词定制现已按 operation 由服务端编译。
+            // 舊版全域性 systemPrompt 會跨任務汙染請求；提示詞定製現已按 operation 由服務端編譯。
             systemPrompt: "",
             videoSeconds: normalizeVideoDuration(config.videoSeconds),
             vquality: normalizeVideoResolution(config.vquality),
@@ -809,7 +809,7 @@ function beefApiVideoProtocol(model: string, current?: ModelProtocol): ModelProt
     // A video profile must not keep a protocol that runs a different
     // capability. BeefAPI often tags video models with a chat/text endpoint;
     // that stale protocol would make the backend reject the task outright
-    // ("接口类型 chat-completion 不支持video生成"). Unknown/custom protocols
+    // ("介面型別 chat-completion 不支援video生成"). Unknown/custom protocols
     // stay untouched.
     return current && protocolAllowsCapability(current, "video") ? current : defaultProtocolForCapability("video");
 }
@@ -1018,7 +1018,7 @@ export function modelDisplayName(config: AiConfig, value: string) {
     const channel = resolveModelChannel(config, value);
     const displayName = channelModelProfile(channel, model)?.displayName?.trim();
     if (displayName) return displayName;
-    return channel.scope === "system" ? "系统模型" : model;
+    return channel.scope === "system" ? "系統模型" : model;
 }
 
 export function modelIcon(config: AiConfig, value: string) {
@@ -1031,7 +1031,7 @@ export function modelOptionLabel(config: AiConfig, value: string) {
     if (!decoded) return modelDisplayName(config, value);
     const channel = config.channels.find((item) => item.id === decoded.channelId);
     const displayName = modelDisplayName(config, value);
-    // 平台前台模型只展示公开名称；供应来源和内部目录适配器不属于创作端信息。
+    // 平臺前臺模型只展示公開名稱；供應來源和內部目錄介面卡不屬於創作端資訊。
     if (!channel || channel.scope === "system") return displayName;
     return `${displayName}（${channel.name}）`;
 }
@@ -1072,7 +1072,7 @@ export function resolveModelChannel(config: AiConfig, value: string) {
     const model = decoded?.model || value;
     const lookup = channelLookup(config.channels);
     const matched = decoded ? lookup.byId.get(decoded.channelId) : lookup.byModel.get(model);
-    return matched || config.channels[0] || createModelChannel({ id: "default", name: "默认渠道", baseUrl: config.baseUrl, apiKey: config.apiKey, apiFormat: config.apiFormat, models: config.models.map(modelOptionName) });
+    return matched || config.channels[0] || createModelChannel({ id: "default", name: "預設渠道", baseUrl: config.baseUrl, apiKey: config.apiKey, apiFormat: config.apiFormat, models: config.models.map(modelOptionName) });
 }
 
 export function logicalModelIDForConfig(config: AiConfig) {
@@ -1118,7 +1118,7 @@ function normalizeChannels(config: AiConfig, ensureDefault = true) {
             createModelChannel({
                 ...channel,
                 id: channel.id || (index === 0 ? "default" : `channel-${index + 1}`),
-                name: channel.name || (index === 0 ? "默认渠道" : `渠道 ${index + 1}`),
+                name: channel.name || (index === 0 ? "預設渠道" : `渠道 ${index + 1}`),
                 models: uniqueRawModels(channel.models || []),
             }),
         )
@@ -1127,7 +1127,7 @@ function normalizeChannels(config: AiConfig, ensureDefault = true) {
         channels.push(
             createModelChannel({
                 id: "default",
-                name: "默认渠道",
+                name: "預設渠道",
                 baseUrl: config.baseUrl || defaultConfig.baseUrl,
                 apiKey: config.apiKey || "",
                 apiFormat: config.apiFormat || defaultConfig.apiFormat,
@@ -1140,12 +1140,12 @@ function normalizeChannels(config: AiConfig, ensureDefault = true) {
 
 function isEmptyDefaultChannel(channel: ModelChannel) {
     if (channel.scope === "system") return false;
-    if (channel.id !== "default" || channel.name.trim() !== "默认渠道" || channel.apiKey.trim()) return false;
+    if (channel.id !== "default" || channel.name.trim() !== "預設渠道" || channel.apiKey.trim()) return false;
     const baseUrl = channel.baseUrl.trim().replace(/\/+$/, "");
     const defaultBaseUrl = defaultConfig.baseUrl.trim().replace(/\/+$/, "");
     if (baseUrl && baseUrl !== defaultBaseUrl) return false;
-    // 只清理旧版本写入浏览器的无密钥“默认渠道”和内置模型；没有 API Key 但已填写自定义模型时仍保留，
-    // 让用户可以先保存模型目录再补充密钥，而不是把真实自定义配置误判为空。
+    // 只清理舊版本寫入瀏覽器的無金鑰“預設渠道”和內建模型；沒有 API Key 但已填寫自定義模型時仍保留，
+    // 讓使用者可以先儲存模型目錄再補充金鑰，而不是把真實自定義配置誤判為空。
     return !channel.models.length || channel.models.every((model) => LEGACY_DEFAULT_MODEL_NAMES.has(modelOptionName(model)));
 }
 

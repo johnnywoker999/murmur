@@ -27,12 +27,12 @@ export function CanvasFileDropOverlay({ active, theme }: { active: boolean; them
                                 <UploadCloud className="size-10" style={{ color: theme.accent.primary }} />
                             </motion.div>
                         </div>
-                        <h2 className="text-2xl font-semibold tracking-normal">释放文件，放入创作空间</h2>
-                        <p className="mt-2 text-sm leading-6" style={{ color: theme.node.muted }}>图片、视频和音频会在当前位置创建为可继续连接的节点</p>
+                        <h2 className="text-2xl font-semibold tracking-normal">釋放檔案，放入創作空間</h2>
+                        <p className="mt-2 text-sm leading-6" style={{ color: theme.node.muted }}>圖片、影片和音訊會在當前位置建立為可繼續連線的節點</p>
                         <div className="mt-6 flex items-center gap-2 text-xs font-medium" style={{ color: theme.node.muted }}>
-                            <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5" style={{ borderColor: theme.toolbar.border, background: theme.spatial.surface }}><FileImage className="size-3.5" />图片</span>
-                            <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5" style={{ borderColor: theme.toolbar.border, background: theme.spatial.surface }}><Film className="size-3.5" />视频</span>
-                            <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5" style={{ borderColor: theme.toolbar.border, background: theme.spatial.surface }}><Music2 className="size-3.5" />音频</span>
+                            <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5" style={{ borderColor: theme.toolbar.border, background: theme.spatial.surface }}><FileImage className="size-3.5" />圖片</span>
+                            <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5" style={{ borderColor: theme.toolbar.border, background: theme.spatial.surface }}><Film className="size-3.5" />影片</span>
+                            <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5" style={{ borderColor: theme.toolbar.border, background: theme.spatial.surface }}><Music2 className="size-3.5" />音訊</span>
                         </div>
                     </motion.div>
                 </motion.div>

@@ -16,9 +16,9 @@ type CanvasGenerationContinuationDependencies = {
     setNodes?: Dispatch<SetStateAction<CanvasNodeData[]>>;
 };
 
-// 画布工具生成的续跑消费：任务成功后把生成结果写回节点并标记 continuation 完成。
-// 旧内置 Agent 的私有撤销栈（useCanvasOperationHistory）与 agent 事件订阅已随该功能退场，
-// 用户可见的撤销仍由 useCanvasHistory 提供。
+// 畫布工具生成的續跑消費：任務成功後把生成結果寫回節點並標記 continuation 完成。
+// 舊內建 Agent 的私有撤銷棧（useCanvasOperationHistory）與 agent 事件訂閱已隨該功能退場，
+// 使用者可見的撤銷仍由 useCanvasHistory 提供。
 export async function consumeCanvasGenerationContinuation(
     task: GenerationTask,
     continuation: CanvasGenerationContinuation,

@@ -57,15 +57,15 @@ export function configuredModelDisplayName(config: AiConfig, value: string) {
 // Shared by selection and paid submission, including retries and batch jobs.
 export function portraitGenerationError(config: AiConfig, model: string, resolution?: string) {
     if (!seedancePortraitModel(model)) return "";
-    if (!normalizeModelOptionValue(model, config.channels)) return "真人素材版当前不可用，请刷新模型列表或重新选择模型";
+    if (!normalizeModelOptionValue(model, config.channels)) return "真人素材版當前不可用，請重新整理模型列表或重新選擇模型";
     const channel = resolveModelChannel(config, model);
     const profile = channel.modelProfiles?.find((item) => item.model === modelOptionName(model));
     const quote = sanitizeVideoPriceQuote(profile?.videoPricing);
-    if (!quote || quote.mode !== "tokens") return "真人素材版价格暂不可用，请刷新模型列表";
+    if (!quote || quote.mode !== "tokens") return "真人素材版價格暫不可用，請重新整理模型列表";
     if (resolution !== undefined) {
         const normalized = normalizeVideoResolutionValue(resolution);
         const key = normalized === "2160" ? "4k" : `${normalized}p`;
-        if (!quote.rates[key]) return "当前分辨率价格暂不可用，请选择其他分辨率或刷新模型列表";
+        if (!quote.rates[key]) return "當前解析度價格暫不可用，請選擇其他解析度或重新整理模型列表";
     }
     return "";
 }
@@ -87,40 +87,40 @@ export function modelCompatibilityError(config: AiConfig, model: string, require
             options: Object.fromEntries(Object.entries(requirements.options || {}).filter(([name]) => Boolean(publicOptionNames[name]))),
         };
         const errors = logicalSpecs.map((spec) => logicalModelCompatibilityError(spec, logicalRequirements, visualInputCount));
-        return errors.some((error) => !error) ? "" : errors[0] || "当前输入不受支持";
+        return errors.some((error) => !error) ? "" : errors[0] || "當前輸入不受支援";
     }
 
     if (capability === "image") {
         const image = modelCapabilityConfigFor(config, model).image!;
-        // 尺寸兼容不依赖输入摘要：无输入时（如画布重试/工具链）也要按尺寸过滤组内模型。
-        if (requirements.imageSize && !image.size.allowCustom && !image.size.values.includes(requirements.imageSize)) return "不支持当前尺寸";
+        // 尺寸相容不依賴輸入摘要：無輸入時（如畫布重試/工具鏈）也要按尺寸過濾組內模型。
+        if (requirements.imageSize && !image.size.allowCustom && !image.size.values.includes(requirements.imageSize)) return "不支援當前尺寸";
         if (!input) return "";
-        if (input.videoCount > 0) return "图片模型不支持参考视频";
-        if (input.audioCount > 0) return "图片模型不支持参考音频";
-        if (visualInputCount > image.references.maxImages) return `最多支持 ${image.references.maxImages} 张参考图`;
+        if (input.videoCount > 0) return "圖片模型不支援參考影片";
+        if (input.audioCount > 0) return "圖片模型不支援參考音訊";
+        if (visualInputCount > image.references.maxImages) return `最多支援 ${image.references.maxImages} 張參考圖`;
         return "";
     }
 
     if (capability === "video") {
         const profile = modelCapabilityConfigFor(config, model).video!;
-        if (requirements.videoSeconds && !videoDurationAllowed(profile, Number(requirements.videoSeconds))) return "不支持当前视频时长";
+        if (requirements.videoSeconds && !videoDurationAllowed(profile, Number(requirements.videoSeconds))) return "不支援當前影片時長";
         if (!input) return "";
-        if (visualInputCount > profile.references.maxImages) return `最多支持 ${profile.references.maxImages} 张参考图`;
-        if (input.videoCount > profile.references.maxVideos) return `最多支持 ${profile.references.maxVideos} 个参考视频`;
-        if (input.audioCount > profile.references.maxAudios) return `最多支持 ${profile.references.maxAudios} 个参考音频`;
+        if (visualInputCount > profile.references.maxImages) return `最多支援 ${profile.references.maxImages} 張參考圖`;
+        if (input.videoCount > profile.references.maxVideos) return `最多支援 ${profile.references.maxVideos} 個參考影片`;
+        if (input.audioCount > profile.references.maxAudios) return `最多支援 ${profile.references.maxAudios} 個參考音訊`;
         const operation = resolveVideoOperation(input, requirements.videoOperation);
-        if (operation !== "concat" && !profile.operations.includes(operation)) return `不支持${videoOperationLabel(operation)}`;
+        if (operation !== "concat" && !profile.operations.includes(operation)) return `不支援${videoOperationLabel(operation)}`;
         return "";
     }
 
     if (!input) return "";
 
     if (capability === "text") {
-        return input.audioCount > 0 ? "文本模型不支持参考音频" : "";
+        return input.audioCount > 0 ? "文本模型不支援參考音訊" : "";
     }
 
-    if (input.characterCount > 1) return "角色配音一次只能引用一个角色卡";
-    return input.imageCount > 0 || input.videoCount > 0 || input.audioCount > 0 ? "音频模型只接受文本或单个角色卡输入" : "";
+    if (input.characterCount > 1) return "角色配音一次只能引用一個角色卡";
+    return input.imageCount > 0 || input.videoCount > 0 || input.audioCount > 0 ? "音訊模型只接受文本或單個角色卡輸入" : "";
 }
 
 export function modelPromptLengthError(config: AiConfig, model: string, capability: ModelCapability, prompt: string) {
@@ -132,8 +132,8 @@ export function modelPromptLengthError(config: AiConfig, model: string, capabili
     if (!maxChars || maxChars <= 0) return "";
     const actualChars = Array.from(prompt).length;
     if (actualChars <= maxChars) return "";
-    const label = capability === "text" ? "文本" : capability === "image" ? "图片" : "视频";
-    return `当前${label}模型提示词最多 ${maxChars} 个字符，完整提示词为 ${actualChars} 个字符。系统不会自动截断，请精简当前输入、连线内容或技能上下文后重试`;
+    const label = capability === "text" ? "文本" : capability === "image" ? "圖片" : "影片";
+    return `當前${label}模型提示詞最多 ${maxChars} 個字元，完整提示詞為 ${actualChars} 個字元。系統不會自動截斷，請精簡當前輸入、連線內容或技能上下文後重試`;
 }
 
 export function modelRequestOptions(config: AiConfig, capability: ModelCapability) {
@@ -150,7 +150,7 @@ export function modelRequestOptions(config: AiConfig, capability: ModelCapabilit
 }
 
 function logicalModelCompatibilityError(spec: NonNullable<NonNullable<AiConfig["channels"][number]["modelProfiles"]>[number]["logicalCapabilitySpec"]>, requirements: ModelRequirements, visualInputCount: number) {
-    if (requirements.capability && spec.capability !== requirements.capability) return "不支持当前生成类型";
+    if (requirements.capability && spec.capability !== requirements.capability) return "不支援當前生成型別";
     const input = requirements.input;
     const counts: Record<string, number> = {
         text: 0,
@@ -160,13 +160,13 @@ function logicalModelCompatibilityError(spec: NonNullable<NonNullable<AiConfig["
     };
     for (const [kind, count] of Object.entries(counts)) {
         const constraint = spec.inputs?.[kind];
-        if (!constraint && count > 0) return `不支持${kind}输入`;
-        if (constraint && (count < constraint.min || count > constraint.max)) return `${kind}输入需为 ${constraint.min}-${constraint.max} 个`;
+        if (!constraint && count > 0) return `不支援${kind}輸入`;
+        if (constraint && (count < constraint.min || count > constraint.max)) return `${kind}輸入需為 ${constraint.min}-${constraint.max} 個`;
     }
     const operation = requirements.capability === "video" && input ? resolveVideoOperation(input, requirements.videoOperation) : requirements.videoOperation;
-    if (operation && spec.operations?.length && !spec.operations.includes(operation)) return "不支持当前生成模式";
-    // 图片创作状态也会携带全局默认视频时长；这个字段只对视频模型有意义，
-    // 不能把它拼进图片逻辑模型的能力匹配，否则图片模型会被误判为“不支持当前时长”。
+    if (operation && spec.operations?.length && !spec.operations.includes(operation)) return "不支援當前生成模式";
+    // 圖片創作狀態也會攜帶全域性預設影片時長；這個欄位只對影片模型有意義，
+    // 不能把它拼進圖片邏輯模型的能力匹配，否則圖片模型會被誤判為“不支援當前時長”。
     const options = {
         ...requirements.options,
         ...(requirements.capability === "video" && requirements.videoSeconds ? { videoSeconds: requirements.videoSeconds } : {}),
@@ -202,20 +202,20 @@ function normalizeLogicalOptionValue(name: string, value: unknown) {
 function logicalOptionError(name: string) {
     const label: Record<string, string> = {
         size: "尺寸",
-        quality: "质量",
+        quality: "質量",
         transparentBackground: "透明背景",
-        count: "输出数量",
-        videoSeconds: "时长",
-        vquality: "分辨率",
-        videoGenerateAudio: "同步音频",
-        videoWatermark: "水印设置",
+        count: "輸出數量",
+        videoSeconds: "時長",
+        vquality: "解析度",
+        videoGenerateAudio: "同步音訊",
+        videoWatermark: "水印設定",
         audioVoice: "音色",
-        audioFormat: "音频格式",
-        audioSpeed: "语速",
-        audioPitch: "声调",
+        audioFormat: "音訊格式",
+        audioSpeed: "語速",
+        audioPitch: "聲調",
         audioVolume: "音量",
     };
-    return `不支持当前${label[name] || name}`;
+    return `不支援當前${label[name] || name}`;
 }
 
 export function compatibleModelInGroup(config: AiConfig, models: string[], requirements?: ModelRequirements, preferred?: string) {
@@ -237,9 +237,9 @@ export function resolveCompatibleModel(config: AiConfig, selected: string, requi
     return compatibleModelInGroup(config, selectedGroup.models, requirements, selected);
 }
 
-// 同显示名分组的模型族：尺寸/比例/分辨率选项取组内全部模型配置的并集，
-// 让用户能看到并选择任意成员支持的能力，选中后由兼容路由落到具体模型。
-// 质量、透明背景等其余能力取当前选中（路由后）模型的配置，与创作页面一致。
+// 同顯示名分組的模型族：尺寸/比例/解析度選項取組內全部模型配置的並集，
+// 讓使用者能看到並選擇任意成員支援的能力，選中後由相容路由落到具體模型。
+// 質量、透明背景等其餘能力取當前選中（路由後）模型的配置，與創作頁面一致。
 export function mergedImageCapabilityConfig(config: AiConfig, selected: string): ImageCapabilityConfig {
     const options = selectableModelsByCapability(config, "image");
     const group = options.length ? groupModelsByDisplayName(config, options).find((item) => item.models.includes(selected)) : undefined;
@@ -255,7 +255,7 @@ export function mergedImageCapabilityConfig(config: AiConfig, selected: string):
     return { ...base, size: { ...base.size, values, allowCustom, presets } };
 }
 
-// 切换模型后初始化图片参数为该模型能力默认值，避免旧参数在目标模型族不兼容导致无法切换。
+// 切換模型後初始化圖片引數為該模型能力預設值，避免舊引數在目標模型族不相容導致無法切換。
 export function defaultImageParamsForModel(config: AiConfig, model: string): Pick<AiConfig, "size" | "quality" | "transparentBackground"> {
     const image = modelCapabilityConfigFor(config, model).image;
     if (!image) return { size: "1:1", quality: "auto", transparentBackground: "false" };
@@ -365,8 +365,8 @@ export function modelGroupReferenceLimits(config: AiConfig, selected: string, ca
 
 export function inferVideoOperation(input: ModelInputSummary) {
     const visualInputCount = input.imageCount + input.characterCount;
-    // 图片或角色决定图生视频主模式，音频只作为附加参考，不应把组合请求
-    // 提升为全模态参考；纯音频输入才使用独立的 audio_to_video 能力。
+    // 圖片或角色決定圖生影片主模式，音訊只作為附加參考，不應把組合請求
+    // 提升為全模態參考；純音訊輸入才使用獨立的 audio_to_video 能力。
     if (input.videoCount > 0 || visualInputCount > 2) return "reference_to_video";
     if (visualInputCount > 0) return "image_to_video";
     if (input.audioCount > 0) return "audio_to_video";
@@ -381,10 +381,10 @@ export function resolveVideoOperation(input: ModelInputSummary, storedOperation?
 }
 
 function videoOperationLabel(operation: string) {
-    if (operation === "text_to_video") return "文生视频";
-    if (operation === "image_to_video") return "图生视频";
-    if (operation === "audio_to_video") return "音频生视频";
-    if (operation === "reference_to_video") return "全模态参考";
-    if (operation === "extend") return "视频续写";
-    return "当前生成模式";
+    if (operation === "text_to_video") return "文生影片";
+    if (operation === "image_to_video") return "圖生影片";
+    if (operation === "audio_to_video") return "音訊生影片";
+    if (operation === "reference_to_video") return "全模態參考";
+    if (operation === "extend") return "影片續寫";
+    return "當前生成模式";
 }

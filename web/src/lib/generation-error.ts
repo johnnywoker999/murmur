@@ -104,46 +104,46 @@ export type GenerationFailureDiagnostics = {
 type CategoryCopy = { reason: string; action: string };
 
 const LOCAL_TASK_ADMISSION_FAILURE: CategoryCopy = {
-    reason: "本地任务保存失败，尚未提交生成",
-    action: "请重启应用后重试；若仍失败，请保留排查信息并联系支持",
+    reason: "本地任務儲存失敗，尚未提交生成",
+    action: "請重啟應用後重試；若仍失敗，請保留排查資訊並聯系支援",
 };
 
 const CATEGORY_COPY: Record<GenerationErrorCategory, CategoryCopy> = {
-    auth: { reason: "模型服务鉴权失败", action: "请检查 API Key 后重试" },
-    permission: { reason: "当前渠道没有使用该模型的权限", action: "请更换模型或检查渠道权限" },
-    quota_user: { reason: "当前账号可用额度不足", action: "请检查账号余额，补充额度或调整令牌、套餐额度后重试" },
-    quota_upstream: { reason: "模型供应商拒绝了计费或额度相关请求", action: "请到供应商核对账单与额度后，再决定是否重试" },
-    quota_unknown: { reason: "模型服务拒绝了计费或额度相关请求", action: "请到当前渠道或模型供应商核对账单与额度后，再决定是否重试" },
-    quota_limit: { reason: "模型调用已达到设置的用量上限", action: "请检查当前渠道的用量或预算限制，调整后再试" },
-    moderation_input: { reason: "提示词或参考素材未通过内容安全审核", action: "请调整提示词或参考素材后重新生成" },
-    moderation_reference: { reason: "参考素材未通过内容安全审核", action: "请检查并更换参考素材后重新生成" },
-    moderation_output: { reason: "生成结果未通过内容安全审核", action: "请调整提示词或参考素材后重新生成" },
-    invalid_params: { reason: "模型不接受当前参数", action: "请检查模型、尺寸、时长、格式或数量后重试" },
-    local_storage: { reason: "本地数据库无法读写", action: "请重启应用；若仍失败，请保留排查信息并联系支持，不要重复生成" },
-    local_disk_full: { reason: "本地磁盘空间不足，无法保存数据", action: "请清理 MURMUR AI 数据目录所在磁盘；已有生成结果请优先取回原任务，不要重复生成" },
-    local_credential: { reason: "本地算力凭据读取失败", action: "请检查工作区数据目录并重新连接算力账号；不要删除工作区密钥" },
-    canvas_conflict: { reason: "生成结果已保留，画布尚未更新", action: "请点击「继续取回」，不要重新生成" },
-    result_apply_failed: { reason: "生成结果已保留，还没放回画布", action: "请点击「继续取回」，不要重新生成" },
-    result_target_unavailable: { reason: "生成结果已保存，无法放回原节点", action: "从「生成历史」取回，无需重新生成" },
-    context_too_long: { reason: "输入内容超出模型长度限制", action: "请缩短提示词或减少参考内容后重试" },
-    input_inaccessible: { reason: "参考素材无法读取", action: "请检查素材后重试" },
-    input_too_large: { reason: "参考素材过大", action: "请压缩或更换素材后重试" },
-    model_missing: { reason: "当前模型或接口不可用", action: "请检查模型名称和渠道配置" },
-    throttled: { reason: "请求过于频繁", action: "请稍后再试" },
-    concurrency: { reason: "同时进行的生成过多", action: "请等待已有任务完成后再试" },
-    provider_unavailable: { reason: "模型服务暂时不可用", action: "请稍后重试" },
-    network: { reason: "网络连接失败", action: "请检查网络并核对原任务状态后，再决定是否重新生成" },
-    request_not_sent: { reason: "未能连接服务，本次请求尚未提交", action: "请检查网络或代理后重试" },
-    timeout: { reason: "模型服务响应超时", action: "请稍后查询原任务，不要立即重新提交" },
-    submission_uncertain: { reason: "提交结果尚未确认，上游任务可能仍在执行", action: "请先查询原任务状态，不要立即重新提交" },
-    async_failed: { reason: "生成任务没有完成", action: "请查看详情后决定是否重试" },
-    cancelled: { reason: "任务已取消", action: "可按原输入重新提交" },
-    partial_success: { reason: "部分结果已生成，其余失败", action: "请查看已有结果后再决定是否补做" },
-    download_failed: { reason: "生成结果还没取回", action: "点击「继续取回」可继续下载原结果，不会重新生成" },
-    delivery_failed: { reason: "视频已生成，但暂时无法取回", action: "请联系支持恢复成片，恢复后点击「取回结果」；无需重新付费生成" },
-    results_missing: { reason: "任务结束但没有可用结果", action: "请查看详情后再决定是否重试" },
-    malformed_response: { reason: "模型服务返回了无法解析的内容", action: "请查看详情并核对原任务状态后，再决定是否重新生成" },
-    unknown: { reason: "生成失败", action: "请查看详情后再决定是否重试" },
+    auth: { reason: "模型服務鑑權失敗", action: "請檢查 API Key 後重試" },
+    permission: { reason: "當前渠道沒有使用該模型的許可權", action: "請更換模型或檢查渠道許可權" },
+    quota_user: { reason: "當前賬號可用額度不足", action: "請檢查賬號餘額，補充額度或調整令牌、套餐額度後重試" },
+    quota_upstream: { reason: "模型供應商拒絕了計費或額度相關請求", action: "請到供應商核對賬單與額度後，再決定是否重試" },
+    quota_unknown: { reason: "模型服務拒絕了計費或額度相關請求", action: "請到當前渠道或模型供應商核對賬單與額度後，再決定是否重試" },
+    quota_limit: { reason: "模型呼叫已達到設定的用量上限", action: "請檢查當前渠道的用量或預算限制，調整後再試" },
+    moderation_input: { reason: "提示詞或參考素材未通過內容安全稽核", action: "請調整提示詞或參考素材後重新生成" },
+    moderation_reference: { reason: "參考素材未通過內容安全稽核", action: "請檢查並更換參考素材後重新生成" },
+    moderation_output: { reason: "生成結果未通過內容安全稽核", action: "請調整提示詞或參考素材後重新生成" },
+    invalid_params: { reason: "模型不接受當前引數", action: "請檢查模型、尺寸、時長、格式或數量後重試" },
+    local_storage: { reason: "本地資料庫無法讀寫", action: "請重啟應用；若仍失敗，請保留排查資訊並聯系支援，不要重複生成" },
+    local_disk_full: { reason: "本地磁碟空間不足，無法儲存資料", action: "請清理 MURMUR AI 資料目錄所在磁碟；已有生成結果請優先取回原任務，不要重複生成" },
+    local_credential: { reason: "本地算力憑據讀取失敗", action: "請檢查工作區資料目錄並重新連線算力賬號；不要刪除工作區金鑰" },
+    canvas_conflict: { reason: "生成結果已保留，畫布尚未更新", action: "請點選「繼續取回」，不要重新生成" },
+    result_apply_failed: { reason: "生成結果已保留，還沒放回畫布", action: "請點選「繼續取回」，不要重新生成" },
+    result_target_unavailable: { reason: "生成結果已儲存，無法放回原節點", action: "從「生成歷史」取回，無需重新生成" },
+    context_too_long: { reason: "輸入內容超出模型長度限制", action: "請縮短提示詞或減少參考內容後重試" },
+    input_inaccessible: { reason: "參考素材無法讀取", action: "請檢查素材後重試" },
+    input_too_large: { reason: "參考素材過大", action: "請壓縮或更換素材後重試" },
+    model_missing: { reason: "當前模型或介面不可用", action: "請檢查模型名稱和渠道配置" },
+    throttled: { reason: "請求過於頻繁", action: "請稍後再試" },
+    concurrency: { reason: "同時進行的生成過多", action: "請等待已有任務完成後再試" },
+    provider_unavailable: { reason: "模型服務暫時不可用", action: "請稍後重試" },
+    network: { reason: "網路連線失敗", action: "請檢查網路並核對原任務狀態後，再決定是否重新生成" },
+    request_not_sent: { reason: "未能連線服務，本次請求尚未提交", action: "請檢查網路或代理後重試" },
+    timeout: { reason: "模型服務響應超時", action: "請稍後查詢原任務，不要立即重新提交" },
+    submission_uncertain: { reason: "提交結果尚未確認，上游任務可能仍在執行", action: "請先查詢原任務狀態，不要立即重新提交" },
+    async_failed: { reason: "生成任務沒有完成", action: "請檢視詳情後決定是否重試" },
+    cancelled: { reason: "任務已取消", action: "可按原輸入重新提交" },
+    partial_success: { reason: "部分結果已生成，其餘失敗", action: "請檢視已有結果後再決定是否補做" },
+    download_failed: { reason: "生成結果還沒取回", action: "點選「繼續取回」可繼續下載原結果，不會重新生成" },
+    delivery_failed: { reason: "影片已生成，但暫時無法取回", action: "請聯絡支援恢復成片，恢復後點選「取回結果」；無需重新付費生成" },
+    results_missing: { reason: "任務結束但沒有可用結果", action: "請檢視詳情後再決定是否重試" },
+    malformed_response: { reason: "模型服務返回了無法解析的內容", action: "請檢視詳情並核對原任務狀態後，再決定是否重新生成" },
+    unknown: { reason: "生成失敗", action: "請檢視詳情後再決定是否重試" },
 };
 
 const PROVIDER_CODE_CATEGORIES: Record<string, GenerationErrorCategory> = {
@@ -266,8 +266,8 @@ const PROVIDER_CODE_CATEGORIES: Record<string, GenerationErrorCategory> = {
     provider_reference_invalid: "input_inaccessible",
 };
 
-const DEFAULT_GENERATION_ERROR_MESSAGE = "生成失败。请查看详情后再决定是否重试。";
-export const CONTENT_MODERATION_MESSAGE = "提示词未通过内容安全审核。请修改提示词或参考图后重新生成。";
+const DEFAULT_GENERATION_ERROR_MESSAGE = "生成失敗。請檢視詳情後再決定是否重試。";
+export const CONTENT_MODERATION_MESSAGE = "提示詞未通過內容安全稽核。請修改提示詞或參考圖後重新生成。";
 
 const HTML_BODY = /^\s*(?:<!doctype|<html|<head|<body)/i;
 const LOCAL_DATABASE_ERROR = /(?:^|:\s*)(?:table\s+[a-z0-9_]+\s+has no column named\s+[a-z0-9_]+|no such (?:column|table):\s*[a-z0-9_.]+|(?:UNIQUE|NOT NULL|CHECK) constraint failed:\s*\S+|FOREIGN KEY constraint failed|database (?:is locked|is malformed)|database disk image is malformed|attempt to write a readonly database|disk I\/O error)(?:\b|$)/i;
@@ -348,7 +348,7 @@ export function isContentModerationError(value: unknown) {
     const explained = explainGenerationError(value);
     if (explained.moderation) return true;
     const text = value instanceof Error ? value.message : String(value);
-    return text.toLowerCase().includes(CONTENT_MODERATION_ERROR_CODE) || text.includes("内容审核未通过") || text.includes("内容安全审核");
+    return text.toLowerCase().includes(CONTENT_MODERATION_ERROR_CODE) || text.includes("內容稽核未通過") || text.includes("內容安全稽核");
 }
 
 export function shouldBlockAutomaticRetry(error: unknown, stage?: string) {
@@ -399,28 +399,28 @@ export function formatGenerationDiagnostics(explanation: GenerationFailureExplan
     const model = sanitizeProviderCode(evidence?.input?.model || context.model || "");
     const createdAt = context.createdAt && /^\d{4}-\d{2}-\d{2}[T ][\d:.+Z-]{5,35}$/.test(context.createdAt) ? context.createdAt : "";
     const lines = [
-        "排查信息版本：2",
+        "排查資訊版本：2",
         `原因：${sanitizeProviderText(explanation.reason)}`,
         explanation.action ? `下一步：${sanitizeProviderText(explanation.action)}` : "",
-        `类别：${explanation.category}`,
-        explanation.category === "local_credential" ? `失败阶段：读取本地算力凭据${explanation.summary?.includes("尚未提交生成") ? "（尚未提交生成）" : ""}` : "",
-        `错误来源：${explanation.category === "local_credential" ? "本地算力连接" : explanation.category === "local_disk_full" ? "本地磁盘写入" : explanation.category === "local_storage" ? "本地任务存储" : ({ local_validation: "本地参数校验", upstream_http: "上游 HTTP 响应", upstream_response: "上游业务响应", local_result: "本地结果处理", local_response: "本地响应大小限制", reference_upload: "参考素材上传", client_result: "画布应用结果", unknown: "未记录" } as Record<string, string>)[evidence?.source || "unknown"] || "未记录"}`,
-        `错误摘要：${sanitizeProviderText(evidence?.summary || context.errorSummary || explanation.summary || "") || "未记录"}`,
-        evidence && ["upstream_http", "upstream_response", "reference_upload"].includes(evidence.source) && sanitizeProviderCode(evidence.providerCode || "") ? `${evidence.source === "reference_upload" ? "存储返回代码" : "上游代码"}：${sanitizeProviderCode(evidence.providerCode || "")}` : "",
-        evidence?.httpStatus && Number.isInteger(evidence.httpStatus) && evidence.httpStatus >= 100 && evidence.httpStatus <= 599 ? `HTTP 状态：${evidence.httpStatus}` : "",
-        !evidence?.httpStatus && explanation.httpStatus ? `HTTP 状态：${explanation.httpStatus}` : "",
-        sanitizeProviderCode(evidence?.param || "") ? `参数：${sanitizeProviderCode(evidence?.param || "")}` : "",
-        sanitizeProviderText(evidence?.stage || context.stage || "") ? `失败阶段：${sanitizeProviderText(evidence?.stage || context.stage || "")}` : "",
-        taskId ? `任务 ID：${taskId}` : "",
-        `请求 ID：${requestId || "未记录"}`,
-        sanitizeDebugId(evidence?.providerTaskId) ? `上游任务 ID：${sanitizeDebugId(evidence?.providerTaskId)}` : "",
-        sanitizeDebugId(context.providerRequestId) ? `服务端关联 ID：${sanitizeDebugId(context.providerRequestId)}` : "",
+        `類別：${explanation.category}`,
+        explanation.category === "local_credential" ? `失敗階段：讀取本地算力憑據${explanation.summary?.includes("尚未提交生成") ? "（尚未提交生成）" : ""}` : "",
+        `錯誤來源：${explanation.category === "local_credential" ? "本地算力連線" : explanation.category === "local_disk_full" ? "本地磁碟寫入" : explanation.category === "local_storage" ? "本地任務儲存" : ({ local_validation: "本地引數校驗", upstream_http: "上游 HTTP 響應", upstream_response: "上游業務響應", local_result: "本地結果處理", local_response: "本地響應大小限制", reference_upload: "參考素材上傳", client_result: "畫布應用結果", unknown: "未記錄" } as Record<string, string>)[evidence?.source || "unknown"] || "未記錄"}`,
+        `錯誤摘要：${sanitizeProviderText(evidence?.summary || context.errorSummary || explanation.summary || "") || "未記錄"}`,
+        evidence && ["upstream_http", "upstream_response", "reference_upload"].includes(evidence.source) && sanitizeProviderCode(evidence.providerCode || "") ? `${evidence.source === "reference_upload" ? "儲存返回程式碼" : "上游程式碼"}：${sanitizeProviderCode(evidence.providerCode || "")}` : "",
+        evidence?.httpStatus && Number.isInteger(evidence.httpStatus) && evidence.httpStatus >= 100 && evidence.httpStatus <= 599 ? `HTTP 狀態：${evidence.httpStatus}` : "",
+        !evidence?.httpStatus && explanation.httpStatus ? `HTTP 狀態：${explanation.httpStatus}` : "",
+        sanitizeProviderCode(evidence?.param || "") ? `引數：${sanitizeProviderCode(evidence?.param || "")}` : "",
+        sanitizeProviderText(evidence?.stage || context.stage || "") ? `失敗階段：${sanitizeProviderText(evidence?.stage || context.stage || "")}` : "",
+        taskId ? `任務 ID：${taskId}` : "",
+        `請求 ID：${requestId || "未記錄"}`,
+        sanitizeDebugId(evidence?.providerTaskId) ? `上游任務 ID：${sanitizeDebugId(evidence?.providerTaskId)}` : "",
+        sanitizeDebugId(context.providerRequestId) ? `服務端關聯 ID：${sanitizeDebugId(context.providerRequestId)}` : "",
         model ? `模型：${model}` : "",
-        evidence?.version ? `运行版本：${diagnosticToken(evidence.version)} (${diagnosticToken(evidence.platform || "")})` : "",
-        evidence?.executionResult ? `生成执行：${evidence.executionResult === "completed" ? "完成" : evidence.executionResult === "pending" ? "等待回查" : evidence.executionResult === "failed" ? "未完成" : "未知"}` : "",
+        evidence?.version ? `執行版本：${diagnosticToken(evidence.version)} (${diagnosticToken(evidence.platform || "")})` : "",
+        evidence?.executionResult ? `生成執行：${evidence.executionResult === "completed" ? "完成" : evidence.executionResult === "pending" ? "等待回查" : evidence.executionResult === "failed" ? "未完成" : "未知"}` : "",
         ...formatExecutionEvidence(evidence),
-        createdAt ? `任务创建时间：${createdAt}` : "",
-        ...[["错误记录时间", evidence?.capturedAt], ["任务结束时间", context.completedAt], ["任务更新时间", context.updatedAt]].flatMap(([label, value]) => value && /^\d{4}-\d{2}-\d{2}[T ][\d:.+Z-]{5,35}$/.test(value) ? [`${label}：${value}`] : []),
+        createdAt ? `任務建立時間：${createdAt}` : "",
+        ...[["錯誤記錄時間", evidence?.capturedAt], ["任務結束時間", context.completedAt], ["任務更新時間", context.updatedAt]].flatMap(([label, value]) => value && /^\d{4}-\d{2}-\d{2}[T ][\d:.+Z-]{5,35}$/.test(value) ? [`${label}：${value}`] : []),
     ].filter(Boolean);
     return lines.join("\n");
 }
@@ -430,29 +430,29 @@ function formatExecutionEvidence(evidence?: GenerationFailureDiagnostics): strin
     const number = (n: number | undefined) => Number.isSafeInteger(n) && n! >= 0 ? String(n) : "未知";
     const input = evidence?.input;
     if (input) {
-        lines.push(`任务配置（协议可能转换或省略）：协议=${diagnosticToken(input.protocol)}，模型=${diagnosticToken(input.model)}，尺寸=${diagnosticToken(input.size)}，质量=${diagnosticToken(input.quality)}，数量=${diagnosticToken(input.count)}`);
-        lines.push(`输入统计：提示词 ${number(input.promptChars)} 字；图片/视频/音频 ${number(input.imageCount)}/${number(input.videoCount)}/${number(input.audioCount)}`);
-        if (input.imageLimitsRecorded) lines.push(`本地参考图限制：最多 ${number(input.maxImages)} 张，单图字节上限=${number(input.maxImageBytes)}（字节上限为 0 表示未设置大小限制）`);
-        input.images?.slice(0, 16).forEach((media, i) => lines.push(`参考图 ${i + 1}：${number(media.width)}×${number(media.height)}，${number(media.bytes)} 字节`));
+        lines.push(`任務配置（協議可能轉換或省略）：協議=${diagnosticToken(input.protocol)}，模型=${diagnosticToken(input.model)}，尺寸=${diagnosticToken(input.size)}，質量=${diagnosticToken(input.quality)}，數量=${diagnosticToken(input.count)}`);
+        lines.push(`輸入統計：提示詞 ${number(input.promptChars)} 字；圖片/影片/音訊 ${number(input.imageCount)}/${number(input.videoCount)}/${number(input.audioCount)}`);
+        if (input.imageLimitsRecorded) lines.push(`本地參考圖限制：最多 ${number(input.maxImages)} 張，單圖位元組上限=${number(input.maxImageBytes)}（位元組上限為 0 表示未設定大小限制）`);
+        input.images?.slice(0, 16).forEach((media, i) => lines.push(`參考圖 ${i + 1}：${number(media.width)}×${number(media.height)}，${number(media.bytes)} 位元組`));
     }
-    const outcomes: Record<string, string> = { response_received: "收到响应（业务结果另判）", transport_error: "传输或读取失败", not_dispatched: "请求未发送", http_error: "HTTP 错误", cancelled: "取消", timeout: "超时", business_error: "业务错误", response_limit: "本地响应大小限制" };
-    const phases: Record<string, string> = { connect: "建立连接", tls: "TLS 握手", request: "发送请求", response_wait: "等待响应", response: "读取响应" };
-    const routes: Record<string, string> = { direct: "直连", proxy: "代理" };
-    const preparationOperations: Record<string, string> = { reference_create: "申请素材上传", reference_put: "上传素材文件", reference_complete: "确认素材上传" };
+    const outcomes: Record<string, string> = { response_received: "收到響應（業務結果另判）", transport_error: "傳輸或讀取失敗", not_dispatched: "請求未傳送", http_error: "HTTP 錯誤", cancelled: "取消", timeout: "超時", business_error: "業務錯誤", response_limit: "本地響應大小限制" };
+    const phases: Record<string, string> = { connect: "建立連線", tls: "TLS 握手", request: "傳送請求", response_wait: "等待響應", response: "讀取響應" };
+    const routes: Record<string, string> = { direct: "直連", proxy: "代理" };
+    const preparationOperations: Record<string, string> = { reference_create: "申請素材上傳", reference_put: "上傳素材檔案", reference_complete: "確認素材上傳" };
     evidence?.requests?.slice(0, 8).forEach((request, i) => {
-        lines.push(`请求 ${i + 1}：${preparationOperations[request.operation] || sanitizeProviderCode(request.operation)}；${outcomes[request.outcome] || "未知"}；已发起=${request.dispatched === true ? "是" : "否"}；HTTP=${number(request.httpStatus)}；ID=${sanitizeDebugId(request.requestId) || "未记录"}；耗时=${number(request.durationMs)}ms`);
-        lines.push(`请求 ${i + 1} 字节：请求体大小=${number(request.requestBytes)}（不代表已发送）；响应声明=${number(request.declaredResponseBytes)}；已读=${number(request.receivedBytes)}；响应上限=${number(request.responseLimitBytes)}`);
-        if (phases[request.transportPhase || ""]) lines.push(`请求 ${i + 1} 连接：${routes[request.transportRoute || ""] || "未记录"}；阶段=${phases[request.transportPhase!]}`);
-        if (/^\d{4}-\d{2}-\d{2}[T ][\d:.+Z-]{5,35}$/.test(request.startedAt)) lines.push(`请求 ${i + 1} 时间：${request.startedAt}`);
-        if (sanitizeProviderCode(request.providerCode || "")) lines.push(`请求 ${i + 1} 上游代码：${sanitizeProviderCode(request.providerCode || "")}`);
-        if (request.summary) lines.push(`请求 ${i + 1} 摘要：${sanitizeProviderText(request.summary)}`);
+        lines.push(`請求 ${i + 1}：${preparationOperations[request.operation] || sanitizeProviderCode(request.operation)}；${outcomes[request.outcome] || "未知"}；已發起=${request.dispatched === true ? "是" : "否"}；HTTP=${number(request.httpStatus)}；ID=${sanitizeDebugId(request.requestId) || "未記錄"}；耗時=${number(request.durationMs)}ms`);
+        lines.push(`請求 ${i + 1} 位元組：請求體大小=${number(request.requestBytes)}（不代表已傳送）；響應宣告=${number(request.declaredResponseBytes)}；已讀=${number(request.receivedBytes)}；響應上限=${number(request.responseLimitBytes)}`);
+        if (phases[request.transportPhase || ""]) lines.push(`請求 ${i + 1} 連線：${routes[request.transportRoute || ""] || "未記錄"}；階段=${phases[request.transportPhase!]}`);
+        if (/^\d{4}-\d{2}-\d{2}[T ][\d:.+Z-]{5,35}$/.test(request.startedAt)) lines.push(`請求 ${i + 1} 時間：${request.startedAt}`);
+        if (sanitizeProviderCode(request.providerCode || "")) lines.push(`請求 ${i + 1} 上游程式碼：${sanitizeProviderCode(request.providerCode || "")}`);
+        if (request.summary) lines.push(`請求 ${i + 1} 摘要：${sanitizeProviderText(request.summary)}`);
     });
-    if (evidence?.omittedRequests) lines.push(`中间请求省略：${number(evidence.omittedRequests)}`);
+    if (evidence?.omittedRequests) lines.push(`中間請求省略：${number(evidence.omittedRequests)}`);
     return lines;
 }
 
 function diagnosticToken(value?: string): string {
-    return value && /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,119}$/.test(value) && !value.includes("://") && !/(?:bearer|api[_-]?key|secret|token|sk-|^[a-z]:[\\/]|\/(?:Users|home|private|tmp|var|Volumes|mnt|media|run|root|opt|srv|etc)\/)/i.test(value) ? value : "未记录";
+    return value && /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,119}$/.test(value) && !value.includes("://") && !/(?:bearer|api[_-]?key|secret|token|sk-|^[a-z]:[\\/]|\/(?:Users|home|private|tmp|var|Volumes|mnt|media|run|root|opt|srv|etc)\/)/i.test(value) ? value : "未記錄";
 }
 
 export function isGenerationErrorCode(code: string) {
@@ -485,7 +485,7 @@ function classifyUnknown(error: unknown, context: GenerationFailureContext): Cla
         if (record.reason === "local_disk_full") return { category: "local_disk_full", status: numericStatus(record.status), fromCode: true, retryable: false };
         if (record.reason === "local_storage_failed") return { category: "local_storage", ...LOCAL_TASK_ADMISSION_FAILURE, fromCode: true, retryable: false };
         if (record.name === "ApiError" && record.reason === "quota_exceeded") {
-            return { category: "quota_limit", reason: sanitizeProviderText(String(record.message || "工作区用量已达到上限")), action: "请清理不需要的任务记录或素材后重试", fromCode: true, retryable: false };
+            return { category: "quota_limit", reason: sanitizeProviderText(String(record.message || "工作區用量已達到上限")), action: "請清理不需要的任務記錄或素材後重試", fromCode: true, retryable: false };
         }
         if (record.reason === "stale_revision" || record.code === "canvas_conflict") {
             return { category: "canvas_conflict", fromCode: true, retryable: false };
@@ -549,19 +549,19 @@ function classifyHttp(status: number | undefined, body: unknown): Classified {
         if (status === 524) {
             classified.category = "timeout";
             classified.uncertain = true;
-            classified.reason = "模型服务响应超时，请求可能仍在服务端执行";
-            classified.action = "请先查询原任务或到供应商核对状态，不要立即重新提交";
+            classified.reason = "模型服務響應超時，請求可能仍在服務端執行";
+            classified.action = "請先查詢原任務或到供應商核對狀態，不要立即重新提交";
         }
     }
     if (status === 524 && (classified.category === "unknown" || classified.category === "timeout" || classified.category === "provider_unavailable" || classified.category === "malformed_response")) {
         classified.category = "timeout";
         classified.uncertain = true;
-        classified.reason = "模型服务响应超时，请求可能仍在服务端执行";
-        classified.action = "请先查询原任务或到供应商核对状态，不要立即重新提交";
+        classified.reason = "模型服務響應超時，請求可能仍在服務端執行";
+        classified.action = "請先查詢原任務或到供應商核對狀態，不要立即重新提交";
     }
     if (status === 413 && classified.category === "input_too_large" && !classified.reason) {
-        classified.reason = "整次请求的数据量超过接口上限";
-        classified.action = "请减少参考素材，或改用可公开访问的素材链接后再提交";
+        classified.reason = "整次請求的資料量超過介面上限";
+        classified.action = "請減少參考素材，或改用可公開訪問的素材連結後再提交";
     }
     classified.status = status;
     classified.retryable = retryableCategory(classified.category) && !classified.uncertain;
@@ -580,30 +580,30 @@ function classifyText(raw: string): Classified {
         return { category: "canvas_conflict", fromCode: true, retryable: false };
     }
     const taskCopy = persistedTaskConstraintCopy(text);
-    if (taskCopy) return { category: "invalid_params", ...taskCopy, requestId: sanitizeDebugId(text.match(/请求 ([A-Za-z0-9._:-]{6,127})/)?.[1]), taskId: sanitizeDebugId(text.match(/任务 ([A-Za-z0-9._:-]{6,127})/)?.[1]), retryable: false };
+    if (taskCopy) return { category: "invalid_params", ...taskCopy, requestId: sanitizeDebugId(text.match(/請求 ([A-Za-z0-9._:-]{6,127})/)?.[1]), taskId: sanitizeDebugId(text.match(/任務 ([A-Za-z0-9._:-]{6,127})/)?.[1]), retryable: false };
     const moderationCopy = persistedModerationCopy(text);
     if (moderationCopy) {
-        return { ...moderationCopy, requestId: sanitizeDebugId(text.match(/请求 ([A-Za-z0-9._:-]{6,127})/)?.[1]), taskId: sanitizeDebugId(text.match(/任务 ([A-Za-z0-9._:-]{6,127})/)?.[1]), retryable: false };
+        return { ...moderationCopy, requestId: sanitizeDebugId(text.match(/請求 ([A-Za-z0-9._:-]{6,127})/)?.[1]), taskId: sanitizeDebugId(text.match(/任務 ([A-Za-z0-9._:-]{6,127})/)?.[1]), retryable: false };
     }
     const durationCopy = referenceDurationCopy(text);
     if (durationCopy) {
-        const debug = text.match(/。排查编号：([^。]+)。?$/)?.[1] || "";
+        const debug = text.match(/。排查編號：([^。]+)。?$/)?.[1] || "";
         return {
             category: "invalid_params",
             ...durationCopy,
-            requestId: sanitizeDebugId(debug.match(/(?:^| · )请求 ([A-Za-z0-9._:-]{6,127})$/)?.[1]),
-            taskId: sanitizeDebugId(debug.match(/^任务 ([A-Za-z0-9._:-]{6,127})(?: · |$)/)?.[1]),
+            requestId: sanitizeDebugId(debug.match(/(?:^| · )請求 ([A-Za-z0-9._:-]{6,127})$/)?.[1]),
+            taskId: sanitizeDebugId(debug.match(/^任務 ([A-Za-z0-9._:-]{6,127})(?: · |$)/)?.[1]),
             retryable: false,
         };
     }
     const mediaCopy = referenceMediaConstraintCopy(text);
     if (mediaCopy) {
-        const debug = text.match(/。排查编号：([^。]+)。?$/)?.[1] || "";
+        const debug = text.match(/。排查編號：([^。]+)。?$/)?.[1] || "";
         return {
-            category: mediaCopy.reason.includes("过大") ? "input_too_large" : "invalid_params",
+            category: mediaCopy.reason.includes("過大") ? "input_too_large" : "invalid_params",
             ...mediaCopy,
-            requestId: sanitizeDebugId(debug.match(/(?:^| · )请求 ([A-Za-z0-9._:-]{6,127})$/)?.[1]),
-            taskId: sanitizeDebugId(debug.match(/^任务 ([A-Za-z0-9._:-]{6,127})(?: · |$)/)?.[1]),
+            requestId: sanitizeDebugId(debug.match(/(?:^| · )請求 ([A-Za-z0-9._:-]{6,127})$/)?.[1]),
+            taskId: sanitizeDebugId(debug.match(/^任務 ([A-Za-z0-9._:-]{6,127})(?: · |$)/)?.[1]),
             retryable: false,
         };
     }
@@ -619,7 +619,7 @@ function classifyText(raw: string): Classified {
     if (vodCopy) return { ...vodCopy, requestId: sanitizeDebugId(fields.requestId), taskId: sanitizeDebugId(fields.taskId) };
     // Inspect only the error message, never JSON request echoes or debug fields.
     const databaseMessage = fields.code || fields.type || fields.message || fields.status || /^[{[]/.test(text) ? fields.message : text;
-    if (/(write local resource|生成内容写入资源存储失败|database or disk is full|本地磁盘空间不足)/i.test(databaseMessage) && /(no space left on device|not enough space on the disk|disk full|database or disk is full|本地磁盘空间不足)/i.test(databaseMessage)) return { category: "local_disk_full", fromCode: true, retryable: false };
+    if (/(write local resource|生成內容寫入資源儲存失敗|database or disk is full|本地磁碟空間不足)/i.test(databaseMessage) && /(no space left on device|not enough space on the disk|disk full|database or disk is full|本地磁碟空間不足)/i.test(databaseMessage)) return { category: "local_disk_full", fromCode: true, retryable: false };
     if (LOCAL_DATABASE_ERROR.test(databaseMessage)) return { category: "local_storage", fromCode: true, requestId: sanitizeDebugId(fields.requestId), taskId: sanitizeDebugId(fields.taskId), retryable: false };
     if (fields.code || fields.type || fields.message || fields.status) {
         const fromCode = categoryFromProviderCode(fields.code, fields.type, fields.status);
@@ -652,8 +652,8 @@ function specialize(classified: Classified, fields: ExtractedFields): Classified
             ...classified,
             category: "invalid_params",
             ...taskConstraint,
-            requestId: classified.requestId || sanitizeDebugId(fields.message.match(/请求 ([A-Za-z0-9._:-]{6,127})/)?.[1]),
-            taskId: classified.taskId || sanitizeDebugId(fields.message.match(/任务 ([A-Za-z0-9._:-]{6,127})/)?.[1]),
+            requestId: classified.requestId || sanitizeDebugId(fields.message.match(/請求 ([A-Za-z0-9._:-]{6,127})/)?.[1]),
+            taskId: classified.taskId || sanitizeDebugId(fields.message.match(/任務 ([A-Za-z0-9._:-]{6,127})/)?.[1]),
             retryable: false,
         };
     // Only broad wrappers may be refined by a more specific provider message.
@@ -676,7 +676,7 @@ function specialize(classified: Classified, fields: ExtractedFields): Classified
     const audioOrDuration = referenceAudioCopy(fields.message, normalizeCode(fields.code) === "invalid_reference_audio") || referenceDurationCopy(fields.message);
     if (audioOrDuration) return { ...classified, category: "invalid_params", ...audioOrDuration, retryable: false };
     const mediaCopy = ["unknown", "invalid_params", "input_too_large", "input_inaccessible"].includes(classified.category) ? referenceMediaConstraintCopy(fields.message) : undefined;
-    if (mediaCopy) return { ...classified, category: mediaCopy.reason.includes("过大") ? "input_too_large" : "invalid_params", ...mediaCopy, retryable: false };
+    if (mediaCopy) return { ...classified, category: mediaCopy.reason.includes("過大") ? "input_too_large" : "invalid_params", ...mediaCopy, retryable: false };
     if (classified.category === "invalid_params") {
         const refined = categoryFromProviderMessage(fields.message);
         if (refined === "context_too_long" || refined === "input_inaccessible" || refined === "input_too_large" || refined === "model_missing") classified.category = refined;
@@ -687,47 +687,47 @@ function specialize(classified: Classified, fields: ExtractedFields): Classified
         const duration = fields.message.match(/duration\s+(?:must|should)\s+be\s+between\s+(\d+(?:\.\d+)?)\s*(?:seconds?|secs?|s)?\s+and\s+(\d+(?:\.\d+)?)\s*(?:seconds?|secs?|s)\b/i);
         if (duration && Number(duration[1]) <= Number(duration[2])) {
             const reference = fields.message.includes("素材") || /reference|audio/i.test(fields.message);
-            classified.reason = reference ? "参考素材时长不符合模型要求" : "视频时长不符合模型要求";
-            classified.action = reference ? `请检查每段参考音频和视频，将不符合要求的素材调整为 ${duration[1]}–${duration[2]} 秒后重新提交` : `请将时长调整为 ${duration[1]}–${duration[2]} 秒后重试`;
+            classified.reason = reference ? "參考素材時長不符合模型要求" : "影片時長不符合模型要求";
+            classified.action = reference ? `請檢查每段參考音訊和影片，將不符合要求的素材調整為 ${duration[1]}–${duration[2]} 秒後重新提交` : `請將時長調整為 ${duration[1]}–${duration[2]} 秒後重試`;
         }
         const height = fields.message.match(/height\s+(?:must|should)\s+be\s+between\s+(\d+)\s*(?:px|pixels?)?\s+and\s+(\d+)\s*(?:px|pixels?)/i);
         if (height) {
-            classified.reason = "参考素材高度不符合模型要求";
-            classified.action = `请将高度调整为 ${height[1]}–${height[2]} 像素后重新提交`;
+            classified.reason = "參考素材高度不符合模型要求";
+            classified.action = `請將高度調整為 ${height[1]}–${height[2]} 畫素後重新提交`;
         }
         const width = fields.message.match(/width\s+(?:must|should)\s+be\s+between\s+(\d+)\s*(?:px|pixels?)?\s+and\s+(\d+)\s*(?:px|pixels?)/i);
         if (width && !height) {
-            classified.reason = "参考素材宽度不符合模型要求";
-            classified.action = `请将宽度调整为 ${width[1]}–${width[2]} 像素后重新提交`;
+            classified.reason = "參考素材寬度不符合模型要求";
+            classified.action = `請將寬度調整為 ${width[1]}–${width[2]} 畫素後重新提交`;
         }
         const aspect = fields.message.match(/aspect(?:\s*ratio)?\s+(?:must|should)\s+be\s+between\s+(\d+(?:\.\d+)?)\s+and\s+(\d+(?:\.\d+)?)/i);
         if (aspect) {
-            classified.reason = "参考素材宽高比不符合模型要求";
-            classified.action = `请将宽高比调整为 ${aspect[1]}–${aspect[2]} 后重新提交`;
+            classified.reason = "參考素材寬高比不符合模型要求";
+            classified.action = `請將寬高比調整為 ${aspect[1]}–${aspect[2]} 後重新提交`;
         }
         const pixels = fields.message.match(/(?:pixel(?:s)?(?:\s+count)?|total\s+pixels)\s+(?:must|should)\s+be\s+between\s+(\d+)\s+and\s+(\d+)/i);
         if (pixels) {
-            classified.reason = "参考素材像素总量不符合模型要求";
-            classified.action = `请将参考素材的宽×高调整到 ${pixels[1]}–${pixels[2]} 像素；修改生成分辨率不会改变参考素材`;
+            classified.reason = "參考素材畫素總量不符合模型要求";
+            classified.action = `請將參考素材的寬×高調整到 ${pixels[1]}–${pixels[2]} 畫素；修改生成解析度不會改變參考素材`;
         }
     }
     if (classified.category === "input_too_large") {
         if (
             normalizeCode(fields.code) === "video_request_body_too_large" ||
-            fields.message.startsWith("整次请求的数据量超过接口上限") ||
+            fields.message.startsWith("整次請求的資料量超過介面上限") ||
             /(?:request\s+(?:body|entity|payload)|payload)\s+(?:is\s+)?too\s+large|(?:request|payload).{0,24}(?:exceeds?|larger than)/i.test(fields.message)
         ) {
-            classified.reason = "整次请求的数据量超过接口上限";
-            classified.action = "请减少参考素材，或改用可公开访问的素材链接后再提交";
+            classified.reason = "整次請求的資料量超過介面上限";
+            classified.action = "請減少參考素材，或改用可公開訪問的素材連結後再提交";
         } else if (/(?:file|image|video|audio)\s+too\s+large/i.test(fields.message)) {
-            classified.reason = "单个参考文件过大";
-            classified.action = "请压缩或更换该素材后再提交";
+            classified.reason = "單個參考檔案過大";
+            classified.action = "請壓縮或更換該素材後再提交";
         }
     }
     if (((normalized.includes("thinking") || normalized.includes("reasoning")) && normalized.includes("tool_choice")) || (normalized.includes("tool_choice") && (normalized.includes("not support") || normalized.includes("unsupported")))) {
         classified.category = "invalid_params";
-        classified.reason = "当前模型为思考或推理模式，不支持强制工具调用";
-        classified.action = "请改用自动工具选择或更换非思考模式模型";
+        classified.reason = "當前模型為思考或推理模式，不支援強制工具呼叫";
+        classified.action = "請改用自動工具選擇或更換非思考模式模型";
     }
     classified.retryable = retryableCategory(classified.category);
     return classified;
@@ -736,40 +736,40 @@ function specialize(classified: Classified, fields: ExtractedFields): Classified
 function referenceDurationCopy(text: string): CategoryCopy | undefined {
     const audio = referenceAudioCopy(text);
     if (audio) return audio;
-    const numbered = text.match(/^第 (\d+) 段参考(音频|视频)时长为 (\d+(?:\.\d+)?) 秒[，。]需要 (\d+(?:\.\d+)?)–(\d+(?:\.\d+)?) 秒/);
-    if (numbered) return { reason: `第 ${numbered[1]} 段参考${numbered[2]}时长为 ${numbered[3]} 秒`, action: `需要 ${numbered[4]}–${numbered[5]} 秒；请裁剪或更换这段素材后再提交` };
-    const missing = text.match(/^第 (\d+) 段参考(音频|视频)的时长无法读取/);
-    if (missing) return { reason: `第 ${missing[1]} 段参考${missing[2]}的时长无法读取`, action: "请重新导入素材后再提交" };
-    const persisted = text.match(/^参考素材时长不符合模型要求。请检查每段参考音频和视频，将不符合要求的素材调整为 (\d+(?:\.\d+)?)–(\d+(?:\.\d+)?) 秒/);
-    if (persisted) return { reason: "参考素材时长不符合模型要求", action: `请检查每段参考音频和视频，将不符合要求的素材调整为 ${persisted[1]}–${persisted[2]} 秒后重新提交` };
+    const numbered = text.match(/^第 (\d+) 段參考(音訊|影片)時長為 (\d+(?:\.\d+)?) 秒[，。]需要 (\d+(?:\.\d+)?)–(\d+(?:\.\d+)?) 秒/);
+    if (numbered) return { reason: `第 ${numbered[1]} 段參考${numbered[2]}時長為 ${numbered[3]} 秒`, action: `需要 ${numbered[4]}–${numbered[5]} 秒；請裁剪或更換這段素材後再提交` };
+    const missing = text.match(/^第 (\d+) 段參考(音訊|影片)的時長無法讀取/);
+    if (missing) return { reason: `第 ${missing[1]} 段參考${missing[2]}的時長無法讀取`, action: "請重新匯入素材後再提交" };
+    const persisted = text.match(/^參考素材時長不符合模型要求。請檢查每段參考音訊和影片，將不符合要求的素材調整為 (\d+(?:\.\d+)?)–(\d+(?:\.\d+)?) 秒/);
+    if (persisted) return { reason: "參考素材時長不符合模型要求", action: `請檢查每段參考音訊和影片，將不符合要求的素材調整為 ${persisted[1]}–${persisted[2]} 秒後重新提交` };
 }
 
 function referenceAudioCopy(text: string, invalidAudio = false): CategoryCopy | undefined {
     const duration = text.match(/^reference audio (\d+) is (\d+(?:\.\d+)?) seconds; use audio between (\d+(?:\.\d+)?) and (\d+(?:\.\d+)?) seconds/i);
-    if (duration) return { reason: `第 ${duration[1]} 段参考音频时长为 ${duration[2]} 秒`, action: `需要 ${duration[3]}–${duration[4]} 秒；请裁剪或更换这段素材后再提交` };
+    if (duration) return { reason: `第 ${duration[1]} 段參考音訊時長為 ${duration[2]} 秒`, action: `需要 ${duration[3]}–${duration[4]} 秒；請裁剪或更換這段素材後再提交` };
     const total =
-        text.match(/^reference audio is (\d+(?:\.\d+)?) seconds in total; this model accepts at most (\d+(?:\.\d+)?) seconds of reference audio/i) || text.match(/^参考音频总时长为 (\d+(?:\.\d+)?) 秒[。，](?:该|当前)模型最多支持 (\d+(?:\.\d+)?) 秒/);
-    if (total) return { reason: `参考音频总时长为 ${total[1]} 秒`, action: `该模型最多支持 ${total[2]} 秒参考音频；请裁剪或减少参考音频后再提交` };
+        text.match(/^reference audio is (\d+(?:\.\d+)?) seconds in total; this model accepts at most (\d+(?:\.\d+)?) seconds of reference audio/i) || text.match(/^參考音訊總時長為 (\d+(?:\.\d+)?) 秒[。，](?:該|當前)模型最多支援 (\d+(?:\.\d+)?) 秒/);
+    if (total) return { reason: `參考音訊總時長為 ${total[1]} 秒`, action: `該模型最多支援 ${total[2]} 秒參考音訊；請裁剪或減少參考音訊後再提交` };
     const numbered = text.match(/^reference audio (\d+)(?::| requires| exceeds)/i);
-    const label = numbered ? `第 ${numbered[1]} 段参考音频` : "参考音频";
-    const persisted = text.match(/^(第 \d+ 段参考音频|参考音频)(无法下载|的格式或时长无法读取|文件过大|不符合模型要求)。/);
+    const label = numbered ? `第 ${numbered[1]} 段參考音訊` : "參考音訊";
+    const persisted = text.match(/^(第 \d+ 段參考音訊|參考音訊)(無法下載|的格式或時長無法讀取|檔案過大|不符合模型要求)。/);
     const issue =
         persisted?.[2] ||
         (invalidAudio || numbered
             ? /15 MiB|byte limit|at most.*MiB/i.test(text)
-                ? "文件过大"
+                ? "檔案過大"
                 : /duration could not be measured|invalid.*audio|unsupported|readable audio track/i.test(text)
-                  ? "的格式或时长无法读取"
+                  ? "的格式或時長無法讀取"
                   : /download|HTTPS URL|URL.*(?:policy|allowed)|redirect|readable within/i.test(text)
-                    ? "无法下载"
+                    ? "無法下載"
                     : "不符合模型要求"
             : "");
     if (!issue) return;
     const actions: Record<string, string> = {
-        无法下载: "请重新上传音频，确认素材链接可公开访问后再提交",
-        的格式或时长无法读取: "请将音频重新导出为 MP3、WAV 或 M4A，确认文件完整且含有音轨后再上传",
-        文件过大: "请压缩或更换音频，确保文件不超过模型的大小限制后再提交",
-        不符合模型要求: "请检查参考音频的时长、格式和大小，调整后再提交",
+        無法下載: "請重新上傳音訊，確認素材連結可公開訪問後再提交",
+        的格式或時長無法讀取: "請將音訊重新匯出為 MP3、WAV 或 M4A，確認檔案完整且含有音軌後再上傳",
+        檔案過大: "請壓縮或更換音訊，確保檔案不超過模型的大小限制後再提交",
+        不符合模型要求: "請檢查參考音訊的時長、格式和大小，調整後再提交",
     };
     return { reason: `${persisted?.[1] || label}${issue}`, action: actions[issue] };
 }
@@ -860,53 +860,53 @@ function categoryFromProviderCode(...values: string[]): GenerationErrorCategory 
 }
 
 function referenceMediaConstraintCopy(text: string): CategoryCopy | undefined {
-    text = text.split("。排查编号：", 1)[0];
-    if (text.startsWith("当前渠道需要在线素材链接：")) {
+    text = text.split("。排查編號：", 1)[0];
+    if (text.startsWith("當前渠道需要線上素材連結：")) {
         const [reason, ...action] = text.split("。");
         return { reason, action: action.join("。") };
     }
-    const unreadableFps = text.match(/^(第 \d+ 个参考视频帧率无法读取)/);
-    if (unreadableFps) return {reason:unreadableFps[1],action:"请重新导出 MP4/MOV 视频后上传，确保文件完整且包含有效的视频轨"};
-    const measuredFps = text.match(/^(第 \d+ 个参考视频平均帧率为 \d+(?:\.\d+)? FPS)[，。](?:需要 |请将参考视频重新导出为 )(\d+)–(\d+) FPS/);
-    if (measuredFps) return { reason: measuredFps[1], action: `请将参考视频重新导出为 ${measuredFps[2]}–${measuredFps[3]} FPS 后再提交` };
-    const fps = text.match(/^(?:素材转换失败:\s*)?(?:frame rate|framerate|fps) must be between (\d+(?:\.\d+)?)\s*(?:fps)? and (\d+(?:\.\d+)?)[.\s]*$/i);
-    if (fps) return { reason: "参考视频帧率不符合要求", action: `请将参考视频重新导出为 ${fps[1]}–${fps[2]} FPS 后再提交` };
-    if (text.startsWith("参考视频帧率不符合要求。请将参考视频重新导出为 ")) return { reason: text.split("。")[0], action: text.slice(text.indexOf("。") + 1) };
-    if (/^(?:(?:素材转换失败:\s*)?(?:unsupported (?:video |audio )?codec|(?:video |audio )?codec (?:is )?not supported)[.\s]*$|参考素材编码不受当前模型支持。)/i.test(text)) return { reason: "参考素材编码不受当前模型支持", action: "请将视频重新导出为常见的 H.264 MP4，音频重新导出为 MP3 或 WAV 后替换素材；只修改文件后缀无效" };
-    if (/^(?:asset (?:is )?(?:not ready|still processing)[.\s]*$|参考素材仍在处理中。)/i.test(text)) return { reason: "参考素材仍在处理中", action: "请在素材库确认处理完成后再生成，不要重复上传或反复提交" };
-    if (/^(?:asset (?:access denied|permission denied|forbidden)[.\s]*$|无权访问参考素材。)/i.test(text)) return { reason: "无权访问参考素材", action: "请使用上传该素材的账号与渠道，或重新上传原文件；检查素材权限，无需修改提示词" };
-    const pixelPersisted = text.match(/^(参考素材像素总量不符合模型要求)。((?:请将参考素材的宽×高调整到) \d+–\d+ 像素[^{}]*)$/);
+    const unreadableFps = text.match(/^(第 \d+ 個參考影片幀率無法讀取)/);
+    if (unreadableFps) return {reason:unreadableFps[1],action:"請重新匯出 MP4/MOV 影片後上傳，確保檔案完整且包含有效的影片軌"};
+    const measuredFps = text.match(/^(第 \d+ 個參考影片平均幀率為 \d+(?:\.\d+)? FPS)[，。](?:需要 |請將參考影片重新匯出為 )(\d+)–(\d+) FPS/);
+    if (measuredFps) return { reason: measuredFps[1], action: `請將參考影片重新匯出為 ${measuredFps[2]}–${measuredFps[3]} FPS 後再提交` };
+    const fps = text.match(/^(?:素材轉換失敗:\s*)?(?:frame rate|framerate|fps) must be between (\d+(?:\.\d+)?)\s*(?:fps)? and (\d+(?:\.\d+)?)[.\s]*$/i);
+    if (fps) return { reason: "參考影片幀率不符合要求", action: `請將參考影片重新匯出為 ${fps[1]}–${fps[2]} FPS 後再提交` };
+    if (text.startsWith("參考影片幀率不符合要求。請將參考影片重新匯出為 ")) return { reason: text.split("。")[0], action: text.slice(text.indexOf("。") + 1) };
+    if (/^(?:(?:素材轉換失敗:\s*)?(?:unsupported (?:video |audio )?codec|(?:video |audio )?codec (?:is )?not supported)[.\s]*$|參考素材編碼不受當前模型支援。)/i.test(text)) return { reason: "參考素材編碼不受當前模型支援", action: "請將影片重新匯出為常見的 H.264 MP4，音訊重新匯出為 MP3 或 WAV 後替換素材；只修改檔案字尾無效" };
+    if (/^(?:asset (?:is )?(?:not ready|still processing)[.\s]*$|參考素材仍在處理中。)/i.test(text)) return { reason: "參考素材仍在處理中", action: "請在素材庫確認處理完成後再生成，不要重複上傳或反覆提交" };
+    if (/^(?:asset (?:access denied|permission denied|forbidden)[.\s]*$|無權訪問參考素材。)/i.test(text)) return { reason: "無權訪問參考素材", action: "請使用上傳該素材的賬號與渠道，或重新上傳原檔案；檢查素材許可權，無需修改提示詞" };
+    const pixelPersisted = text.match(/^(參考素材畫素總量不符合模型要求)。((?:請將參考素材的寬×高調整到) \d+–\d+ 畫素[^{}]*)$/);
     if (pixelPersisted) return { reason: pixelPersisted[1], action: pixelPersisted[2] };
-    const videoPersisted = text.match(/^(第 \d+ 个参考视频(?:无法读取|格式或地址不支持|文件过大|尺寸为 \d+×\d+|时长为 \d+(?:\.\d+)? 秒|像素总量为 \d+（\d+×\d+）))[。]([^{}]+)$/);
+    const videoPersisted = text.match(/^(第 \d+ 個參考影片(?:無法讀取|格式或地址不支援|檔案過大|尺寸為 \d+×\d+|時長為 \d+(?:\.\d+)? 秒|畫素總量為 \d+（\d+×\d+）))[。]([^{}]+)$/);
     if (videoPersisted) return { reason: videoPersisted[1], action: videoPersisted[2] };
 
-    const persisted = text.match(/^参考素材(宽度|高度|宽高比)不符合模型要求。请将(?:宽度|高度|宽高比)调整为 (\d+(?:\.\d+)?)–(\d+(?:\.\d+)?)( 像素| )后重新提交/);
-    if (persisted) return { reason: `参考素材${persisted[1]}不符合模型要求`, action: `请将${persisted[1]}调整为 ${persisted[2]}–${persisted[3]}${persisted[4]}后重新提交` };
-    const single = text.match(/^(第 \d+ (?:张|个|段)参考(?:图|视频|音频)(?:宽度|高度|宽高比|时长)为 \d+(?:\.\d+)?(?: 像素| 秒)?)[，。]需要 ((?:至少|不超过) \d+(?:\.\d+)?(?: 像素| 秒)?)/);
-    if (single) return { reason: single[1], action: `需要 ${single[2]}；${single[1].includes("时长") ? "请裁剪或更换这段素材后再提交" : "请调整尺寸或更换后再提交"}` };
-    const size = text.match(/^第 (\d+) (张|个|段)参考(图|视频|音频)(宽度|高度)为 (\d+) 像素[，。]需要 (\d+)–(\d+) 像素/);
-    if (size) return { reason: `第 ${size[1]} ${size[2]}参考${size[3]}${size[4]}为 ${size[5]} 像素`, action: `需要 ${size[6]}–${size[7]} 像素；请调整尺寸或更换后再提交` };
-    const aspect = text.match(/^第 (\d+) (张|个|段)参考(图|视频|音频)宽高比为 (\d+(?:\.\d+)?)[，。]需要 (\d+(?:\.\d+)?)–(\d+(?:\.\d+)?)/);
-    if (aspect) return { reason: `第 ${aspect[1]} ${aspect[2]}参考${aspect[3]}宽高比为 ${aspect[4]}`, action: `需要 ${aspect[5]}–${aspect[6]}；请调整尺寸或更换后再提交` };
-    const videoDuration = text.match(/^(第 \d+ 个参考视频时长为 \d+(?:\.\d+)? 秒)，需要 (\d+)–(\d+) 秒/);
-    if (videoDuration) return { reason: videoDuration[1], action: `请将这段参考视频裁剪或更换为 ${videoDuration[2]}–${videoDuration[3]} 秒` };
-    const videoRead = text.match(/^第 (\d+) 个参考视频[：:]?(?:参考视频)?(?:尺寸|时长)?(?:下载失败|无法读取|无法完整读取|数据无法读取|分段读取失败|在读取期间发生变化|时长无法读取|尺寸无法读取)/);
-    if (videoRead) return { reason: `第 ${videoRead[1]} 个参考视频无法读取`, action: "请检查素材链接，或重新导出 MP4/MOV 文件后导入" };
-    const videoFormat = text.match(/^第 (\d+) 个参考视频[：:]?(?:参考视频)?需使用/);
-    if (videoFormat) return { reason: `第 ${videoFormat[1]} 个参考视频格式或地址不支持`, action: "请导入 MP4/MOV 文件，或使用可公开访问的 HTTP/HTTPS 视频链接" };
-    const videoBytes = text.match(/^第 (\d+) 个参考视频[：:]?(?:参考视频)?文件不能超过 (\d+)MB/);
-    if (videoBytes) return { reason: `第 ${videoBytes[1]} 个参考视频文件过大`, action: `请压缩至 ${videoBytes[2]}MB 以内或更换素材` };
-    const videoSize = text.match(/^(第 \d+ 个参考视频尺寸为 \d+×\d+)，需要宽高均在 (\d+)–(\d+) 像素之间/);
-    if (videoSize) return { reason: videoSize[1], action: `请将这段参考视频的宽和高均调整到 ${videoSize[2]}–${videoSize[3]} 像素` };
-    const pixelDetail = text.match(/^(第 \d+ (?:张|个|段)参考(?:图|视频|音频)像素总量为 \d+（\d+×\d+）)，需要 ([^；]+) 像素/);
-    if (pixelDetail) return { reason: pixelDetail[1], action: `需要 ${pixelDetail[2]} 像素；请调整这份素材的尺寸或更换原文件，修改生成分辨率不会改变参考素材` };
-    const unknownSize = text.match(/^(第 \d+ 个参考视频尺寸无法读取)/);
-    if (unknownSize) return { reason: unknownSize[1], action: "请重新导出 MP4/MOV 后导入" };
-    const pixels = text.match(/^第 (\d+) (张|个|段)参考(图|视频|音频)像素总量/);
-    if (pixels) return { reason: `第 ${pixels[1]} ${pixels[2]}参考${pixels[3]}像素总量不符合当前模型要求`, action: "请调整尺寸或更换后再提交" };
-    const file = text.match(/^第 (\d+) (张|个|段)参考(图|视频|音频)文件过大[，。]当前模型单文件上限为 ([^；;]+)/);
-    if (file) return { reason: `第 ${file[1]} ${file[2]}参考${file[3]}文件过大`, action: `当前模型单文件上限为 ${file[4]}；请压缩或更换后再提交` };
-    if (text.startsWith("整次请求的参考素材合计过大")) return { reason: "整次请求的参考素材合计过大", action: "请减少素材后再提交" };
+    const persisted = text.match(/^參考素材(寬度|高度|寬高比)不符合模型要求。請將(?:寬度|高度|寬高比)調整為 (\d+(?:\.\d+)?)–(\d+(?:\.\d+)?)( 畫素| )後重新提交/);
+    if (persisted) return { reason: `參考素材${persisted[1]}不符合模型要求`, action: `請將${persisted[1]}調整為 ${persisted[2]}–${persisted[3]}${persisted[4]}後重新提交` };
+    const single = text.match(/^(第 \d+ (?:張|個|段)參考(?:圖|影片|音訊)(?:寬度|高度|寬高比|時長)為 \d+(?:\.\d+)?(?: 畫素| 秒)?)[，。]需要 ((?:至少|不超過) \d+(?:\.\d+)?(?: 畫素| 秒)?)/);
+    if (single) return { reason: single[1], action: `需要 ${single[2]}；${single[1].includes("時長") ? "請裁剪或更換這段素材後再提交" : "請調整尺寸或更換後再提交"}` };
+    const size = text.match(/^第 (\d+) (張|個|段)參考(圖|影片|音訊)(寬度|高度)為 (\d+) 畫素[，。]需要 (\d+)–(\d+) 畫素/);
+    if (size) return { reason: `第 ${size[1]} ${size[2]}參考${size[3]}${size[4]}為 ${size[5]} 畫素`, action: `需要 ${size[6]}–${size[7]} 畫素；請調整尺寸或更換後再提交` };
+    const aspect = text.match(/^第 (\d+) (張|個|段)參考(圖|影片|音訊)寬高比為 (\d+(?:\.\d+)?)[，。]需要 (\d+(?:\.\d+)?)–(\d+(?:\.\d+)?)/);
+    if (aspect) return { reason: `第 ${aspect[1]} ${aspect[2]}參考${aspect[3]}寬高比為 ${aspect[4]}`, action: `需要 ${aspect[5]}–${aspect[6]}；請調整尺寸或更換後再提交` };
+    const videoDuration = text.match(/^(第 \d+ 個參考影片時長為 \d+(?:\.\d+)? 秒)，需要 (\d+)–(\d+) 秒/);
+    if (videoDuration) return { reason: videoDuration[1], action: `請將這段參考影片裁剪或更換為 ${videoDuration[2]}–${videoDuration[3]} 秒` };
+    const videoRead = text.match(/^第 (\d+) 個參考影片[：:]?(?:參考影片)?(?:尺寸|時長)?(?:下載失敗|無法讀取|無法完整讀取|資料無法讀取|分段讀取失敗|在讀取期間發生變化|時長無法讀取|尺寸無法讀取)/);
+    if (videoRead) return { reason: `第 ${videoRead[1]} 個參考影片無法讀取`, action: "請檢查素材連結，或重新匯出 MP4/MOV 檔案後匯入" };
+    const videoFormat = text.match(/^第 (\d+) 個參考影片[：:]?(?:參考影片)?需使用/);
+    if (videoFormat) return { reason: `第 ${videoFormat[1]} 個參考影片格式或地址不支援`, action: "請匯入 MP4/MOV 檔案，或使用可公開訪問的 HTTP/HTTPS 影片連結" };
+    const videoBytes = text.match(/^第 (\d+) 個參考影片[：:]?(?:參考影片)?檔案不能超過 (\d+)MB/);
+    if (videoBytes) return { reason: `第 ${videoBytes[1]} 個參考影片檔案過大`, action: `請壓縮至 ${videoBytes[2]}MB 以內或更換素材` };
+    const videoSize = text.match(/^(第 \d+ 個參考影片尺寸為 \d+×\d+)，需要寬高均在 (\d+)–(\d+) 畫素之間/);
+    if (videoSize) return { reason: videoSize[1], action: `請將這段參考影片的寬和高均調整到 ${videoSize[2]}–${videoSize[3]} 畫素` };
+    const pixelDetail = text.match(/^(第 \d+ (?:張|個|段)參考(?:圖|影片|音訊)畫素總量為 \d+（\d+×\d+）)，需要 ([^；]+) 畫素/);
+    if (pixelDetail) return { reason: pixelDetail[1], action: `需要 ${pixelDetail[2]} 畫素；請調整這份素材的尺寸或更換原檔案，修改生成解析度不會改變參考素材` };
+    const unknownSize = text.match(/^(第 \d+ 個參考影片尺寸無法讀取)/);
+    if (unknownSize) return { reason: unknownSize[1], action: "請重新匯出 MP4/MOV 後匯入" };
+    const pixels = text.match(/^第 (\d+) (張|個|段)參考(圖|影片|音訊)畫素總量/);
+    if (pixels) return { reason: `第 ${pixels[1]} ${pixels[2]}參考${pixels[3]}畫素總量不符合當前模型要求`, action: "請調整尺寸或更換後再提交" };
+    const file = text.match(/^第 (\d+) (張|個|段)參考(圖|影片|音訊)檔案過大[，。]當前模型單檔案上限為 ([^；;]+)/);
+    if (file) return { reason: `第 ${file[1]} ${file[2]}參考${file[3]}檔案過大`, action: `當前模型單檔案上限為 ${file[4]}；請壓縮或更換後再提交` };
+    if (text.startsWith("整次請求的參考素材合計過大")) return { reason: "整次請求的參考素材合計過大", action: "請減少素材後再提交" };
 }
 
 function categoryFromProviderMessage(raw: string): GenerationErrorCategory | "" {
@@ -924,17 +924,17 @@ function categoryFromProviderMessage(raw: string): GenerationErrorCategory | "" 
     const moderationCopy = moderationErrorCopy("", normalized);
     if (moderationCopy) return moderationCopy.category;
     if (containsContentSafety(normalized)) return moderationCategoryFromMessage(normalized);
-    if (normalized.includes("insufficient_quota") || ((normalized.includes("quota") || normalized.includes("balance") || normalized.includes("额度") || normalized.includes("余额") || normalized.includes("欠费")) && !normalized.includes("rate")))
+    if (normalized.includes("insufficient_quota") || ((normalized.includes("quota") || normalized.includes("balance") || normalized.includes("額度") || normalized.includes("餘額") || normalized.includes("欠費")) && !normalized.includes("rate")))
         return normalized.includes("arrearage") || normalized.includes("billing_hard_limit") ? "quota_upstream" : "quota_unknown";
-    if (normalized.includes("rate limit") || normalized.includes("too many requests") || normalized.includes("throttl") || normalized.includes("频繁")) return "throttled";
-    if (normalized.includes("context length") || normalized.includes("too many tokens") || normalized.includes("max_tokens") || (normalized.includes("长度") && (normalized.includes("最大") || normalized.includes("超出")))) return "context_too_long";
-    if (normalized.includes("model_not_found") || normalized.includes("model not found") || normalized.includes("模型不存在") || normalized.includes("当前模型或接口不可用")) return "model_missing";
-    if (normalized.includes("invalid api key") || normalized.includes("incorrect api key") || normalized.includes("authentication") || normalized.includes("unauthorized") || normalized.includes("鉴权失败")) return "auth";
+    if (normalized.includes("rate limit") || normalized.includes("too many requests") || normalized.includes("throttl") || normalized.includes("頻繁")) return "throttled";
+    if (normalized.includes("context length") || normalized.includes("too many tokens") || normalized.includes("max_tokens") || (normalized.includes("長度") && (normalized.includes("最大") || normalized.includes("超出")))) return "context_too_long";
+    if (normalized.includes("model_not_found") || normalized.includes("model not found") || normalized.includes("模型不存在") || normalized.includes("當前模型或介面不可用")) return "model_missing";
+    if (normalized.includes("invalid api key") || normalized.includes("incorrect api key") || normalized.includes("authentication") || normalized.includes("unauthorized") || normalized.includes("鑑權失敗")) return "auth";
     if (normalized.includes("permission") && (normalized.includes("denied") || normalized.includes("model") || normalized.includes("access"))) return "permission";
-    if (normalized.includes("url error") || normalized.includes("failed to download") || normalized.includes("cannot fetch") || normalized.includes("invalid image url") || normalized.includes("无法读取")) return "input_inaccessible";
-    if (normalized.includes("too large") || normalized.includes("payload too large") || normalized.includes("过大") || normalized.startsWith("整次请求的数据量超过接口上限") || /(?:request|payload).{0,24}(?:exceeds?|larger than)/i.test(normalized))
+    if (normalized.includes("url error") || normalized.includes("failed to download") || normalized.includes("cannot fetch") || normalized.includes("invalid image url") || normalized.includes("無法讀取")) return "input_inaccessible";
+    if (normalized.includes("too large") || normalized.includes("payload too large") || normalized.includes("過大") || normalized.startsWith("整次請求的資料量超過介面上限") || /(?:request|payload).{0,24}(?:exceeds?|larger than)/i.test(normalized))
         return "input_too_large";
-    if (normalized.includes("invalid") || normalized.includes("parameter") || normalized.includes("argument") || normalized.includes("请检查模型")) return "invalid_params";
+    if (normalized.includes("invalid") || normalized.includes("parameter") || normalized.includes("argument") || normalized.includes("請檢查模型")) return "invalid_params";
     return "";
 }
 
@@ -944,23 +944,23 @@ function containsContentSafety(normalized: string) {
         normalized.includes("contentmoderationfailed") ||
         normalized.includes("invalidparameter.voilationcontent") ||
         normalized.includes("invalidparameter.violationcontent") ||
-        normalized.includes("上游内容安全策略") ||
+        normalized.includes("上游內容安全策略") ||
         normalized.includes("sensitive_words_detected") ||
         normalized.includes("content policy") ||
         normalized.includes("content safety") ||
         normalized.includes("safety policy") ||
         normalized.includes("data inspection") ||
         normalized.includes("prohibited_content") ||
-        normalized.includes("内容安全审核") ||
-        normalized.includes("内容审核未通过") ||
+        normalized.includes("內容安全稽核") ||
+        normalized.includes("內容稽核未通過") ||
         (normalized.includes("blocked by") && (normalized.includes("safety") || normalized.includes("policy") || normalized.includes("content"))) ||
         (normalized.includes("safety") && (normalized.includes("blocked") || normalized.includes("violat") || normalized.includes("filter")))
     );
 }
 
 function moderationCategoryFromMessage(normalized: string): GenerationErrorCategory {
-    if (/prompt\s+(?:or|and)\s+(?:reference|input)|提示词或参考/.test(normalized)) return "moderation_input";
-    if (normalized.includes("reference image") || normalized.includes("input image") || normalized.includes("参考图")) return "moderation_reference";
+    if (/prompt\s+(?:or|and)\s+(?:reference|input)|提示詞或參考/.test(normalized)) return "moderation_input";
+    if (normalized.includes("reference image") || normalized.includes("input image") || normalized.includes("參考圖")) return "moderation_reference";
     if (normalized.includes("output") && (normalized.includes("image") || normalized.includes("video") || normalized.includes("result"))) return "moderation_output";
     return "moderation_input";
 }
@@ -997,8 +997,8 @@ function explanationCopy(classified: Classified): CategoryCopy {
 }
 
 function debugIdLine(taskId?: string, requestId?: string) {
-    const parts = [sanitizeDebugId(taskId) ? `任务 ${sanitizeDebugId(taskId)}` : "", sanitizeDebugId(requestId) ? `请求 ${sanitizeDebugId(requestId)}` : ""].filter(Boolean);
-    return parts.length ? `排查编号：${parts.join(" · ")}` : "";
+    const parts = [sanitizeDebugId(taskId) ? `任務 ${sanitizeDebugId(taskId)}` : "", sanitizeDebugId(requestId) ? `請求 ${sanitizeDebugId(requestId)}` : ""].filter(Boolean);
+    return parts.length ? `排查編號：${parts.join(" · ")}` : "";
 }
 
 function joinSentences(...parts: Array<string | undefined>): string {
@@ -1021,12 +1021,12 @@ function sanitizeProviderCode(value: string) {
 
 function sanitizeProviderText(value: string) {
     let text = value.trim();
-    text = text.replace(/(?:[a-z]:[\\/]|\\\\|\/(?:Users|home|private|tmp|var|Volumes|mnt|media|run|root|opt|srv|etc)\/)[^\r\n:"'<>]+/gi, "[路径已隐藏]");
+    text = text.replace(/(?:[a-z]:[\\/]|\\\\|\/(?:Users|home|private|tmp|var|Volumes|mnt|media|run|root|opt|srv|etc)\/)[^\r\n:"'<>]+/gi, "[路徑已隱藏]");
     if (!text || HTML_BODY.test(text)) return "";
     // Unstructured messages may echo whole headers or prompts; discard the suffix,
     // since a whitespace-based token matcher cannot know where a secret ends.
-    text = text.replace(/(?:authorization|cookie|set-cookie|api[_-]?key|secret[_-]?key|access[_-]?token|refresh[_-]?token|password|prompt|input|query)\s*[=:：][\s\S]*/i, "[已隐藏]");
-    text = text.replace(URL_PATTERN, "").replace(SIGNED_QUERY, "").replace(SECRET_PATTERN, "").replace(PROMPT_ECHO, "$1[已隐藏]");
+    text = text.replace(/(?:authorization|cookie|set-cookie|api[_-]?key|secret[_-]?key|access[_-]?token|refresh[_-]?token|password|prompt|input|query)\s*[=:：][\s\S]*/i, "[已隱藏]");
+    text = text.replace(URL_PATTERN, "").replace(SIGNED_QUERY, "").replace(SECRET_PATTERN, "").replace(PROMPT_ECHO, "$1[已隱藏]");
     text = text.replace(/\s+/g, " ").trim();
     if (text.startsWith("{") || text.startsWith("[") || text.startsWith("<")) return "";
     return text.slice(0, 240);
@@ -1076,47 +1076,47 @@ function isNetworkText(value: string) {
 }
 
 function isMalformedText(value: string) {
-    return /(?:接口返回非 JSON|没有返回有效 JSON|invalid character|unexpected end of json|<!doctype|<html)/i.test(value);
+    return /(?:介面返回非 JSON|沒有返回有效 JSON|invalid character|unexpected end of json|<!doctype|<html)/i.test(value);
 }
 
 function isDownloadText(value: string) {
-    return value.includes("视频结果下载失败") || (value.includes("下载失败") && value.includes("结果"));
+    return value.includes("影片結果下載失敗") || (value.includes("下載失敗") && value.includes("結果"));
 }
 
 function isCancelledText(value: string) {
-    return value.includes("任务已取消") || value.includes("请求已取消") || /context canceled/i.test(value);
+    return value.includes("任務已取消") || value.includes("請求已取消") || /context canceled/i.test(value);
 }
 
 function isResultsMissingText(value: string) {
-    return value.includes("没有返回图片") || value.includes("没有返回视频") || value.includes("没有可用结果") || value.includes("接口没有返回");
+    return value.includes("沒有返回圖片") || value.includes("沒有返回影片") || value.includes("沒有可用結果") || value.includes("介面沒有返回");
 }
 
 function isCanvasSaveConflictText(text: string) {
     return (
-        text.includes("云端画布已有更新") ||
-        text.includes("已停止覆盖") ||
-        text.includes("画布有版本冲突") ||
-        text.includes("生成结果已保留，但画布有版本冲突") ||
-        text.includes("画布有未处理的外部改动") ||
+        text.includes("雲端畫布已有更新") ||
+        text.includes("已停止覆蓋") ||
+        text.includes("畫布有版本衝突") ||
+        text.includes("生成結果已保留，但畫布有版本衝突") ||
+        text.includes("畫布有未處理的外部改動") ||
         text.startsWith(CATEGORY_COPY.canvas_conflict.reason)
     );
 }
 
 function matchPersistedCategory(text: string): GenerationErrorCategory | "" {
-    if (text.startsWith("当前账号额度不足")) return "quota_user";
+    if (text.startsWith("當前賬號額度不足")) return "quota_user";
     for (const [category, copy] of Object.entries(CATEGORY_COPY) as Array<[GenerationErrorCategory, CategoryCopy]>) {
         if (category === "unknown") continue;
         if (text.startsWith(copy.reason)) return category;
     }
     if (text.includes("真人形象")) return "moderation_reference";
-    if (text.includes("不支持强制工具调用")) return "invalid_params";
-    if (text.startsWith("视频时长不符合模型要求")) return "invalid_params";
-    if (text.includes("可能仍在服务端执行") || text.includes("请勿立即重试")) return "timeout";
+    if (text.includes("不支援強制工具呼叫")) return "invalid_params";
+    if (text.startsWith("影片時長不符合模型要求")) return "invalid_params";
+    if (text.includes("可能仍在服務端執行") || text.includes("請勿立即重試")) return "timeout";
     return "";
 }
 
 function containsInfrastructureDetails(value: string) {
-    return /(?:接口请求失败|Request failed with status code|https?:\/\/|\b(?:GET|POST|PUT|PATCH|DELETE)\s+["']?|Bad Gateway|Service Unavailable|Gateway Timeout|upstream_error)/i.test(value);
+    return /(?:介面請求失敗|Request failed with status code|https?:\/\/|\b(?:GET|POST|PUT|PATCH|DELETE)\s+["']?|Bad Gateway|Service Unavailable|Gateway Timeout|upstream_error)/i.test(value);
 }
 
 function providerPayloadMessage(payload: unknown): string {
@@ -1135,16 +1135,16 @@ function providerPayloadMessage(payload: unknown): string {
 }
 
 const REFERENCE_PREPARATION_COPY: Record<string, CategoryCopy> = {
-    image_reference_upload_failed: { reason: "参考图片上传失败，本次尚未开始生成", action: "请稍后重试" },
-    reference_media_upload_failed: { reason: "参考素材上传失败，本次尚未开始生成", action: "请检查对象存储配置和公开读取权限后重试" },
-    reference_preupload_failed: { reason: "参考素材上传失败，本次尚未开始生成", action: "请检查网络或稍后重试" },
+    image_reference_upload_failed: { reason: "參考圖片上傳失敗，本次尚未開始生成", action: "請稍後重試" },
+    reference_media_upload_failed: { reason: "參考素材上傳失敗，本次尚未開始生成", action: "請檢查物件儲存配置和公開讀取許可權後重試" },
+    reference_preupload_failed: { reason: "參考素材上傳失敗，本次尚未開始生成", action: "請檢查網路或稍後重試" },
 };
 
 function persistedReferencePreparation(raw: string): Classified | undefined {
     const text = raw.trim();
-    const debug = text.match(/。排查编号：([^。]+)。?$/)?.[1] || "";
-    const requestId = sanitizeDebugId(debug.match(/(?:^| · )请求 ([A-Za-z0-9._:-]{6,127})$/)?.[1]);
-    const taskId = sanitizeDebugId(debug.match(/^任务 ([A-Za-z0-9._:-]{6,127})(?: · |$)/)?.[1]);
+    const debug = text.match(/。排查編號：([^。]+)。?$/)?.[1] || "";
+    const requestId = sanitizeDebugId(debug.match(/(?:^| · )請求 ([A-Za-z0-9._:-]{6,127})$/)?.[1]);
+    const taskId = sanitizeDebugId(debug.match(/^任務 ([A-Za-z0-9._:-]{6,127})(?: · |$)/)?.[1]);
     for (const [providerCode, copy] of Object.entries(REFERENCE_PREPARATION_COPY)) {
         const message = joinSentences(copy.reason, copy.action, debugIdLine(taskId, requestId));
         if (text === message || text === message.replace(/。$/, "")) {
@@ -1160,12 +1160,12 @@ function confirmedReferencePreparation(classified: Classified) {
 
 function resourceStorageFailureMessage(value: string) {
     if (!value) return "";
-    if (isLocalRuntimeMode() && /(?:参考(?:图片|媒体)上传失败|OSS 上传失败|对象存储|腾讯云 COS|七牛云)/i.test(value)) {
-        return "本地参考素材保存失败，请检查本地资源目录后重试。";
+    if (isLocalRuntimeMode() && /(?:參考(?:圖片|媒體)上傳失敗|OSS 上傳失敗|物件儲存|騰訊雲 COS|七牛雲)/i.test(value)) {
+        return "本地參考素材儲存失敗，請檢查本地資源目錄後重試。";
     }
-    if (/\bUserDisable\b/i.test(value)) return "对象存储账号已停用，请检查或更换对象存储配置。";
-    if (/(?:参考(?:图片|媒体)上传失败|OSS 上传失败|对象存储|腾讯云 COS|七牛云)/i.test(value)) {
-        return "参考素材上传到对象存储失败，请检查对象存储配置后重试。";
+    if (/\bUserDisable\b/i.test(value)) return "物件儲存賬號已停用，請檢查或更換物件儲存配置。";
+    if (/(?:參考(?:圖片|媒體)上傳失敗|OSS 上傳失敗|物件儲存|騰訊雲 COS|七牛雲)/i.test(value)) {
+        return "參考素材上傳到物件儲存失敗，請檢查物件儲存配置後重試。";
     }
     return "";
 }

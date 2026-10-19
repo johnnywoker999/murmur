@@ -65,7 +65,7 @@ export function CanvasUploadStatusToast({ status, theme }: { status: CanvasUploa
                     />
                 ))}
             </div>
-            <span className="sr-only">处理步骤 {status.step}/{status.total}</span>
+            <span className="sr-only">處理步驟 {status.step}/{status.total}</span>
         </motion.div>
     );
 }
@@ -82,7 +82,7 @@ export function TaskDetailItem({ label, value }: { label: string; value: string 
 }
 
 export function CanvasMergeStatusToast({ progress, theme }: { progress: MergeVideoProgress; theme: CanvasTheme }) {
-    const detail = progress.phase === "loading" ? "加载视频工具" : progress.phase === "reading" ? "读取选中视频" : "正在编码合并成片";
+    const detail = progress.phase === "loading" ? "載入影片工具" : progress.phase === "reading" ? "讀取選中影片" : "正在編碼合併成片";
     const percent = Math.max(0, Math.min(100, Math.round(progress.progress)));
     return (
         <div
@@ -96,7 +96,7 @@ export function CanvasMergeStatusToast({ progress, theme }: { progress: MergeVid
                     <LoaderCircle className="size-4 animate-spin" />
                 </span>
                 <span className="min-w-0 flex-1">
-                    <span className="block truncate text-xs font-semibold">合并成片</span>
+                    <span className="block truncate text-xs font-semibold">合併成片</span>
                     <span className="mt-0.5 block truncate text-[var(--fs-label)]" style={{ color: theme.node.muted }}>
                         {detail}
                     </span>
@@ -113,9 +113,9 @@ export function CanvasMergeStatusToast({ progress, theme }: { progress: MergeVid
 }
 
 export function taskStatusText(status: GenerationTask["status"]) {
-    if (status === "queued") return "排队中";
+    if (status === "queued") return "排隊中";
     if (status === "running") return "生成中";
-    if (status === "succeeded") return "任务完成";
-    if (status === "failed") return "任务失败";
-    return "任务已取消";
+    if (status === "succeeded") return "任務完成";
+    if (status === "failed") return "任務失敗";
+    return "任務已取消";
 }

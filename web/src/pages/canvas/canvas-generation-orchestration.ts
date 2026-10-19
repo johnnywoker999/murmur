@@ -118,7 +118,7 @@ export function createImageNodeFromTextSource(input: {
             count: getGenerationCount(input.config.canvasImageCount || input.config.count || ""),
         },
     );
-    imageNode.title = "图片生成";
+    imageNode.title = "圖片生成";
     const connection = { id: input.connectionId || nanoid(), fromNodeId: sourceNode.id, toNodeId: imageNode.id };
     const nextNodes = input.nodes.map((item) => (item.id === sourceNode.id ? { ...item, metadata: { ...item.metadata, content: prompt, richText: undefined, prompt, status: NODE_STATUS_SUCCESS } } : item)).concat(imageNode);
     return { ok: true, imageNode, connection, nextNodes, nextConnections: [...input.connections, connection] };
@@ -177,12 +177,12 @@ export async function insertCanvasGenerationHistoryTask(input: {
             model: input.task.model,
             ...(count > 1 ? { taskOutputIndex: index } : {}),
         });
-        node.title = mode === "video" ? "历史视频" : mode === "audio" ? "历史音频" : "历史图片";
+        node.title = mode === "video" ? "歷史影片" : mode === "audio" ? "歷史音訊" : "歷史圖片";
         const output = input.task.outputs?.find((output) => output.outputIndex === index && output.materializedAssetId);
         const applied = output && !input.applyResult
             ? await applyMaterializedGenerationTaskResultToNodes([node], input.task, output, `history:${input.task.id}:${node.id}:${index}`, node.id)
             : await (input.applyResult || applyGenerationTaskResultToNodes)([node], input.task, node.id);
-        if (!applied.node) throw new Error("生成结果无法定位到画布节点");
+        if (!applied.node) throw new Error("生成結果無法定位到畫布節點");
         if (input.canContinueWrite && !input.canContinueWrite()) return { node: applied.node, nextNodes: [], abandoned: true };
         const bound = await bindMissingCanvasResourceAssets([applied.node], input.assets, async (item) => {
             if (input.canContinueWrite && !input.canContinueWrite()) throw new CanvasOwnerAbandonedError();
@@ -190,7 +190,7 @@ export async function insertCanvasGenerationHistoryTask(input: {
         });
         const inserted = bound[0];
         if (!inserted || canvasNodesMissingResourceAssetBinding(bound).length) {
-            throw new Error("生成结果尚未进入素材库，无法插入画布");
+            throw new Error("生成結果尚未進入素材庫，無法插入畫布");
         }
         if (input.canContinueWrite && !input.canContinueWrite()) return { node: inserted, nextNodes: [], abandoned: true };
         insertedNodes.push(inserted);

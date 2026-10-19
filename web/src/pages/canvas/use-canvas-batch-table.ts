@@ -50,9 +50,9 @@ export function useCanvasBatchTable({ nodesRef, connectionsRef, setNodes, setCon
         const table = nodesRef.current.find((item) => item.id === nodeId)?.metadata?.batchTable;
         if (!table) return;
         const columns = batchReferenceColumns(table);
-        if (columns.length >= 6) return message.info("最多支持 6 组参考图");
+        if (columns.length >= 6) return message.info("最多支援 6 組參考圖");
         const nextIndex = columns.length + 1;
-        patchTable(nodeId, { referenceColumns: [...columns, { id: `reference-${nanoid()}`, label: `参考图 ${nextIndex}` }] });
+        patchTable(nodeId, { referenceColumns: [...columns, { id: `reference-${nanoid()}`, label: `參考圖 ${nextIndex}` }] });
     }, [message, nodesRef, patchTable]);
 
     const removeReferenceColumn = useCallback((nodeId: string) => {
@@ -60,7 +60,7 @@ export function useCanvasBatchTable({ nodesRef, connectionsRef, setNodes, setCon
         if (!table) return;
         const columns = batchReferenceColumns(table);
         const nextTable = removeLastBatchReferenceColumn(table);
-        if (!nextTable) return message.info("至少保留 1 组参考图");
+        if (!nextTable) return message.info("至少保留 1 組參考圖");
         const removed = columns.at(-1);
         patchTable(nodeId, nextTable);
         if (removed) {
@@ -79,19 +79,19 @@ export function useCanvasBatchTable({ nodesRef, connectionsRef, setNodes, setCon
             return input?.type === CanvasNodeType.Image && Boolean(input.metadata?.content || input.metadata?.storageKey);
         }));
         if (!columns.some((column) => column.length)) {
-            if (!silent) message.warning("请先把图片节点连接到批量创作表");
+            if (!silent) message.warning("請先把圖片節點連線到批次創作表");
             return false;
         }
         const rows = createBatchRowsFromColumns(table.operation, columns, table.rows);
         if (!rows.length) {
-            if (!silent) message.warning("批量换装至少需要一张人物图和一张服装图");
+            if (!silent) message.warning("批次換裝至少需要一張人物圖和一張服裝圖");
             return false;
         }
         if (JSON.stringify(rows) === JSON.stringify(table.rows)) return true;
         patchTable(nodeId, { rows });
         if (!silent) {
             const added = Math.max(0, rows.length - table.rows.length);
-            message.success(added ? `已同步连线并新增 ${added} 行，原有任务均已保留` : "已同步最新连线，原有任务均已保留");
+            message.success(added ? `已同步連線並新增 ${added} 行，原有任務均已保留` : "已同步最新連線，原有任務均已保留");
         }
         return true;
     }, [connectionsRef, message, nodesRef, patchTable]);
@@ -132,15 +132,15 @@ export function useCanvasBatchTable({ nodesRef, connectionsRef, setNodes, setCon
             if (!inputNodeIds.length || inputNodeIds.some((id) => !nodesRef.current.some((node) => node.id === id && node.type === CanvasNodeType.Image && Boolean(node.metadata?.content || node.metadata?.storageKey)))) return false;
             const output = row.outputNodeId ? nodesRef.current.find((node) => node.id === row.outputNodeId) : undefined;
             if (output && activeNodeIds.has(output.id)) return false;
-            // 操作列的单行生成允许对已完成结果重新生成；顶部批量按钮仍只提交未完成项。
+            // 操作列的單行生成允許對已完成結果重新生成；頂部批次按鈕仍只提交未完成項。
             if (requested) return true;
             return !output?.metadata?.content;
         });
-        if (!rows.length) return message.info("没有可提交的未完成任务，请检查参考图和提示词");
+        if (!rows.length) return message.info("沒有可提交的未完成任務，請檢查參考圖和提示詞");
         const confirmed = await new Promise<boolean>((resolve) => modal.confirm({
-            title: `确认提交 ${rows.length} 个批量图片任务`,
-            content: `模型：${modelDisplayName(effectiveConfig, imageModel)}；并发上限：${table.concurrency}。这些任务可能消耗积分或产生外部模型费用。`,
-            okText: "确认生成",
+            title: `確認提交 ${rows.length} 個批次圖片任務`,
+            content: `模型：${modelDisplayName(effectiveConfig, imageModel)}；併發上限：${table.concurrency}。這些任務可能消耗積分或產生外部模型費用。`,
+            okText: "確認生成",
             cancelText: "取消",
             centered: true,
             onOk: () => resolve(true),
@@ -164,7 +164,7 @@ export function useCanvasBatchTable({ nodesRef, connectionsRef, setNodes, setCon
                 generationMode: "image" as const,
                 generationType: "edit" as const,
                 workflowKind: "final" as const,
-                workflowTitle: `${table.operation === "try_on" ? "换装" : "创意"}任务 ${index + 1}`,
+                workflowTitle: `${table.operation === "try_on" ? "換裝" : "創意"}任務 ${index + 1}`,
                 status: "idle" as const,
                 batchSourceNodeId: nodeId,
                 batchRowId: row.id,
@@ -174,7 +174,7 @@ export function useCanvasBatchTable({ nodesRef, connectionsRef, setNodes, setCon
             const output = existingIndex >= 0
                 ? { ...nextNodes[existingIndex], metadata }
                 : createCanvasNode(CanvasNodeType.Image, { x: sourceNode.position.x + sourceNode.width + 120 + imageSpec.width / 2, y: sourceNode.position.y + index * (imageSpec.height + 32) + imageSpec.height / 2 }, metadata);
-            output.title = `${table.operation === "try_on" ? "换装" : "创意"} · ${index + 1}`;
+            output.title = `${table.operation === "try_on" ? "換裝" : "創意"} · ${index + 1}`;
             if (existingIndex >= 0) nextNodes[existingIndex] = output;
             else nextNodes.push(output);
             nextConnections = nextConnections.filter((connection) => connection.toNodeId !== output.id);
@@ -190,7 +190,7 @@ export function useCanvasBatchTable({ nodesRef, connectionsRef, setNodes, setCon
         setNodes(nextNodes);
         setConnections(nextConnections);
         setSelectedNodeIds(new Set(targets.map((target) => target.nodeId)));
-        if (enqueueGenerationBatch(nodeId, "batch_image", targets, { concurrency: table.concurrency })) message.success(`${targets.length} 个任务已加入并发队列`);
+        if (enqueueGenerationBatch(nodeId, "batch_image", targets, { concurrency: table.concurrency })) message.success(`${targets.length} 個任務已加入併發佇列`);
     }, [connectionsRef, effectiveConfig, enqueueGenerationBatch, isAiConfigReady, message, modal, nodesRef, setConnections, setNodes, setSelectedNodeIds]);
 
     return { addReferenceColumn, addRow, fillRowsFromConnections, generateRows, moveReferenceCell, patchTable, removeReferenceColumn, removeRow, reorderReferenceColumns, syncRowsFromConnections, updateRow };

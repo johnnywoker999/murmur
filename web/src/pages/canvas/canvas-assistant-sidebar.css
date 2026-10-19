@@ -1,5 +1,5 @@
-/* 助手停靠栏：与版本记录侧栏共用同一套语义 token（--sidebar/--foreground/--border/--muted），
-   保证明暗主题都有真实底色，不会出现透明面板压在画布上。 */
+/* 助手停靠欄：與版本記錄側欄共用同一套語義 token（--sidebar/--foreground/--border/--muted），
+   保證明暗主題都有真實底色，不會出現透明面板壓在畫布上。 */
 .canvas-assistant-sidebar {
     position: relative;
     flex: 0 0 auto;
@@ -322,7 +322,7 @@
     opacity: 0.5;
 }
 
-/* 助手刚改过的节点在画布上短暂点亮，用户不用自己找它们在哪。 */
+/* 助手剛改過的節點在畫布上短暫點亮，使用者不用自己找它們在哪。 */
 .canvas-assistant-touched {
     outline: 2px solid var(--cn-active-stroke, var(--ring));
     outline-offset: 4px;

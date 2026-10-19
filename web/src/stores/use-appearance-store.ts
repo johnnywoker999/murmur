@@ -7,7 +7,7 @@ export const DEFAULT_PUBLIC_APPEARANCE: PublicAppearance = {
     schemaVersion: 7,
     brandName: "MURMUR AI",
     brandSlug: "murmur",
-    authHeroTitle: "让一个故事，\n从文字走向银幕。",
+    authHeroTitle: "讓一個故事，\n從文字走向銀幕。",
     authHeroDescription: "",
     logoUrl: "/murmur-logo.svg",
     darkLogoUrl: "/murmur-logo.svg",
@@ -18,7 +18,7 @@ export const DEFAULT_PUBLIC_APPEARANCE: PublicAppearance = {
     skinId: "classic",
     activeSkin: DEFAULT_CLASSIC_SKIN,
     seoTitle: "MURMUR AI",
-    seoDescription: "MURMUR AI，本地优先的 AI 影视与短剧创作工作台。",
+    seoDescription: "MURMUR AI，本地優先的 AI 影視與短劇創作工作臺。",
     seoKeywords: "",
     footerCopyright: `© ${new Date().getFullYear()} MURMUR AI. All rights reserved.`,
     icpFilingEnabled: false,
@@ -55,7 +55,7 @@ export function normalizePublicAppearance(value?: Partial<PublicAppearance> | nu
     const darkLogoUrl = customDarkLogo ? safeAppearanceURL(value?.darkLogoUrl, logoUrl) : customLogo ? logoUrl : DEFAULT_PUBLIC_APPEARANCE.darkLogoUrl;
     const resolvedBrandName = brandName || DEFAULT_PUBLIC_APPEARANCE.brandName;
     const seoTitle = normalizeAppearanceCopy(value?.seoTitle, resolvedBrandName);
-    const seoDescription = normalizeAppearanceCopy(value?.seoDescription, `${resolvedBrandName}，面向 AI 影视与短剧创作的工作台。`, true);
+    const seoDescription = normalizeAppearanceCopy(value?.seoDescription, `${resolvedBrandName}，面向 AI 影視與短劇創作的工作臺。`, true);
     const seoKeywords = normalizeAppearanceCopy(value?.seoKeywords, "", true);
     const footerCopyright = normalizeAppearanceCopy(value?.footerCopyright, `© ${new Date().getFullYear()} ${resolvedBrandName}. All rights reserved.`);
     const icpFilingNumber = normalizeAppearanceCopy(value?.icpFilingNumber, "", true);

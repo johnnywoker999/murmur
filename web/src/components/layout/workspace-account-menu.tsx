@@ -7,7 +7,7 @@ import { WorkspaceAccountCard } from "./workspace-account-card";
 import { UserAvatar } from "./user-avatar";
 import { useUserStore } from "@/stores/use-user-store";
 
-/** 顶部与侧栏复用同一账户卡片，并保留版本入口。 */
+/** 頂部與側欄複用同一賬戶卡片，並保留版本入口。 */
 export function WorkspaceAccountMenu() {
     const user = useUserStore((state) => state.user);
     const hydrated = useUserStore((state) => state.hydrated);
@@ -34,9 +34,9 @@ export function WorkspaceAccountMenu() {
                 </div>
             )}
         >
-            <button type="button" className="app-workspace-topbar-icon-button app-workspace-account-trigger" aria-label="账户菜单" title={user.displayName || user.username}>
+            <button type="button" className="app-workspace-topbar-icon-button app-workspace-account-trigger" aria-label="賬戶選單" title={user.displayName || user.username}>
                 <UserAvatar user={user} className="size-6" />
             </button>
         </Popover></>
-    ) : <span className="app-workspace-topbar-icon-button grid place-items-center" aria-label="本地工作区" title="本地工作区"><UserRound className="size-4 opacity-70" /></span>;
+    ) : <span className="app-workspace-topbar-icon-button grid place-items-center" aria-label="本地工作區" title="本地工作區"><UserRound className="size-4 opacity-70" /></span>;
 }

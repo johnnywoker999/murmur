@@ -11,12 +11,12 @@ export function AppChangelogDialog({ open, onClose }: { open: boolean; onClose: 
     const publishedNotes = appChangelogZh.filter((entry) => entry.version.localeCompare(version, undefined, { numeric: true }) <= 0);
     const notes = publishedNotes[0]?.version === version
         ? publishedNotes
-        : [{ version, changes: ["当前版本的更新内容将在发布后提供。"] }, ...publishedNotes];
+        : [{ version, changes: ["當前版本的更新內容將在釋出後提供。"] }, ...publishedNotes];
 
     return (
         <AppModal
             rootClassName="app-spatial-modal app-changelog-modal"
-            title={<div className="app-changelog-heading"><span>更新日志</span><span className="app-changelog-heading-version">{version}</span></div>}
+            title={<div className="app-changelog-heading"><span>更新日誌</span><span className="app-changelog-heading-version">{version}</span></div>}
             open={open}
             width={680}
             footer={null}

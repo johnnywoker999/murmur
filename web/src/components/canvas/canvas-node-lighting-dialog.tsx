@@ -24,26 +24,26 @@ export type CanvasImageLightingOptions = {
 const defaultLightingOptions: CanvasImageLightingOptions = { azimuth: 0, elevation: 0, brightness: 50, rimLight: false, stylePreset: "", smartMode: true, lightColor: "#ffffff" };
 
 const LIGHT_POSITIONS = [
-    { label: "左侧", azimuth: 270, elevation: 0 },
-    { label: "顶部", azimuth: 0, elevation: 80 },
-    { label: "右侧", azimuth: 90, elevation: 0 },
+    { label: "左側", azimuth: 270, elevation: 0 },
+    { label: "頂部", azimuth: 0, elevation: 80 },
+    { label: "右側", azimuth: 90, elevation: 0 },
     { label: "前方", azimuth: 0, elevation: 0 },
     { label: "底部", azimuth: 0, elevation: -80 },
-    { label: "后方", azimuth: 180, elevation: 0 },
+    { label: "後方", azimuth: 180, elevation: 0 },
 ];
 
 const LIGHTING_PREVIEW_COLUMN_WIDTH = 300;
 const LIGHTING_SPHERE_SIZE = 220;
 
 const STYLE_PRESETS = [
-    { id: "overexposed", name: "过曝胶片", color: "#d4b896", image: "/lighting-presets/overexposed.png", prompt: "overexposed film aesthetic, high-key lighting, washed out highlights, soft diffused light, vintage film look" },
-    { id: "blueBacklight", name: "蓝色逆光", color: "#1a3a5c", image: "/lighting-presets/blue-backlight.png", prompt: "dramatic backlighting, blue rim light, cool color temperature, silhouette with colored edges, ethereal atmosphere" },
-    { id: "rembrandt", name: "伦勃朗光", color: "#5a3a1a", image: "/lighting-presets/rembrandt.png", prompt: "Rembrandt lighting, 45-degree angle key light, dramatic chiaroscuro, painterly shadows, classical portraiture" },
-    { id: "cyberpunk", name: "赛博朋克", color: "#2a0a2a", image: "/lighting-presets/cyberpunk.png", prompt: "cyberpunk neon lighting, synthetic glow, futuristic atmosphere, vibrant cyan and magenta neon" },
+    { id: "overexposed", name: "過曝膠片", color: "#d4b896", image: "/lighting-presets/overexposed.png", prompt: "overexposed film aesthetic, high-key lighting, washed out highlights, soft diffused light, vintage film look" },
+    { id: "blueBacklight", name: "藍色逆光", color: "#1a3a5c", image: "/lighting-presets/blue-backlight.png", prompt: "dramatic backlighting, blue rim light, cool color temperature, silhouette with colored edges, ethereal atmosphere" },
+    { id: "rembrandt", name: "倫勃朗光", color: "#5a3a1a", image: "/lighting-presets/rembrandt.png", prompt: "Rembrandt lighting, 45-degree angle key light, dramatic chiaroscuro, painterly shadows, classical portraiture" },
+    { id: "cyberpunk", name: "賽博朋克", color: "#2a0a2a", image: "/lighting-presets/cyberpunk.png", prompt: "cyberpunk neon lighting, synthetic glow, futuristic atmosphere, vibrant cyan and magenta neon" },
     { id: "sunset", name: "落日迷幻", color: "#7a3010", image: "/lighting-presets/sunset.png", prompt: "golden hour lighting, warm sunset tones, long shadow, romantic atmosphere, Kodachrome colors" },
-    { id: "mysterious", name: "神秘暗调", color: "#0a0a14", image: "/lighting-presets/mysterious.png", prompt: "low-key noir lighting, deep shadows, mysterious mood, film noir style, high contrast cinematic" },
-    { id: "goldenHour", name: "黄金时刻", color: "#7a5a00", image: "/lighting-presets/golden-hour.png", prompt: "golden hour photography, warm soft light, beautiful catchlights, lens flare, magical golden glow" },
-    { id: "nolanGrey", name: "诺兰冷灰", color: "#1a2a2a", image: "/lighting-presets/nolan-grey.png", prompt: "Christopher Nolan cinematography, IMAX quality, desaturated cold palette, teal and grey grading" },
+    { id: "mysterious", name: "神秘暗調", color: "#0a0a14", image: "/lighting-presets/mysterious.png", prompt: "low-key noir lighting, deep shadows, mysterious mood, film noir style, high contrast cinematic" },
+    { id: "goldenHour", name: "黃金時刻", color: "#7a5a00", image: "/lighting-presets/golden-hour.png", prompt: "golden hour photography, warm soft light, beautiful catchlights, lens flare, magical golden glow" },
+    { id: "nolanGrey", name: "諾蘭冷灰", color: "#1a2a2a", image: "/lighting-presets/nolan-grey.png", prompt: "Christopher Nolan cinematography, IMAX quality, desaturated cold palette, teal and grey grading" },
 ];
 
 const DEFAULT_LIGHTING_PROMPT_TEMPLATE = [
@@ -74,7 +74,7 @@ export function buildLightingLabel(options: CanvasImageLightingOptions) {
     const parts: string[] = [];
     parts.push(preset?.name || (position ? `主光${position.label}` : `主光 ${options.azimuth}°/${options.elevation}°`));
     if (options.brightness !== 50) parts.push(`亮度 ${options.brightness}%`);
-    if (options.rimLight) parts.push("轮廓光");
+    if (options.rimLight) parts.push("輪廓光");
     if (options.lightColor && options.lightColor.toLowerCase() !== "#ffffff") parts.push(`光色 ${options.lightColor}`);
     return `AI 打光：${parts.join("，")}`;
 }
@@ -88,7 +88,7 @@ function applyPromptTemplate(template: string, values: Record<string, string>) {
         .join(", ");
 }
 
-// 将方位角与俯仰角转换成模型更稳定的自然语言；禁止描述实体灯具，避免模型把摄影设备画进画面。
+// 將方位角與俯仰角轉換成模型更穩定的自然語言；禁止描述實體燈具，避免模型把攝影裝置畫進畫面。
 function buildLightDirectionPrompt(azimuth: number, elevation: number) {
     const azimuthDegrees = ((azimuth % 360) + 360) % 360;
     if (elevation >= 60) return "strong top-down key light from directly above";
@@ -214,7 +214,7 @@ export function CanvasNodeLightingPanel({ dataUrl, onClose, onConfirm }: { dataU
                 <h2 className="text-[var(--fs-title)] font-semibold leading-none">打光效果</h2>
                 <button
                     type="button"
-                    aria-label="关闭打光效果"
+                    aria-label="關閉打光效果"
                     className="grid size-8 place-items-center rounded-[var(--r-md)] transition-colors hover:bg-black/5 dark:hover:bg-white/10"
                     style={{ color: theme.node.muted }}
                     onClick={onClose}
@@ -234,7 +234,7 @@ export function CanvasNodeLightingPanel({ dataUrl, onClose, onConfirm }: { dataU
                                 className="flex-1 rounded-[var(--r-md)] py-1 text-[11px] font-medium transition-colors"
                                 style={viewMode === mode ? { background: theme.toolbar.activeBg, color: theme.toolbar.activeText } : { color: theme.node.muted }}
                             >
-                                {mode === "perspective" ? "透视" : "正面"}
+                                {mode === "perspective" ? "透視" : "正面"}
                             </button>
                         ))}
                     </div>
@@ -249,8 +249,8 @@ export function CanvasNodeLightingPanel({ dataUrl, onClose, onConfirm }: { dataU
 
                 <div className="flex min-w-0 flex-1 flex-col justify-between gap-2.5 px-4 py-3">
                     <div className="flex items-center justify-between">
-                        <span className="text-[var(--fs-tiny)] font-medium" style={{ color: theme.node.muted }}>全局</span>
-                        <PanelToggle label="智能模式" checked={options.smartMode} onChange={(checked) => updateOption("smartMode", checked)} theme={theme} />
+                        <span className="text-[var(--fs-tiny)] font-medium" style={{ color: theme.node.muted }}>全域性</span>
+                        <PanelToggle label="智慧模式" checked={options.smartMode} onChange={(checked) => updateOption("smartMode", checked)} theme={theme} />
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -264,10 +264,10 @@ export function CanvasNodeLightingPanel({ dataUrl, onClose, onConfirm }: { dataU
 
                     <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2">
-                            <span className="w-8 shrink-0 text-[var(--fs-tiny)]" style={{ color: theme.node.muted }}>颜色</span>
+                            <span className="w-8 shrink-0 text-[var(--fs-tiny)]" style={{ color: theme.node.muted }}>顏色</span>
                             <LightColorSwatch value={options.lightColor} theme={theme} onChange={(value) => updateOption("lightColor", value)} />
                         </div>
-                        <PanelToggle label="轮廓光" checked={options.rimLight} onChange={(checked) => updateOption("rimLight", checked)} theme={theme} />
+                        <PanelToggle label="輪廓光" checked={options.rimLight} onChange={(checked) => updateOption("rimLight", checked)} theme={theme} />
                     </div>
 
                     <div className="space-y-1.5">
@@ -291,16 +291,16 @@ export function CanvasNodeLightingPanel({ dataUrl, onClose, onConfirm }: { dataU
             </div>
 
             <div className="flex flex-col gap-3 border-t px-4 py-3" style={{ borderColor: theme.toolbar.border }}>
-                <span className="text-[var(--fs-tiny)] font-medium" style={{ color: theme.node.muted }}>智能模式</span>
+                <span className="text-[var(--fs-tiny)] font-medium" style={{ color: theme.node.muted }}>智慧模式</span>
                 <textarea
                     value={smartDesc}
                     onChange={(event) => setSmartDesc(event.target.value)}
-                    placeholder="简单描述你想要实现的打光效果，或者情绪风格"
+                    placeholder="簡單描述你想要實現的打光效果，或者情緒風格"
                     disabled={!options.smartMode}
                     className="h-16 w-full resize-none rounded-[var(--r-lg)] border px-3 py-2 text-xs outline-none transition-colors"
                     style={{ borderColor: theme.toolbar.border, background: theme.toolbar.itemHover, color: theme.node.text, opacity: options.smartMode ? 1 : 0.55 }}
                 />
-                <span className="text-[var(--fs-tiny)] font-medium" style={{ color: theme.node.muted }}>预设</span>
+                <span className="text-[var(--fs-tiny)] font-medium" style={{ color: theme.node.muted }}>預設</span>
                 <div className="grid grid-cols-4 gap-1.5">
                     {STYLE_PRESETS.map((preset) => (
                         <button
@@ -324,12 +324,12 @@ export function CanvasNodeLightingPanel({ dataUrl, onClose, onConfirm }: { dataU
             </div>
 
             <div className="flex h-12 items-center gap-2 border-t px-3" style={{ borderColor: theme.toolbar.border }}>
-                <button type="button" className={secondaryButtonClass} style={{ color: theme.node.muted }} onClick={handleReset}><RotateCcw className="size-3.5" />重置参数</button>
+                <button type="button" className={secondaryButtonClass} style={{ color: theme.node.muted }} onClick={handleReset}><RotateCcw className="size-3.5" />重置引數</button>
                 <span className="flex-1" />
-                <Tooltip title="复制当前生成的打光提示词">
-                    <button type="button" className={secondaryButtonClass} onClick={() => copyText(buildPrompt(), "打光提示词已复制")}>复制提示词</button>
+                <Tooltip title="複製當前生成的打光提示詞">
+                    <button type="button" className={secondaryButtonClass} onClick={() => copyText(buildPrompt(), "打光提示詞已複製")}>複製提示詞</button>
                 </Tooltip>
-                <button type="button" className={secondaryButtonClass} onClick={() => setIsTemplateDialogOpen(true)}>设置提示词</button>
+                <button type="button" className={secondaryButtonClass} onClick={() => setIsTemplateDialogOpen(true)}>設定提示詞</button>
                 <motion.button
                     type="button"
                     whileHover={reducedMotion ? undefined : { y: -1 }}
@@ -344,8 +344,8 @@ export function CanvasNodeLightingPanel({ dataUrl, onClose, onConfirm }: { dataU
 
             <PromptTemplateDialog
                 isOpen={isTemplateDialogOpen}
-                title="设置打光默认提示词"
-                description="这里修改的是系统自动附加的默认打光描述骨架，不包含你当前选择的亮度、方向、颜色等参数值。面板参数会自动替换进去；智能模式里输入的文字会单独叠加。"
+                title="設定打光預設提示詞"
+                description="這裡修改的是系統自動附加的預設打光描述骨架，不包含你當前選擇的亮度、方向、顏色等引數值。面板引數會自動替換進去；智慧模式裡輸入的文字會單獨疊加。"
                 value={promptTemplate}
                 defaultValue={DEFAULT_LIGHTING_PROMPT_TEMPLATE}
                 placeholders={LIGHTING_PROMPT_PLACEHOLDERS}
@@ -373,7 +373,7 @@ function LightColorSwatch({ value, theme, onChange }: { value: string; theme: (t
         >
             <input
                 type="color"
-                aria-label="光线颜色"
+                aria-label="光線顏色"
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
                 className="absolute inset-0 cursor-pointer opacity-0"
@@ -422,14 +422,14 @@ function PromptTemplateDialog({ isOpen, title, description, value, defaultValue,
             >
                 <div className="flex items-center justify-between border-b px-5 py-3.5" style={{ borderColor: theme.toolbar.border }}>
                     <span className="text-sm font-semibold">{title}</span>
-                    <button type="button" aria-label="关闭提示词设置" className="grid size-6 place-items-center rounded-[var(--r-md)] transition hover:bg-black/5 dark:hover:bg-white/10" onClick={onClose}><X className="size-4" /></button>
+                    <button type="button" aria-label="關閉提示詞設定" className="grid size-6 place-items-center rounded-[var(--r-md)] transition hover:bg-black/5 dark:hover:bg-white/10" onClick={onClose}><X className="size-4" /></button>
                 </div>
                 <div className="space-y-3 px-5 py-4">
                     {description ? (
                         <div className="rounded-[var(--r-lg)] border px-3 py-2 text-xs leading-5" style={{ borderColor: theme.toolbar.border, background: theme.toolbar.itemHover, color: theme.node.muted }}>{description}</div>
                     ) : null}
                     <div className="rounded-[var(--r-lg)] border px-3 py-2" style={{ borderColor: theme.toolbar.border, background: theme.toolbar.itemHover }}>
-                        <div className="text-[11px] font-medium" style={{ color: theme.node.muted }}>可用占位符</div>
+                        <div className="text-[11px] font-medium" style={{ color: theme.node.muted }}>可用佔位符</div>
                         <div className="mt-2 flex flex-wrap gap-1.5">
                             {placeholders.map((placeholder) => (
                                 <span key={placeholder} className="rounded-[var(--r-md)] px-2 py-1 text-[11px]" style={{ background: theme.toolbar.activeBg, color: theme.node.text }}>{placeholder}</span>
@@ -447,7 +447,7 @@ function PromptTemplateDialog({ isOpen, title, description, value, defaultValue,
                         style={{ borderColor: theme.toolbar.border, background: theme.toolbar.itemHover, color: theme.node.text }}
                     />
                     <div className="rounded-[var(--r-lg)] border px-3 py-2 text-[11px] leading-5" style={{ borderColor: theme.toolbar.border, background: theme.toolbar.itemHover, color: theme.node.muted }}>
-                        默认模板：<span style={{ color: theme.node.text }}>{defaultValue}</span>
+                        預設模板：<span style={{ color: theme.node.text }}>{defaultValue}</span>
                     </div>
                 </div>
                 <div className="flex items-center justify-between border-t px-5 py-3" style={{ borderColor: theme.toolbar.border }}>
@@ -461,11 +461,11 @@ function PromptTemplateDialog({ isOpen, title, description, value, defaultValue,
                         }}
                     >
                         <RotateCcw className="size-3" />
-                        恢复默认
+                        恢復預設
                     </button>
                     <div className="flex items-center gap-2">
-                        <button type="button" className="rounded-[var(--r-md)] px-3 py-1.5 text-xs transition hover:opacity-80" style={{ background: theme.toolbar.itemHover }} onClick={onClose}>关闭</button>
-                        <button type="button" className="rounded-[var(--r-md)] px-3 py-1.5 text-xs font-medium transition hover:opacity-90" style={{ background: theme.node.activeStroke, color: theme.node.panel }} onClick={() => { onChange(draft); onClose(); }}>保存</button>
+                        <button type="button" className="rounded-[var(--r-md)] px-3 py-1.5 text-xs transition hover:opacity-80" style={{ background: theme.toolbar.itemHover }} onClick={onClose}>關閉</button>
+                        <button type="button" className="rounded-[var(--r-md)] px-3 py-1.5 text-xs font-medium transition hover:opacity-90" style={{ background: theme.node.activeStroke, color: theme.node.panel }} onClick={() => { onChange(draft); onClose(); }}>儲存</button>
                     </div>
                 </div>
             </div>
@@ -657,7 +657,7 @@ function LightingSphereControl({ azimuth, elevation, onAngleChange, previewImage
             ref={canvasRef}
             width={size}
             height={size}
-            aria-label="拖动调整主光源方向"
+            aria-label="拖動調整主光源方向"
             className="cursor-grab touch-none rounded-[var(--r-lg)] active:cursor-grabbing"
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}

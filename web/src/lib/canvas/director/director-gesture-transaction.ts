@@ -1,15 +1,15 @@
 import { directorGestureIdle, reduceDirectorGesture } from "./director-animation-semantics";
 
 export type DirectorTransactionHooks<TSnapshot> = {
-    /** 读取当前值；返回 null 表示无法开始/结束事务。 */
+    /** 讀取當前值；返回 null 表示無法開始/結束事務。 */
     read: () => TSnapshot | null;
-    /** 取消路径：把快照写回。 */
+    /** 取消路徑：把快照寫回。 */
     restore: (snapshot: TSnapshot) => void;
-    /** 成功路径：恰好调用一次。 */
+    /** 成功路徑：恰好呼叫一次。 */
     commit: (from: TSnapshot, to: TSnapshot) => void;
-    /** 进入/退出手势；任何终态都会收到 false。 */
+    /** 進入/退出手勢；任何終態都會收到 false。 */
     setActive: (active: boolean) => void;
-    /** 取消时结束第三方控件内部拖拽状态。 */
+    /** 取消時結束第三方控制元件內部拖拽狀態。 */
     terminateDrag?: () => void;
 };
 
@@ -21,12 +21,12 @@ export type DirectorTransaction<TSnapshot = unknown> = {
 };
 
 /**
- * 一次手势一个事务：begin 抓快照，end 恰好产生一个终态。
- * 幂等——非活跃时的 end 是空操作，终态后可以重新 begin。
+ * 一次手勢一個事務：begin 抓快照，end 恰好產生一個終態。
+ * 冪等——非活躍時的 end 是空操作，終態後可以重新 begin。
  */
 export function createDirectorTransaction<TSnapshot>(hooks: DirectorTransactionHooks<TSnapshot>): DirectorTransaction<TSnapshot> {
     let state = directorGestureIdle;
-    // 快照可能是任何值（含 0 / ""），所以用独立标记表示「有快照」，不能用真值判断。
+    // 快照可能是任何值（含 0 / ""），所以用獨立標記表示「有快照」，不能用真值判斷。
     let snapshot: TSnapshot | null = null;
     let hasSnapshot = false;
     return {
@@ -47,9 +47,9 @@ export function createDirectorTransaction<TSnapshot>(hooks: DirectorTransactionH
             snapshot = null;
             hasSnapshot = false;
             state = directorGestureIdle;
-            // 先进入终态再结束第三方拖拽：stdlib 在 domElement.ownerDocument 注册 pointerup，
-            // 其 pointerUp({button:0}) 会 dispatch mouseUp 后清 dragging=false / axis=null。
-            // 该回调会回到本事务，此时已非活跃，因此不会二次提交。
+            // 先進入終態再結束第三方拖拽：stdlib 在 domElement.ownerDocument 註冊 pointerup，
+            // 其 pointerUp({button:0}) 會 dispatch mouseUp 後清 dragging=false / axis=null。
+            // 該回撥會回到本事務，此時已非活躍，因此不會二次提交。
             if (outcome === "cancel") hooks.terminateDrag?.();
             if (!hadSnapshot || base === null || base === undefined) {
                 hooks.setActive(false);
@@ -74,23 +74,23 @@ export type DirectorListenerTarget = {
 };
 
 export type DirectorTerminalTargets = {
-    /** 承载 keydown / blur / pointercancel / pointerup 的目标（通常是 window）。 */
+    /** 承載 keydown / blur / pointercancel / pointerup 的目標（通常是 window）。 */
     window: DirectorListenerTarget;
-    /** 承载 visibilitychange 的目标（通常是 document）。 */
+    /** 承載 visibilitychange 的目標（通常是 document）。 */
     document: DirectorListenerTarget;
-    /** 读取可见性；hidden 视为「离开」而非「放弃」。 */
+    /** 讀取可見性；hidden 視為「離開」而非「放棄」。 */
     isHidden: () => boolean;
 };
 
 /**
- * 无条件安装终止监听，绝不以「当前是否有手势」为安装条件——
- * 手势只 mutate 事务内部状态，不会重跑安装逻辑。
- * 非活跃时 transaction.end 自身是空操作，因此常驻监听是安全的。
+ * 無條件安裝終止監聽，絕不以「當前是否有手勢」為安裝條件——
+ * 手勢只 mutate 事務內部狀態，不會重跑安裝邏輯。
+ * 非活躍時 transaction.end 自身是空操作，因此常駐監聽是安全的。
  *
- * 终态语义（#305 验收）：
- * - pointerup / window blur / document hidden → commit 当前可见值。
- *   失焦或切页只是「离开」，用户已经把对象拖到那里了，不能把它弹回原位。
- * - Escape / pointercancel → cancel 并恢复快照，这是用户明确表达的放弃。
+ * 終態語義（#305 驗收）：
+ * - pointerup / window blur / document hidden → commit 當前可見值。
+ *   失焦或切頁只是「離開」，使用者已經把物件拖到那裡了，不能把它彈回原位。
+ * - Escape / pointercancel → cancel 並恢復快照，這是使用者明確表達的放棄。
  */
 export function installDirectorTerminalListeners(transaction: DirectorTransaction, targets: DirectorTerminalTargets) {
     const cancel = () => transaction.end("cancel");

@@ -11,17 +11,17 @@ import { canvasThemes } from "@/lib/canvas-theme";
 import { useActiveTheme } from "@/stores/canvas/use-canvas-theme-store";
 
 type VoiceRecordingInlineProps = {
-    /** 转写完成回调，返回转写文本 */
+    /** 轉寫完成回撥，返回轉寫文本 */
     onTranscribed: (text: string) => void;
-    /** 取消录制回调 */
+    /** 取消錄製回撥 */
     onCancel: () => void;
 };
 
 type TranscribeState = "idle" | "transcribing" | "done" | "error";
 
 /**
- * 内联语音录制条（输入行内展示）
- * 挂载后自动开始录音，显示波形动画；点击停止后自动转写为文字（浏览器 Web Speech API，无需后端与 API Key）
+ * 內聯語音錄製條（輸入行內展示）
+ * 掛載後自動開始錄音，顯示波形動畫；點選停止後自動轉寫為文字（瀏覽器 Web Speech API，無需後端與 API Key）
  */
 export function VoiceRecordingInline({ onTranscribed, onCancel }: VoiceRecordingInlineProps) {
     const theme = canvasThemes[useActiveTheme()];
@@ -48,10 +48,10 @@ export function VoiceRecordingInline({ onTranscribed, onCancel }: VoiceRecording
     const stopRequestedRef = useRef(false);
     const wasRecordingRef = useRef(false);
 
-    // 挂载后自动开始录音与语音识别，卸载时清理
+    // 掛載後自動開始錄音與語音識別，解除安裝時清理
     useEffect(() => {
         if (!speechSupported) {
-            setTranscribeError("当前浏览器不支持语音识别，请使用 Chrome 或 Edge 浏览器");
+            setTranscribeError("當前瀏覽器不支援語音識別，請使用 Chrome 或 Edge 瀏覽器");
             setTranscribeState("error");
             return;
         }
@@ -72,17 +72,17 @@ export function VoiceRecordingInline({ onTranscribed, onCancel }: VoiceRecording
         void stopRecording();
         const trimmed = text.trim();
         if (!trimmed) {
-            setTranscribeError("未识别到语音内容，请重试");
+            setTranscribeError("未識別到語音內容，請重試");
             setTranscribeState("error");
             stopRequestedRef.current = false;
             return;
         }
         setTranscribeState("done");
-        // 短暂展示成功状态后回调
+        // 短暫展示成功狀態後回撥
         window.setTimeout(() => onTranscribed(trimmed), 600);
     };
 
-    // 录音达到最大时长自动停止时，自动触发转写
+    // 錄音達到最大時長自動停止時，自動觸發轉寫
     useEffect(() => {
         if (state === "recording") wasRecordingRef.current = true;
         if (state === "idle" && wasRecordingRef.current && transcribeState === "idle" && !stopRequestedRef.current) {
@@ -119,7 +119,7 @@ export function VoiceRecordingInline({ onTranscribed, onCancel }: VoiceRecording
                         {displayError}
                     </span>
                     {speechSupported ? (
-                        <Tooltip title="重试">
+                        <Tooltip title="重試">
                             <Button
                                 type="text"
                                 size="small"
@@ -142,12 +142,12 @@ export function VoiceRecordingInline({ onTranscribed, onCancel }: VoiceRecording
             ) : transcribeState === "transcribing" ? (
                 <div className="flex items-center gap-2 px-2" style={{ color: theme.node.muted }}>
                     <Spin size="small" />
-                    <span className="text-xs">正在转写...</span>
+                    <span className="text-xs">正在轉寫...</span>
                 </div>
             ) : transcribeState === "done" ? (
                 <div className="flex items-center gap-2 px-2" style={{ color: "#16a34a" }}>
                     <Check className="size-4" />
-                    <span className="text-xs">转写完成</span>
+                    <span className="text-xs">轉寫完成</span>
                 </div>
             ) : (
                 <>
@@ -176,7 +176,7 @@ export function VoiceRecordingInline({ onTranscribed, onCancel }: VoiceRecording
                             style={{ color: theme.node.muted }}
                         />
                     </Tooltip>
-                    <Tooltip title="停止并转写">
+                    <Tooltip title="停止並轉寫">
                         <Button
                             type="text"
                             size="small"

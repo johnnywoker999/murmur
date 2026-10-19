@@ -150,7 +150,7 @@ class CanvasAudioPlaybackController {
         const url = await resolveAudioSource(source);
         if (!this.isCurrent(source, token)) return;
         if (!url) {
-            this.update(source.nodeId, { phase: "error", error: "音频资源不可用" });
+            this.update(source.nodeId, { phase: "error", error: "音訊資源不可用" });
             return;
         }
 
@@ -184,7 +184,7 @@ class CanvasAudioPlaybackController {
 
     private ensureAudio() {
         if (this.audio) return this.audio;
-        if (typeof Audio === "undefined") throw new Error("当前环境不支持音频播放");
+        if (typeof Audio === "undefined") throw new Error("當前環境不支援音訊播放");
         const audio = new Audio();
         audio.preload = "metadata";
         audio.addEventListener("loadedmetadata", () => {
@@ -231,7 +231,7 @@ class CanvasAudioPlaybackController {
         });
         audio.addEventListener("error", () => {
             const active = this.activeSource;
-            if (active) this.update(active.nodeId, { phase: "error", error: "音频加载失败" });
+            if (active) this.update(active.nodeId, { phase: "error", error: "音訊載入失敗" });
         });
         this.audio = audio;
         return audio;
@@ -268,7 +268,7 @@ function snapshotEqual(left: CanvasAudioPlaybackSnapshot, right: CanvasAudioPlay
 
 function mediaErrorMessage(error: unknown) {
     if (error instanceof Error && error.message.trim()) return error.message;
-    return "音频播放失败";
+    return "音訊播放失敗";
 }
 
 export const canvasAudioPlayback = new CanvasAudioPlaybackController();

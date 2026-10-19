@@ -7,9 +7,9 @@ export type TaskStats = { total: number; today: number; active: number; succeede
 export function TaskStatusFilterBar({ stats, value, onChange }: { stats: TaskStats; value: TaskStatusFilter; onChange: (value: TaskStatusFilter) => void }) {
     const options = [
         { value: "all", label: "全部", count: stats.total },
-        { value: "active", label: "运行中", count: stats.active },
+        { value: "active", label: "執行中", count: stats.active },
         { value: "succeeded", label: "已完成", count: stats.succeeded },
-        { value: "failed", label: "失败/取消", count: stats.failed },
+        { value: "failed", label: "失敗/取消", count: stats.failed },
     ] satisfies Array<{ value: TaskStatusFilter; label: string; count: number }>;
 
     return (

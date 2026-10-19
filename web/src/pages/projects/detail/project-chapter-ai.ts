@@ -53,8 +53,8 @@ export function chapterTaskIdentity(task: GenerationTask): { chapterId: string; 
 
 export function chapterAssetsFromGenerationTask(task: GenerationTask) {
     const result = parseBackendGenerationResult(task);
-    if (!result.text?.trim()) throw new Error("模型没有返回可用的章节资产提取结果");
-    // 历史角色任务的输出契约只有角色；仅按明确的模板操作恢复，不能给新任务缺字段兜底。
+    if (!result.text?.trim()) throw new Error("模型沒有返回可用的章節資產提取結果");
+    // 歷史角色任務的輸出契約只有角色；僅按明確的模板操作恢復，不能給新任務缺欄位兜底。
     if (generationTaskMetadata(task.inputJson).promptTemplateOperation === PromptTemplateOperation.CharacterExtract) {
         return { characters: parseCharacterBreakdown(result.text), scenes: [], props: [] };
     }
@@ -81,10 +81,10 @@ export function chapterStoryboardRecoveryDecision(input: { alreadyApplied: boole
 
 export async function extractChapterAssets(input: ChapterAnalysisInput, options?: ChapterTaskOptions): Promise<ChapterAssetBreakdown & { taskId: string }> {
     const result = await runProjectTextTask(input, "chapter_character_breakdown", {
-        项目名称: input.projectName,
-        章节名称: input.chapterTitle,
-        项目画风: input.projectStyle || "项目尚未指定画风，保持视觉描述中性、可执行。",
-        章节正文: input.sourceText,
+        專案名稱: input.projectName,
+        章節名稱: input.chapterTitle,
+        專案畫風: input.projectStyle || "專案尚未指定畫風，保持視覺描述中性、可執行。",
+        章節正文: input.sourceText,
     }, options);
     return { ...parseChapterAssetBreakdown(result.text), taskId: result.taskId };
 }
@@ -106,27 +106,27 @@ type ChapterStoryboardGenerationInput = {
 
 export async function generateChapterStoryboard(input: ChapterStoryboardGenerationInput, options?: ChapterTaskOptions) {
     if (!Number.isInteger(input.approvedRevision) || input.approvedRevision <= 0) {
-        throw new Error("请刷新后再生成分镜");
+        throw new Error("請重新整理後再生成分鏡");
     }
     if (!Array.isArray(input.approvedShotIds) || input.approvedShotIds.some((id) => typeof id !== "string")) {
-        throw new Error("请刷新后再生成分镜");
+        throw new Error("請重新整理後再生成分鏡");
     }
     const model = input.config.textModel || input.config.model;
     const config = { ...input.config, model };
     const skillExecution = await skillRuntime.prepare({
         profile: "shortDrama",
         prompt: [
-            `章节：${input.chapterTitle}`,
+            `章節：${input.chapterTitle}`,
             input.sourceText,
-            "请将本章拆解为可直接进入短剧分镜制作的镜头脚本，保持剧情因果、人物关系、关键动作与台词完整。",
+            "請將本章拆解為可直接進入短劇分鏡製作的鏡頭指令碼，保持劇情因果、人物關係、關鍵動作與臺詞完整。",
         ].join("\n\n"),
         skills: input.skills,
         selectedSkillIds: input.selectedSkillIds,
     });
-    // 技能上下文只描述工作流，不会约束输出结构；必须显式带上输出契约，否则模型返回 Markdown 表格。
+    // 技能上下文只描述工作流，不會約束輸出結構；必須顯式帶上輸出契約，否則模型返回 Markdown 表格。
     const prompt = [
         skillExecution.prompt,
-        storyboardRowsOutputContract("每个镜头必须能独立用于生成首帧图片和镜头视频。"),
+        storyboardRowsOutputContract("每個鏡頭必須能獨立用於生成首幀圖片和鏡頭影片。"),
     ].join("\n\n");
     const task = await createGenerationTask({
         projectId: input.projectId,
@@ -136,10 +136,10 @@ export async function generateChapterStoryboard(input: ChapterStoryboardGenerati
         model,
         ...(logicalModelIDForConfig(config) ? { logicalModelId: logicalModelIDForConfig(config) } : {}),
         input: {
-            // 后端只在 video_ 前缀的任务上兜底 mode，文本任务必须显式带上。
+            // 後端只在 video_ 字首的任務上兜底 mode，文本任務必須顯式帶上。
             mode: "text",
             canvasAssets: input.assets,
-            requirements: "输出可直接写入分镜制作并继续生成分镜图、动作预演和镜头视频的分镜表。",
+            requirements: "輸出可直接寫入分鏡製作並繼續生成分鏡圖、動作預演和鏡頭影片的分鏡表。",
             projectStyle: input.projectStyle,
             characters: input.characters,
             shotDurationSeconds: 0,
@@ -167,7 +167,7 @@ async function runProjectTextTask(input: ChapterAnalysisInput, operation: string
         projectId: input.projectId,
         nodeId: `${operation}:${input.chapterId}`,
         mode: "text",
-        prompt: promptTemplateTaskPlaceholder("章节角色、场景与道具提取"),
+        prompt: promptTemplateTaskPlaceholder("章節角色、場景與道具提取"),
         config: { ...input.config, model },
         metadata: { domainProjectId: input.projectId, chapterId: input.chapterId, operation, promptTemplateOperation: PromptTemplateOperation.ChapterAssetsExtract, promptTemplateVariables },
         onTaskCreated: (task) => {
@@ -176,8 +176,8 @@ async function runProjectTextTask(input: ChapterAnalysisInput, operation: string
         },
         expectedScope: options?.expectedScope,
     });
-    if (!result.text?.trim()) throw new Error("模型没有返回可用结果");
-    if (!taskId) throw new Error("生成任务身份缺失");
+    if (!result.text?.trim()) throw new Error("模型沒有返回可用結果");
+    if (!taskId) throw new Error("生成任務身份缺失");
     return { text: result.text, taskId };
 }
 

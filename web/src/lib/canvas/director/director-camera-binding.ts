@@ -10,7 +10,7 @@ export function replaceDirectorSceneObjects(scene: DirectorScene, objects: Direc
     return { ...scene, objects, cameras, groups: undefined };
 }
 
-/** 当前帧作为新目标锚点；切换目标先烘焙旧位移，绑定瞬间构图不跳。 */
+/** 當前幀作為新目標錨點；切換目標先烘焙舊位移，繫結瞬間構圖不跳。 */
 export function bindDirectorCameraFollow(camera: DirectorCamera, scene: DirectorScene, objectId: string, time: number): DirectorCamera {
     const object = scene.objects.find((item) => item.id === objectId);
     if (!object) return camera;
@@ -20,7 +20,7 @@ export function bindDirectorCameraFollow(camera: DirectorCamera, scene: Director
     return { ...detached, followObjectId: objectId, followAnchor: [...position] };
 }
 
-/** 脱离跟随时把当前目标位移烘焙进机位轨迹，避免画面跳回绑定前的位置。 */
+/** 脫離跟隨時把當前目標位移烘焙進機位軌跡，避免畫面跳回繫結前的位置。 */
 export function unbindDirectorCameraFollow(camera: DirectorCamera, scene: DirectorScene, time: number): DirectorCamera {
     const clearBinding = { followObjectId: undefined, followAnchor: undefined };
     const object = scene.objects.find((item) => item.id === camera.followObjectId);
@@ -38,7 +38,7 @@ export function unbindDirectorCameraFollow(camera: DirectorCamera, scene: Direct
     };
 }
 
-/** 删除对象前冻结当前取景并清除悬空引用；无关机位保持原引用。 */
+/** 刪除物件前凍結當前取景並清除懸空引用；無關機位保持原引用。 */
 export function removeDirectorCameraBindingsForObject(camera: DirectorCamera, objectId: string, scene: DirectorScene, time: number): DirectorCamera {
     const followsObject = camera.followObjectId === objectId;
     const looksAtObject = camera.lookAtObjectId === objectId;

@@ -33,14 +33,14 @@ export function ModelPicker({
     className,
     popoverClassName,
     fullWidth = false,
-    placeholder = "选择模型",
+    placeholder = "選擇模型",
     onMissingConfig,
     variant = "creation",
     requirements,
     showConfiguredModelName = false,
 }: ModelPickerProps) {
     const pickerId = useId();
-    // 双保险：即使 store merge 写出非法 theme，这里也兜底到 dark，避免 "reading 'node'" 崩溃
+    // 雙保險：即使 store merge 寫出非法 theme，這裡也兜底到 dark，避免 "reading 'node'" 崩潰
     const rawTheme = useActiveTheme();
     const theme = (canvasThemes[rawTheme as keyof typeof canvasThemes] ?? canvasThemes.dark) as CanvasTheme;
     const [open, setOpen] = useState(false);
@@ -61,15 +61,15 @@ export function ModelPicker({
                 ),
             }))
             .filter((group) => group.models.length);
-        // options 已由当前有效渠道重建；任何无法解析渠道的旧值都直接丢弃，
-        // 不再显示“其他模型 / 未指定渠道”这种不可用入口。
+        // options 已由當前有效渠道重建；任何無法解析渠道的舊值都直接丟棄，
+        // 不再顯示“其他模型 / 未指定渠道”這種不可用入口。
         return channelGroups;
     }, [config, options]);
     const storedCurrent = value?.trim() || "";
-    // 参数档位会在选中模型后由调用方归一到其能力配置，不能因为旧模型留下的参数而禁止切换。
+    // 引數檔位會在選中模型後由呼叫方歸一到其能力配置，不能因為舊模型留下的引數而禁止切換。
     const selectionRequirements = requirements ? { ...requirements, videoSeconds: undefined, imageSize: undefined, options: undefined } : undefined;
     const resolvedCurrent = resolveCompatibleModel(config, storedCurrent, selectionRequirements) || storedCurrent;
-    // 旧画布可能保存过已下架或前端历史内置模型；它们不能重新进入当前可选目录。
+    // 舊畫布可能儲存過已下架或前端歷史內建模型；它們不能重新進入當前可選目錄。
     const current = options.includes(resolvedCurrent) ? resolvedCurrent : "";
     const portrait = seedancePortraitModel(current || storedCurrent);
     const portraitQuote = current ? resolveModelChannel(config, current).modelProfiles?.find((item) => item.model === modelOptionName(current))?.videoPricing : undefined;
@@ -99,7 +99,7 @@ export function ModelPicker({
 
     useEffect(() => {
         if (!open) return;
-        // 画布拖拽从 pointerdown 开始，须在捕获阶段关闭 Portal 菜单，避免菜单与触发器分离。
+        // 畫布拖拽從 pointerdown 開始，須在捕獲階段關閉 Portal 選單，避免選單與觸發器分離。
         const closeOnOutsidePointer = (event: PointerEvent) => {
             const target = event.target;
             if (!(target instanceof Node)) return;
@@ -179,7 +179,7 @@ export function ModelPicker({
         >
             {optionGroups.length ? (
                 activeGroupKey === null ? (
-                    <div className="canvas-model-picker-brands" aria-label="选择模型品牌">
+                    <div className="canvas-model-picker-brands" aria-label="選擇模型品牌">
                         {optionGroups.map((group) => {
                             return <button key={group.key} type="button" className="canvas-model-picker-brand" aria-expanded={false} onClick={() => toggleGroup(group)}>
                                 <span className="canvas-model-picker-brand-copy"><strong>{group.label}</strong></span>
@@ -202,7 +202,7 @@ export function ModelPicker({
                                 const selected = modelGroup.models.includes(current);
                                 const model = compatibleModelInGroup(config, modelGroup.models, selectionRequirements, selected ? current : undefined);
                                 const displayModel = model || (selected ? current : modelGroup.models[0]);
-                                const disabledReason = model ? "" : modelCompatibilityError(config, modelGroup.models[0], selectionRequirements) || "当前输入不符合该模型能力";
+                                const disabledReason = model ? "" : modelCompatibilityError(config, modelGroup.models[0], selectionRequirements) || "當前輸入不符合該模型能力";
                                 return (
                                     <button
                                         key={modelGroup.key}
@@ -276,11 +276,11 @@ export function ModelPicker({
             </Popover>
             {portrait || priceLines.length > 0 ? <Popover trigger="click" placement="topLeft" content={
                 <div className="max-w-[min(26rem,calc(100vw-3rem))] text-xs leading-relaxed" role="note">
-                    {priceLines.length ? <><p>视频参考单价</p>{priceLines.map((line) => <p key={line}>{line}</p>)}<p>实际费用见生成账单。素材仍需通过审核。</p></> : <p>价格暂不可用，请刷新模型列表后再生成。</p>}
+                    {priceLines.length ? <><p>影片參考單價</p>{priceLines.map((line) => <p key={line}>{line}</p>)}<p>實際費用見生成賬單。素材仍需通過稽核。</p></> : <p>價格暫不可用，請重新整理模型列表後再生成。</p>}
                 </div>
             }>
-                <button type="button" className="shrink-0 rounded px-1 py-1 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" style={{ color: theme.node.muted }} aria-label="视频参考单价" title={priceLines.join("\n") || "价格暂不可用，请刷新模型列表后再生成。"}>
-                    {priceLines.length ? "价格" : "价格暂不可用"}
+                <button type="button" className="shrink-0 rounded px-1 py-1 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" style={{ color: theme.node.muted }} aria-label="影片參考單價" title={priceLines.join("\n") || "價格暫不可用，請重新整理模型列表後再生成。"}>
+                    {priceLines.length ? "價格" : "價格暫不可用"}
                 </button>
             </Popover> : null}
         </div>
@@ -288,9 +288,9 @@ export function ModelPicker({
 }
 
 function emptyModelLabel(config: AiConfig, capability?: ModelCapability) {
-    const label = capability === "image" ? "生图" : capability === "video" ? "视频" : capability === "text" ? "文本" : capability === "audio" ? "音频" : "";
-    if (capability && config.models.length) return `暂无支持当前输入的${label}模型`;
-    return config.models.length ? `暂无匹配的${label}模型` : "当前没有可用模型，请联系管理员或检查模型配置";
+    const label = capability === "image" ? "生圖" : capability === "video" ? "影片" : capability === "text" ? "文本" : capability === "audio" ? "音訊" : "";
+    if (capability && config.models.length) return `暫無支援當前輸入的${label}模型`;
+    return config.models.length ? `暫無匹配的${label}模型` : "當前沒有可用模型，請聯絡管理員或檢查模型配置";
 }
 
 function ModelLabel({

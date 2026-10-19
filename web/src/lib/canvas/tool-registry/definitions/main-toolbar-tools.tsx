@@ -4,7 +4,7 @@ import { registerToolbarTools, type ToolDefinition } from "@/lib/canvas/tool-reg
 import type { CanvasToolMode } from "@/types/canvas";
 
 const canvasModeOptions = [
-    { id: "box-select", label: "区域选择", icon: <MousePointer2 />, value: "box-select" },
+    { id: "box-select", label: "區域選擇", icon: <MousePointer2 />, value: "box-select" },
     { id: "move", label: "抓手工具", icon: <Hand />, value: "move" },
 ];
 
@@ -13,7 +13,7 @@ export const mainToolbarTools: ToolDefinition[] = [
         id: "tool-appearance",
         toolbar: "main",
         category: "appearance",
-        label: "画布外观",
+        label: "畫布外觀",
         icon: <Palette />,
         defaultVisible: true,
         defaultOrder: 48,
@@ -25,7 +25,7 @@ export const mainToolbarTools: ToolDefinition[] = [
         id: "tool-canvas-mode",
         toolbar: "main",
         category: "navigation",
-        label: "抓手 / 框选",
+        label: "抓手 / 框選",
         icon: <MousePointer2 />,
         defaultVisible: true,
         defaultOrder: 20,
@@ -40,7 +40,7 @@ export const mainToolbarTools: ToolDefinition[] = [
         id: "tool-undo",
         toolbar: "main",
         category: "history",
-        label: "撤销",
+        label: "撤銷",
         icon: <Undo2 />,
         defaultVisible: false,
         defaultOrder: 60,
@@ -62,7 +62,7 @@ export const mainToolbarTools: ToolDefinition[] = [
         id: "tool-add",
         toolbar: "main",
         category: "create",
-        label: "添加节点",
+        label: "新增節點",
         icon: <Plus />,
         defaultVisible: true,
         defaultOrder: 10,
@@ -75,10 +75,10 @@ export const mainToolbarTools: ToolDefinition[] = [
         id: "tool-assets",
         toolbar: "main",
         category: "resource",
-        // LibTV 将这个入口称为“资产管理”，它承担素材浏览、上传和归档三类动作。
-        // 保留原有 tool-assets id，避免用户已经保存的工具栏偏好失效。
-        label: "资产管理",
-        // 原版底部 Dock 使用连接/关系类图标；动作仍然保留为资产管理。
+        // LibTV 將這個入口稱為“資產管理”，它承擔素材瀏覽、上傳和歸檔三類動作。
+        // 保留原有 tool-assets id，避免使用者已經儲存的工具欄偏好失效。
+        label: "資產管理",
+        // 原版底部 Dock 使用連線/關係類圖示；動作仍然保留為資產管理。
         icon: <Cable />,
         defaultVisible: true,
         defaultOrder: 30,
@@ -101,7 +101,7 @@ export const mainToolbarTools: ToolDefinition[] = [
         id: "tool-settings",
         toolbar: "main",
         category: "appearance",
-        label: "工具栏设置",
+        label: "工具欄設定",
         icon: <Waypoints />,
         defaultVisible: false,
         defaultOrder: 50,
@@ -113,7 +113,7 @@ export const mainToolbarTools: ToolDefinition[] = [
         id: "tool-generation-history",
         toolbar: "main",
         category: "resource",
-        label: "生成历史",
+        label: "生成歷史",
         icon: <Clock3 />,
         defaultVisible: true,
         defaultOrder: 55,
@@ -123,7 +123,7 @@ export const mainToolbarTools: ToolDefinition[] = [
         id: "tool-shortcuts",
         toolbar: "main",
         category: "navigation",
-        label: "画布快捷键",
+        label: "畫布快捷鍵",
         icon: <Keyboard />,
         defaultVisible: true,
         defaultOrder: 75,
@@ -133,7 +133,7 @@ export const mainToolbarTools: ToolDefinition[] = [
         id: "tool-delete",
         toolbar: "main",
         category: "danger",
-        label: (ctx) => ctx.selectedCount > 1 ? `删除 ${ctx.selectedCount} 个节点` : "删除选中节点",
+        label: (ctx) => ctx.selectedCount > 1 ? `刪除 ${ctx.selectedCount} 個節點` : "刪除選中節點",
         icon: <Trash2 />,
         // LibTV keeps destructive actions out of the default bottom dock;
         // they remain available through the node/canvas context menus and
@@ -148,7 +148,7 @@ export const mainToolbarTools: ToolDefinition[] = [
         id: "tool-clear",
         toolbar: "main",
         category: "danger",
-        label: "清空画布",
+        label: "清空畫布",
         icon: <Eraser />,
         defaultVisible: false,
         defaultOrder: 90,

@@ -38,8 +38,8 @@ type UseCanvasDirectorOptions = {
 const NODE_STATUS_IDLE = "idle" as const;
 
 /**
- * 项目真实内存权威在 useCanvasStore.getState().projects；
- * 闭包里的 directorScenes 只作为 store 尚未就绪时的兜底。
+ * 專案真實記憶體權威在 useCanvasStore.getState().projects；
+ * 閉包裡的 directorScenes 只作為 store 尚未就緒時的兜底。
  */
 function currentDirectorScenes(projectId: string, fallback: DirectorScene[]) {
     const project = useCanvasStore.getState().projects.find((item) => item.id === projectId);
@@ -72,13 +72,13 @@ export function useCanvasDirector({
         };
     }, [projectId]);
 
-    /** 新建空导演台；演员、道具和机位由用户进入工作台后自行添加。 */
+    /** 新建空導演臺；演員、道具和機位由使用者進入工作臺後自行新增。 */
     const createDirectorShot = useCallback((position?: Position) => {
         const shotIndex = nextDirectorNodeIndex(nodesRef.current);
-        const directorTitle = `导演台 ${shotIndex}`;
-        let scene = createDirectorSceneFromTemplate("empty", `镜头 ${shotIndex}`);
+        const directorTitle = `導演臺 ${shotIndex}`;
+        let scene = createDirectorSceneFromTemplate("empty", `鏡頭 ${shotIndex}`);
         const shot = scene.shots[0];
-        scene = { ...scene, shots: [{ ...shot, name: `镜头 ${shotIndex}` }] };
+        scene = { ...scene, shots: [{ ...shot, name: `鏡頭 ${shotIndex}` }] };
         const node = createCanvasNode(CanvasNodeType.Director, position || getCanvasCenter(), {
             workflowKind: "shot",
             workflowTitle: directorTitle,
@@ -103,9 +103,9 @@ export function useCanvasDirector({
         let scene = currentDirectorScenes(projectId, directorScenes).find((item) => item.id === node.metadata?.directorSceneId);
         let sceneNeedsPersistence = false;
         if (!scene) {
-            // 孤儿节点修复路径：节点存在但场景丢了。这不是「新建」，不弹模板选择，
-            // 用空场景兜底 —— 绝不在用户没选过的情况下塞演员进去。
-            scene = createDirectorSceneFromTemplate("empty", node.metadata?.workflowTitle || node.title || "镜头场景");
+            // 孤兒節點修復路徑：節點存在但場景丟了。這不是「新建」，不彈模板選擇，
+            // 用空場景兜底 —— 絕不在使用者沒選過的情況下塞演員進去。
+            scene = createDirectorSceneFromTemplate("empty", node.metadata?.workflowTitle || node.title || "鏡頭場景");
             const shot = scene.shots[0];
             scene = { ...scene, shots: [{ ...shot, name: node.metadata?.workflowTitle || node.title || shot.name, prompt: node.metadata?.workflowDescription || "" }] };
             const directorSceneId = scene.id;
@@ -117,7 +117,7 @@ export function useCanvasDirector({
         setDirectorNodeId(nodeId);
     }, [directorScenes, nodesRef, projectId, setDirectorNodeId, setNodes, updateProject]);
 
-    /** 每次保存都基于 store 中最新 directorScenes upsert，避免旧闭包数组覆盖并发保存。 */
+    /** 每次儲存都基於 store 中最新 directorScenes upsert，避免舊閉包陣列覆蓋併發儲存。 */
     const saveDirectorScene = useCallback((scene: DirectorScene) => {
         updateProject(projectId, { directorScenes: upsertDirectorSceneById(currentDirectorScenes(projectId, directorScenes), scene) });
     }, [directorScenes, projectId, updateProject]);
@@ -159,9 +159,9 @@ export function useCanvasDirector({
 
     const applyDirectorOutput = useCallback(async (output: DirectorSceneOutput) => {
         const outputProjectId = projectId;
-        if (projectIdRef.current !== outputProjectId) throw new Error("画布项目已切换，请重试");
+        if (projectIdRef.current !== outputProjectId) throw new Error("畫布專案已切換，請重試");
         const sourceNodeAtStart = nodesRef.current.find((item) => item.id === directorNodeId);
-        if (!sourceNodeAtStart || sourceNodeAtStart.metadata?.directorSceneId !== output.scene.id) throw new Error("镜头节点不存在或场景已切换");
+        if (!sourceNodeAtStart || sourceNodeAtStart.metadata?.directorSceneId !== output.scene.id) throw new Error("鏡頭節點不存在或場景已切換");
         const sourceNodeId = sourceNodeAtStart.id;
         const expectedScope = captureUserScope();
         const [image, videoUpload] = await Promise.all([
@@ -169,16 +169,16 @@ export function useCanvasDirector({
             output.clayVideo ? uploadMediaFile(output.clayVideo, "director-clay", undefined, expectedScope) : Promise.resolve(null),
         ]);
         if (!userScopeMatches(expectedScope)) throw new UserScopeAbandonedError();
-        // 上传期间项目、节点和镜头都可能变化。以当前权威状态重新核验并合并，
-        // 不允许旧输出写入另一项目，也不允许旧 scene 快照覆盖并发编辑。
+        // 上傳期間專案、節點和鏡頭都可能變化。以當前權威狀態重新核驗併合並，
+        // 不允許舊輸出寫入另一專案，也不允許舊 scene 快照覆蓋併發編輯。
         const outputProject = useCanvasStore.getState().projects.find((item) => item.id === outputProjectId);
         const sourceNode = nodesRef.current.find((item) => item.id === sourceNodeId);
         const latestScene = outputProject?.directorScenes.find((item) => item.id === output.scene.id);
         const target = { currentProjectId: projectIdRef.current, outputProjectId, projectExists: Boolean(outputProject), sourceNode, sourceNodeId, latestScene, sceneId: output.scene.id, shotId: output.shot.id };
-        if (!isDirectorOutputTargetCurrent(target) || !sourceNode || !latestScene) throw new Error("输出期间项目或镜头已切换、删除，请重试");
+        if (!isDirectorOutputTargetCurrent(target) || !sourceNode || !latestScene) throw new Error("輸出期間專案或鏡頭已切換、刪除，請重試");
         const previewId = sourceNode.metadata?.directorPreviewNodeId || `image-director-${Date.now()}`;
         const mergedScene = mergeDirectorOutputPreview(latestScene, { sceneId: output.scene.id, shotId: output.shot.id, previewNodeId: previewId });
-        if (!mergedScene) throw new Error("输出期间镜头已切换或删除，请重试");
+        if (!mergedScene) throw new Error("輸出期間鏡頭已切換或刪除，請重試");
         const previewSize = fitNodeSize(image.width, image.height);
         const nextNodes = [...nodesRef.current];
         const previewIndex = nextNodes.findIndex((item) => item.id === previewId);
@@ -197,27 +197,27 @@ export function useCanvasDirector({
             ...existingPreview,
             id: previewId,
             type: CanvasNodeType.Image,
-            title: `${sourceNode.title} · 导演台构图`,
+            title: `${sourceNode.title} · 導演臺構圖`,
             position: outputPositions.previewPosition,
             width: previewSize.width,
             height: previewSize.height,
-            metadata: { ...existingPreview?.metadata, ...imageMetadata(image), prompt: output.prompt, workflowKind: "reference_set", assetTags: ["导演台构图", `镜头:${sourceNode.title}`] },
+            metadata: { ...existingPreview?.metadata, ...imageMetadata(image), prompt: output.prompt, workflowKind: "reference_set", assetTags: ["導演臺構圖", `鏡頭:${sourceNode.title}`] },
         };
         if (previewIndex >= 0) nextNodes[previewIndex] = previewNode;
         else nextNodes.push(previewNode);
 
         if (videoUpload) {
             const outputVideoId = clayVideoId;
-            if (!outputVideoId) throw new Error("视频节点 ID 未准备好，请重试导出");
+            if (!outputVideoId) throw new Error("影片節點 ID 未準備好，請重試匯出");
             const videoNode: CanvasNodeData = {
                 ...existingVideo,
                 id: outputVideoId,
                 type: CanvasNodeType.Video,
-                title: `${sourceNode.title} · 白膜视频`,
+                title: `${sourceNode.title} · 白膜影片`,
                 position: outputPositions.videoPosition,
                 width: existingVideo?.width || 360,
                 height: existingVideo?.height || 220,
-                metadata: { ...existingVideo?.metadata, ...directorClayVideoMetadata(videoUpload, image), prompt: output.prompt, workflowKind: "reference_video", assetTags: ["导演台白膜", `镜头:${sourceNode.title}`] },
+                metadata: { ...existingVideo?.metadata, ...directorClayVideoMetadata(videoUpload, image), prompt: output.prompt, workflowKind: "reference_video", assetTags: ["導演臺白膜", `鏡頭:${sourceNode.title}`] },
             };
             if (videoIndex >= 0) nextNodes[videoIndex] = videoNode;
             else nextNodes.push(videoNode);
@@ -232,14 +232,14 @@ export function useCanvasDirector({
             if (!result.confirmed) confirmed = false;
         }
         if (!userScopeMatches(expectedScope)) throw new UserScopeAbandonedError();
-        // 素材登记同样会等待磁盘/网络。提交前再核验，并以最新画布为基底，
-        // 避免在等待期间切换项目或编辑其他节点后写回过期快照。
+        // 素材登記同樣會等待磁碟/網路。提交前再核驗，並以最新畫布為基底，
+        // 避免在等待期間切換專案或編輯其他節點後寫回過期快照。
         const commitProject = useCanvasStore.getState().projects.find((item) => item.id === outputProjectId);
         const commitSourceNode = nodesRef.current.find((item) => item.id === sourceNodeId);
         const commitScene = commitProject?.directorScenes.find((item) => item.id === output.scene.id);
-        if (!isDirectorOutputTargetCurrent({ ...target, currentProjectId: projectIdRef.current, projectExists: Boolean(commitProject), sourceNode: commitSourceNode, latestScene: commitScene })) throw new Error("输出期间项目或镜头已切换、删除，请重试");
+        if (!isDirectorOutputTargetCurrent({ ...target, currentProjectId: projectIdRef.current, projectExists: Boolean(commitProject), sourceNode: commitSourceNode, latestScene: commitScene })) throw new Error("輸出期間專案或鏡頭已切換、刪除，請重試");
         const committedScene = mergeDirectorOutputPreview(commitScene!, { sceneId: output.scene.id, shotId: output.shot.id, previewNodeId: previewId });
-        if (!committedScene) throw new Error("输出期间镜头已切换或删除，请重试");
+        if (!committedScene) throw new Error("輸出期間鏡頭已切換或刪除，請重試");
         const retiredReferenceIds = new Set([commitSourceNode?.metadata?.directorDepthNodeId, commitSourceNode?.metadata?.directorNormalNodeId].filter(Boolean));
         const referenceAssetNodeIds = Array.from(new Set([
             ...(commitSourceNode?.metadata?.referenceAssetNodeIds || []).filter((id) => !retiredReferenceIds.has(id)),

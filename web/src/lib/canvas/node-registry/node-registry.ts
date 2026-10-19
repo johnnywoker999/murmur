@@ -3,20 +3,20 @@ import type { PluginCanvasNodeContribution } from "@/lib/plugins/plugin-types";
 
 import { canvasNodeDefinitionFromPlugin, type CanvasNodeDefinition } from "./node-definition";
 
-/** 模块级注册表 */
+/** 模組級登入檔 */
 const definitions = new Map<CanvasNodeTypeId, CanvasNodeDefinition>();
-/** 节点类型 → 归属方。内置节点归属 "builtin"，为后续扩展留出隔离位。 */
+/** 節點型別 → 歸屬方。內建節點歸屬 "builtin"，為後續擴充套件留出隔離位。 */
 const ownerByType = new Map<CanvasNodeTypeId, string>();
 
-/** 未注册类型的兜底最小尺寸——与非媒体节点的历史下限一致 */
+/** 未註冊型別的兜底最小尺寸——與非媒體節點的歷史下限一致 */
 const FALLBACK_MIN_SIZE = { width: 220, height: 160 } as const;
 
-/** 批量注册节点定义 */
+/** 批次註冊節點定義 */
 export function registerNodeDefinitions(defs: CanvasNodeDefinition[], ownerId = "builtin") {
     const ids = new Set<string>();
     for (const def of defs) {
         const owner = ownerByType.get(def.type);
-        if (ids.has(def.type) || (owner && owner !== ownerId)) throw new Error(`节点类型重复或归属冲突：${def.type}`);
+        if (ids.has(def.type) || (owner && owner !== ownerId)) throw new Error(`節點型別重複或歸屬衝突：${def.type}`);
         ids.add(def.type);
     }
     for (const def of defs) {
@@ -31,8 +31,8 @@ export function registerPluginCanvasNodes(pluginId: string, nodes: PluginCanvasN
 }
 
 /**
- * 注销某归属方的全部节点定义。
- * 只删归属该 ownerId 的条目——内置节点不会被其他归属方的增删波及。
+ * 登出某歸屬方的全部節點定義。
+ * 只刪歸屬該 ownerId 的條目——內建節點不會被其他歸屬方的增刪波及。
  */
 export function unregisterNodeDefinitions(ownerId: string) {
     for (const [type, owner] of ownerByType) {
@@ -54,51 +54,51 @@ export function listNodeDefinitions() {
     return [...definitions.values()];
 }
 
-/** 添加节点菜单可见的节点定义 */
+/** 新增節點選單可見的節點定義 */
 export function listCreatableNodeDefinitions() {
     return listNodeDefinitions().filter((def) => def.showInCreateMenu);
 }
 
-/** UI 短标签 */
+/** UI 短標籤 */
 export function getNodeLabel(type: CanvasNodeTypeId) {
-    return definitions.get(type)?.label || "未知节点";
+    return definitions.get(type)?.label || "未知節點";
 }
 
-/** 列表/搜索标签，缺省派生自 label */
+/** 列表/搜尋標籤，預設派生自 label */
 export function getNodeListLabel(type: CanvasNodeTypeId) {
     const def = definitions.get(type);
-    if (!def) return "未知节点";
-    return def.listLabel || `${def.label}节点`;
+    if (!def) return "未知節點";
+    return def.listLabel || `${def.label}節點`;
 }
 
 export function getNodeIcon(type: CanvasNodeTypeId) {
     return definitions.get(type)?.icon ?? null;
 }
 
-/** 手动拉伸的最小尺寸 */
+/** 手動拉伸的最小尺寸 */
 export function getNodeMinSize(type: CanvasNodeTypeId) {
     return definitions.get(type)?.minSize ?? FALLBACK_MIN_SIZE;
 }
 
-/** 拉伸时是否锁定宽高比 */
+/** 拉伸時是否鎖定寬高比 */
 export function shouldKeepAspectRatio(node: CanvasNodeData) {
     return definitions.get(node.type)?.keepAspectRatio?.(node) ?? false;
 }
 
 /**
- * 该节点作为 @ 引用素材时的类型，非素材返回 null。
- * 只按类型判定——角色卡那类跨类型覆盖由调用方在此之前处理。
+ * 該節點作為 @ 引用素材時的型別，非素材返回 null。
+ * 只按型別判定——角色卡那類跨型別覆蓋由呼叫方在此之前處理。
  */
 export function getNodeResourceKind(node: CanvasNodeData) {
     return definitions.get(node.type)?.resourceKind?.(node) ?? null;
 }
 
-/** 该节点作为生成节点时的生成模式，不产生生成行为返回 null */
+/** 該節點作為生成節點時的生成模式，不產生生成行為返回 null */
 export function getNodeGenerationMode(node: CanvasNodeData) {
     return definitions.get(node.type)?.generationMode?.(node) ?? null;
 }
 
-/** 该节点作为上游输入被计数时的类别，不参与计数返回 undefined */
+/** 該節點作為上游輸入被計數時的類別，不參與計數返回 undefined */
 export function getNodeInputKind(type: CanvasNodeTypeId) {
     return definitions.get(type)?.inputKind;
 }

@@ -30,7 +30,7 @@ import type { CanvasHistorySnapshot } from "./use-canvas-history";
 
 function isExpectedLocalOnlySyncError(error: unknown) {
     const message = error instanceof Error ? error.message : String(error || "");
-    return /尚未建立云端同步会话|未登录|guest/i.test(message);
+    return /尚未建立雲端同步會話|未登入|guest/i.test(message);
 }
 
 type UseCanvasProjectLifecycleOptions = {
@@ -192,7 +192,7 @@ export function useCanvasProjectLifecycle({
             const cachedProject = useCanvasStore.getState().projects.find((p) => p.id === projectId);
             if (!latest && !historyRestore && cachedProject) {
                 traceCanvasGraph("editor.load.cache", { cached: cachedProject });
-                // 本地已有该画布的持久化缓存：先以本地数据秒开渲染，彻底消除白屏与等待
+                // 本地已有該畫布的持久化快取：先以本地資料秒開渲染，徹底消除白屏與等待
                 applyRestoredProject(cachedProject);
             }
             const loadedProject = await loadCanvasProjectForEditing(projectId, { latest, historyRestore: historyRestore || undefined, onLoad: applyRestoredProject });
@@ -208,7 +208,7 @@ export function useCanvasProjectLifecycle({
             }
             const project = useCanvasStore.getState().projects.find((p) => p.id === projectId) || loadedProject;
 
-            // 画布媒体由节点自己的视口观察器按需加载；打开时遍历并解析全部节点会让大画布形成 N+1 资源读取。
+            // 畫布媒體由節點自己的視口觀察器按需載入；開啟時遍歷並解析全部節點會讓大畫布形成 N+1 資源讀取。
             void hydrateAssistantImages(project.chatSessions || [])
                 .then((hydratedSessions) => {
                     if (!cancelled) setChatSessions((current) => {
@@ -218,7 +218,7 @@ export function useCanvasProjectLifecycle({
                     });
                 })
                 .catch(() => {
-                    if (!cancelled) message.warning("部分助手会话素材恢复失败，已使用项目记录继续打开");
+                    if (!cancelled) message.warning("部分助手會話素材恢復失敗，已使用專案記錄繼續開啟");
                 });
         };
         void load()
@@ -241,8 +241,8 @@ export function useCanvasProjectLifecycle({
                     pendingReloadRef.current = null;
                     pendingReload?.reject(error);
                 }
-                const detail = error instanceof Error ? error.message : (localMode ? "读取本地画布失败，请重试" : "读取画布失败，请重试");
-                if (projectSyncProgress(projectId)?.phase !== "conflict") useSyncProgressStore.getState().setProjectProgress(projectId, { phase: "error", message: localMode ? detail : (error instanceof Error ? error.message : "读取云端版本失败") });
+                const detail = error instanceof Error ? error.message : (localMode ? "讀取本地畫布失敗，請重試" : "讀取畫布失敗，請重試");
+                if (projectSyncProgress(projectId)?.phase !== "conflict") useSyncProgressStore.getState().setProjectProgress(projectId, { phase: "error", message: localMode ? detail : (error instanceof Error ? error.message : "讀取雲端版本失敗") });
                 if (keepEditor) message.error(detail);
                 else setLoadError(detail);
             });
@@ -287,7 +287,7 @@ export function useCanvasProjectLifecycle({
             // write this stale graph over the server: surface the newer version
             // and pause submits until the user picks it.
             traceCanvasGraph("editor.refresh.conflict", { previous, incoming: project, live: { id: projectId, nodes: nodesRef.current, connections: connectionsRef.current } });
-            console.warn("画布外部改动与本地编辑冲突，已保留本地编辑", { id: projectId, error });
+            console.warn("畫布外部改動與本地編輯衝突，已保留本地編輯", { id: projectId, error });
             holdExternalCanvasRevisionForEditor(project);
             return;
         }
@@ -299,7 +299,7 @@ export function useCanvasProjectLifecycle({
         connectionsRef.current = merged.connections;
         setNodes(merged.nodes);
         setConnections(merged.connections);
-        // 外部投影不是用户手工编辑：采用为历史基线，Ctrl+Z 不会倒退外部新值。
+        // 外部投影不是使用者手工編輯：採用為歷史基線，Ctrl+Z 不會倒退外部新值。
         adoptExternalSnapshot({ nodes: merged.nodes, connections: merged.connections });
     }), [adoptExternalSnapshot, projectId, projectLoaded, nodesRef, connectionsRef, setNodes, setConnections]);
 
@@ -321,7 +321,7 @@ export function useCanvasProjectLifecycle({
         observedContentRef.current = snapshot;
         const patch = { nodes, connections, chatSessions, activeChatId, appearance: canvasAppearance, backgroundMode, showImageInfo };
         const stored = useCanvasStore.getState().projects.find((project) => project.id === projectId);
-        // 远端结果投影到编辑器不是一次本地编辑，避免改写时间戳并触发反向保存。
+        // 遠端結果投影到編輯器不是一次本地編輯，避免改寫時間戳並觸發反向儲存。
         if (stored && Object.entries(patch).every(([key, value]) => JSON.stringify(stored[key as keyof CanvasProject]) === JSON.stringify(value))) {
             if (localMode && hasUnconfirmedCanvasEdits(projectId)) scheduleLocalCanvasBackendSync(projectId);
             return;
@@ -387,7 +387,7 @@ export function useCanvasProjectLifecycle({
                 if (localMode) await syncLocalCanvasProjectToBackend(projectId, owner);
             })().catch((error) => {
                 if (isCanvasSubmitControlError(error)) return;
-                console.error("离开画布时保存失败", { projectId, reason, error });
+                console.error("離開畫布時儲存失敗", { projectId, reason, error });
             });
         };
         const handlePageHide = () => flushOnLeave("pagehide");
@@ -407,16 +407,16 @@ export function useCanvasProjectLifecycle({
         const workspaceProjectId = currentProject ? canvasWorkspaceProjectId(currentProject) : undefined;
         const domainProjectId = currentProject?.projectId;
         if (localMode) {
-            void createWorkspaceCanvasProject("未命名画布", domainProjectId, undefined, workspaceProjectId)
+            void createWorkspaceCanvasProject("未命名畫布", domainProjectId, undefined, workspaceProjectId)
                 .then(({ id }) => navigate(`/canvas/${id}`))
-                .catch((error) => message.error(error instanceof Error ? `新建画布失败：${error.message}` : "新建画布失败，请稍后重试"));
+                .catch((error) => message.error(error instanceof Error ? `新建畫布失敗：${error.message}` : "新建畫布失敗，請稍後重試"));
             return;
         }
-        void createWorkspaceCanvasProject("未命名画布", domainProjectId, undefined, workspaceProjectId).then(({ id, syncError }) => {
-            // 本地/访客模式下没有远端同步会话，这是预期状态，不应在画布中央弹出错误 toast。
-            if (syncError && !isExpectedLocalOnlySyncError(syncError)) message.warning(syncError instanceof Error ? `画布已在本地创建，云端同步失败：${syncError.message}` : "画布已在本地创建，云端同步失败");
+        void createWorkspaceCanvasProject("未命名畫布", domainProjectId, undefined, workspaceProjectId).then(({ id, syncError }) => {
+            // 本地/訪客模式下沒有遠端同步會話，這是預期狀態，不應在畫布中央彈出錯誤 toast。
+            if (syncError && !isExpectedLocalOnlySyncError(syncError)) message.warning(syncError instanceof Error ? `畫布已在本地建立，雲端同步失敗：${syncError.message}` : "畫布已在本地建立，雲端同步失敗");
             navigate(`/canvas/${id}`);
-        }).catch((error) => message.error(error instanceof Error ? `新建画布失败：${error.message}` : "新建画布失败，请稍后重试"));
+        }).catch((error) => message.error(error instanceof Error ? `新建畫布失敗：${error.message}` : "新建畫布失敗，請稍後重試"));
     }, [currentProject, localMode, message, navigate]);
 
     const deleteCurrentProject = useCallback(async () => {
@@ -432,7 +432,7 @@ export function useCanvasProjectLifecycle({
         assertUserScope(scope);
         if (drawingIds.length) {
             void Promise.all(drawingIds.map((drawingId) => removeCanvasDrawing(projectId, drawingId)))
-                .catch(() => { if (userScopeMatches(scope)) message.warning("画布已删除，但部分本地绘图缓存清理失败"); });
+                .catch(() => { if (userScopeMatches(scope)) message.warning("畫布已刪除，但部分本地繪圖快取清理失敗"); });
         }
         cleanupAssetImages();
         navigate(nextCanvas ? `/canvas/${nextCanvas.id}` : "/canvas");
@@ -468,7 +468,7 @@ export function useCanvasProjectLifecycle({
     const reloadLatestCanvasProject = useCallback(async () => {
         await persistLocalEdits();
         return new Promise<void>((resolve, reject) => {
-            pendingReloadRef.current?.reject(new Error("已有新的加载请求"));
+            pendingReloadRef.current?.reject(new Error("已有新的載入請求"));
             loadLatestRef.current = true;
             pendingReloadRef.current = { resolve, reject };
             setLoadAttempt((value) => value + 1);
@@ -478,7 +478,7 @@ export function useCanvasProjectLifecycle({
     const restoreCanvasProjectVersion = useCallback(async (snapshotId: string, revision: number) => {
         await persistLocalEdits();
         return new Promise<void>((resolve, reject) => {
-            historyRestoreRef.current?.reject(new Error("已有新的恢复请求"));
+            historyRestoreRef.current?.reject(new Error("已有新的恢復請求"));
             historyRestoreRef.current = { snapshotId, revision, resolve, reject };
             setLoadAttempt((value) => value + 1);
         });
@@ -488,19 +488,19 @@ export function useCanvasProjectLifecycle({
         try {
             await persistLocalEdits();
         } catch {
-            message.error("画布保存失败，请稍后重试");
+            message.error("畫布儲存失敗，請稍後重試");
             return false;
         }
         if (!hasRemoteUserDataSyncSession()) {
-            message.success("画布已保存到本地");
+            message.success("畫布已儲存到本地");
             return true;
         }
         try {
             await saveRemoteUserDataNow(projectId);
-            message.success("画布已保存到云端");
+            message.success("畫布已儲存到雲端");
         } catch (error) {
-            const detail = error instanceof Error ? error.message : "未知错误";
-            if (!isExpectedLocalOnlySyncError(error)) message.warning(`本地画布布局已保存，云端同步失败：${detail}`);
+            const detail = error instanceof Error ? error.message : "未知錯誤";
+            if (!isExpectedLocalOnlySyncError(error)) message.warning(`本地畫布佈局已儲存，雲端同步失敗：${detail}`);
             // Imports can retain their durable local result; sharing requires cloud success.
             return options.requireRemote === false;
         }
@@ -508,12 +508,12 @@ export function useCanvasProjectLifecycle({
     }, [message, persistLocalEdits, projectId]);
 
     const forceSaveCanvasProject = useCallback(async (): Promise<boolean> => {
-        try { await persistLocalEdits(); } catch { message.error("本地保存失败，请重试"); return false; }
+        try { await persistLocalEdits(); } catch { message.error("本地儲存失敗，請重試"); return false; }
         try {
             const result = await forceOverwriteRemoteCanvasSync();
-            message.success(result.reboundNodes > 0 ? `已保存，并修复 ${result.reboundNodes} 处媒体与素材的绑定` : "素材关联已核对，画布已保存");
+            message.success(result.reboundNodes > 0 ? `已儲存，並修復 ${result.reboundNodes} 處媒體與素材的繫結` : "素材關聯已核對，畫布已儲存");
         } catch (error) {
-            message.error(`修复并保存失败：${error instanceof Error ? error.message : "未知错误"}`);
+            message.error(`修復並儲存失敗：${error instanceof Error ? error.message : "未知錯誤"}`);
             return false;
         }
         return true;

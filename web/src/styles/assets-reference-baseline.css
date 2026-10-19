@@ -2,7 +2,7 @@
 .assets-library-source-rail-inner { display: flex; flex-direction: column; gap: 4px; padding: 14px 12px; }
 .generation-history-page .assets-library-hero { min-height: 92px !important; }
 .generation-history-page .assets-library-hero .app-page-header { height: 64px !important; min-height: 64px !important; gap: 0; padding-bottom: 0 !important; }
-/* 个人资产库与生成历史共用同一套纵向页头节奏。 */
+/* 個人資產庫與生成歷史共用同一套縱向頁頭節奏。 */
 .assets-library-page:not(.generation-history-page) .assets-library-hero { min-height: 92px !important; gap: 0 !important; }
 .assets-library-page:not(.generation-history-page) .assets-library-hero .app-page-header { height: 64px !important; min-height: 64px !important; gap: 0; padding-bottom: 0 !important; }
 .assets-library-page:not(.generation-history-page) .assets-kind-tabs { display: flex; gap: 8px; align-items: center; }

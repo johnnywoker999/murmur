@@ -26,11 +26,11 @@ export type TextCapabilityConfig = {
 export type ImageSizeParameter = "none" | "size" | "aspect_ratio";
 
 /**
- * 普通视频模型提示词字符数的默认上限。
+ * 普通影片模型提示詞字元數的預設上限。
  *
- * 视频提示词由「输入框文本 + 连线内容 + 技能上下文」合成，远长于用户手输内容，
- * 因此不能沿用偏小的默认值把画布工作流拦在本地。必须与后端
- * `DefaultVideoPromptMaxChars` 保持一致，否则前端放行后端拒绝（或反之）。
+ * 影片提示詞由「輸入框文本 + 連線內容 + 技能上下文」合成，遠長於使用者手輸內容，
+ * 因此不能沿用偏小的預設值把畫布工作流攔在本地。必須與後端
+ * `DefaultVideoPromptMaxChars` 保持一致，否則前端放行後端拒絕（或反之）。
  */
 export const DEFAULT_VIDEO_PROMPT_MAX_CHARS = 8000;
 
@@ -114,7 +114,7 @@ export type VideoCapabilityConfig = {
     defaultOperation: string;
 };
 
-// 旧版本的“允许自定义”可能只保存了 `*`，前台需要用这组标准值恢复可选项。
+// 舊版本的“允許自定義”可能只儲存了 `*`，前臺需要用這組標準值恢復可選項。
 export const STANDARD_IMAGE_SIZE_VALUES = ["1:1", "3:2", "2:3", "4:3", "3:4", "16:9", "21:9", "9:16", "1024x1024", "1536x1024", "1024x1536"] as const;
 
 export function normalizeCapabilityString(value: unknown) {
@@ -461,8 +461,8 @@ export function defaultImageCapabilityConfig(protocol?: ModelProtocol, model = "
         image.maxOutputs = 4;
     }
     if (protocol === "agnes-image") {
-        // Agnes 图像：size 必填，取 1K/2K/3K/4K 档位或 WxH 精确尺寸，画面比例走独立的 ratio 字段；
-        // 参考图放 extra_body.image，支持多图合成，但没有蒙版端点。
+        // Agnes 影像：size 必填，取 1K/2K/3K/4K 檔位或 WxH 精確尺寸，畫面比例走獨立的 ratio 欄位；
+        // 參考圖放 extra_body.image，支援多圖合成，但沒有蒙版端點。
         image.references.maxImages = 9;
         image.references.maskSupported = false;
         image.size = {
@@ -471,13 +471,13 @@ export function defaultImageCapabilityConfig(protocol?: ModelProtocol, model = "
             default: "1:1",
             allowCustom: false,
         };
-        // 官方档位是 1K/2K/3K/4K，统一层只提供 1k/2k/4k 三档；3K 保留在协议映射里但不在界面露出。
+        // 官方檔位是 1K/2K/3K/4K，統一層只提供 1k/2k/4k 三檔；3K 保留在協議對映裡但不在介面露出。
         image.quality = { supported: true, values: ["1k", "2k", "4k"], default: "2k" };
         image.transparentBackground = { supported: false, default: false };
-        // 顶层 response_format 是官方明确的错误写法，输出格式只能在 extra_body 内声明。
+        // 頂層 response_format 是官方明確的錯誤寫法，輸出格式只能在 extra_body 內宣告。
         image.responseFormat = { supported: false };
         image.outputFormat = { supported: false };
-        // 该端点不接受 n，单次请求固定返回一张图片。
+        // 該端點不接受 n，單次請求固定返回一張圖片。
         image.maxOutputs = 1;
     }
     if (
@@ -507,7 +507,7 @@ export function defaultImageCapabilityConfig(protocol?: ModelProtocol, model = "
 export function defaultModelCapabilityConfig(protocol?: ModelProtocol, model = ""): ModelCapabilityConfig {
     const text: TextCapabilityConfig = {
         streaming: true,
-        // 文本模型的视觉能力必须由管理员明确开启，不能根据模型名猜测。
+        // 文本模型的視覺能力必須由管理員明確開啟，不能根據模型名猜測。
         references: { promptMaxChars: 32000, maxImages: 0, maxImageBytes: 0, maxVideos: 0, maxVideoBytes: 0 },
     };
     const video: VideoCapabilityConfig = {
@@ -578,8 +578,8 @@ export function defaultModelCapabilityConfig(protocol?: ModelProtocol, model = "
         if (/^dreamina-seedance-2-0-(?:fast|mini)(?:-|$)/.test(model.toLowerCase().split("/").pop() || "")) video.resolutions = ["480p", "720p"];
     }
     if (protocol === "newapi-channel-2") {
-        // APIMart 的 Seedance 2.0 Video Generations 协议支持参考视频/音频，
-        // 但不是火山方舟 Agent Plan，因此单独声明全模态参考能力。
+        // APIMart 的 Seedance 2.0 Video Generations 協議支援參考影片/音訊，
+        // 但不是火山方舟 Agent Plan，因此單獨宣告全模態參考能力。
         video.operations.push("reference_to_video");
     }
     if (protocol === "video-generations-json") {
@@ -765,7 +765,7 @@ function overlayOfficialSeedance2References(base: VideoCapabilityConfig["referen
     };
 }
 
-// 工作流字段是供应商参数的唯一事实来源；不能用普通视频模型的固定清晰度列表覆盖它。
+// 工作流欄位是供應商引數的唯一事實來源；不能用普通影片模型的固定清晰度列表覆蓋它。
 export type WorkflowVideoFieldLike = {
     nodeId?: string;
     classType?: string;
@@ -877,7 +877,7 @@ export function workflowFieldRole(field: WorkflowVideoFieldLike) {
     return field.classType ? "internal" : "business";
 }
 
-/** 读取工作流字段声明的连续数值范围；兼容 RunningHub 将范围包在 options/range 中的返回格式。 */
+/** 讀取工作流欄位宣告的連續數值範圍；相容 RunningHub 將範圍包在 options/range 中的返回格式。 */
 export function workflowFieldNumberBounds(field: WorkflowVideoFieldLike | undefined): WorkflowFieldNumberBounds {
     if (!field) return {};
     const sources: Record<string, unknown>[] = [field as unknown as Record<string, unknown>];
@@ -903,7 +903,7 @@ export function workflowFieldNumberBounds(field: WorkflowVideoFieldLike | undefi
     return { min: read(["min", "minValue", "min_value"]), max: read(["max", "maxValue", "max_value"]), step: read(["step", "stepValue", "step_value"]) };
 }
 
-/** 只有真正的枚举项才作为下拉选项；范围对象交给 InputNumber。 */
+/** 只有真正的列舉項才作為下拉選項；範圍物件交給 InputNumber。 */
 export function workflowFieldChoiceValues(field: WorkflowVideoFieldLike | undefined) {
     const bounds = workflowFieldNumberBounds(field);
     if (bounds.min !== undefined && bounds.max !== undefined && bounds.step !== undefined) return [];
@@ -913,7 +913,7 @@ export function workflowFieldChoiceValues(field: WorkflowVideoFieldLike | undefi
     return options.filter((option) => !workflowFieldOptionIsRange(option));
 }
 
-/** ComfyUI 的枚举按完整字符串校验；旧画布中的比例简写只能映射到唯一同前缀原值。 */
+/** ComfyUI 的列舉按完整字串校驗；舊畫布中的比例簡寫只能對映到唯一同字首原值。 */
 export function workflowFieldSubmissionValue(field: WorkflowVideoFieldLike, value: unknown) {
     const choices = workflowFieldSubmissionChoices(field);
     const submitted = workflowFieldOptionValue(value);
@@ -929,8 +929,8 @@ const resolutionSelectorAspectRatioOptions = ["1:1 (Square)", "2:3 (Portrait Pho
 function workflowFieldSubmissionChoices(field: WorkflowVideoFieldLike) {
     const classType = normalizeWorkflowVideoFieldKey(String(field.classType || ""));
     const fieldName = normalizeWorkflowVideoFieldKey(String(field.fieldName || ""));
-    // RunningHub 的 API JSON 只有当前值，没有 ComfyUI object_info。该节点的真实枚举
-    // 来自节点类型合同，不能使用通用比例模板冒充上游 options。
+    // RunningHub 的 API JSON 只有當前值，沒有 ComfyUI object_info。該節點的真實列舉
+    // 來自節點型別合同，不能使用通用比例模板冒充上游 options。
     if (classType === "resolutionselector" && fieldName === "aspectratio") return resolutionSelectorAspectRatioOptions;
     return workflowFieldChoiceValues(field);
 }
@@ -964,8 +964,8 @@ export function workflowFieldPresetOptions(field: WorkflowVideoFieldLike | undef
 
 export function workflowFieldConfigurationError(field: WorkflowVideoFieldLike) {
     const bounds = workflowFieldNumberBounds(field);
-    if (bounds.min !== undefined && bounds.max !== undefined && bounds.min > bounds.max) return "最小值不能大于最大值";
-    if (bounds.step !== undefined && bounds.step <= 0) return "步长必须大于 0";
+    if (bounds.min !== undefined && bounds.max !== undefined && bounds.min > bounds.max) return "最小值不能大於最大值";
+    if (bounds.step !== undefined && bounds.step <= 0) return "步長必須大於 0";
     return "";
 }
 
@@ -978,17 +978,17 @@ export function workflowFieldValueError(field: WorkflowVideoFieldLike, value: un
     const bounds = workflowFieldNumberBounds(field);
     const numeric = ["NUMBER", "FLOAT", "INTEGER", "INT", "SLIDER"].includes(fieldType) || bounds.min !== undefined || bounds.max !== undefined || bounds.step !== undefined;
     if (numeric) {
-        if (value === undefined || value === null || String(value).trim() === "" || !Number.isFinite(Number(value))) return "请输入有效数字";
+        if (value === undefined || value === null || String(value).trim() === "" || !Number.isFinite(Number(value))) return "請輸入有效數字";
         const parsed = Number(value);
-        if ((bounds.min !== undefined && parsed < bounds.min) || (bounds.max !== undefined && parsed > bounds.max)) return "数值超出允许范围";
+        if ((bounds.min !== undefined && parsed < bounds.min) || (bounds.max !== undefined && parsed > bounds.max)) return "數值超出允許範圍";
         if (bounds.step !== undefined) {
             const start = bounds.min ?? 0;
             const steps = (parsed - start) / bounds.step;
-            if (Math.abs(steps - Math.round(steps)) > 1e-7) return "数值不符合步长";
+            if (Math.abs(steps - Math.round(steps)) > 1e-7) return "數值不符合步長";
         }
     }
     const options = workflowFieldChoiceValues(field).map(workflowFieldOptionValue);
-    if (options.length && !options.includes(workflowFieldOptionValue(value))) return "当前值不在允许选项中";
+    if (options.length && !options.includes(workflowFieldOptionValue(value))) return "當前值不在允許選項中";
     return "";
 }
 
@@ -1024,8 +1024,8 @@ export function workflowVideoCapabilityConfig(fields: readonly WorkflowVideoFiel
         generateAudio: { ...fallback.generateAudio },
         watermark: { ...fallback.watermark },
     };
-    // 工作流没有统一的分辨率/时长协议。清空普通模型的候选值，
-    // 后面只根据工作流字段自身声明的 options 或数值范围恢复控件。
+    // 工作流沒有統一的解析度/時長協議。清空普通模型的候選值，
+    // 後面只根據工作流欄位自身宣告的 options 或數值範圍恢復控制元件。
     profile.resolutions = [];
     profile.defaultResolution = "";
     profile.ratios = [];
@@ -1064,7 +1064,7 @@ export function workflowVideoCapabilityConfig(fields: readonly WorkflowVideoFiel
             if (min !== undefined && max !== undefined && max >= min) {
                 profile.duration = { selection: "range", min, max, ...(step !== undefined && step > 0 ? { step } : {}), default: Number.isFinite(defaultValue) ? defaultValue : min };
             } else if (Number.isFinite(defaultValue)) {
-                // 只有默认值时不能臆造通用时长选项，只保留工作流当前值。
+                // 只有預設值時不能臆造通用時長選項，只保留工作流當前值。
                 profile.duration = { selection: "enum", values: [defaultValue], default: defaultValue };
             }
         }
@@ -1072,8 +1072,8 @@ export function workflowVideoCapabilityConfig(fields: readonly WorkflowVideoFiel
     if (ratioField) {
         const options = workflowFieldOptionValues(ratioField.options);
         const defaultValue = workflowFieldDefaultValue(ratioField);
-        // 工作流声明了比例字段时，不能继续沿用普通模型的比例列表。
-        // 没有 options 时只保留该字段当前默认值（例如 `auto`）。
+        // 工作流宣告瞭比例欄位時，不能繼續沿用普通模型的比例列表。
+        // 沒有 options 時只保留該欄位當前預設值（例如 `auto`）。
         profile.ratios = options.length ? options : defaultValue ? [defaultValue] : [];
         if (profile.ratios.length) profile.defaultRatio = matchWorkflowValue(defaultValue, profile.ratios) || profile.ratios[0];
     }
@@ -1084,7 +1084,7 @@ export function workflowVideoCapabilityConfig(fields: readonly WorkflowVideoFiel
     return profile;
 }
 
-/** 读取工作流当前选择的比例/尺寸；字段没有语义名时仅识别纯尺寸枚举。 */
+/** 讀取工作流當前選擇的比例/尺寸；欄位沒有語義名時僅識別純尺寸列舉。 */
 export function workflowOutputSizeValue(fields: readonly WorkflowVideoFieldLike[], values: Readonly<Record<string, unknown>>) {
     const field =
         fields.find((item) => workflowVideoFieldMatches(item, "aspectratio")) ||
@@ -1098,7 +1098,7 @@ export function workflowOutputSizeValue(fields: readonly WorkflowVideoFieldLike[
     return submitted || workflowVideoDefaultSize(fields, values);
 }
 
-/** 从工作流同一节点的 width/height 字段读取默认输出尺寸。 */
+/** 從工作流同一節點的 width/height 欄位讀取預設輸出尺寸。 */
 export function workflowVideoDefaultSize(fields: readonly WorkflowVideoFieldLike[], values: Readonly<Record<string, unknown>> = {}) {
     const candidates = fields.filter((field) => workflowDimensionFieldMatches(field, "width") || workflowDimensionFieldMatches(field, "height"));
     const groups = Array.from(new Set(candidates.map((field) => String(field.nodeId || "").trim()).filter(Boolean)));
@@ -1154,13 +1154,13 @@ export function workflowVideoFieldsFromJson(value: Record<string, unknown> | und
 function workflowVideoFieldMatches(field: WorkflowVideoFieldLike, source: string) {
     const keys = [field.source, field.fieldName, field.label].map((value) => normalizeWorkflowVideoFieldKey(String(value || ""))).filter(Boolean);
     if (source === "vquality") {
-        // quality 是工作流自己的质量参数（可能是 0.1-3 这类连续值），
-        // 只有显式 videoquality/videoresolution/vquality 才属于视频分辨率。
+        // quality 是工作流自己的質量引數（可能是 0.1-3 這類連續值），
+        // 只有顯式 videoquality/videoresolution/vquality 才屬於影片解析度。
         if (workflowFieldSource(field) === "quality" || keys.some((key) => ["quality", "imagequality"].includes(key))) return false;
-        return keys.some((key) => ["vquality", "videoresolution", "videoquality", "resolution"].includes(key) || key.includes("清晰度") || key.includes("分辨率"));
+        return keys.some((key) => ["vquality", "videoresolution", "videoquality", "resolution"].includes(key) || key.includes("清晰度") || key.includes("解析度"));
     }
     if (source === "videoseconds") {
-        return keys.some((key) => ["videoseconds", "duration", "seconds", "durationseconds", "videoduration", "videodurationseconds", "videolength", "clipduration"].includes(key) || key.includes("时长") || key.includes("秒数"));
+        return keys.some((key) => ["videoseconds", "duration", "seconds", "durationseconds", "videoduration", "videodurationseconds", "videolength", "clipduration"].includes(key) || key.includes("時長") || key.includes("秒數"));
     }
     if (source === "size") {
         return keys.some((key) => ["size", "imagesize", "imageresolution", "resolution"].includes(key));
@@ -1205,8 +1205,8 @@ function workflowFieldChoiceValuesFromProtocol(field: WorkflowVideoFieldLike | u
     if (explicit.length) return explicit;
     const classType = normalizeWorkflowVideoFieldKey(String(field?.classType || ""));
     const fieldName = normalizeWorkflowVideoFieldKey(String(field?.fieldName || ""));
-    // RunningHub 对该节点有固定枚举，但 getJsonApiFormat 可能只返回默认值；
-    // 只有节点类型和字段名同时匹配时才补齐，避免把所有工作流比例强制成同一套选项。
+    // RunningHub 對該節點有固定列舉，但 getJsonApiFormat 可能只返回預設值；
+    // 只有節點型別和欄位名同時匹配時才補齊，避免把所有工作流比例強製成同一套選項。
     if (classType === "resolutionselector" && fieldName === "aspectratio") return resolutionSelectorAspectRatioOptions;
     return [] as string[];
 }
@@ -1240,17 +1240,17 @@ function workflowFieldDefaultValue(field: WorkflowVideoFieldLike | undefined) {
 }
 
 /**
- * 读取画布当前的工作流字段值。新版本按 nodeId + fieldName 保存；旧画布曾按
- * source 语义键保存，比例字段必须兼容读取，否则会静默回退到工作流默认的 1:1。
+ * 讀取畫布當前的工作流欄位值。新版本按 nodeId + fieldName 儲存；舊畫布曾按
+ * source 語義鍵儲存，比例欄位必須相容讀取，否則會靜默回退到工作流預設的 1:1。
  */
 export function workflowFieldCurrentValue(field: WorkflowVideoFieldLike | undefined, values: Readonly<Record<string, unknown>>) {
     if (!field) return undefined;
     for (const key of [workflowFieldKey(field), ...workflowFieldLegacyKeys(field)]) {
         if (Object.prototype.hasOwnProperty.call(values, key)) return values[key];
     }
-    // 旧画布和新工作流 schema 可能分别使用 aspectRatio / aspect_ratio，
-    // 字段语义相同但存储键不同。读取时按节点号和规范化字段名兼容，
-    // 避免找不到用户已选值后回退到工作流或全局默认比例。
+    // 舊畫布和新工作流 schema 可能分別使用 aspectRatio / aspect_ratio，
+    // 欄位語義相同但儲存鍵不同。讀取時按節點號和規範化欄位名相容，
+    // 避免找不到使用者已選值後回退到工作流或全域性預設比例。
     const nodeKey = normalizeWorkflowParameterPart(field.nodeId);
     const fieldKeys = [field.fieldName, field.source, field.label].map((value) => normalizeWorkflowParameterPart(value)).filter(Boolean);
     if (nodeKey && fieldKeys.length) {
@@ -1331,9 +1331,9 @@ export function normalizeImageValue(profile: ImageCapabilityConfig, value: { siz
     const requestedQuality = String(value.quality || "")
         .trim()
         .toLowerCase();
-    // 比例协议的固定分辨率预设没有独立 quality 字段时，UI 仍需把当前比例对应的
-    // 预设档位带入请求。仅在 quality 未声明支持时启用，避免与 auto/low/medium/high
-    // 这组真实图片质量语义混用。
+    // 比例協議的固定解析度預設沒有獨立 quality 欄位時，UI 仍需把當前比例對應的
+    // 預設檔位帶入請求。僅在 quality 未宣告支援時啟用，避免與 auto/low/medium/high
+    // 這組真實圖片質量語義混用。
     const presetTier = !profile.quality.supported ? imagePresetTierForSelection(profile, size) : undefined;
     const quality = profile.quality.supported
         ? requestedQuality === "auto" || requestedQuality === "any"
@@ -1372,7 +1372,7 @@ export function imageSizeRequest(profile: ImageCapabilityConfig, value?: string)
 export function normalizeVideoValue(profile: VideoCapabilityConfig, value: { seconds?: string; ratio?: string; resolution?: string }) {
     const duration = profile.duration.selection === "enum" ? ((profile.duration.values || []).includes(Number(value.seconds)) ? Number(value.seconds) : profile.duration.default) : normalizeRangeDuration(profile, Number(value.seconds));
     const ratio = resolveVideoRatioValue(profile, value.ratio);
-    // 前端状态历史上保存过 `720`，而能力配置和供应商通常使用 `720p`；统一按能力中的原始值返回，避免被误判为不支持。
+    // 前端狀態歷史上儲存過 `720`，而能力配置和供應商通常使用 `720p`；統一按能力中的原始值返回，避免被誤判為不支援。
     const resolution = resolveVideoResolutionValue(profile, value.resolution);
     return { seconds: String(duration), ratio, resolution };
 }

@@ -5,16 +5,16 @@ import { createDirectorModel, touchDirectorScene } from "@/lib/canvas/director/d
 import type { DirectorObject, DirectorScene, DirectorVec3 } from "@/types/director";
 
 /**
- * P0 复现用确定性 fixture。
+ * P0 復現用確定性 fixture。
  *
- * 硬约束：fixture 自身绝不引用网络资产。
- * - 不使用 createDirectorScene（它默认包含演员，影响测试对象数量）；
- * - 所有对象都是 primitive，不带 url / storageKey / assetId；
- * - 所有 id 与时间戳都是字面量，因此每次构造完全一致（可直接断言）。
+ * 硬約束：fixture 自身絕不引用網路資產。
+ * - 不使用 createDirectorScene（它預設包含演員，影響測試物件數量）；
+ * - 所有物件都是 primitive，不帶 url / storageKey / assetId；
+ * - 所有 id 與時間戳都是字面量，因此每次構造完全一致（可直接斷言）。
  *
- * 注意边界：这只保证「初始 fixture」离线。真实工作台自带的新增控件
- * （上传模型、画布图片立牌）仍可能联网，因此模型相关的复现项
- * 需要显式注入本地资产，不能假装当前 fixture 已经覆盖。
+ * 注意邊界：這隻保證「初始 fixture」離線。真實工作臺自帶的新增控制元件
+ * （上傳模型、畫布圖片立牌）仍可能聯網，因此模型相關的復現項
+ * 需要顯式注入本地資產，不能假裝當前 fixture 已經覆蓋。
  */
 
 const FIXTURE_CREATED_AT = "2026-01-01T00:00:00.000Z";
@@ -38,26 +38,26 @@ function fixtureObject(input: { id: string; name: string; primitive: "box" | "sp
 }
 
 /**
- * 构造 fixture 场景。同一 seed 下结构完全确定，不含任何远端资产。
- * 返回全新对象，调用方可以自由改写而不影响后续构造。
+ * 構造 fixture 場景。同一 seed 下結構完全確定，不含任何遠端資產。
+ * 返回全新物件，呼叫方可以自由改寫而不影響後續構造。
  */
 export function createDirectorReproScene(): DirectorScene {
     return {
         id: FIXTURE_SCENE_ID,
         version: 1,
-        title: "P0 复现场景",
+        title: "P0 復現場景",
         background: "#060608",
         environmentIntensity: 0.7,
         gridVisible: true,
         objects: [
-            fixtureObject({ id: "repro-box-1", name: "立方体 A", primitive: "box", position: [0, 0.5, 0], color: "#8795a5" }),
-            fixtureObject({ id: "repro-sphere-1", name: "球体 B", primitive: "sphere", position: [2.2, 0.5, 0], color: "#6f8fb8" }),
-            fixtureObject({ id: "repro-cylinder-1", name: "圆柱 C", primitive: "cylinder", position: [-2.2, 0.5, 0], color: "#b8926f" }),
+            fixtureObject({ id: "repro-box-1", name: "立方體 A", primitive: "box", position: [0, 0.5, 0], color: "#8795a5" }),
+            fixtureObject({ id: "repro-sphere-1", name: "球體 B", primitive: "sphere", position: [2.2, 0.5, 0], color: "#6f8fb8" }),
+            fixtureObject({ id: "repro-cylinder-1", name: "圓柱 C", primitive: "cylinder", position: [-2.2, 0.5, 0], color: "#b8926f" }),
         ],
         cameras: [
             {
                 id: FIXTURE_CAMERA_ID,
-                name: "主摄影机",
+                name: "主攝影機",
                 transform: { position: [4.8, 2.7, 6.8], rotation: [0, 0, 0], scale: [1, 1, 1] },
                 target: [0, 1, 0],
                 focalLength: 35,
@@ -83,7 +83,7 @@ export function createDirectorReproScene(): DirectorScene {
         shots: [
             {
                 id: FIXTURE_SHOT_ID,
-                name: "镜头 1",
+                name: "鏡頭 1",
                 cameraId: FIXTURE_CAMERA_ID,
                 shotSize: "medium",
                 cameraMove: "static",
@@ -99,14 +99,14 @@ export function createDirectorReproScene(): DirectorScene {
 }
 
 /**
- * 离线人物视觉对照场景：无 URL 的历史标准演员会使用本地内置模型。
- * 原始 P0 fixture 保持不变，避免影响已有的交互与回归用例。
+ * 離線人物視覺對照場景：無 URL 的歷史標準演員會使用本地內建模型。
+ * 原始 P0 fixture 保持不變，避免影響已有的互動與迴歸用例。
  */
 export function createDirectorReproActorScene(): DirectorScene {
     const scene = createDirectorReproScene();
     const actor: DirectorObject = {
         id: "repro-actor-1",
-        name: "演员 1",
+        name: "演員 1",
         kind: "actor",
         transform: { position: [0, 0, 0], rotation: [0, 0, 0], scale: [1, 1, 1] },
         color: "#4f8ef7",
@@ -122,9 +122,9 @@ export function createDirectorReproActorScene(): DirectorScene {
     };
     return {
         ...scene,
-        title: "人物视觉对照场景",
+        title: "人物視覺對照場景",
         objects: [actor],
-        cameras: scene.cameras.map((camera) => ({ ...camera, name: "机位1", transform: { ...camera.transform, position: [0, 2.2, 10] }, target: [0, 1.2, 0] })),
+        cameras: scene.cameras.map((camera) => ({ ...camera, name: "機位1", transform: { ...camera.transform, position: [0, 2.2, 10] }, target: [0, 1.2, 0] })),
     };
 }
 
@@ -135,16 +135,16 @@ export function createDirectorReproQuaterniusCompareScene(): DirectorScene {
     const quaternius: DirectorObject = {
         ...original,
         id: "repro-quaternius-male",
-        name: "Quaternius 免费男性",
+        name: "Quaternius 免費男性",
         url: DIRECTOR_QUATERNIUS_MALE_URL,
         mimeType: "model/gltf-binary",
         transform: { ...original.transform, position: [1.1, 0, 0] },
     };
     return {
         ...scene,
-        title: "Quaternius 男女模型对照",
+        title: "Quaternius 男女模型對照",
         objects: [
-            { ...original, name: "Quaternius 免费女性", actorPreset: "standard_female", url: DIRECTOR_QUATERNIUS_FEMALE_URL, mimeType: "model/gltf-binary", transform: { ...original.transform, position: [-1.1, 0, 0] } },
+            { ...original, name: "Quaternius 免費女性", actorPreset: "standard_female", url: DIRECTOR_QUATERNIUS_FEMALE_URL, mimeType: "model/gltf-binary", transform: { ...original.transform, position: [-1.1, 0, 0] } },
             quaternius,
         ],
         cameras: scene.cameras.map((camera) => ({ ...camera, transform: { ...camera.transform, position: [0, 2.4, 6.4] }, target: [0, 1, 0] })),
@@ -160,18 +160,18 @@ export function createDirectorReproActorPresetScene(): DirectorScene {
     }));
     return {
         ...scene,
-        title: "人物预设对照场景",
+        title: "人物預設對照場景",
         objects: actors,
         cameras: scene.cameras.map((camera) => ({ ...camera, transform: { ...camera.transform, position: [0, 3.2, 10] }, target: [0, 0.9, 0] })),
     };
 }
 
-/** fixture 是否完全不依赖网络资产：任何 url/storageKey/assetId 都算违约。 */
+/** fixture 是否完全不依賴網路資產：任何 url/storageKey/assetId 都算違約。 */
 export function directorReproSceneIsOffline(scene: DirectorScene): boolean {
     return scene.objects.every((object) => !object.url && !object.storageKey && !object.assetId);
 }
 
-/** P0 手工复现矩阵。页面据此渲染清单，Stage D 可以逐条执行。 */
+/** P0 手工復現矩陣。頁面據此渲染清單，Stage D 可以逐條執行。 */
 export type DirectorReproCase = {
     id: string;
     group: string;
@@ -181,39 +181,39 @@ export type DirectorReproCase = {
 };
 
 export const DIRECTOR_REPRO_MATRIX: readonly DirectorReproCase[] = [
-    { id: "empty-click", group: "选择语义", title: "空白单击", steps: "在视口空白处单击。", expected: "取消选择，不产生历史记录，状态栏不变为未保存。" },
-    { id: "right-click", group: "选择语义", title: "右击", steps: "在对象上右击，再在空白处右击。", expected: "不改变选择、不开始手势、不写入历史。" },
-    { id: "switch-object", group: "选择语义", title: "切换对象", steps: "拖动对象 A 后不松手切换选中 B（或先松手再选 B）。", expected: "旧手势先被终结，B 不消费 A 的 base。" },
-    { id: "release-outside", group: "手势终结", title: "视口外释放", steps: "在视口内按下并拖动，移出视口后松开鼠标。", expected: "手势以 commit 终结一次，不留下悬挂预览。" },
-    { id: "blur", group: "手势终结", title: "窗口 blur", steps: "拖动过程中切换到其它窗口。", expected: "手势终结，草稿状态一致，不重复镜像。" },
-    { id: "escape", group: "手势终结", title: "Escape 取消", steps: "拖动过程中按 Escape。", expected: "恢复到手势前快照，且被取消的值绝不发布。" },
-    { id: "playing", group: "时间轴", title: "播放中操作", steps: "点击播放，播放中尝试选择与拖动。", expected: "播放不被打断成错误状态；改动语义与暂停时一致。" },
-    { id: "non-zero-time", group: "时间轴", title: "非 0 秒操作", steps: "把播放头拖到非 0 且非帧格整数位置后拖动对象。", expected: "增量以 raw playhead 为起点，不产生漂移。" },
-    { id: "autokey-on", group: "时间轴", title: "Auto Key 开", steps: "打开 Auto Key，在非 0 秒拖动对象。", expected: "在吸附后的目的时间写入关键帧。" },
-    { id: "autokey-off", group: "时间轴", title: "Auto Key 关", steps: "关闭 Auto Key，在非 0 秒拖动对象。", expected: "只改基础 transform，不产生关键帧。" },
-    { id: "add-move-delete-undo", group: "编辑链路", title: "连续新增/移动/删除/Undo", steps: "连续新增三个对象，各移动一次，删除中间一个，然后连续 Undo 到初始。", expected: "每步都可逆，Undo 后位置与选择状态自洽，不出现重叠或丢失。" },
-    { id: "delete-while-loading", group: "模型", title: "模型加载中删除", steps: "点击「注入本地模型」，立即打开工作台，在模型仍在加载时于左侧列表删除它。", expected: "晚到的加载结果被丢弃并释放，不留孤儿资源、不报错。" },
-    { id: "model-load-failed", group: "模型", title: "模型加载失败", steps: "点击「注入缺失模型」，打开工作台等待加载失败。", expected: "退回占位人偶，右上出现可操作「重试加载」，诊断记录 DIRECTOR_MODEL_LOAD_FAILED。" },
-    { id: "save-failed", group: "保存", title: "保存失败", steps: "让保存 flush 抛错后观察头部状态与重试。", expected: "状态为错误，草稿保留时提示可恢复，重试可再次尝试。" },
-    { id: "close-recovery", group: "保存", title: "关闭与草稿恢复", steps: "保存失败后关闭；重开同一场景。", expected: "关闭走 prepareClose 决策；重开时提示恢复或放弃，放弃后不再重复提示。" },
+    { id: "empty-click", group: "選擇語義", title: "空白單擊", steps: "在視口空白處單擊。", expected: "取消選擇，不產生歷史記錄，狀態列不變為未儲存。" },
+    { id: "right-click", group: "選擇語義", title: "右擊", steps: "在物件上右擊，再在空白處右擊。", expected: "不改變選擇、不開始手勢、不寫入歷史。" },
+    { id: "switch-object", group: "選擇語義", title: "切換物件", steps: "拖動物件 A 後不鬆手切換選中 B（或先鬆手再選 B）。", expected: "舊手勢先被終結，B 不消費 A 的 base。" },
+    { id: "release-outside", group: "手勢終結", title: "視口外釋放", steps: "在視口內按下並拖動，移出視口後鬆開滑鼠。", expected: "手勢以 commit 終結一次，不留下懸掛預覽。" },
+    { id: "blur", group: "手勢終結", title: "視窗 blur", steps: "拖動過程中切換到其它視窗。", expected: "手勢終結，草稿狀態一致，不重複映象。" },
+    { id: "escape", group: "手勢終結", title: "Escape 取消", steps: "拖動過程中按 Escape。", expected: "恢復到手勢前快照，且被取消的值絕不釋出。" },
+    { id: "playing", group: "時間軸", title: "播放中操作", steps: "點選播放，播放中嘗試選擇與拖動。", expected: "播放不被打斷成錯誤狀態；改動語義與暫停時一致。" },
+    { id: "non-zero-time", group: "時間軸", title: "非 0 秒操作", steps: "把播放頭拖到非 0 且非幀格整數位置後拖動物件。", expected: "增量以 raw playhead 為起點，不產生漂移。" },
+    { id: "autokey-on", group: "時間軸", title: "Auto Key 開", steps: "開啟 Auto Key，在非 0 秒拖動物件。", expected: "在吸附後的目的時間寫入關鍵幀。" },
+    { id: "autokey-off", group: "時間軸", title: "Auto Key 關", steps: "關閉 Auto Key，在非 0 秒拖動物件。", expected: "只改基礎 transform，不產生關鍵幀。" },
+    { id: "add-move-delete-undo", group: "編輯鏈路", title: "連續新增/移動/刪除/Undo", steps: "連續新增三個物件，各移動一次，刪除中間一個，然後連續 Undo 到初始。", expected: "每步都可逆，Undo 後位置與選擇狀態自洽，不出現重疊或丟失。" },
+    { id: "delete-while-loading", group: "模型", title: "模型載入中刪除", steps: "點選「注入本地模型」，立即開啟工作臺，在模型仍在載入時於左側列表刪除它。", expected: "晚到的載入結果被丟棄並釋放，不留孤兒資源、不報錯。" },
+    { id: "model-load-failed", group: "模型", title: "模型載入失敗", steps: "點選「注入缺失模型」，開啟工作臺等待載入失敗。", expected: "退回佔位人偶，右上出現可操作「重試載入」，診斷記錄 DIRECTOR_MODEL_LOAD_FAILED。" },
+    { id: "save-failed", group: "儲存", title: "儲存失敗", steps: "讓儲存 flush 拋錯後觀察頭部狀態與重試。", expected: "狀態為錯誤，草稿保留時提示可恢復，重試可再次嘗試。" },
+    { id: "close-recovery", group: "儲存", title: "關閉與草稿恢復", steps: "儲存失敗後關閉；重開同一場景。", expected: "關閉走 prepareClose 決策；重開時提示恢復或放棄，放棄後不再重複提示。" },
 ];
 
-/** 注入变体：本地可达 glTF，或确定性不可达地址。 */
+/** 注入變體：本地可達 glTF，或確定性不可達地址。 */
 export type DirectorReproModelVariant = "local" | "missing";
 
-/** 固定 id：重复注入必须替换同一对象，而不是不断堆叠新对象。 */
+/** 固定 id：重複注入必須替換同一物件，而不是不斷堆疊新物件。 */
 export const DIRECTOR_REPRO_MODEL_IDS: Record<DirectorReproModelVariant, string> = {
     local: "repro-model-local",
     missing: "repro-model-missing",
 };
 
-/** 同源本地资产，不依赖外网可达性。
- *  手写 glTF 2.0：内嵌 base64 buffer、无纹理、无压缩扩展，
+/** 同源本地資產，不依賴外網可達性。
+ *  手寫 glTF 2.0：內嵌 base64 buffer、無紋理、無壓縮擴充套件，
  *  因此不需要 KTX2Loader / DRACOLoader 也能被 GLTFLoader 直接解析。 */
 export const DIRECTOR_REPRO_LOCAL_MODEL_URL = "/canvas/models/director-repro-triangle.gltf";
-/** 同源但确定不存在：稳定触发加载失败路径，不依赖外网可达性。 */
+/** 同源但確定不存在：穩定觸發載入失敗路徑，不依賴外網可達性。 */
 export const DIRECTOR_REPRO_MISSING_MODEL_URL = "/__director-repro-missing.glb";
-/** 轻量离线人形 GLTF，含真实手臂旋转动画，用于动作时间轴交互验收。 */
+/** 輕量離線人形 GLTF，含真實手臂旋轉動畫，用於動作時間軸互動驗收。 */
 export const DIRECTOR_REPRO_ANIMATED_PERSON_URL = "/canvas/models/director-repro-animated-person.gltf";
 
 const MODEL_URLS: Record<DirectorReproModelVariant, string> = {
@@ -221,7 +221,7 @@ const MODEL_URLS: Record<DirectorReproModelVariant, string> = {
     missing: DIRECTOR_REPRO_MISSING_MODEL_URL,
 };
 
-/** local 是 JSON 形态 glTF，missing 仍按二进制声明，各自与 URL 后缀一致。 */
+/** local 是 JSON 形態 glTF，missing 仍按二進位制宣告，各自與 URL 字尾一致。 */
 const MODEL_MIME_TYPES: Record<DirectorReproModelVariant, string> = {
     local: "model/gltf+json",
     missing: "model/gltf-binary",
@@ -229,17 +229,17 @@ const MODEL_MIME_TYPES: Record<DirectorReproModelVariant, string> = {
 
 const MODEL_NAMES: Record<DirectorReproModelVariant, string> = {
     local: "本地模型 repro triangle",
-    missing: "缺失模型（预期失败）",
+    missing: "缺失模型（預期失敗）",
 };
 
 /**
- * 纯函数：把一个模型对象注入场景副本并返回新场景，绝不改写入参。
+ * 純函式：把一個模型物件注入場景副本並返回新場景，絕不改寫入參。
  *
- * 语义要点：
- * - 固定 id，重复注入先移除同 id 再重算位置，因此不会堆叠也不会自我碰撞；
- * - 只改 XZ，Y 严格保留 createDirectorModel 给出的 0（模型贴地）；
- * - 位置经 resolveDirectorPlacement 避让现有对象；
- * - 初始 fixture 本身不含模型，注入是显式动作，不污染离线基线。
+ * 語義要點：
+ * - 固定 id，重複注入先移除同 id 再重算位置，因此不會堆疊也不會自我碰撞；
+ * - 只改 XZ，Y 嚴格保留 createDirectorModel 給出的 0（模型貼地）；
+ * - 位置經 resolveDirectorPlacement 避讓現有物件；
+ * - 初始 fixture 本身不含模型，注入是顯式動作，不汙染離線基線。
  */
 export function injectDirectorReproModel(scene: DirectorScene, variant: DirectorReproModelVariant): DirectorScene {
     const id = DIRECTOR_REPRO_MODEL_IDS[variant];
@@ -252,7 +252,7 @@ export function injectDirectorReproModel(scene: DirectorScene, variant: Director
     });
     const model: DirectorObject = { ...base, id };
 
-    // 先剔除同 id 旧对象，避免重复点击时新位置去避让自己。
+    // 先剔除同 id 舊物件，避免重複點選時新位置去避讓自己。
     const others = scene.objects.filter((object) => object.id !== id);
     const position = resolveDirectorPlacement({ object: model, existing: others });
 
@@ -266,7 +266,7 @@ export function injectDirectorReproModel(scene: DirectorScene, variant: Director
 export function injectDirectorReproAnimatedPerson(scene: DirectorScene): DirectorScene {
     const id = "repro-animated-person";
     const model = createDirectorModel({
-        name: "离线动画人物",
+        name: "離線動畫人物",
         assetId: id,
         storageKey: undefined,
         url: DIRECTOR_REPRO_ANIMATED_PERSON_URL,

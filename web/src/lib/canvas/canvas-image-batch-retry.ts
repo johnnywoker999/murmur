@@ -124,7 +124,7 @@ export function restoreUnsubmittedImageBatchChild(current: CanvasNodeData, origi
         metadata: {
             ...current.metadata,
             status: "error",
-            errorDetails: original.metadata?.errorDetails || "重试请求未提交",
+            errorDetails: original.metadata?.errorDetails || "重試請求未提交",
             generationErrorCode: original.metadata?.generationErrorCode,
             resourceReloadAvailable: original.metadata?.resourceReloadAvailable,
             failedPromptFingerprint: original.metadata?.failedPromptFingerprint,

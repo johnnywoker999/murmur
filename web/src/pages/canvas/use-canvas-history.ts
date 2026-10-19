@@ -130,14 +130,14 @@ export function useCanvasHistory({
     }, [applyCanvasAppearance, clearCommitTimer, setActiveChatId, setBackgroundMode, setChatSessions, setConnections, setContextMenu, setNodes, setSelectedConnectionId, setSelectedNodeIds, setShowImageInfo]);
 
     /**
-     * 外部写入（内置助手回合、CLI/MCP 操作）投影到编辑器时，把结果当成新的历史基线。
+     * 外部寫入（內建助手回合、CLI/MCP 操作）投影到編輯器時，把結果當成新的歷史基線。
      *
-     * 三件事必须一起做，否则用户按 Ctrl+Z 会倒退外部刚写入的内容：
-     * 1. 仍在防抖窗口内的本地编辑先按原样落成历史（只用合并前的编辑器状态，
-     *    绝不把外部内容算成用户这次编辑）；
-     * 2. 基线推进到合并后的快照；
-     * 3. 用既有的 applyingHistoryRef 机制跳过这次由外部内容引起的状态变化，
-     *    否则防抖提交会把「外部变化」再记成一条可撤销的用户编辑。
+     * 三件事必須一起做，否則使用者按 Ctrl+Z 會倒退外部剛寫入的內容：
+     * 1. 仍在防抖視窗內的本地編輯先按原樣落成歷史（只用合併前的編輯器狀態，
+     *    絕不把外部內容算成使用者這次編輯）；
+     * 2. 基線推進到合併後的快照；
+     * 3. 用既有的 applyingHistoryRef 機制跳過這次由外部內容引起的狀態變化，
+     *    否則防抖提交會把「外部變化」再記成一條可撤銷的使用者編輯。
      */
     const adoptExternalSnapshot = useCallback((overrides: Pick<CanvasHistorySnapshot, "nodes" | "connections">) => {
         if (historyCommitTimerRef.current) {
@@ -273,7 +273,7 @@ function applyEntityPatch<T extends { id: string }>(current: T[], patch: EntityP
         else byId.delete(change.id);
     });
 
-    // 成员增删时按补丁记录恢复精确顺序；仅内容变化时保留当前顺序，避免无意义数组抖动。
+    // 成員增刪時按補丁記錄恢復精確順序；僅內容變化時保留當前順序，避免無意義陣列抖動。
     const order = side === "before" ? patch.beforeOrder : patch.afterOrder;
     if (!order) return current.map((item) => byId.get(item.id)).filter((item): item is T => Boolean(item));
     return order.map((id) => byId.get(id)).filter((item): item is T => Boolean(item));

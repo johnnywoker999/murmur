@@ -62,7 +62,7 @@ const NODE_STATUS_ERROR = "error" as const;
 export type CanvasNodeGenerationOptions = {
     confirmedModelKey?: string;
     confirmedInputs?: ConfirmedGenerationInputs;
-    /** 一次确认的稳定身份。重复提交必须复用，服务端据此回读原任务。 */
+    /** 一次確認的穩定身份。重複提交必須複用，服務端據此回讀原任務。 */
     clientOperationId?: string;
     controller?: AbortController;
     waitForTaskCapacity?: boolean;
@@ -97,8 +97,8 @@ export function useCanvasGenerationExecutor({
     const confirmDuplicateSubmission = useCallback(
         (signal: AbortSignal) =>
             confirmCanvasGeneration((callbacks) => modal.confirm({
-                    title: "再次生成相同内容？",
-                    content: "当前节点已使用相同提示词、模型、参数和参考素材提交过任务。再次生成会新建任务，并可能再次消耗积分。",
+                    title: "再次生成相同內容？",
+                    content: "當前節點已使用相同提示詞、模型、引數和參考素材提交過任務。再次生成會新建任務，並可能再次消耗積分。",
                     okText: "仍然生成",
                     cancelText: "取消",
                     centered: true,
@@ -123,7 +123,7 @@ export function useCanvasGenerationExecutor({
                         const meta = [ `mode=${mode}`, selectedModel ? `model=${selectedModel}` : "", refSummary, detail ].filter(Boolean).join(" ");
                         recordDiagnosticEvent({
                             category: "action", level, code, reason: stage, canvasId: projectId, requestId: attemptId,
-                            message: meta ? `画布生成提交：${code} (${meta})` : `画布生成提交：${code}`, durationMs: Math.round(performance.now() - startedAt),
+                            message: meta ? `畫布生成提交：${code} (${meta})` : `畫布生成提交：${code}`, durationMs: Math.round(performance.now() - startedAt),
                         });
                     };
                     diagnostic("generation_submit_started");
@@ -152,7 +152,7 @@ export function useCanvasGenerationExecutor({
                                 const task = await findGenerationTaskByOperation(target.metadata!.taskClientOperationId!, projectId, controller.signal);
                                 controller.signal.throwIfAborted();
                                 assertUserScope(scope);
-                                if (!task) { message.warning("尚未查到上次提交的任务，请稍后再查询，暂勿重新生成"); continue; }
+                                if (!task) { message.warning("尚未查到上次提交的任務，請稍後再查詢，暫勿重新生成"); continue; }
                                 bindGenerationTask(target.id, task);
                                 const completed = await waitForGenerationTask(task.id, { signal: controller.signal, expectedScope: scope, initialTask: task, onTaskUpdate: (update) => bindGenerationTask(target.id, update) });
                                 controller.signal.throwIfAborted();
@@ -168,12 +168,12 @@ export function useCanvasGenerationExecutor({
                         }
                         if (isCanvasNodeGenerating(nodesRef.current.find((node) => node.id === nodeId))) {
                             diagnostic("generation_task_active", "warning");
-                            message.info("该节点的生成任务仍在进行中，请等待完成后再生成");
+                            message.info("該節點的生成任務仍在進行中，請等待完成後再生成");
                             return;
                         }
                         if (sourceNode?.type === CanvasNodeType.Video && sourceNode.metadata?.videoEditOperation === "concat") {
                             diagnostic("generation_concat_source", "warning");
-                            message.info("合并成片节点不直接重新生成，请重新选择源视频合并");
+                            message.info("合併成片節點不直接重新生成，請重新選擇源影片合併");
                             return;
                         }
                         let generationConfig: ReturnType<typeof buildConfirmedGenerationConfig>;
@@ -222,13 +222,13 @@ export function useCanvasGenerationExecutor({
                         startGenerationRequest(nodeId, nodeId, nodeId, controller);
                         preparing = true;
                         setRunningNodeId(nodeId);
-                        message.loading({ key: preparationMessageKey, content: "正在准备参考素材…", duration: 0 });
+                        message.loading({ key: preparationMessageKey, content: "正在準備參考素材…", duration: 0 });
                         stage = "references";
                         diagnostic("generation_preflight_stage");
-                        // AutoDL/其他声明式视频协议需要结构化参考素材；只有普通
-                        // 模型视频接口才把提示词视为纯文本输入。
+                        // AutoDL/其他宣告式影片協議需要結構化參考素材；只有普通
+                        // 模型影片接口才把提示詞視為純文本輸入。
                         const usesWorkflowProvider = Boolean(mode !== "text" && generationConfig.taskWorkflowProvider && generationConfig.taskWorkflowProvider !== "model");
-                        // 普通视频协议只保留输入框文本（显式 @文本 引用仍会展开为真实内容）；声明式工作流还要保留连接媒体。
+                        // 普通影片協議只保留輸入框文本（顯式 @文本 引用仍會展開為真實內容）；宣告式工作流還要保留連線媒體。
                         const promptOnly = mode === "video" && !usesWorkflowProvider;
                         try {
                             const baseContext = buildNodeGenerationContext(
@@ -247,7 +247,7 @@ export function useCanvasGenerationExecutor({
                             generationConfig = buildConfirmedGenerationConfig(inputConfig, sourceNode, mode, requirements, options?.confirmedModelKey);
                             selectedModel = generationConfig.model;
                             const compatibilityError = usesWorkflowProvider ? "" : modelCompatibilityError(generationConfig, generationConfig.model, requirements);
-                            if (compatibilityError) throw new Error(`当前模型无法支持这组输入和参数：${compatibilityError}`);
+                            if (compatibilityError) throw new Error(`當前模型無法支援這組輸入和引數：${compatibilityError}`);
                             const referenceLimits = usesWorkflowProvider ? undefined : modelGroupReferenceLimits(inputConfig, generationConfig.model, mode, requirements);
                             rawGenerationContext = await waitForCanvasPreparation(() => hydrateNodeGenerationContext(baseContext, projectId, domainProjectId, mode, mode === "video" && Boolean(referenceLimits?.maxAudios), !promptOnly, referenceLimits), controller.signal);
                             const hydratedRequirements = generationModelRequirements(mode, rawGenerationContext, sourceNode, generationConfig);
@@ -258,7 +258,7 @@ export function useCanvasGenerationExecutor({
                             generationConfig = buildConfirmedGenerationConfig(inputConfig, sourceNode, mode, hydratedRequirements, options?.confirmedModelKey);
                             selectedModel = generationConfig.model;
                             const hydratedCompatibilityError = usesWorkflowProvider ? "" : modelCompatibilityError(generationConfig, generationConfig.model, hydratedRequirements);
-                            if (hydratedCompatibilityError) throw new Error(`当前模型无法支持这组输入和参数：${hydratedCompatibilityError}`);
+                            if (hydratedCompatibilityError) throw new Error(`當前模型無法支援這組輸入和引數：${hydratedCompatibilityError}`);
                         } catch (error) {
                             reportError(error);
                             return;
@@ -296,23 +296,23 @@ export function useCanvasGenerationExecutor({
                         const generationContext = { ...rawGenerationContext, prompt: effectivePrompt };
                         if (canvasGenerationRetryBlocked(sourceNode?.metadata, { ...generationContext, mode })) {
                             diagnostic("generation_retry_blocked", "warning");
-                            message.warning(sourceNode?.metadata?.errorDetails || "请先查看失败原因并调整输入，再重新生成");
+                            message.warning(sourceNode?.metadata?.errorDetails || "請先檢視失敗原因並調整輸入，再重新生成");
                             return;
                         }
                         if (mode === "audio" && generationContext.characterReferences.length) {
                             if (generationContext.characterReferences.length !== 1) {
-                                reportError(new Error("角色配音一次只能引用一个角色卡"));
+                                reportError(new Error("角色配音一次只能引用一個角色卡"));
                                 return;
                             }
                             const voice = generationContext.resolvedCharacterVoices[0];
                             if (!voice) {
-                                reportError(new Error("角色尚未绑定可用声音，无法创建角色配音任务"));
+                                reportError(new Error("角色尚未繫結可用聲音，無法建立角色配音任務"));
                                 return;
                             }
                             generationConfig = { ...generationConfig, audioVoice: voice.voiceKey, audioInstructions: [voice.instructions, generationConfig.audioInstructions].filter(Boolean).join("；") };
                         }
                         if (!effectivePrompt && (mode === "text" || mode === "audio")) {
-                            reportError(new Error("请输入生成内容"));
+                            reportError(new Error("請輸入生成內容"));
                             return;
                         }
 
@@ -378,7 +378,7 @@ export function useCanvasGenerationExecutor({
                                                   prompt,
                                                   composerContent: prompt,
                                                   status: NODE_STATUS_LOADING,
-                                                  taskStage: "正在准备生成任务",
+                                                  taskStage: "正在準備生成任務",
                                                   taskProgress: 0,
                                                   taskCreatedAt: new Date().toISOString(),
                                                   errorDetails: undefined,
@@ -393,7 +393,7 @@ export function useCanvasGenerationExecutor({
                             );
                         }
 
-                        // 已有内容节点只是本次生成的来源；任务状态归新目标所有，不能覆盖已成功结果。
+                        // 已有內容節點只是本次生成的來源；任務狀態歸新目標所有，不能覆蓋已成功結果。
                         const markSourceStatus = !sourceNode?.metadata?.content && !editingTextNode;
                         const hasPreviousResult = Boolean(sourceNode?.metadata?.content || sourceNode?.metadata?.storageKey);
                         const statusPrompt = sourceNode?.type === CanvasNodeType.Config ? effectivePrompt : prompt;
@@ -415,8 +415,8 @@ export function useCanvasGenerationExecutor({
                             nodesRef,
                             nodeId,
                             sourceNode,
-                            // 收费输入保持确认时的快照；目标节点写回必须使用当前画布。
-                            // 另一目标可能已在重复生成确认等待期间完成，不能把整图回滚到旧结果。
+                            // 收費輸入保持確認時的快照；目標節點寫回必須使用當前畫布。
+                            // 另一目標可能已在重複生成確認等待期間完成，不能把整圖回滾到舊結果。
                             canvasNodes: nodesRef.current,
                             canvasConnections: connectionsRef.current,
                             prompt,
@@ -438,7 +438,7 @@ export function useCanvasGenerationExecutor({
                             startGenerationRequest,
                             finishGenerationRequest,
                             bindGenerationTask: (targetNodeId: string, task: GenerationTask) => {
-                                recordDiagnosticEvent({ category: "task", level: "info", code: "generation_submission_bound", message: "画布提交已关联生成任务", requestId: attemptId, canvasId: projectId, taskId: task.id });
+                                recordDiagnosticEvent({ category: "task", level: "info", code: "generation_submission_bound", message: "畫布提交已關聯生成任務", requestId: attemptId, canvasId: projectId, taskId: task.id });
                                 bindGenerationTask(targetNodeId, task);
                                 setNodes((current) => {
                                     const source = current.find((node) => node.id === nodeId);
@@ -506,8 +506,8 @@ export function useCanvasGenerationExecutor({
                     }
                 },
                 () => {
-                    recordDiagnosticEvent({ category: "action", level: "warning", code: "generation_duplicate_click", canvasId: projectId, message: "该节点已有生成请求正在提交或执行" });
-                    message.info({ key: `canvas-generation-submission-${nodeId}`, content: "该节点已有生成请求正在提交或执行，请勿重复点击" });
+                    recordDiagnosticEvent({ category: "action", level: "warning", code: "generation_duplicate_click", canvasId: projectId, message: "該節點已有生成請求正在提交或執行" });
+                    message.info({ key: `canvas-generation-submission-${nodeId}`, content: "該節點已有生成請求正在提交或執行，請勿重複點選" });
                 },
             ),
         [

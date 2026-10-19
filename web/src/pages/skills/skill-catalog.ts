@@ -1,10 +1,10 @@
 import type { Skill, SkillCategory } from "@/services/api/skills";
 
 export const fallbackSkillCategories: SkillCategory[] = [
-    { value: "drama", label: "短剧影视" },
-    { value: "ecommerce", label: "电商营销" },
-    { value: "creative", label: "创意设计" },
-    { value: "social", label: "社媒内容" },
+    { value: "drama", label: "短劇影視" },
+    { value: "ecommerce", label: "電商營銷" },
+    { value: "creative", label: "創意設計" },
+    { value: "social", label: "社媒內容" },
     { value: "others", label: "其他" },
 ];
 
@@ -25,6 +25,6 @@ export function formatSkillCount(value: number) {
 
 export function formatSkillDate(value: string) {
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "未知时间";
+    if (Number.isNaN(date.getTime())) return "未知時間";
     return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "short", day: "numeric" }).format(date);
 }

@@ -19,7 +19,7 @@ const ClientRootInit = lazy(() => import("@/components/layout/client-root-init")
 function ClientRootBoundary({ children }: { children: ReactNode }) {
     const authenticated = useUserStore((state) => Boolean(state.user));
     if (!authenticated) return children;
-    return <Suspense fallback={<FullScreenLoader label="正在准备创作环境" detail="连接本地能力与模型配置" />}><ClientRootInit>{children}</ClientRootInit></Suspense>;
+    return <Suspense fallback={<FullScreenLoader label="正在準備創作環境" detail="連線本地能力與模型配置" />}><ClientRootInit>{children}</ClientRootInit></Suspense>;
 }
 
 export function AppProviders({ children }: { children: ReactNode }) {
@@ -34,9 +34,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
         applyAppearanceMetadata(appearance);
     }, [appearance, dark, theme]);
 
-    // DEV 复现台必须是同源本地确定性场景：WorkspaceBootstrapHydrator 会打 /api/workspace/bootstrap，
-    // ClientRootInit 会打 /api/model-catalog，没有后端时产生真实 502，与导演台无关却会污染判据。
-    // 只精确匹配该路径；生产构建中 import.meta.env.DEV 为 false，本分支被摇树删除。
+    // DEV 復現臺必須是同源本地確定性場景：WorkspaceBootstrapHydrator 會打 /api/workspace/bootstrap，
+    // ClientRootInit 會打 /api/model-catalog，沒有後端時產生真實 502，與導演臺無關卻會汙染判據。
+    // 只精確匹配該路徑；生產構建中 import.meta.env.DEV 為 false，本分支被搖樹刪除。
     const isolateDevRepro = import.meta.env.DEV && typeof window !== "undefined" && ["/dev/director-repro", "/dev/assistant-panel"].includes(appPathname());
 
     return (

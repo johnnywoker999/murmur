@@ -24,15 +24,15 @@ export function ProjectCharacterCard({ asset, folderItems, generating, removing,
 }) {
     const character = asset.character;
     const cover = character?.representations.find((item) => item.role === "turnaround_sheet") || character?.representations.find((item) => item.role === "primary") || character?.representations.find((item) => item.role === "front") || character?.representations[0];
-    const role = textValue(character?.definition.role) || "未填写剧情定位";
-    const appearance = textValue(character?.definition.appearance) || textValue(character?.definition.consistencyPrompt) || "角色设定待完善";
-    const imageStatus = character?.visualStatus === "ready" ? "图片已绑定" : character?.visualStatus === "partial" ? "图片待补全" : "图片未绑定";
-    const voiceStatus = character?.voiceStatus === "ready" ? `声音已绑定 · ${character.voice?.profile.name}` : character?.voiceStatus === "unavailable" ? "声音需处理" : "声音未绑定";
-    const readinessLabel = character?.visualStatus === "ready" ? character.voiceStatus === "ready" ? "可直接用于生成" : "形象已就绪" : "设定进行中";
+    const role = textValue(character?.definition.role) || "未填寫劇情定位";
+    const appearance = textValue(character?.definition.appearance) || textValue(character?.definition.consistencyPrompt) || "角色設定待完善";
+    const imageStatus = character?.visualStatus === "ready" ? "圖片已繫結" : character?.visualStatus === "partial" ? "圖片待補全" : "圖片未繫結";
+    const voiceStatus = character?.voiceStatus === "ready" ? `聲音已繫結 · ${character.voice?.profile.name}` : character?.voiceStatus === "unavailable" ? "聲音需處理" : "聲音未繫結";
+    const readinessLabel = character?.visualStatus === "ready" ? character.voiceStatus === "ready" ? "可直接用於生成" : "形象已就緒" : "設定進行中";
     return (
         <AssetLibraryCard className="project-character-card">
             <AssetLibraryCardMedia className="relative aspect-[3/2] overflow-hidden bg-foreground/[.045]">
-                <button type="button" className="project-asset-media-button" onClick={onOpen} aria-label={`查看角色卡：${asset.title}`}>
+                <button type="button" className="project-asset-media-button" onClick={onOpen} aria-label={`檢視角色卡：${asset.title}`}>
                     {cover ? <CachedResourceImage storageKey={`resource:${cover.resourceId}`} src={resourceFileUrl(cover.resourceId)} alt={asset.title} loading="lazy" decoding="async" className="h-full w-full object-contain p-1" fallback={<div className="grid h-full place-items-center"><span className="grid size-14 place-items-center rounded-lg border border-border/70 bg-background/75 text-foreground/24"><UserRound className="size-7" /></span></div>} /> : <div className="grid h-full place-items-center"><span className="grid size-14 place-items-center rounded-lg border border-border/70 bg-background/75 text-foreground/24"><UserRound className="size-7" /></span></div>}
                 </button>
                 <div className="absolute inset-x-2 top-2 flex items-center justify-between gap-2">
@@ -41,14 +41,14 @@ export function ProjectCharacterCard({ asset, folderItems, generating, removing,
                 </div>
             </AssetLibraryCardMedia>
             <div className="p-3">
-                <div className="flex items-start justify-between gap-3"><button type="button" className="project-character-title-button" onClick={onOpen}><h3 className="truncate text-sm font-semibold">{asset.title}</h3><p className="mt-0.5 truncate text-[var(--fs-label)] text-foreground/48">{role}</p></button><Button type="text" size="small" className="!h-7 !px-1.5" icon={<Pencil className="size-3.5" />} onClick={onEdit} aria-label={`编辑 ${asset.title}`} /></div>
+                <div className="flex items-start justify-between gap-3"><button type="button" className="project-character-title-button" onClick={onOpen}><h3 className="truncate text-sm font-semibold">{asset.title}</h3><p className="mt-0.5 truncate text-[var(--fs-label)] text-foreground/48">{role}</p></button><Button type="text" size="small" className="!h-7 !px-1.5" icon={<Pencil className="size-3.5" />} onClick={onEdit} aria-label={`編輯 ${asset.title}`} /></div>
                 <p className="mt-2 line-clamp-2 min-h-9 text-[var(--fs-label)] leading-[18px] text-foreground/55">{appearance}</p>
                 <div className="mt-2 grid gap-1.5">
-                    <StatusLine icon={<ImageIcon className="size-3.5" />} ready={character?.visualStatus === "ready"} label={imageStatus} action={character?.visualStatus === "ready" ? "更换" : "初始化"} onClick={character?.visualStatus === "ready" ? onBindImages : onGenerate} />
-                    <StatusLine icon={<Volume2 className="size-3.5" />} ready={character?.voiceStatus === "ready"} label={voiceStatus} action={character?.voiceStatus === "ready" ? "调整" : "选择"} onClick={onBindVoice} />
+                    <StatusLine icon={<ImageIcon className="size-3.5" />} ready={character?.visualStatus === "ready"} label={imageStatus} action={character?.visualStatus === "ready" ? "更換" : "初始化"} onClick={character?.visualStatus === "ready" ? onBindImages : onGenerate} />
+                    <StatusLine icon={<Volume2 className="size-3.5" />} ready={character?.voiceStatus === "ready"} label={voiceStatus} action={character?.voiceStatus === "ready" ? "調整" : "選擇"} onClick={onBindVoice} />
                 </div>
                 <div className="mt-3 flex min-w-0 gap-2 border-t border-border/60 pt-2">
-                    <Button size="small" className="min-w-0 flex-1" icon={<Sparkles className="size-3.5" />} loading={generating} disabled={removing} onClick={onGenerate}>{character?.visualStatus === "missing" ? "初始化三视图" : "重新生成三视图"}</Button><Dropdown trigger={["click"]} menu={{ selectedKeys: [asset.folderId || ""], items: folderItems, onClick: ({ key }) => onMove(key) }}><Button type="text" size="small" disabled={generating || removing} icon={<MoveRight className="size-3.5" />} aria-label={`移动 ${asset.title}`} /></Dropdown><Popconfirm title="移出项目角色？" description="已有画布或镜头引用时将无法移出。" okText="移出" cancelText="取消" onConfirm={onRemove}><Button type="text" danger size="small" loading={removing} disabled={generating} icon={<Trash2 className="size-3.5" />} aria-label={`移出 ${asset.title}`} /></Popconfirm>
+                    <Button size="small" className="min-w-0 flex-1" icon={<Sparkles className="size-3.5" />} loading={generating} disabled={removing} onClick={onGenerate}>{character?.visualStatus === "missing" ? "初始化三檢視" : "重新生成三檢視"}</Button><Dropdown trigger={["click"]} menu={{ selectedKeys: [asset.folderId || ""], items: folderItems, onClick: ({ key }) => onMove(key) }}><Button type="text" size="small" disabled={generating || removing} icon={<MoveRight className="size-3.5" />} aria-label={`移動 ${asset.title}`} /></Dropdown><Popconfirm title="移出專案角色？" description="已有畫布或鏡頭引用時將無法移出。" okText="移出" cancelText="取消" onConfirm={onRemove}><Button type="text" danger size="small" loading={removing} disabled={generating} icon={<Trash2 className="size-3.5" />} aria-label={`移出 ${asset.title}`} /></Popconfirm>
                 </div>
             </div>
         </AssetLibraryCard>

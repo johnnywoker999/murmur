@@ -34,10 +34,10 @@ export function filterValidSubtitleHighlights(entries: SrtEntry[], highlights: S
 }
 
 /**
- * 在重分段后，把旧高亮映射到新条目上。
- * 规则：highlightText 必须作为子串出现在某个新条目的 text 中；
- * 找到第一个匹配的条目，更新 entryIndex 和 start/end；
- * 找不到则放入 dropped（通常是跨切分点的关键词）。
+ * 在重分段後，把舊高亮對映到新條目上。
+ * 規則：highlightText 必須作為子串出現在某個新條目的 text 中；
+ * 找到第一個匹配的條目，更新 entryIndex 和 start/end；
+ * 找不到則放入 dropped（通常是跨切分點的關鍵詞）。
  */
 export function remapHighlightsAfterResegment(oldHighlights: SubtitleHighlight[], newEntries: SrtEntry[]): { remapped: SubtitleHighlight[]; dropped: SubtitleHighlight[] } {
     const remapped: SubtitleHighlight[] = [];
@@ -62,7 +62,7 @@ export function remapHighlightsAfterResegment(oldHighlights: SubtitleHighlight[]
     return { remapped, dropped };
 }
 
-// 无可用大模型配置时的本地回退：按终止标点取首段作为高亮，保证功能不中断。
+// 無可用大模型配置時的本地回退：按終止標點取首段作為高亮，保證功能不中斷。
 const TERMINAL_PUNCTUATION = "。！？；";
 
 export function buildFallbackHighlights(entries: SrtEntry[]): SubtitleHighlight[] {

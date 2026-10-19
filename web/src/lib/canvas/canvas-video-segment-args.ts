@@ -1,8 +1,8 @@
-// 视频片段处理（裁切/提音轨）的 ffmpeg 参数构造，纯函数便于单测。
-// 精确裁切：-ss 放在 -i 之后并重编码。输入 seek + stream copy 只会落到关键帧，
-// 任意部分区间不能靠 -c:v copy 保证切点。
-// 整段去音：不要带 -ss/-t 的输出 seek copy。MP4 在 ss=0 时仍可能写出无 mdat 的空文件。
-// 用 -map 0:V:0 跳过 attached pic。
+// 影片片段處理（裁切/提音軌）的 ffmpeg 引數構造，純函式便於單測。
+// 精確裁切：-ss 放在 -i 之後並重編碼。輸入 seek + stream copy 只會落到關鍵幀，
+// 任意部分割槽間不能靠 -c:v copy 保證切點。
+// 整段去音：不要帶 -ss/-t 的輸出 seek copy。MP4 在 ss=0 時仍可能寫出無 mdat 的空檔案。
+// 用 -map 0:V:0 跳過 attached pic。
 
 export const SEGMENT_INPUT_NAME = "segment-input.mp4";
 export const SEGMENT_OUTPUT_NAME = "segment-output.mp4";
@@ -12,17 +12,17 @@ export const AUDIO_COPY_OUTPUT_NAME = "segment-output.m4a";
 export const MUTED_VIDEO_OUTPUT_NAME = "segment-muted-output.mp4";
 export const CROP_OUTPUT_NAME = "segment-crop-output.mp4";
 
-/** 视频片段裁切参数：输出统一编码 MP4。 */
+/** 影片片段裁切引數：輸出統一編碼 MP4。 */
 export function buildSegmentTrimArgs(startSec: string, durationSec: string, inputName = SEGMENT_INPUT_NAME, outputName = SEGMENT_OUTPUT_NAME): string[] {
     return ["-i", inputName, "-ss", startSec, "-t", durationSec, "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "aac", "-movflags", "+faststart", outputName];
 }
 
-/** 从视频片段提取声音：同样使用输出 seek，保证起点与裁切路径一致。 */
+/** 從影片片段提取聲音：同樣使用輸出 seek，保證起點與裁切路徑一致。 */
 export function buildExtractAudioArgs(audioCodec: string, startSec: string, durationSec: string, outputName = SEGMENT_OUTPUT_NAME, inputName = SEGMENT_INPUT_NAME): string[] {
     return ["-i", inputName, "-ss", startSec, "-t", durationSec, "-vn", "-c:a", audioCodec, "-q:a", "2", outputName];
 }
 
-/** 直接复制原音轨，绕过精简内核缺少 MP3/AAC 编码器的问题。 */
+/** 直接複製原音軌，繞過精簡核心缺少 MP3/AAC 編碼器的問題。 */
 export function buildCopyAudioArgs(startSec: string, durationSec: string, outputName = AUDIO_COPY_OUTPUT_NAME, inputName = SEGMENT_INPUT_NAME): string[] {
     return ["-i", inputName, "-ss", startSec, "-t", durationSec, "-map", "0:a:0?", "-vn", "-c:a", "copy", "-movflags", "+faststart", outputName];
 }
@@ -41,14 +41,14 @@ export function assertUsableSegmentOutput(output: Uint8Array | string, kind: "vi
     const bytes = asBytes(output);
     if (kind === "audio") {
         if (hasIsoBmffTrack(bytes, "soun") || isWaveAudio(bytes) || isMpegAudio(bytes)) return;
-        throw new Error("音频提取失败：输出没有可用的音轨");
+        throw new Error("音訊提取失敗：輸出沒有可用的音軌");
     }
     if (!hasIsoBmffTrack(bytes, "vide")) {
-        throw new Error("无声视频生成失败：输出没有可用的视频轨道");
+        throw new Error("無聲影片生成失敗：輸出沒有可用的影片軌道");
     }
 }
 
-/** 去掉原视频音轨。整段可复制画面；部分区间必须重编码，不能 stream copy。 */
+/** 去掉原影片音軌。整段可複製畫面；部分割槽間必須重編碼，不能 stream copy。 */
 export function buildRemoveAudioArgs(startSec: string, durationSec: string, outputName = MUTED_VIDEO_OUTPUT_NAME, options?: { fullSource?: boolean; inputName?: string }): string[] {
     const inputName = options?.inputName ?? SEGMENT_INPUT_NAME;
     if (options?.fullSource) {
@@ -57,13 +57,13 @@ export function buildRemoveAudioArgs(startSec: string, durationSec: string, outp
     return ["-i", inputName, "-ss", startSec, "-t", durationSec, "-map", "0:V:0", "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-movflags", "+faststart", outputName];
 }
 
-/** 空间裁切视频，坐标和尺寸使用源视频像素值。 */
+/** 空間裁切影片，座標和尺寸使用源影片畫素值。 */
 export function buildVideoCropArgs(x: number, y: number, width: number, height: number, inputName = SEGMENT_INPUT_NAME, outputName = CROP_OUTPUT_NAME): string[] {
     return ["-i", inputName, "-vf", `crop=${Math.round(width)}:${Math.round(height)}:${Math.round(x)}:${Math.round(y)}`, "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "aac", "-movflags", "+faststart", outputName];
 }
 
-// 可用性看容器结构：ftyp、mdat 载荷、trak 内 vide/soun 且 sample_count>0。
-// 短片可以小于 4KiB；空壳仍带 ftyp/mdat 四字符，不能靠子串扫描。
+// 可用性看容器結構：ftyp、mdat 載荷、trak 內 vide/soun 且 sample_count>0。
+// 短片可以小於 4KiB；空殼仍帶 ftyp/mdat 四字元，不能靠子串掃描。
 
 const ISO_NEST = new Set(["moov", "trak", "mdia", "minf", "stbl", "edts", "dinf", "mvex", "moof", "traf"]);
 const MAX_ISO_BOXES = 8192;
@@ -159,10 +159,10 @@ function isMpegAudio(bytes: Uint8Array) {
 
 export function assertVideoAudioProbe(raw: string) {
     let payload: { streams?: Array<{ index?: number }>; format?: { duration?: string } };
-    try { payload = JSON.parse(raw); } catch { throw new Error("无法读取视频音轨信息，请检查素材是否完整"); }
+    try { payload = JSON.parse(raw); } catch { throw new Error("無法讀取影片音軌資訊，請檢查素材是否完整"); }
     const duration = Number(payload?.format?.duration);
     if (!Number.isFinite(duration) || duration <= 0 || !Array.isArray(payload?.streams) || payload.streams.some((stream) => !Number.isInteger(stream?.index))) {
-        throw new Error("无法读取视频音轨信息，请检查素材是否完整");
+        throw new Error("無法讀取影片音軌資訊，請檢查素材是否完整");
     }
-    if (!payload.streams.length) throw new Error("原视频没有音轨，无法分离音频。画面中的人物或动作不代表文件包含声音；请换用带声音的视频。");
+    if (!payload.streams.length) throw new Error("原影片沒有音軌，無法分離音訊。畫面中的人物或動作不代表檔案包含聲音；請換用帶聲音的影片。");
 }

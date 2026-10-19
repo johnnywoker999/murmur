@@ -1,7 +1,7 @@
-// 编辑器宿主上下文：store 实例 + 宿主能力（项目信息、资产等）。
-// 插槽渲染函数经 registerEditorSlot 注册，宿主在 editor 视图创建 store 后经
-// EditorStoreProvider 注入；面板组件用 useEditorStoreContext 消费。
-// Host 上下文独立于 store，供需要宿主数据的面板（资产库、导出）使用。
+// 編輯器宿主上下文：store 例項 + 宿主能力（專案資訊、資產等）。
+// 插槽渲染函式經 registerEditorSlot 註冊，宿主在 editor 檢視建立 store 後經
+// EditorStoreProvider 注入；面板元件用 useEditorStoreContext 消費。
+// Host 上下文獨立於 store，供需要宿主資料的面板（資產庫、匯出）使用。
 
 import { createContext, useContext } from "react";
 import type { StoreApi, UseBoundStore } from "zustand";
@@ -13,9 +13,9 @@ type EditorStoreHook = UseBoundStore<StoreApi<EditorStore>>;
 
 export type EditorHostContextValue = {
     projectId: string;
-    /** 当前用户、当前项目的资产快照；由编辑器宿主获取，素材导入插件只消费和触发刷新。 */
+    /** 當前使用者、當前專案的資產快照；由編輯器宿主獲取，素材匯入外掛只消費和觸發重新整理。 */
     assets: ProjectAsset[];
-    /** 重新拉取项目资产（导入媒体后刷新列表）。 */
+    /** 重新拉取專案資產（匯入媒體後重新整理列表）。 */
     refreshAssets: () => Promise<ProjectAsset[] | null>;
 };
 

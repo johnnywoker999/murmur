@@ -95,7 +95,7 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
     const [promptContentHeight, setPromptContentHeight] = useState(() => estimatePromptContentHeight(savedPrompt, false));
     const [expandedPromptContentHeight, setExpandedPromptContentHeight] = useState(() => estimatePromptContentHeight(savedPrompt, true));
     const [manualPromptHeight, setManualPromptHeight] = useState<number | null>(null);
-    const [paramsExpanded, setParamsExpanded] = useState(false); // #98 决策2：B区参数区折叠状态（手风琴）
+    const [paramsExpanded, setParamsExpanded] = useState(false); // #98 決策2：B區引數區摺疊狀態（手風琴）
     const [promptOptimizerOpen, setPromptOptimizerOpen] = useState(false);
     const [autoLinkEnabled, setAutoLinkEnabled] = useState(true);
     const resolvedMentionReferences = useResolvedCanvasResourceReferences(mentionReferences, { projectId });
@@ -131,7 +131,7 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
                 metadata={node.metadata}
                 frameOptions={videoFrameOptions}
                 endFrameSupported={!isH3Style(config.model)}
-                referenceLabel={h3Model ? "参考生成" : undefined}
+                referenceLabel={h3Model ? "參考生成" : undefined}
                 referenceMode={modelOptionName(config.model) === "minimax-h3" && h3VideoOperation(config.model, requirements.input!, node.metadata?.videoEditOperation) === "reference_to_video" ? "all" : "frames"}
                 referenceSummary={requirements.input}
                 onMetadataChange={(patch) => onConfigChange(node.id, patch)}
@@ -242,7 +242,7 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
         <div
             className="canvas-node-composer-header cursor-grab select-none active:cursor-grabbing"
             data-canvas-node-drag-handle
-            title="拖动节点"
+            title="拖動節點"
             onPointerDown={(event) => {
                 const target = event.target instanceof Element ? event.target : null;
                 if (!target?.closest("button, input, textarea, select, a, [contenteditable=\"true\"], [data-canvas-no-drag]")) onNodeMouseDown?.(event, node.id);
@@ -265,37 +265,37 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
             <div className="ml-auto flex shrink-0 items-center justify-end gap-1">
                 {expanded ? <CanvasPromptFontControl /> : null}
             {canOptimizePrompt ? (
-                <Tooltip title="用 AI 润色提示词">
+                <Tooltip title="用 AI 潤色提示詞">
                     <button
                         type="button"
                         className="canvas-node-composer-header-action inline-flex h-6 shrink-0 items-center gap-1 rounded-md px-1.5"
                         onClick={() => setPromptOptimizerOpen(true)}
-                        aria-label="润色提示词"
+                        aria-label="潤色提示詞"
                     >
                         <WandSparkles className="size-3" />
-                        <span className="text-[var(--fs-tiny)] font-medium">润色</span>
+                        <span className="text-[var(--fs-tiny)] font-medium">潤色</span>
                     </button>
                 </Tooltip>
             ) : null}
                 {!expanded && canExpandPrompt ? (
-                    <Tooltip title="放大编辑">
+                    <Tooltip title="放大編輯">
                         <button
                             type="button"
                             className="canvas-node-composer-header-action grid size-6 shrink-0 place-items-center rounded-md"
                             onClick={() => setExpandedPromptOpen(true)}
-                            aria-label="放大编辑提示词"
+                            aria-label="放大編輯提示詞"
                         >
                             <Maximize2 className="size-3" />
                         </button>
                     </Tooltip>
                 ) : null}
                 {!expanded && onClose ? (
-                    <Tooltip title="关闭">
+                    <Tooltip title="關閉">
                         <button
                             type="button"
                             className="canvas-node-composer-header-action grid size-6 shrink-0 place-items-center rounded-md"
                             onClick={onClose}
-                            aria-label="关闭创作面板"
+                            aria-label="關閉創作面板"
                         >
                             <X className="size-3" />
                         </button>
@@ -334,7 +334,7 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
         simpleMode ? (
             <div className="canvas-node-composer-footer">
                 <span className="min-w-0 truncate px-2 text-[var(--fs-tiny)]" style={{ color: theme.node.muted }}>
-                    {activeReferenceCount ? `已连接 ${activeReferenceCount} 个素材` : "将使用默认模型与参数"}
+                    {activeReferenceCount ? `已連線 ${activeReferenceCount} 個素材` : "將使用預設模型與引數"}
                 </span>
                 <ReferenceToolsPopover
                     canAutoMention={canAutoMention}
@@ -367,11 +367,11 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
                         <button
                             type="button"
                             className="canvas-composer-model-picker flex !h-7 w-full min-w-0 items-center px-2 text-left !text-[var(--fs-tiny)] !font-normal"
-                            aria-label="暂无模型可用，连接内置算力"
-                            title="暂无模型可用，连接内置算力"
+                            aria-label="暫無模型可用，連線內建算力"
+                            title="暫無模型可用，連線內建算力"
                             onClick={() => navigateToSettings({ section: "channels", continueCreation: true })}
                         >
-                            <span className="truncate">暂无模型可用，连接内置算力</span>
+                            <span className="truncate">暫無模型可用，連線內建算力</span>
                         </button>
                     )}
                 </div>
@@ -386,19 +386,19 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
                         label={autoLinkLabel}
                     />
                     {mode === "text" ? (
-                        <Tooltip title={`文本生成份数（默认 1，可在生成配置中调整）`}>
+                        <Tooltip title={`文本生成份數（預設 1，可在生成配置中調整）`}>
                             <InputNumber
                                 size="small"
                                 min={1}
                                 max={15}
                                 value={Math.max(1, Math.min(15, Math.floor(Math.abs(Number(node.metadata?.textCount) || 1))))}
                                 onChange={(value) => onConfigChange(node.id, { textCount: Math.max(1, Math.min(15, Math.floor(Math.abs(Number(value)) || 1))) })}
-                                aria-label="文本生成份数"
+                                aria-label="文本生成份數"
                                 className="!w-14 !h-7 [&_.ant-input-number-input]:!text-[var(--fs-tiny)]"
                             />
                         </Tooltip>
                     ) : mode === "image" ? (
-                        // 图片模式下，显示相机配置与镜头配置
+                        // 圖片模式下，顯示相機配置與鏡頭配置
                         <>
                             <CanvasCameraControlPopover
                                 cameraControl={node.metadata?.cameraControl}
@@ -422,7 +422,7 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
                                 onCameraControlChange={(cameraControl) => onConfigChange(node.id, { cameraControl })}
                                 theme={theme}
                                 compact={!expanded}
-                                label="运镜"
+                                label="運鏡"
                             />
                             <CanvasVideoSettingsPopover
                                 config={config}
@@ -482,7 +482,7 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
                             : "thin-scrollbar h-full w-full resize-none overflow-y-auto border-none bg-transparent px-2.5 py-1.5 text-[var(--fs-body)] leading-5 !outline-none !ring-0 !shadow-none focus:!outline-none focus:!ring-0 focus:!shadow-none placeholder:text-current placeholder:opacity-35"}
                         style={{ color: theme.node.text, outline: "none", boxShadow: "none", fontSize, lineHeight: `${Math.round(fontSize * 1.5)}px` }}
                         placeholder={promptPlaceholder(mode, hasImageContent, hasTextContent)}
-                        aria-label={`${modeDisplayName(mode)}提示词`}
+                        aria-label={`${modeDisplayName(mode)}提示詞`}
                     />
                 </div>
                 {!expanded && <PromptResizeHandle
@@ -506,7 +506,7 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
                         onAutoLinkEnabledChange={setAutoLinkEnabled}
                         accent={monochromeAccent}
                         compact={false}
-                        label="参考"
+                        label="參考"
                     />
                 </div>
             );
@@ -542,12 +542,12 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
 
             <div className="canvas-node-composer-prompt-tools">
                 <CanvasPromptFontControl />
-                {canExpandPrompt ? <button type="button" className="canvas-node-composer-header-action grid size-6 place-items-center rounded-md" onClick={() => setExpandedPromptOpen(true)} aria-label="放大编辑提示词" title="放大编辑提示词"><Maximize2 className="size-3" /></button> : null}
+                {canExpandPrompt ? <button type="button" className="canvas-node-composer-header-action grid size-6 place-items-center rounded-md" onClick={() => setExpandedPromptOpen(true)} aria-label="放大編輯提示詞" title="放大編輯提示詞"><Maximize2 className="size-3" /></button> : null}
             </div>
 
             {renderPromptEditor(false)}
 
-            {/* B区 参数区（对应 #98 决策2：默认折叠，手风琴展开）*/}
+            {/* B區 引數區（對應 #98 決策2：預設摺疊，手風琴展開）*/}
             {hasVideoPromptTools ? (
                 <div className="canvas-node-composer-parameters overflow-hidden">
                     <button
@@ -556,10 +556,10 @@ export function CanvasNodePromptPanel({ projectId, node, isRunning, onPromptChan
                         style={{ color: theme.node.muted }}
                         onClick={() => setParamsExpanded(!paramsExpanded)}
                         aria-expanded={paramsExpanded}
-                        aria-label={paramsExpanded ? "收起参数" : "展开参数"}
+                        aria-label={paramsExpanded ? "收起引數" : "展開引數"}
                     >
                         <SlidersHorizontal className="size-3" strokeWidth={1.8} />
-                        <span className="flex-1 text-left">参数</span>
+                        <span className="flex-1 text-left">引數</span>
                         <ChevronDown className={`size-3 transition-transform duration-200 ${paramsExpanded ? "rotate-180" : ""}`} strokeWidth={1.8} />
                     </button>
                     {paramsExpanded ? (
@@ -622,8 +622,8 @@ function ReferenceToolsPopover({ canAutoMention, autoLinkEnabled, onAutoMention,
             content={
                 <div className="space-y-1.5">
                     <div>
-                        <div className="text-sm font-medium leading-5">智能引用</div>
-                        <div className="mt-0.5 text-xs leading-4 text-black/50 dark:text-white/50">输入素材序号或名称后按 Tab，可快速引用</div>
+                        <div className="text-sm font-medium leading-5">智慧引用</div>
+                        <div className="mt-0.5 text-xs leading-4 text-black/50 dark:text-white/50">輸入素材序號或名稱後按 Tab，可快速引用</div>
                     </div>
                     <div className="flex min-h-6 items-center justify-between gap-3">
                         <div className="flex items-center gap-2 text-sm"><Link2 className="size-3.5" />AutoLink</div>
@@ -631,7 +631,7 @@ function ReferenceToolsPopover({ canAutoMention, autoLinkEnabled, onAutoMention,
                             type="button"
                             role="switch"
                             aria-checked={autoLinkEnabled}
-                            aria-label={autoLinkEnabled ? "关闭 AutoLink" : "开启 AutoLink"}
+                            aria-label={autoLinkEnabled ? "關閉 AutoLink" : "開啟 AutoLink"}
                             className="canvas-reference-autolink-switch relative inline-flex h-5 w-9 items-center rounded-full border transition-colors"
                             style={{ background: autoLinkEnabled ? `${accent}14` : "transparent", borderColor: autoLinkEnabled ? accent : "color-mix(in srgb, currentColor 22%, transparent)", color: accent }}
                             onClick={() => onAutoLinkEnabledChange(!autoLinkEnabled)}
@@ -646,7 +646,7 @@ function ReferenceToolsPopover({ canAutoMention, autoLinkEnabled, onAutoMention,
                         disabled={!canAutoMention}
                         onClick={onAutoMention}
                     >
-                        <AtSign className="size-3.5" />一键引用全文
+                        <AtSign className="size-3.5" />一鍵引用全文
                     </button>
                 </div>
             }
@@ -654,8 +654,8 @@ function ReferenceToolsPopover({ canAutoMention, autoLinkEnabled, onAutoMention,
             <button
                 type="button"
                 className={`canvas-node-composer-settings-trigger canvas-node-composer-reference-tools-trigger inline-flex shrink-0 items-center gap-1 ${compact ? "is-compact" : ""}`}
-                aria-label={label === "引用" ? "打开智能引用" : label}
-                title={label === "引用" ? "智能引用" : label}
+                aria-label={label === "引用" ? "開啟智慧引用" : label}
+                title={label === "引用" ? "智慧引用" : label}
             >
                 <SlidersHorizontal className="size-3.5" />
                 {!compact ? <span>{label}</span> : null}
@@ -672,14 +672,14 @@ function GenerationModeIcon({ mode }: { mode: CanvasNodeGenerationMode }) {
 }
 
 function modeDisplayName(mode: CanvasNodeGenerationMode) {
-    if (mode === "image") return "图片";
-    if (mode === "video") return "视频";
-    if (mode === "audio") return "音频";
+    if (mode === "image") return "圖片";
+    if (mode === "video") return "影片";
+    if (mode === "audio") return "音訊";
     return "文本";
 }
 
 function referenceShelfHeading(references: CanvasResourceReference[]) {
-    const label = references.every((reference) => reference.kind === "image" || reference.kind === "character") ? "参考图" : "参考素材";
+    const label = references.every((reference) => reference.kind === "image" || reference.kind === "character") ? "參考圖" : "參考素材";
     return `${label} · ${references.length}`;
 }
 
@@ -728,7 +728,7 @@ function ConnectedReferenceShelf({
 
     return (
         <>
-            <div className="canvas-node-composer-references" role="group" aria-label="已连接素材">
+            <div className="canvas-node-composer-references" role="group" aria-label="已連線素材">
                 <div className="canvas-node-composer-references-track thin-scrollbar">
                     {activeReferences.map((reference, index) => {
                         const displayName = canvasResourceDisplayName(reference);
@@ -806,8 +806,8 @@ function ConnectedReferenceShelf({
                                         type="button"
                                         className="canvas-node-reference-drag-handle"
                                         draggable
-                                        title={`拖动调整 ${displayName} 的顺序`}
-                                        aria-label={`调整 ${displayName} 的顺序；使用左右方向键也可移动`}
+                                        title={`拖動調整 ${displayName} 的順序`}
+                                        aria-label={`調整 ${displayName} 的順序；使用左右方向鍵也可移動`}
                                         onDragStart={(event) => {
                                             setDraggedReferenceId(reference.nodeId);
                                             event.dataTransfer.effectAllowed = "move";
@@ -829,8 +829,8 @@ function ConnectedReferenceShelf({
                                     type="button"
                                     className="canvas-node-reference-preview"
                                     style={{ background: theme.toolbar.itemHover, color: theme.node.text, outlineColor: theme.node.activeStroke }}
-                                    title={canPreview ? `预览 ${reference.title}` : `插入 @${displayName}`}
-                                    aria-label={canPreview ? `预览 ${reference.title}` : `插入 @${displayName}`}
+                                    title={canPreview ? `預覽 ${reference.title}` : `插入 @${displayName}`}
+                                    aria-label={canPreview ? `預覽 ${reference.title}` : `插入 @${displayName}`}
                                     onClick={() => (canPreview ? setImagePreview(reference) : onInsert(reference))}
                                 >
                                     <ReferenceThumbnail reference={reference} />
@@ -857,8 +857,8 @@ function ConnectedReferenceShelf({
                                         type="button"
                                         className="canvas-node-reference-remove"
                                         style={{ background: theme.toolbar.panel, borderColor: theme.node.stroke, color: theme.node.text }}
-                                        title="移除参考并删除连接"
-                                        aria-label={`移除参考 ${displayName}`}
+                                        title="移除參考並刪除連線"
+                                        aria-label={`移除參考 ${displayName}`}
                                         onClick={(event) => {
                                             event.stopPropagation();
                                             onRemove(reference);
@@ -935,7 +935,7 @@ function PromptResizeHandle({ height, min, max, onResize }: { height: number; mi
             type="button"
             className="canvas-node-composer-resize-handle"
             role="separator"
-            aria-label="调整提示词输入高度"
+            aria-label="調整提示詞輸入高度"
             aria-orientation="horizontal"
             aria-valuemin={min}
             aria-valuemax={max}
@@ -1000,8 +1000,8 @@ function PromptModalResizeHandle({ size, measure, onResize, accent }: { size: { 
         <button
             type="button"
             className="absolute bottom-1.5 right-1.5 z-10 grid size-5 cursor-nwse-resize touch-none place-items-center opacity-60 transition-opacity hover:opacity-100 focus-visible:outline focus-visible:outline-2"
-            aria-label="拖动调整窗口大小"
-            title="拖动调整窗口宽高，也可用方向键调整"
+            aria-label="拖動調整視窗大小"
+            title="拖動調整視窗寬高，也可用方向鍵調整"
             onKeyDown={handleKeyDown}
             onPointerDown={(event) => {
                 if (event.button !== 0 || !event.isPrimary) return;
@@ -1066,10 +1066,10 @@ function defaultMode(type: CanvasNodeData["type"]): CanvasNodeGenerationMode {
 export { buildNodeConfig };
 
 function promptPlaceholder(mode: CanvasNodeGenerationMode, hasImageContent: boolean, hasTextContent: boolean) {
-    if (mode === "video") return "描述你想要生成的画面内容，@引用素材";
-    if (mode === "audio") return "描述你想要的音频效果，可用 @ 引用音频";
-    if (mode === "image") return hasImageContent ? "输入新提示词，重新生成当前图片" : "描述要生成的图片内容";
-    return hasTextContent ? "请输入你想要将本段文本修改成什么" : "请输入你想要生成的文本内容";
+    if (mode === "video") return "描述你想要生成的畫面內容，@引用素材";
+    if (mode === "audio") return "描述你想要的音訊效果，可用 @ 引用音訊";
+    if (mode === "image") return hasImageContent ? "輸入新提示詞，重新生成當前圖片" : "描述要生成的圖片內容";
+    return hasTextContent ? "請輸入你想要將本段文本修改成什麼" : "請輸入你想要生成的文本內容";
 }
 
 function videoConfigPatch(key: keyof AiConfig, value: string) {

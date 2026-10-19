@@ -1,9 +1,9 @@
-// 内置创作助手：浏览器只与同源 Go 代理通信，宿主/owner/模型凭据都不进入页面。
-// 三个端点的真实路径都在 /api/assistant/* 下；写错路径会让面板永远拿不到回复。
+// 內建創作助手：瀏覽器只與同源 Go 代理通訊，宿主/owner/模型憑據都不進入頁面。
+// 三個端點的真實路徑都在 /api/assistant/* 下；寫錯路徑會讓面板永遠拿不到回覆。
 import { ApiError, apiBaseURL, http } from "./request";
 import { assertUserScope, captureUserScope, userScopeMatches, type CapturedUserScope } from "@/lib/user-scope-guard";
 
-/** 后端给出的不可用原因（穷举，见契约 A1）；未知值一律走兜底文案。 */
+/** 後端給出的不可用原因（窮舉，見契約 A1）；未知值一律走兜底文案。 */
 export type AssistantUnavailableReason =
     | "model_not_configured"
     | "credential_missing"
@@ -41,7 +41,7 @@ export type AgentToolCall = {
     replayed?: boolean;
 };
 
-/** 一个回合真正落到画布上的改动；没写任何东西时后端给 null。 */
+/** 一個回合真正落到畫布上的改動；沒寫任何東西時後端給 null。 */
 export type AssistantTurnChange = {
     revisionBefore: number;
     revisionAfter: number;
@@ -57,7 +57,7 @@ export type AssistantTurnChange = {
 
 export type AssistantCanvasChange = Omit<AssistantTurnChange, "canvasChanges"> & { canvasId: string; operationIds: string[] };
 
-/** 付费生成提议：后端只登记，不生成、不扣费，执行发生在画布既有生成链路。 */
+/** 付費生成提議：後端只登記，不生成、不扣費，執行發生在畫布既有生成鏈路。 */
 export type AssistantGenerationProposal = {
     proposalId: string;
     kind: "image" | "video";
@@ -71,7 +71,7 @@ export type AssistantGenerationProposal = {
 export type AgentTurnEnd = {
     type: "turn_end";
     turnId?: string;
-    /** 宿主本回合实际使用的会话；旧 JSONL 会话首次发消息会交接给新的 Durable 会话，界面据此更新。 */
+    /** 宿主本回合實際使用的會話；舊 JSONL 會話首次發訊息會交接給新的 Durable 會話，介面據此更新。 */
     sessionId?: string;
     permissionMode?: AssistantPermissionMode;
     reply: string;
@@ -132,54 +132,54 @@ export type AssistantHistory = {
         references?: AgentChatReference[]; supplements?: string[]; supplementInputs?: AssistantSupplementInput[]; permissionMode?: AssistantPermissionMode; createdAt: string; status: "running" } | null;
 };
 
-// UI 会话凭据只保存在内存里：刷新页面即重新签发，不写入 localStorage。
+// UI 會話憑據只儲存在記憶體裡：重新整理頁面即重新簽發，不寫入 localStorage。
 let uiSession: { token: string; expiresAt: number; scope: CapturedUserScope } | null = null;
 let uiSessionPending: { promise: Promise<string>; scope: CapturedUserScope } | null = null;
 let uiSessionGeneration = 0;
 
 /**
- * 服务端失败原因只用于分支，展示给用户的永远是用户语。
- * 这些 reason 由后端给出（见 handler/agent_proxy.go 与 agent_host_lifecycle.go）。
+ * 服務端失敗原因只用於分支，展示給使用者的永遠是使用者語。
+ * 這些 reason 由後端給出（見 handler/agent_proxy.go 與 agent_host_lifecycle.go）。
  */
-export function agentAssistantFailureText(reason: string | undefined, fallback = "创作助手暂时不可用，请稍后再试") {
+export function agentAssistantFailureText(reason: string | undefined, fallback = "創作助手暫時不可用，請稍後再試") {
     switch (reason) {
         case "skill_instruction_too_large":
-            return "所选技能正文过大，请减少所选技能或将部分内容移到参考文件后重试。";
+            return "所選技能正文過大，請減少所選技能或將部分內容移到參考檔案後重試。";
         case "body_too_large":
         case "http_413":
-            return "本次消息内容过大，请缩短消息或减少附件后重试。";
+            return "本次訊息內容過大，請縮短訊息或減少附件後重試。";
         case "turn_timeout":
-            return "模型响应时间过长，这一轮尚未完成。已完成的改动会保留，可以继续处理。";
+            return "模型響應時間過長，這一輪尚未完成。已完成的改動會保留，可以繼續處理。";
         case "turn_interrupted":
-            return "上一轮执行中断，已经落地的改动已保留。请查看画布和改动记录后再继续。";
+            return "上一輪執行中斷，已經落地的改動已保留。請檢視畫布和改動記錄後再繼續。";
         case "turn_request_budget_exhausted":
         case "turn_tool_step_budget_exhausted":
-            return "这一轮已达到调用上限，已停止继续执行。可以发送新消息继续，已落地的改动会保留。";
+            return "這一輪已達到呼叫上限，已停止繼續執行。可以傳送新訊息繼續，已落地的改動會保留。";
         case "request_budget_exhausted":
-            return "当前配置的总调用预算已用完，请检查助手运行配置。已落地的改动会保留。";
+            return "當前配置的總呼叫預算已用完，請檢查助手執行配置。已落地的改動會保留。";
         case "request_budget_storage_unavailable":
-            return "预算记录无法读取或保存，已停止继续调用。请检查磁盘空间和数据目录权限；仍失败时，请从有效备份恢复预算记录后重启助手。";
+            return "預算記錄無法讀取或儲存，已停止繼續呼叫。請檢查磁碟空間和資料目錄許可權；仍失敗時，請從有效備份恢復預算記錄後重啟助手。";
         case "model_error":
         case "provider_error":
-            return "模型没有完成回复。已经完成的操作会保留，请检查结果后再继续。";
+            return "模型沒有完成回覆。已經完成的操作會保留，請檢查結果後再繼續。";
         case "model_request_failed":
-            return "模型暂时没有完成响应。已完成的改动会保留，可以继续处理。";
+            return "模型暫時沒有完成響應。已完成的改動會保留，可以繼續處理。";
         case "host_unreachable":
         case "host_unhealthy":
         case "host_token_missing":
         case "host_command_missing":
         case "host_start_failed":
-            return "创作助手还没准备好，请稍后再试";
+            return "創作助手還沒準備好，請稍後再試";
         case "unauthenticated":
         case "read_only_client":
         case "forbidden":
-            return "当前页面无法使用创作助手，请重新打开画布";
+            return "當前頁面無法使用創作助手，請重新開啟畫布";
         case "session_busy":
-            return "上一条消息还在处理中，请等它结束";
+            return "上一條訊息還在處理中，請等它結束";
         case "session_not_current":
-            return "你已经换到别的对话了，请重新发送这条消息";
+            return "你已經換到別的對話了，請重新傳送這條訊息";
         case "session_not_running":
-            return "这一轮已经结束，请查看最新结果后发送新消息";
+            return "這一輪已經結束，請檢視最新結果後傳送新訊息";
         default:
             return fallback;
     }
@@ -190,31 +190,31 @@ export async function getAgentHostStatus(): Promise<AgentHostStatus> {
     return data;
 }
 
-/** UI 会话头由页面内存里的凭据提供；助手的每条路由都走同一套认证。 */
+/** UI 會話頭由頁面記憶體裡的憑據提供；助手的每條路由都走同一套認證。 */
 async function uiSessionConfig() {
     const token = await ensureAgentUiSession();
     return { headers: { "X-Beeftv-Ui-Session": token } };
 }
 
-/** 重新拉起助手运行环境。失败必须抛出，界面才不会把「没启动」显示成「已就绪」。 */
+/** 重新拉起助手執行環境。失敗必須丟擲，介面才不會把「沒啟動」顯示成「已就緒」。 */
 export async function restartAgentHost(): Promise<void> {
     await http.post<{ restarted: boolean }>("/assistant/host/restart", {}, await uiSessionConfig());
 }
 
-/** 读取失败必须与空历史区分，由界面保留原内容并提供重新读取。 */
+/** 讀取失敗必須與空歷史區分，由介面保留原內容並提供重新讀取。 */
 export async function listAssistantSessions(canvasId: string): Promise<AssistantSessionList> {
     return http.get<AssistantSessionList>(`/assistant/sessions?canvasId=${encodeURIComponent(canvasId)}`, await uiSessionConfig());
 }
 
 export async function createAssistantSession(canvasId: string): Promise<string | null> {
     const data = await http.post<{ sessionId: string }>("/assistant/sessions", { canvasId }, await uiSessionConfig());
-    if (!data?.sessionId) throw new Error("没能新建对话，请重试");
+    if (!data?.sessionId) throw new Error("沒能新建對話，請重試");
     return data.sessionId;
 }
 
 export async function activateAssistantSession(canvasId: string, sessionId: string): Promise<string | null> {
     const data = await http.post<{ sessionId: string }>("/assistant/sessions/activate", { canvasId, sessionId }, await uiSessionConfig());
-    if (!data?.sessionId) throw new Error("没能切换对话，请重试");
+    if (!data?.sessionId) throw new Error("沒能切換對話，請重試");
     return data.sessionId;
 }
 
@@ -222,21 +222,21 @@ export async function getAssistantHistory(canvasId: string, sessionId?: string):
     const query = new URLSearchParams({ canvasId });
     if (sessionId) query.set("sessionId", sessionId);
     const data = await http.get<AssistantHistory>(`/assistant/history?${query.toString()}`, await uiSessionConfig());
-    if (!data || !Array.isArray(data.turns)) throw new Error("没能读取对话，请重试");
+    if (!data || !Array.isArray(data.turns)) throw new Error("沒能讀取對話，請重試");
     return { sessionId: data.sessionId || sessionId || "", active: data.active, turns: data.turns.map((turn) => ({
         ...turn,
-        error: turn.error ? agentAssistantFailureText(turn.errorReason ?? undefined, "这一轮没有全部完成，请核对已经落地的改动。") : null,
+        error: turn.error ? agentAssistantFailureText(turn.errorReason ?? undefined, "這一輪沒有全部完成，請核對已經落地的改動。") : null,
     })) };
 }
 
-/** 撤销失败的机器可读原因，映射到卡片里的一句话。 */
+/** 撤銷失敗的機器可讀原因，對映到卡片裡的一句話。 */
 export type AssistantUndoFailure = "canvas_changed" | "already_undone" | "no_change" | "unknown";
 
 export type AssistantUndoResult = { ok: true; revision: number } | { ok: false; failure: AssistantUndoFailure };
 
 /**
- * 撤销一整回合的改动。后端以新修订号回滚，不倒退历史；
- * 409 的三种原因必须区分，否则用户看不出「能不能再试」。
+ * 撤銷一整回合的改動。後端以新修訂號回滾，不倒退歷史；
+ * 409 的三種原因必須區分，否則使用者看不出「能不能再試」。
  */
 export async function undoAssistantTurn(turnId: string, canvasId: string): Promise<AssistantUndoResult> {
     try {
@@ -247,12 +247,12 @@ export async function undoAssistantTurn(turnId: string, canvasId: string): Promi
     }
 }
 
-/** 已撤销的一轮不再开始生成；这是后端给出的唯一判定，界面隐藏按钮只是提示。 */
-export const ASSISTANT_PROPOSAL_UNDONE_TEXT = "这一轮已撤销，不会生成。";
+/** 已撤銷的一輪不再開始生成；這是後端給出的唯一判定，介面隱藏按鈕只是提示。 */
+export const ASSISTANT_PROPOSAL_UNDONE_TEXT = "這一輪已撤銷，不會生成。";
 
 /**
- * 开始生成前由后端确认生成建议所属的一轮仍然有效。
- * 返回 null 表示可以继续；否则返回给用户看的一句话，不会提交任何生成。
+ * 開始生成前由後端確認生成建議所屬的一輪仍然有效。
+ * 返回 null 表示可以繼續；否則返回給使用者看的一句話，不會提交任何生成。
  */
 export async function confirmAssistantProposalRunnable(turnId: string, proposalId: string, canvasId: string): Promise<string | null> {
     try {
@@ -261,8 +261,8 @@ export async function confirmAssistantProposalRunnable(turnId: string, proposalI
     } catch (error) {
         const reason = error instanceof ApiError ? error.reason : undefined;
         if (reason === "turn_undone") return ASSISTANT_PROPOSAL_UNDONE_TEXT;
-        if (reason === "turn_not_found") return "找不到这一轮对话，未提交生成。请让助手重新提出方案。";
-        return "无法确认这项生成是否还能进行，未提交生成。请检查连接后重试。";
+        if (reason === "turn_not_found") return "找不到這一輪對話，未提交生成。請讓助手重新提出方案。";
+        return "無法確認這項生成是否還能進行，未提交生成。請檢查連線後重試。";
     }
 }
 
@@ -303,11 +303,11 @@ async function issueAgentUiSession(scope: CapturedUserScope, generation: number)
         if (status === 403) {
             throw new Error(agentAssistantFailureText("forbidden"));
         }
-        throw new Error(agentAssistantFailureText(undefined, "创作助手暂时不可用，请稍后再试"));
+        throw new Error(agentAssistantFailureText(undefined, "創作助手暫時不可用，請稍後再試"));
     }
-    if (!data?.token) throw new Error("创作助手暂时不可用，请稍后再试");
+    if (!data?.token) throw new Error("創作助手暫時不可用，請稍後再試");
     assertUserScope(scope);
-    if (generation !== uiSessionGeneration) throw new Error("当前页面会话已更新，请重新发送");
+    if (generation !== uiSessionGeneration) throw new Error("當前頁面會話已更新，請重新傳送");
     // Invalid/missing expiry is never cached; the server remains the authority on validity.
     const expiresAt = Date.parse(data.expiresAt ?? "");
     uiSession = Number.isFinite(expiresAt) ? { token: data.token, expiresAt, scope } : null;
@@ -340,16 +340,16 @@ export type StreamHandlers = {
 };
 
 /**
- * 流式结束但本次回合没有结算事件时的用户可见错误。
+ * 流式結束但本次回合沒有結算事件時的使用者可見錯誤。
  *
- * 宿主对每一次对话都恰好发一条 `turn_end`；收到它才算这一回合真的结束。
- * 把「流断了」当成正常结束会让面板停在一段半截回复上，必须显式失败。
+ * 宿主對每一次對話都恰好發一條 `turn_end`；收到它才算這一回合真的結束。
+ * 把「流斷了」當成正常結束會讓面板停在一段半截回覆上，必須顯式失敗。
  */
-export const AGENT_STREAM_INCOMPLETE_MESSAGE = "创作助手的回复没有完整结束，请再试一次";
+export const AGENT_STREAM_INCOMPLETE_MESSAGE = "創作助手的回覆沒有完整結束，請再試一次";
 
 /**
- * 界面明确引用、且后端会再校验归属的额外资源。
- * 内置助手默认能读当前画布与画布关联的素材/任务；额外画布只读，素材只读。
+ * 介面明確引用、且後端會再校驗歸屬的額外資源。
+ * 內建助手預設能讀當前畫布與畫布關聯的素材/任務；額外畫布只讀，素材只讀。
  */
 export type AgentChatReference = {
     kind: "asset" | "canvas";
@@ -374,7 +374,7 @@ export type AssistantAttachment = {
 function attachmentRequestValue({ resourceId, kind, name, mimeType, bytes, purpose, start, end, durationMs, nodeId, assetId }: AssistantAttachment): AssistantAttachment {
     return { resourceId, kind, name, mimeType, bytes, purpose, start, end, durationMs, nodeId, assetId };
 }
-/** skillName/version 是后端在选定时记下的显示名；缺失表示技能已不可识别，界面不得退回显示标识。 */
+/** skillName/version 是後端在選定時記下的顯示名；缺失表示技能已不可識別，介面不得退回顯示標識。 */
 export type AssistantSkillSelection = { skillId: string; versionId: string; contentHash: string; skillName?: string; version?: string };
 export type AssistantSupplementInput = { message: string; attachments?: AssistantAttachment[]; skills?: AssistantSkillSelection[] };
 
@@ -382,18 +382,18 @@ export type AgentChatRequest = {
     permissionMode?: AssistantPermissionMode;
     signal?: AbortSignal;
     selectedNodeIds?: string[];
-    /** 当前消息里 @ 引用到的资源；后端逐项校验归属，任何一项非法都整轮拒绝。 */
+    /** 當前訊息裡 @ 引用到的資源；後端逐項校驗歸屬，任何一項非法都整輪拒絕。 */
     references?: AgentChatReference[];
-    /** 只发当前会话；后端发现它已不是该画布的当前会话会整回合拒绝。 */
+    /** 只發當前會話；後端發現它已不是該畫布的當前會話會整回合拒絕。 */
     sessionId?: string;
     attachments?: AssistantAttachment[];
     skills?: AssistantSkillSelection[];
 };
 
-/** 已收到回合终态的业务失败，不等同于断流后的「执行结果未知」。 */
+/** 已收到回合終態的業務失敗，不等同於斷流後的「執行結果未知」。 */
 export class AgentTurnFailedError extends Error {
     constructor(readonly reason?: string | null) {
-        super(agentAssistantFailureText(reason ?? undefined, "这一回合没有完成，请再试一次"));
+        super(agentAssistantFailureText(reason ?? undefined, "這一回合沒有完成，請再試一次"));
         this.name = "AgentTurnFailedError";
     }
 }
@@ -406,7 +406,7 @@ export class AgentChatNotAdmittedError extends Error {
     }
 }
 
-// NDJSON 流式对话：http 客户端只做信封解包，流式必须用原生 fetch（同源）。
+// NDJSON 流式對話：http 客戶端只做信封解包，流式必須用原生 fetch（同源）。
 export async function streamAgentChat(
     canvasId: string,
     message: string,
@@ -420,7 +420,7 @@ export async function streamAgentChat(
         token = await ensureAgentUiSession();
         assertUserScope(scope);
     } catch (error) {
-        throw new AgentChatNotAdmittedError(error instanceof Error ? error.message : "消息未发送，请重试");
+        throw new AgentChatNotAdmittedError(error instanceof Error ? error.message : "訊息未傳送，請重試");
     }
     signal?.throwIfAborted();
     const body: Record<string, unknown> = { canvasId, message, selectedNodeIds, permissionMode: assistantPermissionMode(request.permissionMode) };
@@ -448,8 +448,8 @@ export async function streamAgentChat(
     const result = await readAgentTurnStream(response.body, handlers, signal);
     if (!result.settled) throw new Error(AGENT_STREAM_INCOMPLETE_MESSAGE);
     if (result.turnEnd && !result.turnEnd.cancelled && result.turnEnd.error) {
-        // 上游错误可能包含请求细节，控制台同样不记录原文。
-        console.error("创作助手回合失败", { canvasId });
+        // 上游錯誤可能包含請求細節，控制台同樣不記錄原文。
+        console.error("創作助手回合失敗", { canvasId });
         throw new AgentTurnFailedError(result.turnEnd.errorReason);
     }
 }
@@ -457,10 +457,10 @@ export async function streamAgentChat(
 /**
  * 逐行解析 NDJSON 回合流。
  *
- * 三处必须显式处理，否则会把截断当成成功：
- * 1. 流结束时先 flush 解码器，再处理没有换行符结尾的最后一行；
- * 2. 任何一行 JSON 损坏都按协议破损处理，不能 continue 吞掉；
- * 3. 必须见到 `turn_end` 才认为本次回合已结算。
+ * 三處必須顯式處理，否則會把截斷當成成功：
+ * 1. 流結束時先 flush 解碼器，再處理沒有換行符結尾的最後一行；
+ * 2. 任何一行 JSON 損壞都按協議破損處理，不能 continue 吞掉；
+ * 3. 必須見到 `turn_end` 才認為本次回合已結算。
  */
 async function readAgentTurnStream(
     body: ReadableStream<Uint8Array>,
@@ -524,15 +524,15 @@ async function readAgentTurnStream(
         reader.releaseLock();
     }
     if (malformedLine !== null) throw new Error(AGENT_STREAM_INCOMPLETE_MESSAGE);
-    if (signal?.aborted && !settled) throw new DOMException("请求已取消", "AbortError");
+    if (signal?.aborted && !settled) throw new DOMException("請求已取消", "AbortError");
     return { settled, turnEnd, malformedLine };
 }
 
 /**
- * 请求停止当前画布正在进行的回合。
+ * 請求停止當前畫布正在進行的回合。
  *
- * 停止失败必须如实抛出：只 await fetch 会把 404/5xx 当成「已停止」，
- * 让界面显示与真实运行状态不一致。
+ * 停止失敗必須如實丟擲：只 await fetch 會把 404/5xx 當成「已停止」，
+ * 讓介面顯示與真實執行狀態不一致。
  */
 export async function cancelAgentChat(canvasId: string): Promise<void> {
     const token = await ensureAgentUiSession();
@@ -547,11 +547,11 @@ export async function cancelAgentChat(canvasId: string): Promise<void> {
     if (response.status === 403 && uiSession?.token === token) resetAgentUiSession();
     const businessFailed = payload !== null && typeof payload.code === "number" && payload.code !== 0;
     if (!response.ok || businessFailed) {
-        throw new Error(agentAssistantFailureText(payload?.reason, "停止失败，请再试一次"));
+        throw new Error(agentAssistantFailureText(payload?.reason, "停止失敗，請再試一次"));
     }
 }
 
-/** 补充已有回合，新增素材仍由后端校验授权，不创建新生成请求。 */
+/** 補充已有回合，新增素材仍由後端校驗授權，不建立新生成請求。 */
 export async function steerAgentChat(canvasId: string, sessionId: string, message: string, input: Pick<AgentChatRequest, "attachments" | "references" | "skills"> = {}): Promise<void> {
     const token = await ensureAgentUiSession();
     const response = await fetch(`${apiBaseURL}/assistant/steer`, {
@@ -563,6 +563,6 @@ export async function steerAgentChat(canvasId: string, sessionId: string, messag
     try { payload = await response.json(); } catch { payload = null; }
     if (response.status === 403 && uiSession?.token === token) resetAgentUiSession();
     if (!response.ok || payload?.code !== 0 || payload?.data?.accepted !== true) {
-        throw new Error(agentAssistantFailureText(payload?.reason, "未能确认助手收到补充要求，原任务仍会保留。请查看最新回复后再决定是否发送。"));
+        throw new Error(agentAssistantFailureText(payload?.reason, "未能確認助手收到補充要求，原任務仍會保留。請檢視最新回覆後再決定是否傳送。"));
     }
 }

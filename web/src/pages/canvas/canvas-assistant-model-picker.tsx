@@ -17,7 +17,7 @@ export function CanvasAssistantModelPicker({ busy }: { busy: boolean }) {
             size="small"
             variant="borderless"
             value={selected || undefined}
-            placeholder={options.length ? "选择助手模型" : "暂无可用模型"}
+            placeholder={options.length ? "選擇助手模型" : "暫無可用模型"}
             options={options}
             disabled={busy || options.length === 0}
             placement="topLeft"

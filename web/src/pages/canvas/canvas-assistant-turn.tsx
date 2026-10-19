@@ -26,7 +26,7 @@ type Props = {
     onContinue?: () => void;
 };
 
-/** 助手回复用 Markdown 渲染，只走 react-markdown 的安全默认值，不放开原始 HTML。 */
+/** 助手回覆用 Markdown 渲染，只走 react-markdown 的安全預設值，不放開原始 HTML。 */
 export function CanvasAssistantReply({ text }: { text: string }) {
     const visible = assistantVisibleReply(text);
     if (!visible) return null;
@@ -42,7 +42,7 @@ export function CanvasAssistantUserMessage({ text, selectedCount }: { text: stri
     return (
         <div className="canvas-assistant-user">
             <span style={{ whiteSpace: "pre-wrap" }}>{text}</span>
-            {selectedCount > 0 ? <span className="canvas-assistant-meta">带上了已选的 {selectedCount} 个节点</span> : null}
+            {selectedCount > 0 ? <span className="canvas-assistant-meta">帶上了已選的 {selectedCount} 個節點</span> : null}
         </div>
     );
 }
@@ -67,14 +67,14 @@ export function CanvasAssistantTurnView({ turn, status, handledProposals, propos
             </div>) : (turn.supplements || []).map((text, index) => <CanvasAssistantUserMessage key={`supplement:${index}`} text={text} selectedCount={0} />)}
             {turn.reply ? <CanvasAssistantReply text={turn.reply} /> : null}
             {turn.outputs?.length ? <CanvasAssistantOutputs outputs={turn.outputs} /> : null}
-            {turn.cancelled ? <p className="canvas-assistant-meta">这一条已经停下了。</p> : null}
+            {turn.cancelled ? <p className="canvas-assistant-meta">這一條已經停下了。</p> : null}
             {turn.error ? (
                 <div className={canContinue ? "canvas-assistant-incomplete" : "canvas-assistant-feedback"} role="status">
-                    <strong>{canContinue ? "尚未完成" : "这一步没有完成"}</strong>
-                    <span className={canContinue ? undefined : "canvas-assistant-failed"}>{undone ? ASSISTANT_UNDONE_INCOMPLETE_TEXT : agentAssistantFailureText(turn.errorReason ?? undefined, "这一轮没有全部完成，请核对已经落地的改动。")}</span>
+                    <strong>{canContinue ? "尚未完成" : "這一步沒有完成"}</strong>
+                    <span className={canContinue ? undefined : "canvas-assistant-failed"}>{undone ? ASSISTANT_UNDONE_INCOMPLETE_TEXT : agentAssistantFailureText(turn.errorReason ?? undefined, "這一輪沒有全部完成，請核對已經落地的改動。")}</span>
                     {canContinue && onContinue && !undone ? <>
-                        <Button size="small" onClick={onContinue}>继续处理</Button>
-                        <span className="canvas-assistant-meta">在输入框里确认或补充要求后发送。</span>
+                        <Button size="small" onClick={onContinue}>繼續處理</Button>
+                        <span className="canvas-assistant-meta">在輸入框裡確認或補充要求後傳送。</span>
                     </> : null}
                 </div>
             ) : null}
@@ -93,21 +93,21 @@ export function CanvasAssistantTurnView({ turn, status, handledProposals, propos
                 <div className="canvas-assistant-change">
                     <strong>{summary}</strong>
                     {undone ? (
-                        <span className="canvas-assistant-meta">{changedCanvasCount > 1 ? "已撤销这一轮全部画布改动" : "已撤销"}</span>
+                        <span className="canvas-assistant-meta">{changedCanvasCount > 1 ? "已撤銷這一輪全部畫布改動" : "已撤銷"}</span>
                     ) : (
                         <>
-                            {changedCanvasCount > 1 ? <span className="canvas-assistant-meta">撤销会恢复这 {changedCanvasCount} 个画布本轮的全部改动。</span> : null}
+                            {changedCanvasCount > 1 ? <span className="canvas-assistant-meta">撤銷會恢復這 {changedCanvasCount} 個畫布本輪的全部改動。</span> : null}
                             <div className="canvas-assistant-card-actions">
                                 {changedNodeIds.length > 0 ? (
                                     <Button type="text" size="small" icon={<Crosshair className="size-3.5" />} onClick={() => onLocate(changedNodeIds)}>
-                                        在画布上查看
+                                        在畫布上檢視
                                     </Button>
                                 ) : null}
                                 <Button type="text" size="small" icon={<Undo2 className="size-3.5" />} loading={status?.undoing} onClick={() => onUndo(turn.turnId)}>
-                                    撤销这一轮
+                                    撤銷這一輪
                                 </Button>
                             </div>
-                            {status?.undoFailure ? <span className="canvas-assistant-meta">{changedCanvasCount > 1 && status.undoFailure === "canvas_changed" ? "其中一个画布后来又改过，这一轮未撤销。" : assistantUndoFailureText(status.undoFailure)}</span> : null}
+                            {status?.undoFailure ? <span className="canvas-assistant-meta">{changedCanvasCount > 1 && status.undoFailure === "canvas_changed" ? "其中一個畫布後來又改過，這一輪未撤銷。" : assistantUndoFailureText(status.undoFailure)}</span> : null}
                         </>
                     )}
                 </div>
@@ -127,11 +127,11 @@ export function CanvasAssistantTurnView({ turn, status, handledProposals, propos
                         {priceError && !started && !skipped && !undone ? <span className="canvas-assistant-meta" role="status">{priceError}</span> : null}
                         {!skipped && !running && (!undone || started) && proposalFeedback?.[proposal.proposalId] ? <span className="canvas-assistant-meta" role="status" style={{ overflowWrap: "anywhere" }}>{proposalFeedback[proposal.proposalId]}</span> : null}
                         {started ? (
-                            <span className="canvas-assistant-meta">已开始生成</span>
+                            <span className="canvas-assistant-meta">已開始生成</span>
                         ) : undone ? (
                             <span className="canvas-assistant-meta">{ASSISTANT_PROPOSAL_UNDONE_TEXT}</span>
                         ) : skipped ? (
-                            <span className="canvas-assistant-meta">这次没有生成</span>
+                            <span className="canvas-assistant-meta">這次沒有生成</span>
                         ) : (
                             <div className="canvas-assistant-card-actions">
                                 <Button size="small" type="primary" autoInsertSpace={false} loading={running} disabled={Boolean(priceError)} onClick={() => onRunProposal(proposal, turn.turnId)}>

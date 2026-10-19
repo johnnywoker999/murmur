@@ -45,11 +45,11 @@ export function useCanvasTimelineAssetInsert({
     openAssetsAtPosition,
 }: UseCanvasTimelineAssetInsertOptions) {
     const { message } = App.useApp();
-    // 时间线弹窗内新增素材的回填通道：素材库/上传创建节点后由弹窗通过 ref 加入草稿。
+    // 時間線彈窗內新增素材的回填通道：素材庫/上傳建立節點後由彈窗通過 ref 加入草稿。
     const timelineAddNodeRef = useRef<((node: CanvasNodeData) => void) | null>(null);
-    // 时间线作用域直连媒体入轨通道：素材库/项目资产/本地上传不落画布，仅加入时间线草稿。
+    // 時間線作用域直連媒體入軌通道：素材庫/專案資產/本地上傳不落畫布，僅加入時間線草稿。
     const timelineMediaAddRef = useRef<((media: TimelineDirectMedia) => void) | null>(null);
-    // 素材库与项目资产弹窗的插入作用域：时间线弹窗内打开时为 timeline，其余为 canvas。
+    // 素材庫與專案資產彈窗的插入作用域：時間線彈窗內開啟時為 timeline，其餘為 canvas。
     const [assetInsertScope, setAssetInsertScope] = useState<"canvas" | "timeline">("canvas");
     const [projectAssetScope, setProjectAssetScope] = useState<"canvas" | "timeline">("canvas");
     const [projectAssetOpen, setProjectAssetOpen] = useState(false);
@@ -62,7 +62,7 @@ export function useCanvasTimelineAssetInsert({
             assertUserScope(expectedScope);
             if (assetInsertScope === "timeline") {
                 const media = payloads.map(payloadToTimelineMedia).filter((item): item is TimelineDirectMedia => Boolean(item));
-                if (media.length !== payloads.length) throw new Error("图片和文本素材暂不支持直接入轨，请先插入画布");
+                if (media.length !== payloads.length) throw new Error("圖片和文本素材暫不支援直接入軌，請先插入畫布");
                 media.forEach((item) => timelineMediaAddRef.current?.(item));
                 assertUserScope(expectedScope);
                 return;
@@ -86,7 +86,7 @@ export function useCanvasTimelineAssetInsert({
                         inserted += 1;
                     }
                 }
-                if (inserted < payloads.length) message.info("图片/文本/角色素材暂不支持直接入轨，仅音视频素材已加入时间线");
+                if (inserted < payloads.length) message.info("圖片/文本/角色素材暫不支援直接入軌，僅音影片素材已加入時間線");
                 assertUserScope(expectedScope);
                 return;
             }
@@ -104,7 +104,7 @@ export function useCanvasTimelineAssetInsert({
             setProjectAssetInitialFolderId(initialFolderId);
             setProjectAssetInsertPosition(position);
             setProjectAssetOpen(true);
-            // 资产与项目实时同步：打开弹窗前刷新关联短剧项目资产，避免缓存导致资产列表空白/过期。
+            // 資產與專案即時同步：開啟彈窗前重新整理關聯短劇專案資產，避免快取導致資產列表空白/過期。
             if (linkedProjectId) void refetchLinkedProject();
         },
         [linkedProjectId, refetchLinkedProject],

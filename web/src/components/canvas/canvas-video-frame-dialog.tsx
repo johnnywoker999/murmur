@@ -80,15 +80,15 @@ export function CanvasVideoFrameDialog({ node, open, onClose, onConfirm }: Canva
     const addFrame = (timeMs: number) => {
         const normalized = normalizeVideoFrameTimes([timeMs], durationMs)[0];
         if (normalized === undefined) {
-            message.warning("视频时长未就绪，请稍候再试");
+            message.warning("影片時長未就緒，請稍候再試");
             return;
         }
         if (frames.some((frame) => frame.timeMs === normalized)) {
-            message.info("该时间点已经添加");
+            message.info("該時間點已經新增");
             return;
         }
         if (frames.length >= MAX_SELECTED_FRAMES) {
-            message.warning(`单次最多提取 ${MAX_SELECTED_FRAMES} 帧，请先完成当前批次`);
+            message.warning(`單次最多提取 ${MAX_SELECTED_FRAMES} 幀，請先完成當前批次`);
             return;
         }
         setFrames((current) => [...current, { id: nanoid(), timeMs: normalized }].sort((left, right) => left.timeMs - right.timeMs));
@@ -103,8 +103,8 @@ export function CanvasVideoFrameDialog({ node, open, onClose, onConfirm }: Canva
                 <ImageIcon className="size-4" />
             </span>
             <div className="min-w-0">
-                <div className="truncate font-semibold leading-6">关键帧截取</div>
-                <div className="truncate text-xs opacity-45">{node.title || "视频节点"}</div>
+                <div className="truncate font-semibold leading-6">關鍵幀擷取</div>
+                <div className="truncate text-xs opacity-45">{node.title || "影片節點"}</div>
             </div>
         </div>
     );
@@ -132,12 +132,12 @@ export function CanvasVideoFrameDialog({ node, open, onClose, onConfirm }: Canva
                             onError={() => setVideoError(true)}
                         />
                     ) : (
-                        <div className="grid h-44 w-full place-items-center text-xs opacity-60">{videoError ? "视频预览加载失败，请检查素材是否仍然可用" : "正在加载视频…"}</div>
+                        <div className="grid h-44 w-full place-items-center text-xs opacity-60">{videoError ? "影片預覽載入失敗，請檢查素材是否仍然可用" : "正在載入影片…"}</div>
                     )}
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: theme.toolbar.itemHover }}>
-                    <span className="text-xs font-medium opacity-60">当前时间</span>
+                    <span className="text-xs font-medium opacity-60">當前時間</span>
                     <InputNumber
                         size="small"
                         min={0}
@@ -146,7 +146,7 @@ export function CanvasVideoFrameDialog({ node, open, onClose, onConfirm }: Canva
                         precision={3}
                         value={currentTimeMs / 1000}
                         className="w-28"
-                        aria-label="当前取帧时间（秒）"
+                        aria-label="當前取幀時間（秒）"
                         onChange={(value) => seekTo(Math.round((value || 0) * 1000))}
                     />
                     <span className="mr-auto text-xs opacity-45">/ {durationMs ? formatVideoFrameTime(durationMs) : "--:--.---"}</span>
@@ -159,10 +159,10 @@ export function CanvasVideoFrameDialog({ node, open, onClose, onConfirm }: Canva
                             addFrame(0);
                         }}
                     >
-                        首帧
+                        首幀
                     </Button>
                     <Button size="small" type="primary" icon={<ImageIcon className="size-3.5" />} disabled={!durationMs} onClick={() => addFrame(currentTimeMs)}>
-                            当前帧
+                            當前幀
                     </Button>
                     <Button
                         size="small"
@@ -173,14 +173,14 @@ export function CanvasVideoFrameDialog({ node, open, onClose, onConfirm }: Canva
                             addFrame(lastFrameMs);
                         }}
                     >
-                        尾帧
+                        尾幀
                     </Button>
                 </div>
 
                 <section aria-labelledby="selected-video-frames-title">
                     <div className="mb-2 flex items-center justify-between gap-3">
                         <div id="selected-video-frames-title" className="text-sm font-medium">
-                            已选画面
+                            已選畫面
                         </div>
                         <div className="text-xs opacity-45">
                             {frames.length}/{MAX_SELECTED_FRAMES}
@@ -191,26 +191,26 @@ export function CanvasVideoFrameDialog({ node, open, onClose, onConfirm }: Canva
                             {frames.map((frame, index) => (
                                 <div key={frame.id} className="flex min-w-0 items-center gap-2 rounded-lg px-2.5 py-2" style={{ background: theme.toolbar.itemHover }}>
                                     <button type="button" className="min-w-0 flex-1 text-left outline-none focus-visible:ring-2" style={{ "--tw-ring-color": theme.node.activeStroke } as CSSProperties} onClick={() => seekTo(frame.timeMs)}>
-                                        <span className="block text-[var(--fs-micro)] opacity-45">画面 {index + 1}</span>
+                                        <span className="block text-[var(--fs-micro)] opacity-45">畫面 {index + 1}</span>
                                         <span className="block truncate font-mono text-xs font-medium">{formatVideoFrameTime(frame.timeMs)}</span>
                                     </button>
-                                    <Button type="text" size="small" danger icon={<Trash2 className="size-3.5" />} aria-label={`删除画面 ${index + 1}`} onClick={() => removeFrame(frame.id)} />
+                                    <Button type="text" size="small" danger icon={<Trash2 className="size-3.5" />} aria-label={`刪除畫面 ${index + 1}`} onClick={() => removeFrame(frame.id)} />
                                 </div>
                             ))}
                         </div>
                     ) : (
                         <div className="rounded-lg px-3 py-5 text-center text-xs opacity-50" style={{ background: theme.toolbar.itemHover }}>
-                            播放或拖动到需要的位置，然后添加当前画面。可以连续添加多个时间点。
+                            播放或拖動到需要的位置，然後新增當前畫面。可以連續新增多個時間點。
                         </div>
                     )}
                 </section>
 
                 <div className="flex items-center justify-between gap-3">
-                    <div className="text-xs opacity-45">提取后只创建图片节点，不会自动发起生成任务。</div>
+                    <div className="text-xs opacity-45">提取後只建立圖片節點，不會自動發起生成任務。</div>
                     <div className="flex shrink-0 items-center gap-2">
                         <Button onClick={onClose}>取消</Button>
                         <Button type="primary" icon={<Check className="size-4" />} disabled={!frames.length} onClick={() => onConfirm({ timesMs: frames.map((frame) => frame.timeMs) })}>
-                            {frames.length ? `截取 ${frames.length} 个关键帧` : "关键帧截取"}
+                            {frames.length ? `擷取 ${frames.length} 個關鍵幀` : "關鍵幀擷取"}
                         </Button>
                     </div>
                 </div>

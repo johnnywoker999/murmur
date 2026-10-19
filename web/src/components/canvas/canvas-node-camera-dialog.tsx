@@ -206,7 +206,7 @@ const HoverTip = memo(({ title, description, useCase, children }: HoverTipProps)
                     >
                         <div className="text-[12px] font-semibold">{title}</div>
                         {description && <div className="mt-1 text-[11px] leading-5" style={{ color: theme.node.muted }}>{description}</div>}
-                        {useCase && <div className="mt-2 rounded px-2 py-1 text-[10px]" style={{ background: theme.toolbar.itemHover, color: theme.node.muted }}>使用场景：{useCase}</div>}
+                        {useCase && <div className="mt-2 rounded px-2 py-1 text-[10px]" style={{ background: theme.toolbar.itemHover, color: theme.node.muted }}>使用場景：{useCase}</div>}
                     </div>,
                     document.body,
                 )}
@@ -237,8 +237,8 @@ const CardColumn = memo(({ label, tooltipTitle, tooltipDesc, tooltipUseCase, vis
                 onClick={onPrev}
                 className="flex h-5 w-full items-center justify-center rounded-md transition-colors"
                 style={{ color: theme.node.faint }}
-                title="上一项"
-                aria-label={`上一项${label}`}
+                title="上一項"
+                aria-label={`上一項${label}`}
             >
                 <ChevronUp className="size-3.5" />
             </button>
@@ -256,8 +256,8 @@ const CardColumn = memo(({ label, tooltipTitle, tooltipDesc, tooltipUseCase, vis
                 onClick={onNext}
                 className="flex h-5 w-full items-center justify-center rounded-md transition-colors"
                 style={{ color: theme.node.faint }}
-                title="下一项"
-                aria-label={`下一项${label}`}
+                title="下一項"
+                aria-label={`下一項${label}`}
             >
                 <ChevronDown className="size-3.5" />
             </button>
@@ -351,24 +351,24 @@ export function CanvasNodeCameraPanel({
         >
             <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-2">
                 <div className="min-w-0">
-                    <div className="text-sm font-semibold tracking-tight">摄像机控制</div>
+                    <div className="text-sm font-semibold tracking-tight">攝像機控制</div>
                 </div>
                 <button
                     type="button"
                     className="grid size-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-white/10"
                     style={{ color: theme.node.muted }}
                     onClick={onClose}
-                    aria-label="关闭摄像机控制"
-                    title="关闭"
+                    aria-label="關閉攝像機控制"
+                    title="關閉"
                 >
                     <X className="size-4" />
                 </button>
             </div>
 
-            {/* 相机、镜头、焦距和光圈均来自已注册枚举，确认时由纯函数再次强校验。 */}
+            {/* 相機、鏡頭、焦距和光圈均來自已註冊列舉，確認時由純函式再次強校驗。 */}
             <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-5 py-3 sm:grid-cols-4">
                 <CardColumn
-                    label="相机"
+                    label="相機"
                     tooltipTitle={`${currentCamera.zhName} · ${currentCamera.label}`}
                     tooltipDesc={currentCamera.description}
                     tooltipUseCase={currentCamera.useCase}
@@ -379,7 +379,7 @@ export function CanvasNodeCameraPanel({
                     theme={theme}
                 />
                 <CardColumn
-                    label="镜头"
+                    label="鏡頭"
                     tooltipTitle={`${currentLens.zhName} · ${currentLens.label}`}
                     tooltipDesc={currentLens.description}
                     tooltipUseCase={currentLens.useCase}
@@ -424,24 +424,24 @@ export function CanvasNodeCameraPanel({
                 />
             </div>
 
-            {/* 操作区：重置与复制不产生写入，只有应用会提交生成配置。 */}
+            {/* 操作區：重置與複製不產生寫入，只有應用會提交生成配置。 */}
             <div className="flex min-h-12 flex-wrap items-center gap-2 px-5 pt-2 pb-4">
                 <button type="button" className={secondaryButtonClass} style={{ color: theme.node.muted }} onClick={handleReset}>
-                    <RotateCcw className="size-3.5" />重置参数
+                    <RotateCcw className="size-3.5" />重置引數
                 </button>
                 <span className="flex-1" />
-                <Tooltip title="复制当前生成的摄像机提示词">
-                    <button type="button" className={secondaryButtonClass} onClick={() => copyText(buildPrompt(), "摄像机提示词已复制")}>复制提示词</button>
+                <Tooltip title="複製當前生成的攝像機提示詞">
+                    <button type="button" className={secondaryButtonClass} onClick={() => copyText(buildPrompt(), "攝像機提示詞已複製")}>複製提示詞</button>
                 </Tooltip>
-                {/* 关闭后仍保留参数选择，但提交空提示词，便于用户无损恢复。 */}
-                <div className="flex items-center gap-2" title={enabled ? "当前启用摄像机控制" : "当前关闭摄像机控制"}>
+                {/* 關閉後仍保留引數選擇，但提交空提示詞，便於使用者無損恢復。 */}
+                <div className="flex items-center gap-2" title={enabled ? "當前啟用攝像機控制" : "當前關閉攝像機控制"}>
                     <span className="text-xs transition-colors" style={{ color: enabled ? theme.accent.primary : theme.node.muted, fontWeight: enabled ? 600 : 400 }}>
-                        {enabled ? "开启" : "关闭"}
+                        {enabled ? "開啟" : "關閉"}
                     </span>
                     <button
                         type="button"
                         role="switch"
-                        aria-label="启用摄像机控制"
+                        aria-label="啟用攝像機控制"
                         aria-checked={enabled}
                         onClick={() => setEnabled((v) => !v)}
                         className="canvas-node-camera-switch relative inline-flex h-5 w-9 cursor-pointer items-center rounded-full border transition-colors"
@@ -464,7 +464,7 @@ export function CanvasNodeCameraPanel({
                     style={{ borderColor: theme.node.activeStroke, color: theme.node.activeStroke, background: "transparent" }}
                     onClick={handleApply}
                 >
-                    <CameraIcon className="size-3.5" />应用
+                    <CameraIcon className="size-3.5" />應用
                 </motion.button>
             </div>
         </SpotlightSurface>

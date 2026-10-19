@@ -2,8 +2,8 @@ import { useCallback, useState } from "react";
 
 const FOCUS_MODE_KEY = "canvas-focus-mode-v2";
 
-// 默认策略：小屏首次进入时自动沉浸；用户显式退出后必须保持退出，
-// 否则小屏条件会立刻把顶栏和“新建画布”入口重新隐藏。
+// 預設策略：小屏首次進入時自動沉浸；使用者顯式退出後必須保持退出，
+// 否則小屏條件會立刻把頂欄和“新建畫布”入口重新隱藏。
 function readInitialPreference(): boolean {
     const stored = window.localStorage.getItem(FOCUS_MODE_KEY);
     if (stored !== null) return stored === "true";
@@ -19,7 +19,7 @@ export function useFocusMode() {
         try {
             window.localStorage.setItem(FOCUS_MODE_KEY, String(next));
         } catch {
-            // 忽略 localStorage 不可用场景，专注模式仍可在本次会话生效。
+            // 忽略 localStorage 不可用場景，專注模式仍可在本次會話生效。
         }
     }, []);
 

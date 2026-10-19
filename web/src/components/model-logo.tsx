@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 
 type LobeIconComponent = ComponentType<SVGProps<SVGSVGElement> & { size?: number | string }>;
 
-// 只允许按需加载 Mono 组件。这里不能使用 eager glob：模型 Logo 目录有数百个 provider 模块，
-// eager 会让每次进入工作区都发起数百个开发模块请求，即使用户从未打开 Logo 选择器。
+// 只允許按需載入 Mono 元件。這裡不能使用 eager glob：模型 Logo 目錄有數百個 provider 模組，
+// eager 會讓每次進入工作區都發起數百個開發模組請求，即使使用者從未開啟 Logo 選擇器。
 const iconModules = "Bun" in globalThis ? {} : import.meta.glob("../../node_modules/@lobehub/icons/es/*/components/Mono.js", { import: "default" });
 const iconLoaders = Object.fromEntries(
     Object.entries(iconModules)
@@ -88,11 +88,11 @@ export function ModelIconPicker({ value, onChange }: { value?: string; onChange?
             <button
                 type="button"
                 className="flex min-h-9 w-full items-center gap-2 rounded-md border border-border/60 bg-background px-2.5 text-left text-sm transition-colors hover:border-border hover:bg-muted/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-1"
-                aria-label="选择模型 Logo"
+                aria-label="選擇模型 Logo"
                 onClick={() => setOpen(true)}
             >
                 <ModelLogo icon={value} size={20} />
-                <span className="min-w-0 flex-1 truncate text-foreground/70">{selectedOption?.title || value || "选择 Logo"}</span>
+                <span className="min-w-0 flex-1 truncate text-foreground/70">{selectedOption?.title || value || "選擇 Logo"}</span>
                 {value ? (
                     <span
                         className="ml-auto inline-flex size-5 shrink-0 items-center justify-center rounded text-foreground/40 hover:bg-muted hover:text-foreground"
@@ -105,12 +105,12 @@ export function ModelIconPicker({ value, onChange }: { value?: string; onChange?
                         <X className="size-3" />
                     </span>
                 ) : (
-                    <span className="text-xs text-foreground/35">浏览</span>
+                    <span className="text-xs text-foreground/35">瀏覽</span>
                 )}
             </button>
 
             <Modal
-                title="选择模型 Logo"
+                title="選擇模型 Logo"
                 open={open}
                 onCancel={() => setOpen(false)}
                 width={540}
@@ -118,7 +118,7 @@ export function ModelIconPicker({ value, onChange }: { value?: string; onChange?
                 destroyOnClose
                 footer={
                     <div className="flex items-center justify-between py-1 text-xs text-foreground/45">
-                        <span>共 {filteredIcons.length} 个可用 Logo</span>
+                        <span>共 {filteredIcons.length} 個可用 Logo</span>
                         <div className="flex items-center gap-2">
                             {value ? (
                                 <Button
@@ -144,7 +144,7 @@ export function ModelIconPicker({ value, onChange }: { value?: string; onChange?
                         prefix={<Search className="size-4 text-foreground/40" />}
                         value={keyword}
                         onChange={(event) => setKeyword(event.target.value)}
-                        placeholder="搜索品牌或模型名称（如 OpenAI, Claude, Google, Flux...）"
+                        placeholder="搜尋品牌或模型名稱（如 OpenAI, Claude, Google, Flux...）"
                         allowClear
                     />
                     <div
@@ -177,7 +177,7 @@ export function ModelIconPicker({ value, onChange }: { value?: string; onChange?
                             })
                         ) : (
                             <div className="col-span-full py-12 text-center text-xs text-foreground/45">
-                                未找到与 “{keyword}” 相关的 Logo
+                                未找到與 “{keyword}” 相關的 Logo
                             </div>
                         )}
                     </div>

@@ -13,32 +13,32 @@ type HtmlNodeContentProps = {
 };
 
 /**
- * HTML 展示节点：在沙箱 iframe 里预览 HTML。
+ * HTML 展示節點：在沙箱 iframe 裡預覽 HTML。
  *
- * 源码取自身 metadata.content，为空时回落上游文本（与 SVG / Markdown 一致）。
- * 自身有源码时，上游文本作为数据填进 `{{input}}`，所以「模板 + 数据」两条线可以分开接。
+ * 原始碼取自身 metadata.content，為空時回落上游文本（與 SVG / Markdown 一致）。
+ * 自身有原始碼時，上游文本作為資料填進 `{{input}}`，所以「模板 + 資料」兩條線可以分開接。
  *
- * 脚本可执行（allow-scripts），但 SandboxedFrame 结构上不允许同时给 allow-same-origin
- * —— 否则页面能读到本源登录态。
+ * 指令碼可執行（allow-scripts），但 SandboxedFrame 結構上不允許同時給 allow-same-origin
+ * —— 否則頁面能讀到本源登入態。
  */
 export function HtmlNodeContent({ node, theme }: HtmlNodeContentProps) {
     const upstream = useUpstreamNodes(node.id);
     const inherited = upstream.find((item) => getNodeResourceKind(item) === "text");
     const upstreamText = inherited?.metadata?.content || inherited?.metadata?.prompt || "";
     const own = node.metadata?.content || "";
-    // 与 SVG / Markdown 一致：自身为空时把上游文本当源码，这样「AI 写页面 → 连线 → 看效果」
-    // 不需要先把源码搬进本节点。
+    // 與 SVG / Markdown 一致：自身為空時把上游文本當原始碼，這樣「AI 寫頁面 → 連線 → 看效果」
+    // 不需要先把原始碼搬進本節點。
     const source = own || upstreamText;
-    // 源码本身就来自上游时，{{input}} 没有第二份数据可填——替换成空串，
-    // 否则会把同一段内容再塞回自己里。
+    // 原始碼本身就來自上游時，{{input}} 沒有第二份資料可填——替換成空串，
+    // 否則會把同一段內容再塞回自己裡。
     const input = own ? upstreamText : "";
 
     if (!source.trim()) {
         return (
             <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-center" style={{ color: theme.node.muted }}>
                 <Code className="size-5 opacity-60" />
-                <span style={{ fontSize: "var(--fs-label)" }}>连接输出 HTML 的文本节点</span>
-                <span style={{ fontSize: "var(--fs-tiny)" }}>源码里的 {"{{input}}"} 会替换为上游文本</span>
+                <span style={{ fontSize: "var(--fs-label)" }}>連線輸出 HTML 的文本節點</span>
+                <span style={{ fontSize: "var(--fs-tiny)" }}>原始碼裡的 {"{{input}}"} 會替換為上游文本</span>
             </div>
         );
     }

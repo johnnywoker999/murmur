@@ -58,16 +58,16 @@ export type ResourceUploadMeta = {
 };
 
 /**
- * 资源直传失败。
+ * 資源直傳失敗。
  *
- * `permanent` 是这条边界上唯一重要的信息：媒体直传失败后，调用方默认会把文件留在本机
- * IndexedDB；后端暂时不可用时由本地工作区继续保留素材。
- * 但鉴权失效、越权、请求本身不合法这几类失败重传多少次都是同样结果，把它们也归入
- * "稍后自动同步" 等于向用户撒谎，必须当场抛出。
+ * `permanent` 是這條邊界上唯一重要的資訊：媒體直傳失敗後，呼叫方預設會把檔案留在本機
+ * IndexedDB；後端暫時不可用時由本地工作區繼續保留素材。
+ * 但鑑權失效、越權、請求本身不合法這幾類失敗重傳多少次都是同樣結果，把它們也歸入
+ * "稍後自動同步" 等於向用戶撒謊，必須當場丟擲。
  */
 export class ResourceUploadError extends Error {
     readonly status?: number;
-    /** true 表示重试不会自愈，调用方不得降级为本地暂存。 */
+    /** true 表示重試不會自愈，呼叫方不得降級為本地暫存。 */
     readonly permanent: boolean;
 
     constructor(message: string, options: { status?: number; permanent: boolean; cause?: unknown }) {
@@ -140,7 +140,7 @@ function resourceIdFromTrustedLocalFileUrl(url: string) {
     }
 }
 
-// 超过该阈值（与后端单请求 multipart 上限 50MB 一致）的本地媒体走分片上传，避免大视频导入失败。
+// 超過該閾值（與後端單請求 multipart 上限 50MB 一致）的本地媒體走分片上傳，避免大影片匯入失敗。
 const CHUNK_UPLOAD_THRESHOLD = 50 << 20;
 const CHUNK_UPLOAD_RETRIES = 2;
 
@@ -152,8 +152,8 @@ export async function uploadResourceFile(
 ): Promise<RemoteResource> {
     const expected = meta?.expectedScope ?? captureUserScope();
     const name = meta?.fileName || (file instanceof File ? file.name : `${kind}.${extensionFromMime(file.type, kind)}`);
-    // 分片与 multipart 两条路径的失败都要归一成 ResourceUploadError，
-    // 否则调用方只能靠文案猜测该重试还是该报错。
+    // 分片與 multipart 兩條路徑的失敗都要歸一成 ResourceUploadError，
+    // 否則呼叫方只能靠文案猜測該重試還是該報錯。
     try {
         if (file.size > CHUNK_UPLOAD_THRESHOLD) {
             const resource = await uploadFileInChunks(file, name, kind, meta, expected, onProgress);
@@ -179,10 +179,10 @@ export async function uploadResourceFile(
     }
 }
 
-// 分片上传：POST 开始会话 → 逐片 PUT 原始二进制（每片 8MB）→ POST 合并落库。
-// 单请求体积小、可断点续传/失败重试；单文件不再受 50MB 限制（仅日/总量配额约束）。
+// 分片上傳：POST 開始會話 → 逐片 PUT 原始二進位制（每片 8MB）→ POST 合併落庫。
+// 單請求體積小、可斷點續傳/失敗重試；單檔案不再受 50MB 限制（僅日/總量配額約束）。
 async function uploadFileInChunks(file: Blob, name: string, kind: "image" | "video" | "audio" | "file", meta: ResourceUploadMeta | undefined, expected: CapturedUserScope, onProgress?: (uploadedBytes: number, totalBytes: number) => void) {
-    // 片级失败通常意味着会话过期/网络抖动：整体重开一次会话重传（整传重试）。
+    // 片級失敗通常意味著會話過期/網路抖動：整體重開一次會話重傳（整傳重試）。
     for (let attempt = 0; attempt < CHUNK_UPLOAD_RETRIES; attempt++) {
         try {
             return await runChunkedUpload(file, name, kind, meta, expected, onProgress);
@@ -191,7 +191,7 @@ async function uploadFileInChunks(file: Blob, name: string, kind: "image" | "vid
             await prepareChunkRetry(error, expected);
         }
     }
-    throw new Error("上传失败");
+    throw new Error("上傳失敗");
 }
 
 async function runChunkedUpload(file: Blob, name: string, kind: "image" | "video" | "audio" | "file", meta: ResourceUploadMeta | undefined, expected: CapturedUserScope, onProgress?: (uploadedBytes: number, totalBytes: number) => void) {
@@ -201,7 +201,7 @@ async function runChunkedUpload(file: Blob, name: string, kind: "image" | "video
         const start = index * session.chunkSize;
         const end = Math.min(file.size, start + session.chunkSize);
         const blob = file.slice(start, end);
-        // raw 二进制直传，与后端按裸 body 逐片落盘对齐（勿设手动 Content-Type，让 axios 处理）。
+        // raw 二進位制直傳，與後端按裸 body 逐片落盤對齊（勿設手動 Content-Type，讓 axios 處理）。
         await http.put<{ index: number }>(`/resources/uploads/${encodeURIComponent(session.uploadId)}/chunks/${index}`, blob, {
             headers: { "Content-Type": "application/octet-stream" },
             expectedScope: expected,
@@ -228,26 +228,26 @@ function rememberResource(resource: RemoteResource, expected: CapturedUserScope)
     resourceCache.set(resourceCacheKey(resource.id, expected), resource);
 }
 
-// 失败分类直接复用 request() 已经算好的 ApiError.retryable（408/425/429/5xx 可重试），
-// 不在这里另起一套响应码判断，避免两处规则漂移。
-// 差别只有一处：没有拿到任何 HTTP 响应（断网、超时）时 retryable 为 false，
-// 但这种失败恰恰是最该退回本机等待重传的，因此单独按瞬时处理。
+// 失敗分類直接複用 request() 已經算好的 ApiError.retryable（408/425/429/5xx 可重試），
+// 不在這裡另起一套響應碼判斷，避免兩處規則漂移。
+// 差別只有一處：沒有拿到任何 HTTP 響應（斷網、超時）時 retryable 為 false，
+// 但這種失敗恰恰是最該退回本機等待重傳的，因此單獨按瞬時處理。
 function normalizeUploadError(error: unknown): ResourceUploadError {
     if (isUserScopeAbandonedError(error)) throw error;
     if (error instanceof ResourceUploadError) return error;
-    // 请求取消不是上传失败，保持原始语义交给调用方。
+    // 請求取消不是上傳失敗，保持原始語義交給呼叫方。
     if (error instanceof DOMException && error.name === "AbortError") throw error;
     if (error instanceof ApiError) {
         const status = error.status;
         const permanent = status !== undefined && !error.retryable;
-        // 即使误超 50MB multipart 上限（后端 http.MaxBytesError），也给出可读中文而非英文裸错。
+        // 即使誤超 50MB multipart 上限（後端 http.MaxBytesError），也給出可讀中文而非英文裸錯。
         if (status === 400 && /body too large|MaxBytes/i.test(error.message)) {
-            return new ResourceUploadError("文件过大，请使用小于 50MB 的文件或稍后重试", { status, permanent: true, cause: error });
+            return new ResourceUploadError("檔案過大，請使用小於 50MB 的檔案或稍後重試", { status, permanent: true, cause: error });
         }
-        if (status === 413) return new ResourceUploadError("文件过大，无法上传", { status, permanent: true, cause: error });
-        return new ResourceUploadError(error.message || "上传失败", { status, permanent, cause: error });
+        if (status === 413) return new ResourceUploadError("檔案過大，無法上傳", { status, permanent: true, cause: error });
+        return new ResourceUploadError(error.message || "上傳失敗", { status, permanent, cause: error });
     }
-    return new ResourceUploadError(error instanceof Error ? error.message : "上传失败", { permanent: false, cause: error });
+    return new ResourceUploadError(error instanceof Error ? error.message : "上傳失敗", { permanent: false, cause: error });
 }
 
 export async function importResourceFromUrl(url: string, kind: "image" | "video" | "audio" | "file", meta?: Omit<ResourceUploadMeta, "fileName">) {
@@ -288,7 +288,7 @@ export function getResource(id: string, config?: HttpRequestConfig): Promise<Rem
     const cached = resourceCache.get(cacheKey);
     const ensureMetadata = config?.params?.metadata === "ensure";
     if (cached && !ensureMetadata) return Promise.resolve(cached);
-    if (missingResourceIds.has(cacheKey)) return Promise.reject(new Error("资源不存在或已被删除"));
+    if (missingResourceIds.has(cacheKey)) return Promise.reject(new Error("資源不存在或已被刪除"));
     const sharePending = !config?.signal && !ensureMetadata;
     if (sharePending) {
         const pending = resourceRequests.get(cacheKey);
@@ -315,7 +315,7 @@ export function getResource(id: string, config?: HttpRequestConfig): Promise<Rem
     return task;
 }
 
-// refreshResource 绕过缓存强制拉取资源最新状态（转码副本就绪轮询用），并回写缓存。
+// refreshResource 繞過快取強制拉取資源最新狀態（轉碼副本就緒輪詢用），並回寫快取。
 export function refreshResource(id: string, config?: HttpRequestConfig): Promise<RemoteResource> {
     const expected = config?.expectedScope ?? captureUserScope();
     const blocked = lookupAccessError(expected, config?.signal);
@@ -330,16 +330,16 @@ export function refreshResource(id: string, config?: HttpRequestConfig): Promise
 
 export async function getResourceOSSUrl(storageKey?: string) {
     if (isLocalRuntimeMode()) {
-        throw new Error("本地素材不会上传到对象存储；当前视频渠道要求公网 URL，请改用支持本地素材的渠道或直接提供公网素材地址");
+        throw new Error("本地素材不會上傳到物件儲存；當前影片渠道要求公網 URL，請改用支援本地素材的渠道或直接提供公網素材地址");
     }
     const id = resourceIdFromStorageKey(storageKey);
-    if (!id) throw new Error("当前媒体尚未上传到后端资源存储");
+    if (!id) throw new Error("當前媒體尚未上傳到後端資源儲存");
     try {
         const data = await http.get<{ url: string }>(`/resources/${encodeURIComponent(id)}/oss-url`);
-        if (!data.url) throw new Error("后端未返回对象存储地址");
+        if (!data.url) throw new Error("後端未返回物件儲存地址");
         return data.url;
     } catch (error) {
-        if (error instanceof ApiError) throw new Error(error.message || "获取对象存储地址失败");
+        if (error instanceof ApiError) throw new Error(error.message || "獲取物件儲存地址失敗");
         throw error;
     }
 }
@@ -360,13 +360,13 @@ function resourceProxyFileUrl(id: string) {
 
 export function resolveResourceUrl(storageKey?: string, fallback = "") {
     const id = resourceIdFromStorageKey(storageKey);
-    // 资源引用本身已经包含稳定 ID；恢复/展示阶段不需要再查一遍元数据。
-    // 需要 publicUrl、mime 或尺寸时必须显式调用 getResource，避免隐式 N+1。
+    // 資源引用本身已經包含穩定 ID；恢復/展示階段不需要再查一遍後設資料。
+    // 需要 publicUrl、mime 或尺寸時必須顯式呼叫 getResource，避免隱式 N+1。
     return id ? resourceFileUrl(id) : fallback;
 }
 
-// playbackVariantUrl 返回浏览器兼容播放副本 URL（H.265→H.264 转码结果）。
-// 副本就绪前由后端回退原件，调用方再按需降级。
+// playbackVariantUrl 返回瀏覽器相容播放副本 URL（H.265→H.264 轉碼結果）。
+// 副本就緒前由後端回退原件，呼叫方再按需降級。
 export function playbackVariantUrl(id: string) {
     const base = String(apiBaseURL).replace(/\/+$/, "");
     return `${base}/resources/${encodeURIComponent(id)}/file?variant=playback`;

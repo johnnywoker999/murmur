@@ -12,9 +12,9 @@ import type { CanvasResourceReference } from "@/lib/canvas/canvas-resource-refer
 import type { AssistantAttachment, AssistantAttachmentPurpose, AssistantSkillSelection } from "@/services/api/agent-assistant";
 
 export const ASSISTANT_ATTACHMENT_PURPOSES: { value: AssistantAttachmentPurpose; label: string }[] = [
-    { value: "analysis", label: "仅分析" }, { value: "character", label: "人物参考" }, { value: "scene", label: "场景参考" },
-    { value: "style", label: "风格参考" }, { value: "motion", label: "运镜参考" }, { value: "first-frame", label: "首帧" },
-    { value: "last-frame", label: "尾帧" }, { value: "rhythm", label: "节奏参考" }, { value: "sound", label: "声音参考" },
+    { value: "analysis", label: "僅分析" }, { value: "character", label: "人物參考" }, { value: "scene", label: "場景參考" },
+    { value: "style", label: "風格參考" }, { value: "motion", label: "運鏡參考" }, { value: "first-frame", label: "首幀" },
+    { value: "last-frame", label: "尾幀" }, { value: "rhythm", label: "節奏參考" }, { value: "sound", label: "聲音參考" },
 ];
 export function assistantAttachmentPurposes(kind: AssistantAttachment["kind"]) {
     const allowed: Record<AssistantAttachment["kind"], AssistantAttachmentPurpose[]> = {
@@ -30,31 +30,31 @@ export function attachmentKind(mimeType: string): AssistantAttachment["kind"] | 
 export function attachmentRangeError(attachment: AssistantAttachment): string | null {
     if (attachment.start === undefined && attachment.end === undefined) return null;
     const start = attachment.start ?? 0, end = attachment.end;
-    if (!Number.isFinite(start) || start < 0 || end === undefined || !Number.isFinite(end) || end <= start) return "请填写有效的起止时间（秒）";
-    if (attachment.durationMs && end * 1000 > attachment.durationMs + 50) return "结束时间超过素材时长";
+    if (!Number.isFinite(start) || start < 0 || end === undefined || !Number.isFinite(end) || end <= start) return "請填寫有效的起止時間（秒）";
+    if (attachment.durationMs && end * 1000 > attachment.durationMs + 50) return "結束時間超過素材時長";
     return null;
 }
 export async function uploadAssistantAttachment(file: File, expected = captureUserScope(), identity = nanoid()): Promise<AssistantAttachment> {
     const kind = attachmentKind(file.type);
-    if (!kind) throw new Error("请选择图片、视频或音频文件");
+    if (!kind) throw new Error("請選擇圖片、影片或音訊檔案");
     assertUserScope(expected);
     const metadata: MediaMetadata | undefined = kind === "image" ? await readUploadImageSize(file) : await probeMediaMetadata(file);
     assertUserScope(expected);
     const resource = await uploadResourceFile(file, kind, { ...metadata, fileName: file.name, idempotencyKey: `assistant:${identity}`, expectedScope: expected });
     assertUserScope(expected);
-    if (!resource.id || resource.status !== "ready") throw new Error("素材文件尚未保存成功，请重试上传");
+    if (!resource.id || resource.status !== "ready") throw new Error("素材檔案尚未儲存成功，請重試上傳");
     const url = resourceFileUrl(resource.id), now = new Date().toISOString();
     const positive = (value?: number) => value !== undefined && Number.isFinite(value) && value > 0 ? value : undefined;
     const durationMs = positive(resource.durationMs) ?? metadata?.durationMs;
     const asset = parseAssetRecord({ id: identity, kind, title: file.name, coverUrl: kind === "image" ? url : "", category: "material", tags: [], status: "confirmed",
-        source: "创作助手", createdAt: now, updatedAt: now,
+        source: "創作助手", createdAt: now, updatedAt: now,
         data: { ...(kind === "image" ? { dataUrl: url } : { url }), storageKey: resourceStorageKey(resource.id),
             width: metadata?.width ?? positive(resource.width) ?? 0, height: metadata?.height ?? positive(resource.height) ?? 0,
             durationMs, bytes: resource.size || file.size, mimeType: resource.mimeType || file.type },
     });
     const receipt = await putWorkspaceAsset(identity, asset, { expectedScope: expected });
     assertUserScope(expected);
-    if (receipt.asset?.id !== identity) throw new Error("素材登记没有完成，请重新读取素材库后再试");
+    if (receipt.asset?.id !== identity) throw new Error("素材登記沒有完成，請重新讀取素材庫後再試");
     // This is an accepted canonical write, not a second asset or a new local draft.
     runAssetStoreProjection(() => useAssetStore.setState(state => {
         const live = state.assets.find(item => item.id === identity);
@@ -65,9 +65,9 @@ export async function uploadAssistantAttachment(file: File, expected = captureUs
     return { resourceId: resource.id, assetId: identity, kind, name: file.name, mimeType: resource.mimeType || file.type, bytes: resource.size || file.size, durationMs, purpose: "analysis" };
 }
 export function attachmentFromCanvasReference(reference: CanvasResourceReference): AssistantAttachment {
-    if (!["image", "video", "audio"].includes(reference.kind)) throw new Error("请选择图片、视频或音频素材");
+    if (!["image", "video", "audio"].includes(reference.kind)) throw new Error("請選擇圖片、影片或音訊素材");
     const resourceId = ownedResourceIdFromMediaRef(reference.storageKey, reference.mediaUrl || reference.previewUrl);
-    if (!resourceId) throw new Error("这个素材还没有保存到工作区，请先保存素材");
+    if (!resourceId) throw new Error("這個素材還沒有儲存到工作區，請先儲存素材");
     return { resourceId, kind: reference.kind as AssistantAttachment["kind"], name: reference.title || reference.label, mimeType: "", bytes: 0,
         purpose: "analysis", ...(reference.assetId ? { assetId: reference.assetId } : { nodeId: reference.nodeId }) };
 }

@@ -15,11 +15,11 @@ export function WorkspaceState({ icon = "empty", title, description, action, com
     );
 }
 
-export function WorkspaceErrorState({ title = "暂时无法加载", description, actionLabel = "重新加载", onRetry, compact = false }: { title?: string; description?: string; actionLabel?: string; onRetry?: () => void; compact?: boolean }) {
-    return <WorkspaceState icon="error" title={title} description={description || "请检查网络连接后重试，当前内容不会被覆盖。"} compact={compact} action={onRetry ? <Button onClick={onRetry}>{actionLabel}</Button> : undefined} />;
+export function WorkspaceErrorState({ title = "暫時無法載入", description, actionLabel = "重新載入", onRetry, compact = false }: { title?: string; description?: string; actionLabel?: string; onRetry?: () => void; compact?: boolean }) {
+    return <WorkspaceState icon="error" title={title} description={description || "請檢查網路連線後重試，當前內容不會被覆蓋。"} compact={compact} action={onRetry ? <Button onClick={onRetry}>{actionLabel}</Button> : undefined} />;
 }
 
-export function WorkspaceLoadingState({ label = "正在加载内容", detail, rows = 3, className }: { label?: string; detail?: string; rows?: number; className?: string }) {
+export function WorkspaceLoadingState({ label = "正在載入內容", detail, rows = 3, className }: { label?: string; detail?: string; rows?: number; className?: string }) {
     return (
         <section className={cn("workspace-loading-state py-8", className)} aria-busy="true" aria-live="polite">
             <div className="mb-5 flex items-center gap-3">

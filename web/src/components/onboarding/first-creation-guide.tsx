@@ -9,20 +9,20 @@ import { useCanvasStore } from "@/stores/canvas/use-canvas-store";
 import "./first-creation-guide.css";
 
 const lessons = [
-    { title: "连接算力", description: "点击连接，在浏览器确认授权。" },
-    { title: "新建项目", description: "点击侧栏「新建项目」，打开一张新画布。" },
-    { title: "添加图片", description: "点击添加按钮，选择「图片」。" },
-    { title: "生成图片", description: "选中图片节点，输入描述并生成。" },
-    { title: "查看生成历史", description: "刚生成的图片会保存在这里。" },
-    { title: "继续创作", description: "打开刚才的项目，继续编辑。" },
+    { title: "連線算力", description: "點選連線，在瀏覽器確認授權。" },
+    { title: "新建專案", description: "點選側欄「新建專案」，開啟一張新畫布。" },
+    { title: "新增圖片", description: "點選新增按鈕，選擇「圖片」。" },
+    { title: "生成圖片", description: "選中圖片節點，輸入描述並生成。" },
+    { title: "檢視生成歷史", description: "剛生成的圖片會儲存在這裡。" },
+    { title: "繼續創作", description: "開啟剛才的專案，繼續編輯。" },
 ];
-const sample = "一只穿着黄色雨衣的小狗，站在雨后的街道上，温暖的插画风格。";
+const sample = "一隻穿著黃色雨衣的小狗，站在雨後的街道上，溫暖的插畫風格。";
 
 export function OnboardingEntry({ compact = false }: { compact?: boolean }) {
-    return <button type="button" className={`app-workspace-nav-link first-creation-entry${compact ? " is-collapsed" : ""}`} aria-label="新手引导" title="新手引导" onClick={() => window.dispatchEvent(new Event("beeftv:open-guide"))}>
+    return <button type="button" className={`app-workspace-nav-link first-creation-entry${compact ? " is-collapsed" : ""}`} aria-label="新手引導" title="新手引導" onClick={() => window.dispatchEvent(new Event("beeftv:open-guide"))}>
         <span className="app-workspace-nav-main flex min-w-0 items-center gap-2.5">
             <span className="app-workspace-nav-icon" aria-hidden><HelpCircle className="size-4 shrink-0" strokeWidth={1.8} /></span>
-            {!compact && <span className="app-workspace-nav-title truncate">新手引导</span>}
+            {!compact && <span className="app-workspace-nav-title truncate">新手引導</span>}
         </span>
     </button>;
 }
@@ -110,14 +110,14 @@ export function FirstCreationGuide() {
         const update = () => {
             timer = null;
             let target: HTMLElement | null = null;
-            if (step === "official" && pathname === "/settings") target = connected ? visible('[aria-label="默认生图模型"]') || visible(".model-default-section") : visible('[data-onboarding="official-connect"]') || visible('[data-onboarding="official-channel"]');
-            if (step === "project") target = visible('[title="点击修改画布名称"]') || visible('[aria-label="画布名称"]') || visible('[data-nav-id="new"]') || visible('[aria-label="新建画布创作"]');
-            if (step === "node" && !ready) target = visible('[data-onboarding="image-option"]') || visible('[aria-label="添加节点"]') || visible('[data-onboarding="canvas-tools"]') || visible('[data-nav-id="new"]');
+            if (step === "official" && pathname === "/settings") target = connected ? visible('[aria-label="預設生圖模型"]') || visible(".model-default-section") : visible('[data-onboarding="official-connect"]') || visible('[data-onboarding="official-channel"]');
+            if (step === "project") target = visible('[title="點選修改畫布名稱"]') || visible('[aria-label="畫布名稱"]') || visible('[data-nav-id="new"]') || visible('[aria-label="新建畫布創作"]');
+            if (step === "node" && !ready) target = visible('[data-onboarding="image-option"]') || visible('[aria-label="新增節點"]') || visible('[data-onboarding="canvas-tools"]') || visible('[data-nav-id="new"]');
             if (step === "generate") {
-                const prompt = visible('[aria-label="图片提示词"]');
+                const prompt = visible('[aria-label="圖片提示詞"]');
                 const hasPrompt = prompt && ((prompt as HTMLTextAreaElement).value || prompt.textContent || "").trim();
                 target = hasPrompt ? visible('.canvas-node-composer-submit') : prompt;
-                target ||= guide.nodeId ? visible(`[data-node-id="${CSS.escape(guide.nodeId)}"]`) : visible('[aria-label="添加节点"]') || visible('[data-nav-id="new"]');
+                target ||= guide.nodeId ? visible(`[data-node-id="${CSS.escape(guide.nodeId)}"]`) : visible('[aria-label="新增節點"]') || visible('[data-nav-id="new"]');
             }
             if (step === "assets" && pathname === "/assets" && new URLSearchParams(search).get("tab") === "history") {
                 const taskId = result?.metadata?.taskId;
@@ -170,21 +170,21 @@ export function FirstCreationGuide() {
         bottom: Math.min(window.innerHeight, highlightRect.bottom + 8),
     };
     return <>
-        <AppModal open={finished} transitionName="" maskTransitionName="" title="引导已结束" onCancel={() => setFinished(false)} footer={<Button type="primary" onClick={() => setFinished(false)}>继续使用 MURMUR AI</Button>} width={420}>
-            <p className="first-creation-intro">随时从侧栏重新打开引导。</p>
+        <AppModal open={finished} transitionName="" maskTransitionName="" title="引導已結束" onCancel={() => setFinished(false)} footer={<Button type="primary" onClick={() => setFinished(false)}>繼續使用 MURMUR AI</Button>} width={420}>
+            <p className="first-creation-intro">隨時從側欄重新開啟引導。</p>
         </AppModal>
-        <AppModal open={welcome} transitionName="" maskTransitionName="" title="完成第一次创作" onCancel={dismiss} footer={null} width={420} destroyOnHidden>
-            <p className="first-creation-intro">跟着高亮操作，点击引导卡上的箭头按钮切换步骤。</p>
-            <div className="first-creation-actions"><Button onClick={dismiss}>稍后</Button><Button type="primary" onClick={() => { guide.restart(); goToLesson(onboardingSteps[0]); setWelcome(false); setCollapsed(false); }}>开始</Button></div>
+        <AppModal open={welcome} transitionName="" maskTransitionName="" title="完成第一次創作" onCancel={dismiss} footer={null} width={420} destroyOnHidden>
+            <p className="first-creation-intro">跟著高亮操作，點選引導卡上的箭頭按鈕切換步驟。</p>
+            <div className="first-creation-actions"><Button onClick={dismiss}>稍後</Button><Button type="primary" onClick={() => { guide.restart(); goToLesson(onboardingSteps[0]); setWelcome(false); setCollapsed(false); }}>開始</Button></div>
         </AppModal>
-        {guide.status === "active" && !welcome && <aside className={`first-creation-guide${/^\/canvas\/[^/]+/.test(pathname) ? " is-canvas" : ""}${collapsed ? " is-collapsed" : ""}`} style={position ? { left: position.x, top: position.y, right: "auto", bottom: "auto" } : undefined} aria-label="新手引导" data-step={step} data-canvas-no-zoom onPointerDown={(event) => event.stopPropagation()} onWheel={(event) => event.stopPropagation()}>
-            <div className="first-creation-heading"><button type="button" className="first-creation-move" aria-label="移动引导卡，可拖动或使用方向键" title="拖动以移动引导" onPointerDown={(event) => { const bounds = event.currentTarget.closest("aside")!.getBoundingClientRect(); setDrag({ x: event.clientX, y: event.clientY, left: bounds.left, top: bounds.top }); event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (!drag) return; const bounds = event.currentTarget.closest("aside")!.getBoundingClientRect(); setPosition({ x: Math.max(8, Math.min(window.innerWidth - bounds.width - 8, drag.left + event.clientX - drag.x)), y: Math.max(8, Math.min(window.innerHeight - bounds.height - 8, drag.top + event.clientY - drag.y)) }); }} onPointerUp={() => setDrag(null)} onPointerCancel={() => setDrag(null)} onKeyDown={(event) => { const delta: Record<string, [number, number]> = { ArrowUp: [0, -20], ArrowDown: [0, 20], ArrowLeft: [-20, 0], ArrowRight: [20, 0] }; if (!delta[event.key]) return; event.preventDefault(); const bounds = event.currentTarget.closest("aside")!.getBoundingClientRect(); setPosition({ x: Math.max(8, Math.min(window.innerWidth - bounds.width - 8, bounds.left + delta[event.key][0])), y: Math.max(8, Math.min(window.innerHeight - bounds.height - 8, bounds.top + delta[event.key][1])) }); }}><GripVertical size={15} /></button><button type="button" className="first-creation-expand" onClick={() => setCollapsed(!collapsed)} aria-expanded={!collapsed}><span>{collapsed ? lessons[guide.step].title : `新手引导 · ${guide.step + 1} / ${lessons.length}`}</span><ChevronDown size={15} /></button><button type="button" className="first-creation-close" aria-label="关闭引导" title="关闭引导" onClick={() => guide.pause()}><X size={17} /></button></div>
-            {!collapsed && <><h2>{lessons[guide.step].title}{ready && <Check size={16} className="first-creation-check" aria-label="已完成" />}</h2><p>{step === "official" && connected ? "已连接，选择你要使用的默认模型。" : step === "project" && project ? "点击项目名称，为它起个名字。" : lessons[guide.step].description}</p>
+        {guide.status === "active" && !welcome && <aside className={`first-creation-guide${/^\/canvas\/[^/]+/.test(pathname) ? " is-canvas" : ""}${collapsed ? " is-collapsed" : ""}`} style={position ? { left: position.x, top: position.y, right: "auto", bottom: "auto" } : undefined} aria-label="新手引導" data-step={step} data-canvas-no-zoom onPointerDown={(event) => event.stopPropagation()} onWheel={(event) => event.stopPropagation()}>
+            <div className="first-creation-heading"><button type="button" className="first-creation-move" aria-label="移動引導卡，可拖動或使用方向鍵" title="拖動以移動引導" onPointerDown={(event) => { const bounds = event.currentTarget.closest("aside")!.getBoundingClientRect(); setDrag({ x: event.clientX, y: event.clientY, left: bounds.left, top: bounds.top }); event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (!drag) return; const bounds = event.currentTarget.closest("aside")!.getBoundingClientRect(); setPosition({ x: Math.max(8, Math.min(window.innerWidth - bounds.width - 8, drag.left + event.clientX - drag.x)), y: Math.max(8, Math.min(window.innerHeight - bounds.height - 8, drag.top + event.clientY - drag.y)) }); }} onPointerUp={() => setDrag(null)} onPointerCancel={() => setDrag(null)} onKeyDown={(event) => { const delta: Record<string, [number, number]> = { ArrowUp: [0, -20], ArrowDown: [0, 20], ArrowLeft: [-20, 0], ArrowRight: [20, 0] }; if (!delta[event.key]) return; event.preventDefault(); const bounds = event.currentTarget.closest("aside")!.getBoundingClientRect(); setPosition({ x: Math.max(8, Math.min(window.innerWidth - bounds.width - 8, bounds.left + delta[event.key][0])), y: Math.max(8, Math.min(window.innerHeight - bounds.height - 8, bounds.top + delta[event.key][1])) }); }}><GripVertical size={15} /></button><button type="button" className="first-creation-expand" onClick={() => setCollapsed(!collapsed)} aria-expanded={!collapsed}><span>{collapsed ? lessons[guide.step].title : `新手引導 · ${guide.step + 1} / ${lessons.length}`}</span><ChevronDown size={15} /></button><button type="button" className="first-creation-close" aria-label="關閉引導" title="關閉引導" onClick={() => guide.pause()}><X size={17} /></button></div>
+            {!collapsed && <><h2>{lessons[guide.step].title}{ready && <Check size={16} className="first-creation-check" aria-label="已完成" />}</h2><p>{step === "official" && connected ? "已連線，選擇你要使用的預設模型。" : step === "project" && project ? "點選專案名稱，為它起個名字。" : lessons[guide.step].description}</p>
                 {notice && <p role="status">{notice}</p>}
                 <div className="first-creation-footer"><div className="first-creation-secondary">
-                    {step === "generate" && <button type="button" className="first-creation-copy" title={sample} onClick={() => { void navigator.clipboard.writeText(sample).then(() => setNotice("已复制，粘贴到提示词输入框。")).catch(() => setNotice("复制失败，请手动输入描述。")); }}><Copy size={13} />示例提示词</button>}
-                    {step === "generate" && <small>生成按模型计费</small>}
-                </div><div className="first-creation-navigation"><button type="button" disabled={guide.step === 0} aria-label="上一步" title="上一步" onClick={back}><ChevronLeft size={18} /></button><button type="button" className="is-next" aria-label={step === "return" ? "结束引导" : "下一步"} title={step === "return" ? "结束引导" : "下一步"} onClick={() => advance(!ready)}><ChevronRight size={18} /></button></div></div>
+                    {step === "generate" && <button type="button" className="first-creation-copy" title={sample} onClick={() => { void navigator.clipboard.writeText(sample).then(() => setNotice("已複製，貼上到提示詞輸入框。")).catch(() => setNotice("複製失敗，請手動輸入描述。")); }}><Copy size={13} />示例提示詞</button>}
+                    {step === "generate" && <small>生成按模型計費</small>}
+                </div><div className="first-creation-navigation"><button type="button" disabled={guide.step === 0} aria-label="上一步" title="上一步" onClick={back}><ChevronLeft size={18} /></button><button type="button" className="is-next" aria-label={step === "return" ? "結束引導" : "下一步"} title={step === "return" ? "結束引導" : "下一步"} onClick={() => advance(!ready)}><ChevronRight size={18} /></button></div></div>
             </>}
         </aside>}
         {spotlight && <>

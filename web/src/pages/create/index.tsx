@@ -59,7 +59,7 @@ function writeComposerPref(key: string, value: boolean) {
     try {
         window.localStorage.setItem(key, value ? "1" : "0");
     } catch {
-        // 存储不可用（隐私模式/禁用）：仅当前会话生效，忽略
+        // 儲存不可用（隱私模式/停用）：僅當前會話生效，忽略
     }
 }
 
@@ -176,7 +176,7 @@ export default function CreatePage() {
     const mentionReferences = useMemo(() => buildCreationMentionReferences(addedSkills, attachments, draftReferences), [addedSkills, attachments, draftReferences]);
     const isEmpty = !activeConversation?.messages.length;
 
-    // 空首页从顶部开始；有消息的对话由跟随消息逻辑管理滚动。
+    // 空首頁從頂部開始；有訊息的對話由跟隨訊息邏輯管理滾動。
     useLayoutEffect(() => {
         if (!hydrated || !isEmpty) return;
         const frame = window.requestAnimationFrame(() => {
@@ -221,7 +221,7 @@ export default function CreatePage() {
     useEffect(() => {
         if (!composerPreferencesHydrated || !composerPreferencesInitialized || mode !== "image") return;
         const saved = useCreationPreferencesStore.getState().preferences.image;
-        // 优先恢复用户上次选择；只有当前模型不支持该值时，normalizeImageValue 才回退到模型默认值。
+        // 優先恢復使用者上次選擇；只有當前模型不支援該值時，normalizeImageValue 才回退到模型預設值。
         const normalized = normalizeImageValue(imageProfile, {
             size: saved?.ratio || imageProfile.size.default,
             quality: saved?.quality || imageProfile.quality.default,
@@ -235,7 +235,7 @@ export default function CreatePage() {
     useEffect(() => {
         if (!composerPreferencesHydrated || !composerPreferencesInitialized || mode !== "video") return;
         const saved = useCreationPreferencesStore.getState().preferences.video;
-        // 优先恢复用户上次选择；只有当前模型不支持该值时，normalizeVideoValue 才回退到模型默认值。
+        // 優先恢復使用者上次選擇；只有當前模型不支援該值時，normalizeVideoValue 才回退到模型預設值。
         const normalized = normalizeVideoValue(videoProfile, {
             seconds: saved?.seconds || String(videoProfile.duration.default),
             ratio: saved?.ratio || videoProfile.defaultRatio,
@@ -279,7 +279,7 @@ export default function CreatePage() {
             setParkedDraftId(parked && next[0] ? next[0].id : "");
         }).catch(async (error) => {
             if (cancelled || !userScopeEpochMatches(loadEpoch)) return;
-            toastRef.current.error(error instanceof Error ? error.message : "对话加载失败");
+            toastRef.current.error(error instanceof Error ? error.message : "對話載入失敗");
             let local: CreationConversation[] | null = null;
             try {
                 local = await loadLocalCreationConversationDrafts<CreationConversation>(loadEpoch.scope);
@@ -296,7 +296,7 @@ export default function CreatePage() {
         });
         return () => {
             cancelled = true;
-            // 页面卸载只停止当前页面的状态更新，后台任务由任务中心继续执行，返回页面后再恢复状态。
+            // 頁面解除安裝只停止當前頁面的狀態更新，後臺任務由任務中心繼續執行，返回頁面後再恢復狀態。
         };
     }, [demoConversation, userId]);
 
@@ -316,7 +316,7 @@ export default function CreatePage() {
         const persistEpoch = captureUserScopeEpoch();
         void saveCreationConversations(conversations, persistEpoch.scope).catch(async (error) => {
             if (!userScopeEpochMatches(persistEpoch)) return;
-            toastRef.current.error(error instanceof Error ? error.message : "对话保存失败");
+            toastRef.current.error(error instanceof Error ? error.message : "對話儲存失敗");
             try {
                 const local = await loadLocalCreationConversationDrafts<CreationConversation>(persistEpoch.scope);
                 if (!userScopeEpochMatches(persistEpoch) || !local?.length) return;
@@ -332,14 +332,14 @@ export default function CreatePage() {
                     return next;
                 });
             } catch {
-                // 保存失败已经提示；冲突标记读不到时仍保留当前草稿。
+                // 儲存失敗已經提示；衝突標記讀不到時仍保留當前草稿。
             }
         });
     }, [conversations, demoConversation, hydrated]);
 
     useEffect(() => {
         if (!hydrated || !recoveryTaskKey || !pendingTaskIds.length) return;
-        // 当前页面主动提交的任务由 submit 自己等待并收尾；恢复监听只接管刷新前遗留的任务，避免同一任务被双重轮询。
+        // 當前頁面主動提交的任務由 submit 自己等待並收尾；恢復監聽只接管重新整理前遺留的任務，避免同一任務被雙重輪詢。
         const recoverableTaskIds = pendingTaskIds.filter((id) => !activeGenerationTaskIdsRef.current.has(id));
         if (!recoverableTaskIds.length) return;
         let cancelled = false;
@@ -360,17 +360,17 @@ export default function CreatePage() {
                     }, { signal: observationController.signal, materialize: async () => task, materializedUrls: runtime.generationTaskMaterializedUrls });
                 } catch (error) {
                     if (cancelled || observationController.signal.aborted) return;
-                    console.warn("创作任务结果挂载失败，将使用已物化结果收敛消息状态", error);
+                    console.warn("創作任務結果掛載失敗，將使用已物化結果收斂訊息狀態", error);
                 }
             }
             if (!cancelled) setConversations((current) => reconcileCreationTaskMessages(runtime, current, persistedTasks));
         };
         const warnSync = (error: unknown) => {
             if (cancelled || observationController.signal.aborted) return;
-            console.warn("创作任务状态同步失败", error);
+            console.warn("創作任務狀態同步失敗", error);
             if (!taskSyncWarningRef.current) {
                 taskSyncWarningRef.current = true;
-                toast.warning("任务状态暂时无法同步，请稍后刷新");
+                toast.warning("任務狀態暫時無法同步，請稍後重新整理");
             }
         };
         let applyChain = Promise.resolve();
@@ -437,7 +437,7 @@ export default function CreatePage() {
             await saveCreationConversations(next, epoch.scope);
         } catch (error) {
             if (!userScopeEpochMatches(epoch)) return;
-            toastRef.current.error(error instanceof Error ? error.message : "对话保存失败");
+            toastRef.current.error(error instanceof Error ? error.message : "對話儲存失敗");
         }
     }, []);
 
@@ -476,7 +476,7 @@ export default function CreatePage() {
     const externalLibraryItems = useMemo<AssetLibraryPickerItem[]>(
         () => externalAssetSources.items.map((item) => ({
             ...item,
-            disabledReason: mode === "image" && item.external?.item.kind !== "image" ? "图片创作仅支持参考图" : undefined,
+            disabledReason: mode === "image" && item.external?.item.kind !== "image" ? "圖片創作僅支援參考圖" : undefined,
         })),
         [externalAssetSources.items, mode],
     );
@@ -487,10 +487,10 @@ export default function CreatePage() {
                 id: asset.id,
                 title: asset.title,
                 category: asset.category || "other",
-                kindLabel: asset.kind === "video" ? "视频" : asset.kind === "audio" ? "音频" : "图片",
+                kindLabel: asset.kind === "video" ? "影片" : asset.kind === "audio" ? "音訊" : "圖片",
                 asset,
                 searchText: (asset.tags || []).join(" "),
-                disabledReason: mode === "image" && asset.kind !== "image" ? "图片创作仅支持参考图" : undefined,
+                disabledReason: mode === "image" && asset.kind !== "image" ? "圖片創作僅支援參考圖" : undefined,
             })),
         ...externalLibraryItems,
     ], [assets, externalLibraryItems, mode]);
@@ -537,8 +537,8 @@ export default function CreatePage() {
         if (!userScopeMatches(expectedScope)) return [];
         const assetIds = settled.flatMap((entry) => entry.status === "fulfilled" && entry.value ? [entry.value] : []);
         const failed = settled.filter((entry) => entry.status === "rejected");
-        if (assetIds.length) toast.success(`${assetIds.length} 个素材已上传到素材库并自动选中`);
-        if (failed.length) toast.error(`${failed.length} 个素材上传失败，请重试`);
+        if (assetIds.length) toast.success(`${assetIds.length} 個素材已上傳到素材庫並自動選中`);
+        if (failed.length) toast.error(`${failed.length} 個素材上傳失敗，請重試`);
         return assetIds;
     };
 
@@ -587,8 +587,8 @@ export default function CreatePage() {
     const replaceAttachmentReference = useCallback((targetAttachmentId: string, replacement: CreationAttachment) => {
         const currentAttachments = attachmentsRef.current;
         const target = currentAttachments.find((attachment) => attachment.id === targetAttachmentId);
-        if (!target) throw new Error("要替换的参考图不存在");
-        if (creationAttachmentKind(target) !== "image" || creationAttachmentKind(replacement) !== "image") throw new Error("目前只支持替换提示词中的图片引用");
+        if (!target) throw new Error("要替換的參考圖不存在");
+        if (creationAttachmentKind(target) !== "image" || creationAttachmentKind(replacement) !== "image") throw new Error("目前只支援替換提示詞中的圖片引用");
         if (target.id === replacement.id) return false;
 
         const result = replaceCreationAttachmentReference(promptRef.current, currentAttachments, targetAttachmentId, replacement);
@@ -601,9 +601,9 @@ export default function CreatePage() {
 
     const replaceReferenceFromTrack = useCallback((targetAttachmentId: string, replacement: CreationAttachment) => {
         try {
-            if (replaceAttachmentReference(targetAttachmentId, replacement)) toast.success("参考图已替换，槽位不变，提示词无需修改");
+            if (replaceAttachmentReference(targetAttachmentId, replacement)) toast.success("參考圖已替換，槽位不變，提示詞無需修改");
         } catch (error) {
-            toast.error(error instanceof Error ? error.message : "参考图替换失败");
+            toast.error(error instanceof Error ? error.message : "參考圖替換失敗");
         }
     }, [replaceAttachmentReference, toast]);
 
@@ -611,7 +611,7 @@ export default function CreatePage() {
         if (busy || referenceReplacementBusy) return;
         const file = files.find((item) => item.type.startsWith("image/"));
         if (!file) {
-            toast.warning("请拖入图片文件进行替换");
+            toast.warning("請拖入圖片檔案進行替換");
             return;
         }
         setReferenceReplacementBusy(true);
@@ -619,12 +619,12 @@ export default function CreatePage() {
         try {
             const { asset, attachment } = await uploadCreationAsset(file, expectedScope);
             if (!userScopeMatches(expectedScope)) return;
-            if (creationAttachmentKind(attachment) !== "image") throw new Error("上传结果不是可用图片");
+            if (creationAttachmentKind(attachment) !== "image") throw new Error("上傳結果不是可用圖片");
             if (asset) addAsset(asset);
-            if (replaceAttachmentReference(targetAttachmentId, attachment)) toast.success("参考图已替换，槽位不变，提示词无需修改");
+            if (replaceAttachmentReference(targetAttachmentId, attachment)) toast.success("參考圖已替換，槽位不變，提示詞無需修改");
         } catch (error) {
             if (!userScopeMatches(expectedScope)) return;
-            toast.error(error instanceof Error ? error.message : "参考图上传或替换失败");
+            toast.error(error instanceof Error ? error.message : "參考圖上傳或替換失敗");
         } finally {
             setReferenceReplacementBusy(false);
         }
@@ -640,23 +640,23 @@ export default function CreatePage() {
             return;
         }
         if (!selectedModel) {
-            toast.warning(`请先在设置中配置${modeLabels[mode]}模型`);
+            toast.warning(`請先在設定中配置${modeLabels[mode]}模型`);
             releaseRetryLock();
             return;
         }
         if (mode === "video" && !videoDurationAllowed(videoProfile, Number(seconds))) {
-            toast.error("当前模型不支持所选视频时长，请重新选择");
+            toast.error("當前模型不支援所選影片時長，請重新選擇");
             releaseRetryLock();
             return;
         }
         if (attachments.length > maxReferences) {
-            toast.warning("参考内容正在按当前模型能力调整，请稍后重试");
+            toast.warning("參考內容正在按當前模型能力調整，請稍後重試");
             releaseRetryLock();
             return;
         }
         const settings = { ratio, seconds, quality, videoQuality, count };
         const references = selectedCreationReferences(text, mentionReferences);
-        // 后端对图片和视频使用不同的参考字段；这里先拆分，避免媒体类型在写入任务时被误判。
+        // 後端對圖片和影片使用不同的參考欄位；這裡先拆分，避免媒體型別在寫入任務時被誤判。
         const { referenceImages, referenceVideos, referenceAudios } = splitCreationAttachments(attachments);
         const videoOperation = inferVideoOperation({
             textCount: text ? 1 : 0,
@@ -676,7 +676,7 @@ export default function CreatePage() {
                 selectedSkillIds: skillReferences.map((skill) => skill.skillId),
             });
         } catch (error) {
-            toast.error(error instanceof Error ? error.message : "技能上下文加载失败");
+            toast.error(error instanceof Error ? error.message : "技能上下文載入失敗");
             releaseRetryLock();
             return;
         }
@@ -747,7 +747,7 @@ export default function CreatePage() {
                     onTextDelta: textStreaming ? (value) => updateOriginAssistant((item) => ({ ...item, content: value })) : undefined,
                     ...retryContext,
                 }));
-                if (!result.text?.trim()) throw new Error("后端任务没有返回文本");
+                if (!result.text?.trim()) throw new Error("後端任務沒有返回文本");
                 const textTaskId = Array.from(boundTaskIds)[0];
                 if (textTaskId) {
                     await runtime.consumeGenerationTaskMessage({
@@ -800,14 +800,14 @@ export default function CreatePage() {
                 const taskFailures = settled.filter((entry): entry is PromiseRejectedResult => entry.status === "rejected");
                 const imageTasks = imageProfile.fixedOutputs ? generatedImages.filter((item) => item.resultIndex === 0) : generatedImages;
                 const storedImages = await Promise.allSettled(imageTasks.map(async ({ image, resultImages, taskId, batchIndex }) => {
-                    if (!taskId) throw new Error("生成任务缺少稳定任务标识");
+                    if (!taskId) throw new Error("生成任務缺少穩定任務標識");
                     const task = completedCreationGenerationTask(runtime, { taskId, task: boundTasks.get(taskId), mode: "image", prompt: expandedPrompt, result: { mode: "image", images: imageProfile.fixedOutputs ? resultImages : [image] }, conversationId: activeConversation.id, messageId: assistantMessage.id, batchIndex, batchCount: taskCount });
                     const materialized = await runtime.consumeGenerationTaskMessage(task, assistantMessage.id, async ({ conversation, bindingStatus }) => {
                         if (bindingStatus === "deleted") return;
                         if (conversation) applyCanonicalConversation(originConversationId, conversation as CreationConversation);
                     }, { signal: requestLifecycle.signal });
                     const urls = runtime.generationTaskMaterializedUrls(materialized);
-                    if (!urls[0]) throw new Error("图片结果资源不可用");
+                    if (!urls[0]) throw new Error("圖片結果資源不可用");
                     return imageProfile.fixedOutputs ? urls : [urls[0]];
                 }));
                 const resultUrls = storedImages.flatMap((entry) => entry.status === "fulfilled" ? entry.value : []);
@@ -815,10 +815,10 @@ export default function CreatePage() {
                 const failedCount = taskFailures.length + resourceFailures.length;
                 if (!resultUrls.length) {
                     const reason = taskFailures[0]?.reason || resourceFailures[0]?.reason;
-                    throw reason instanceof Error ? reason : new Error("后端任务没有返回图片");
+                    throw reason instanceof Error ? reason : new Error("後端任務沒有返回圖片");
                 }
-                if (failedCount) toast.warning(`${resultUrls.length} 张图片已生成，${failedCount} 张生成失败`);
-                updateOriginAssistant((item) => ({ ...item, content: failedCount ? `${resultUrls.length} 张图片已生成，${failedCount} 张失败` : "图片已生成" }));
+                if (failedCount) toast.warning(`${resultUrls.length} 張圖片已生成，${failedCount} 張生成失敗`);
+                updateOriginAssistant((item) => ({ ...item, content: failedCount ? `${resultUrls.length} 張圖片已生成，${failedCount} 張失敗` : "圖片已生成" }));
             } else {
                 const result = await runtime.runGenerationOperationOnce(retryContext?.clientOperationId, () => runtime.runBackendGenerationTask({
                     resolveReferenceLinks,
@@ -833,15 +833,15 @@ export default function CreatePage() {
                     onTaskUpdate: bindTask,
                     ...retryContext,
                 }));
-                if (!result.video?.dataUrl) throw new Error("后端任务没有返回视频");
+                if (!result.video?.dataUrl) throw new Error("後端任務沒有返回影片");
                 const taskId = Array.from(boundTaskIds)[0];
-                if (!taskId) throw new Error("生成任务缺少稳定任务标识");
+                if (!taskId) throw new Error("生成任務缺少穩定任務標識");
                 const task = completedCreationGenerationTask(runtime, { taskId, task: boundTasks.get(taskId), mode: "video", prompt: expandedPrompt, result, conversationId: activeConversation.id, messageId: assistantMessage.id });
                 const materialized = await runtime.consumeGenerationTaskMessage(task, assistantMessage.id, async ({ conversation, bindingStatus }) => {
                     if (bindingStatus === "deleted") return;
                     if (conversation) applyCanonicalConversation(originConversationId, conversation as CreationConversation);
                 }, { signal: requestLifecycle.signal });
-                if (!runtime.generationTaskMaterializedUrls(materialized)[0]) throw new Error("视频结果资源不可用");
+                if (!runtime.generationTaskMaterializedUrls(materialized)[0]) throw new Error("影片結果資源不可用");
             }
             updateOriginAssistant((item) => ({ ...item, status: "done" }));
         } catch (error) {
@@ -850,7 +850,7 @@ export default function CreatePage() {
                 return;
             }
             const message = generationErrorMessage(error);
-            updateOriginAssistant((item) => ({ ...item, status: "error", error: message, generationErrorCode: item.generationErrorCode || generationErrorCode(error), generationOperation: item.generationOperation || (mode === "video" ? videoOperation : mode), createdAt: assistantMessage.createdAt, content: "生成失败" }));
+            updateOriginAssistant((item) => ({ ...item, status: "error", error: message, generationErrorCode: item.generationErrorCode || generationErrorCode(error), generationOperation: item.generationOperation || (mode === "video" ? videoOperation : mode), createdAt: assistantMessage.createdAt, content: "生成失敗" }));
         } finally {
             for (const taskId of boundTaskIds) activeGenerationTaskIdsRef.current.delete(taskId);
             requestLifecycle.release();
@@ -893,7 +893,7 @@ export default function CreatePage() {
             const generatedAssetIds = selectedAssetIds || source.messages.flatMap((item) => {
                 if (!item.resultUrls?.length) return [];
                 const ids = creationResultAssetIds(assets, { messageId: item.id, taskIds: item.taskIds || [], resultUrls: item.resultUrls });
-                if (ids.length !== item.resultUrls.length) throw new Error("部分生成素材还未保存完成，请稍后转入画布。");
+                if (ids.length !== item.resultUrls.length) throw new Error("部分生成素材還未儲存完成，請稍後轉入畫布。");
                 return ids;
             });
             const referenceKeys = new Set(source.messages.flatMap((item) => (item.attachments || []).map((attachment) => attachment.storageKey).filter(Boolean)));
@@ -906,7 +906,7 @@ export default function CreatePage() {
             setConversations(next);
             await saveCreationConversations(next, scope);
             if (!userScopeEpochMatches(epoch)) return;
-            if (result.syncError && !localMode) toastRef.current.warning("会话已保存在本机，云端同步尚未完成。");
+            if (result.syncError && !localMode) toastRef.current.warning("會話已儲存在本機，雲端同步尚未完成。");
             const params = new URLSearchParams({ conversation: result.sessionId });
             if (assetIds.length) {
                 params.set("mode", "handoff");
@@ -914,7 +914,7 @@ export default function CreatePage() {
             }
             navigate(`/canvas/${result.id}?${params.toString()}`);
         } catch (cause) {
-            if (userScopeEpochMatches(epoch)) toastRef.current.error(cause instanceof Error ? cause.message : "转入画布失败，原会话已保留");
+            if (userScopeEpochMatches(epoch)) toastRef.current.error(cause instanceof Error ? cause.message : "轉入畫布失敗，原會話已保留");
         } finally { openingCanvasRef.current = false; setOpeningCanvas(false); }
     };
 
@@ -949,7 +949,7 @@ export default function CreatePage() {
             setParkedDraftId(conversation.id);
         } catch (error) {
             if (!userScopeEpochMatches(epoch)) return;
-            toastRef.current.error(error instanceof Error ? error.message : "无法换成已保存的版本");
+            toastRef.current.error(error instanceof Error ? error.message : "無法換成已儲存的版本");
         }
     };
 
@@ -965,7 +965,7 @@ export default function CreatePage() {
             setParkedDraftId("");
         } catch (error) {
             if (!userScopeEpochMatches(epoch)) return;
-            toastRef.current.error(error instanceof Error ? error.message : "无法恢复刚才的草稿");
+            toastRef.current.error(error instanceof Error ? error.message : "無法恢復剛才的草稿");
         }
     };
 
@@ -982,18 +982,18 @@ export default function CreatePage() {
             setConflictOpen(false);
         } catch (error) {
             if (!userScopeEpochMatches(epoch)) return;
-            toastRef.current.error(error instanceof Error ? error.message : "这份草稿没有保存成功，原来的版本还在");
+            toastRef.current.error(error instanceof Error ? error.message : "這份草稿沒有儲存成功，原來的版本還在");
         }
     };
 
     const confirmDeleteConversation = (conversation: CreationConversation) => {
-        const title = conversation.title.trim() || "新创作";
+        const title = conversation.title.trim() || "新創作";
         const label = title.length > 32 ? `${title.slice(0, 32)}...` : title;
         modal.confirm({
             className: "workspace-modal workspace-modal-compact",
-            title: "删除历史对话？",
-            content: `确定删除「${label}」吗？这只会删除历史对话记录，不会删除已上传或生成的任何素材。此操作不可撤销。`,
-            okText: "删除对话",
+            title: "刪除歷史對話？",
+            content: `確定刪除「${label}」嗎？這隻會刪除歷史對話記錄，不會刪除已上傳或生成的任何素材。此操作不可撤銷。`,
+            okText: "刪除對話",
             okButtonProps: { danger: true },
             cancelText: "保留",
             onOk: async () => {
@@ -1016,10 +1016,10 @@ export default function CreatePage() {
                         setAttachments([]);
                         setDraftReferences([]);
                     }
-                    toastRef.current.success("历史对话已删除，素材仍保留");
+                    toastRef.current.success("歷史對話已刪除，素材仍保留");
                 } catch (error) {
                     if (!userScopeEpochMatches(epoch)) throw error;
-                    toastRef.current.error(error instanceof Error ? error.message : "历史对话删除失败");
+                    toastRef.current.error(error instanceof Error ? error.message : "歷史對話刪除失敗");
                     throw error;
                 }
             },
@@ -1035,7 +1035,7 @@ export default function CreatePage() {
         const epoch = captureUserScopeEpoch();
         void saveCreationConversations(next, epoch.scope).catch((error) => {
             if (!userScopeEpochMatches(epoch)) return;
-            toastRef.current.error(error instanceof Error ? error.message : "对话重命名保存失败");
+            toastRef.current.error(error instanceof Error ? error.message : "對話重新命名儲存失敗");
         });
     };
 
@@ -1068,7 +1068,7 @@ export default function CreatePage() {
             updateActive((conversation) => {
                 const messages = conversation.messages.filter((message) => !removedIds.has(message.id));
                 const firstPrompt = messages.find((message) => message.role === "user")?.content.trim();
-                return { ...conversation, title: firstPrompt ? firstPrompt.slice(0, 24) : "新创作", updatedAt: new Date().toISOString(), messages };
+                return { ...conversation, title: firstPrompt ? firstPrompt.slice(0, 24) : "新創作", updatedAt: new Date().toISOString(), messages };
             });
         };
         if (!retryOf) {
@@ -1181,7 +1181,7 @@ export default function CreatePage() {
         <div className="creation-home relative flex h-full min-h-0 flex-col overflow-hidden">
             {isEmpty ? <>
                 <div className="creation-top-actions">
-                    <Tooltip title="历史对话"><button type="button" aria-label="查看历史对话" aria-expanded={historyOpen} className="creation-top-action" onClick={() => setHistoryOpen(true)}><History /></button></Tooltip>
+                    <Tooltip title="歷史對話"><button type="button" aria-label="檢視歷史對話" aria-expanded={historyOpen} className="creation-top-action" onClick={() => setHistoryOpen(true)}><History /></button></Tooltip>
                 </div>
                 {conflictBanner}
                 <AnimatePresence>
@@ -1190,8 +1190,8 @@ export default function CreatePage() {
                         initial={{ opacity: 0, y: -12, scale: .97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8, scale: .98 }}
                         transition={reducedMotion ? { duration: 0 } : { type: "spring", stiffness: 360, damping: 32, mass: .8 }}>
                         <Sparkles aria-hidden="true" />
-                        <input aria-label="快捷编辑提示词" placeholder="继续描述你的创作想法…" value={prompt} disabled={busy || referenceReplacementBusy} onChange={(event) => setPrompt(event.target.value)} />
-                        <Tooltip title="展开完整创作区"><button type="button" aria-label="展开完整创作区" onClick={() => {
+                        <input aria-label="快捷編輯提示詞" placeholder="繼續描述你的創作想法…" value={prompt} disabled={busy || referenceReplacementBusy} onChange={(event) => setPrompt(event.target.value)} />
+                        <Tooltip title="展開完整創作區"><button type="button" aria-label="展開完整創作區" onClick={() => {
                             threadScrollRef.current?.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
                             composerFocusRef.current?.focus({ preventScroll: true });
                         }}><Maximize2 /></button></Tooltip>
@@ -1199,9 +1199,9 @@ export default function CreatePage() {
                 </AnimatePresence>
                 <main ref={threadScrollRef} onScroll={handleThreadScroll} className="creation-empty-workspace creation-scrollbar">
                 <div className="creation-home-heading">
-                    <h1>和 {brandName} 一起创作</h1>
+                    <h1>和 {brandName} 一起創作</h1>
                 </div>
-                <section ref={launchpadRef} className="creation-launchpad" aria-label="开始创作">
+                <section ref={launchpadRef} className="creation-launchpad" aria-label="開始創作">
                     <div className={cn("creation-composer-stage is-home-mode")}>
                         <CreationModeTabs mode={mode} onModeChange={selectMode} />
                         <div className="creation-empty-composer"><CreationComposer {...composerProps} variant="empty" /></div>
@@ -1216,7 +1216,7 @@ export default function CreatePage() {
                 />
             </main>
             </> : <div className="creation-thread-workbench">
-                {demoConversation ? <div className="creation-demo-banner" role="status"><Sparkles />模拟对话流 · 固定数据演示，不会调用真实生成接口</div> : null}
+                {demoConversation ? <div className="creation-demo-banner" role="status"><Sparkles />模擬對話流 · 固定資料演示，不會呼叫真實生成介面</div> : null}
                 {conflictBanner}
                 <CreationWorkspaceToolbar onNewConversation={startNewConversation} onOpenHistory={() => setHistoryOpen(true)} shots={videoShots} onJumpToShot={jumpToShot} onContinueCanvas={() => void continueOnCanvas()} openingCanvas={openingCanvas} />
                 <main ref={threadScrollRef} onScroll={handleThreadScroll} className="creation-thread-scroll creation-scrollbar">
@@ -1249,7 +1249,7 @@ export default function CreatePage() {
             categoryLabels={{ ...creationAssetCategoryLabels, ...externalAssetSources.categoryLabels }}
             folders={externalAssetSources.folders}
             initialSelectedIds={attachments.flatMap((item) => item.id.startsWith("asset:") ? [item.id.slice(6)] : item.id.startsWith("external:") ? [item.id] : [])}
-            upload={{ accept: creationUploadAccept(mode), description: mode === "text" ? "支持图片、视频、音频和常用文档；媒体会保存到素材库" : `支持图片${mode === "video" ? "、视频和音频" : ""}，上传后保存到素材库`, onUpload: uploadLibraryAssets, external: { accept: "image/*", description: "写入当前 Eagle 文件夹；Eagle 当前支持图片文件", onUpload: (files, folderId, expectedScope) => externalAssetSources.uploadExternalFiles(files, folderId, undefined, expectedScope) } }}
+            upload={{ accept: creationUploadAccept(mode), description: mode === "text" ? "支援圖片、影片、音訊和常用檔案；媒體會儲存到素材庫" : `支援圖片${mode === "video" ? "、影片和音訊" : ""}，上傳後儲存到素材庫`, onUpload: uploadLibraryAssets, external: { accept: "image/*", description: "寫入當前 Eagle 資料夾；Eagle 當前支援圖片檔案", onUpload: (files, folderId, expectedScope) => externalAssetSources.uploadExternalFiles(files, folderId, undefined, expectedScope) } }}
             onClose={() => setLibraryOpen(false)}
             onConfirm={handleLibrarySelect}
         /></Suspense> : null}

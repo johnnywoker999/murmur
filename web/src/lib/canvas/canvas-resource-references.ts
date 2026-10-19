@@ -16,14 +16,14 @@ export type CanvasResourceReference = {
     label: string;
     title: string;
     previewUrl?: string;
-    /** 仅素材库视频在没有静态封面时使用的首帧回退源。 */
+    /** 僅素材庫影片在沒有靜態封面時使用的首幀回退源。 */
     mediaUrl?: string;
     storageKey?: string;
-    /** 视频首帧是独立的图片资源，不能用视频 storageKey 解析。 */
+    /** 影片首幀是獨立的圖片資源，不能用影片 storageKey 解析。 */
     previewStorageKey?: string;
     /** Share display-only poster leases with canvas video nodes. */
     videoPreviewSource?: Pick<CanvasNodeData, "metadata">;
-    /** 绘图预览保存在按项目隔离的本地绘图仓库，不复用普通图片 storageKey。 */
+    /** 繪圖預覽儲存在按專案隔離的本地繪圖倉庫，不復用普通圖片 storageKey。 */
     drawingId?: string;
     drawingRevision?: number;
     text?: string;
@@ -56,10 +56,10 @@ export function canvasResourceMentionToken(reference: CanvasResourceReference) {
 }
 
 /**
- * 消息里显式插入的素材库 token。素材菜单自己加载库数据，不在画布节点列表里。
+ * 訊息裡顯式插入的素材庫 token。素材選單自己載入庫資料，不在畫布節點列表裡。
  *
- * 后端只把这里列出的素材授予内置助手只读权限，所以必须由界面按用户原文推导，
- * 不能让模型自己声明「我要读哪些素材」。
+ * 後端只把這裡列出的素材授予內建助手只讀許可權，所以必須由介面按使用者原文推導，
+ * 不能讓模型自己宣告「我要讀哪些素材」。
  */
 export function referencedAssetIdsInPrompt(prompt: string): string[] {
     return [...new Set(Array.from(prompt.matchAll(/@\[asset:([^\]\s]+)\]/g), (match) => match[1]))];
@@ -72,7 +72,7 @@ export function normalizeCanvasNodeMentionTokens(prompt: string, references: Can
     }, prompt);
 }
 
-/** 将提示词内已连接素材的名称替换为对应引用；同名的每处指代都会保留为独立引用。 */
+/** 將提示詞內已連線素材的名稱替換為對應引用；同名的每處指代都會保留為獨立引用。 */
 export function autoMentionCanvasResourceReferences(prompt: string, references: CanvasResourceReference[]) {
     const referenceByName = new Map<string, CanvasResourceReference | null>();
     references
@@ -149,13 +149,13 @@ export function findCanvasResourceAutoLinkMatch(prompt: string, cursor: number, 
 function canvasResourceMentionNames(reference: CanvasResourceReference, index: number, includeBareNumber: boolean) {
     const names = new Set([reference.label.trim(), reference.title.trim()].filter(Boolean));
     const order = index + 1;
-    names.add(`图片${order}`);
-    names.add(`图${order}`);
+    names.add(`圖片${order}`);
+    names.add(`圖${order}`);
     names.add(`image${order}`);
     names.add(`image ${order}`);
-    const imageLabelMatch = /^图片(\d+)$/u.exec(reference.label.trim());
+    const imageLabelMatch = /^圖片(\d+)$/u.exec(reference.label.trim());
     if (imageLabelMatch) {
-        names.add(`图${imageLabelMatch[1]}`);
+        names.add(`圖${imageLabelMatch[1]}`);
         names.add(`image${imageLabelMatch[1]}`);
         names.add(`image ${imageLabelMatch[1]}`);
     }
@@ -241,15 +241,15 @@ export function replaceCanvasMentionToken(value: string, token: string, replacem
     if (!token) return value;
     const escapedToken = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     // Numbered media mentions can touch Chinese prose or another mention, but not a longer number.
-    const boundary = /^@(图片|视频|音频|文本)\d+$/.test(token)
+    const boundary = /^@(圖片|影片|音訊|文本)\d+$/.test(token)
         ? "(?![0-9])"
         : token.startsWith("@[node:") ? "" : `(?=${CANVAS_RESOURCE_MENTION_BOUNDARY.source})`;
     return value.replace(new RegExp(`${escapedToken}${boundary}`, "gu"), replacement);
 }
 
 /**
- * 替换提示词中针对某参考对象的所有引用（包含 @图片1、@原标题、@[node:xxx]）。
- * 只要提示词中存在指向该对象的标记，同步全部替换为新标记。
+ * 替換提示詞中針對某參考物件的所有引用（包含 @圖片1、@原標題、@[node:xxx]）。
+ * 只要提示詞中存在指向該物件的標記，同步全部替換為新標記。
  */
 export function replaceCanvasReferenceMentions(
     prompt: string,
@@ -316,11 +316,11 @@ export function buildCanvasResourceReferences(nodes: CanvasNodeData[], connectio
     return globalReferences.map((reference) => activeByNodeId.get(reference.nodeId) || reference);
 }
 
-/** Agent 的 @ 菜单覆盖整个画布，而不是只覆盖可作为生成输入的资源节点。 */
+/** Agent 的 @ 選單覆蓋整個畫布，而不是隻覆蓋可作為生成輸入的資源節點。 */
 export function buildCanvasAgentMentionReferences(nodes: CanvasNodeData[]): CanvasResourceReference[] {
     return nodes.map((node, index) => {
         const kind = resourceKind(node) || "text";
-        const fallbackTitle = `节点 ${index + 1}`;
+        const fallbackTitle = `節點 ${index + 1}`;
         return {
             id: node.id,
             nodeId: node.id,
@@ -406,8 +406,8 @@ export function getMentionResourceNodes(nodeId: string, nodes: CanvasNodeData[],
     if (configInputs.length) return configInputs;
     const ownInputs = getContextResourceNodes(nodeId, nodes, connections);
     if (ownInputs.length) return ownInputs;
-    // 没有入边时，资源节点可以把自身当作 @图片1 / @视频1，用于图生图、视频再编辑。
-    // 有入边时仍只暴露上游，避免自身把槽位序号挤掉。
+    // 沒有入邊時，資源節點可以把自身當作 @圖片1 / @影片1，用於圖生圖、影片再編輯。
+    // 有入邊時仍只暴露上游，避免自身把槽位序號擠掉。
     const self = nodes.find((node) => node.id === nodeId);
     return self && isResourceNode(self) ? [self] : [];
 }
@@ -420,7 +420,7 @@ export function getGenerationResourceNodes(nodeId: string, nodes: CanvasNodeData
     return [];
 }
 
-/** 收集节点自身及其上游链路中的视频节点，用于时间线片段导入定位真正的视频源。 */
+/** 收集節點自身及其上游鏈路中的影片節點，用於時間線片段匯入定位真正的影片源。 */
 export function collectUpstreamVideoNodes(nodeId: string, nodes: CanvasNodeData[], connections: CanvasConnection[]): CanvasNodeData[] {
     const queue = [nodeId];
     const visited = new Set<string>();
@@ -437,8 +437,8 @@ export function collectUpstreamVideoNodes(nodeId: string, nodes: CanvasNodeData[
 }
 
 /**
- * 该节点的直接上游素材节点（按连线取 fromNodeId，只保留构成素材的）。
- * 扩展节点经 CanvasNodeGraphContext 复用它，不要另写一份取上游的逻辑。
+ * 該節點的直接上游素材節點（按連線取 fromNodeId，只保留構成素材的）。
+ * 擴充套件節點經 CanvasNodeGraphContext 複用它，不要另寫一份取上游的邏輯。
  */
 export function getContextResourceNodes(nodeId: string, nodes: CanvasNodeData[], connections: CanvasConnection[]) {
     return connections
@@ -448,8 +448,8 @@ export function getContextResourceNodes(nodeId: string, nodes: CanvasNodeData[],
 }
 
 /**
- * 调整目标节点的素材输入边顺序。连接数组是引用编号的唯一顺序源；只替换相关
- * 输入边所在槽位，避免改变主链和其他节点的连线顺序。
+ * 調整目標節點的素材輸入邊順序。連線陣列是引用編號的唯一順序源；只替換相關
+ * 輸入邊所在槽位，避免改變主鏈和其他節點的連線順序。
  */
 export function reorderCanvasResourceConnections(targetNodeId: string, orderedNodeIds: string[], nodes: CanvasNodeData[], connections: CanvasConnection[]) {
     const uniqueOrder = [...new Set(orderedNodeIds.filter(Boolean))];
@@ -486,7 +486,7 @@ function labelResourceNodes(nodes: CanvasNodeData[], active: boolean) {
         const kind = resourceKind(node);
         if (!kind) return [];
         const index = node.type === CanvasNodeType.Drawing ? drawingCount++ : counts[kind]++;
-        const label = node.type === CanvasNodeType.Drawing ? `绘图${index + 1}` : labelForKind(kind, index);
+        const label = node.type === CanvasNodeType.Drawing ? `繪圖${index + 1}` : labelForKind(kind, index);
         return [
             {
                 id: node.id,
@@ -528,7 +528,7 @@ function isResourceNode(node: CanvasNodeData) {
 }
 
 function resourceKind(node: CanvasNodeData): CanvasResourceKind | null {
-    // 角色卡是跨类型覆盖：任何节点带上角色元数据都按角色处理，故先于按类型判定。
+    // 角色卡是跨型別覆蓋：任何節點帶上角色後設資料都按角色處理，故先於按型別判定。
     if (node.metadata?.workflowKind === "character" && node.metadata.characterAssetId) return "character";
     return getNodeResourceKind(node);
 }

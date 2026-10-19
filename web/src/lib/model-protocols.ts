@@ -6,10 +6,10 @@ export type ModelProtocolWorkflow = { id: string; label: string; providerId: str
 export type ModelProtocolDefinition = { value: ModelProtocol; label: string; vendor?: string; capability: ProtocolCapability; create: string; contentType: string; poll?: string; media: string; enabled?: boolean; baseUrl?: string; authType?: string; workflows?: ModelProtocolWorkflow[] };
 
 export function protocolGroups(protocols: ModelProtocolDefinition[]) {
-    return (["text", "image", "video", "audio"] as ProtocolCapability[]).map((capability) => ({ label: { text: "文本", image: "图片", video: "视频", audio: "音频" }[capability], options: protocols.filter((item) => item.capability === capability && item.enabled !== false).map((item) => ({ label: `${item.label} · ${item.create.replace(/^POST /, "")}`, value: item.value })) }));
+    return (["text", "image", "video", "audio"] as ProtocolCapability[]).map((capability) => ({ label: { text: "文本", image: "圖片", video: "影片", audio: "音訊" }[capability], options: protocols.filter((item) => item.capability === capability && item.enabled !== false).map((item) => ({ label: `${item.label} · ${item.create.replace(/^POST /, "")}`, value: item.value })) }));
 }
 export function modelProtocolDefinition(value: string | undefined, definitions: ModelProtocolDefinition[] = []) { return definitions.find((item) => item.value === value); }
-export function modelProtocolLabel(value: string | undefined, definitions: ModelProtocolDefinition[] = []) { return modelProtocolDefinition(value, definitions)?.label || (value ? value : "未安装协议"); }
+export function modelProtocolLabel(value: string | undefined, definitions: ModelProtocolDefinition[] = []) { return modelProtocolDefinition(value, definitions)?.label || (value ? value : "未安裝協議"); }
 // Protocol → capability for the protocols the host ships without a plugin
 // catalog. Runtime definitions win; unknown/custom ids stay unresolved so a
 // user's own contract is never silently rewritten.
@@ -73,7 +73,7 @@ export function protocolForBeefAPICatalog(endpointTypes: string[] = []): ModelPr
     ];
     return mappings.find(([, aliases]) => aliases.some((alias) => endpoints.includes(alias)))?.[0];
 }
-export function modelProtocolSummary(value: string | undefined, definitions: ModelProtocolDefinition[] = []) { const protocol = modelProtocolDefinition(value, definitions); return protocol ? [protocol.create, protocol.contentType, protocol.poll, protocol.media].filter(Boolean).join(" · ") : "当前协议未安装或尚未选择。"; }
+export function modelProtocolSummary(value: string | undefined, definitions: ModelProtocolDefinition[] = []) { const protocol = modelProtocolDefinition(value, definitions); return protocol ? [protocol.create, protocol.contentType, protocol.poll, protocol.media].filter(Boolean).join(" · ") : "當前協議未安裝或尚未選擇。"; }
 export function normalizeModelProtocol(value: unknown): ModelProtocol | undefined {
     const protocol = typeof value === "string" && value.trim() ? value.trim() : undefined;
     return protocol === "google-gemini-generate-content" ? "gemini-generate-content" : protocol;

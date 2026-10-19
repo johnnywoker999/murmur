@@ -16,8 +16,8 @@ function transcriptionTransportError(error: unknown, submitting: boolean): unkno
     const cause = error instanceof ApiError ? error.cause : error;
     const timedOut = kind === "timeout";
     return new ApiError(submitting
-        ? (timedOut ? "转写提交等待超时，任务可能已创建。请先到任务中心确认状态。" : "转写提交连接中断，任务状态尚未确认。请先到任务中心查看。")
-        : (timedOut ? "读取转写模型超时，请检查 MURMUR AI 连接后重试。" : "无法连接转写模型服务，请检查 MURMUR AI 连接后重试。"),
+        ? (timedOut ? "轉寫提交等待超時，任務可能已建立。請先到任務中心確認狀態。" : "轉寫提交連線中斷，任務狀態尚未確認。請先到任務中心檢視。")
+        : (timedOut ? "讀取轉寫模型超時，請檢查 MURMUR AI 連線後重試。" : "無法連線轉寫模型服務，請檢查 MURMUR AI 連線後重試。"),
         { cause, status: error instanceof ApiError ? error.status : undefined });
 }
 
@@ -30,8 +30,8 @@ export async function getTranscriptionModels(config?: HttpRequestConfig) {
     } catch (error) { throw transcriptionTransportError(error, false); }
 }
 
-// 时间线字幕转写任务 API。
-// 创建入参与后端 TimelineTranscriptionCreateRequest 保持同名字段，结果由任务中心统一查询。
+// 時間線字幕轉寫任務 API。
+// 建立入參與後端 TimelineTranscriptionCreateRequest 保持同名欄位，結果由任務中心統一查詢。
 
 export type TimelineTranscriptionCreateRequest = {
     model?: string;
@@ -62,9 +62,9 @@ export async function createTimelineTranscriptionTask(
     } catch (error) { throw transcriptionTransportError(error, true); }
 }
 
-// 时间线成片渲染任务 API。
-// timeline 直接传 TimelineProject；后端使用同名字段构建渲染输入，未知字段由后端边界忽略。
-// 任务完成后由任务中心读取 ResultJSON，并按 TimelineRenderResult 解包。
+// 時間線成片渲染任務 API。
+// timeline 直接傳 TimelineProject；後端使用同名欄位構建渲染輸入，未知欄位由後端邊界忽略。
+// 任務完成後由任務中心讀取 ResultJSON，並按 TimelineRenderResult 解包。
 
 export type TimelineRenderCreateRequest = {
     projectId: string;
@@ -94,7 +94,7 @@ export type TimelineRenderPlanCompileRequest = {
     options?: CanonicalPlanOptions;
 };
 
-/** 只读规划：不排队、不落盘、不计费。失败必须上抛，导出不得改走本地语义编译。 */
+/** 只讀規劃：不排隊、不落盤、不計費。失敗必須上拋，匯出不得改走本地語義編譯。 */
 export async function compileTimelineRenderPlan(
     payload: TimelineRenderPlanCompileRequest,
     signal?: AbortSignal,

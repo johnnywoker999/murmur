@@ -38,18 +38,18 @@ export function WorkspaceSidebarSocialLinks() {
                 content={
                     <div className="app-workspace-donation-content">
                         <p>
-                            如果觉得好用的话，欢迎捐赠支持我们！<br />
-                            你的支持是我们不断优化迭代MURMUR AI的最大动力
+                            如果覺得好用的話，歡迎捐贈支援我們！<br />
+                            你的支援是我們不斷最佳化迭代MURMUR AI的最大動力
                         </p>
-                        <img src="/beeftv-donation-qr.png" width={294} height={286} alt="博文斯科技官方收款二维码" />
+                        <img src="/beeftv-donation-qr.png" width={294} height={286} alt="博文斯科技官方收款二維碼" />
                     </div>
                 }
             >
-                <button type="button" className="app-workspace-social-action" aria-label="捐赠支持 MURMUR AI">
+                <button type="button" className="app-workspace-social-action" aria-label="捐贈支援 MURMUR AI">
                     <HandHeart aria-hidden="true" />
                 </button>
             </Popover>
-            <a className="app-workspace-social-action" href="https://beeftv.app/" target="_blank" rel="noopener noreferrer" aria-label="打开 BeefTV 官网" title="BeefTV 官网" onClick={openWebsite}>
+            <a className="app-workspace-social-action" href="https://beeftv.app/" target="_blank" rel="noopener noreferrer" aria-label="開啟 BeefTV 官網" title="BeefTV 官網" onClick={openWebsite}>
                 <Globe aria-hidden="true" />
             </a>
             <Tooltip
@@ -58,9 +58,9 @@ export function WorkspaceSidebarSocialLinks() {
                 mouseEnterDelay={0.15}
                 mouseLeaveDelay={0.1}
                 rootClassName="app-workspace-github-tooltip"
-                title={<span className="app-workspace-github-hint">点点 star <Star aria-hidden="true" /></span>}
+                title={<span className="app-workspace-github-hint">點點 star <Star aria-hidden="true" /></span>}
             >
-                <a className="app-workspace-social-action" href="https://github.com/glanderness/BeefTV" target="_blank" rel="noopener noreferrer" aria-label="打开 BeefTV GitHub 仓库" onClick={openGitHub}>
+                <a className="app-workspace-social-action" href="https://github.com/glanderness/BeefTV" target="_blank" rel="noopener noreferrer" aria-label="開啟 BeefTV GitHub 倉庫" onClick={openGitHub}>
                     <Github aria-hidden="true" />
                 </a>
             </Tooltip>
@@ -71,13 +71,13 @@ export function WorkspaceSidebarSocialLinks() {
                 mouseEnterDelay={0}
                 mouseLeaveDelay={0}
                 rootClassName="app-workspace-wechat-popover"
-                content={<img src="/beeftv-wechat-qr.png" width={180} height={180} alt="个人微信二维码" />}
+                content={<img src="/beeftv-wechat-qr.png" width={180} height={180} alt="個人微信二維碼" />}
             >
-                <button type="button" className="app-workspace-social-action" aria-label="查看微信二维码">
+                <button type="button" className="app-workspace-social-action" aria-label="檢視微信二維碼">
                     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={WECHAT_ICON_PATH} /></svg>
                 </button>
             </Popover>
-            <a className="app-workspace-social-action" href="https://x.com/beefnoode" target="_blank" rel="noopener noreferrer" aria-label="打开 X 主页" title="X" onClick={openX}>
+            <a className="app-workspace-social-action" href="https://x.com/beefnoode" target="_blank" rel="noopener noreferrer" aria-label="開啟 X 主頁" title="X" onClick={openX}>
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={X_ICON_PATH} /></svg>
             </a>
         </div>

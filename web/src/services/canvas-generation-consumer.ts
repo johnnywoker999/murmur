@@ -31,7 +31,7 @@ export class CanvasBindFlushError extends Error {
     readonly cause: unknown;
 
     constructor(cause: unknown) {
-        super(cause instanceof Error ? cause.message : "本地草稿还没保存，生成结果没有写到画布");
+        super(cause instanceof Error ? cause.message : "本地草稿還沒儲存，生成結果沒有寫到畫布");
         this.name = "CanvasBindFlushError";
         this.cause = cause;
     }
@@ -39,7 +39,7 @@ export class CanvasBindFlushError extends Error {
 
 export class CanvasBindProjectionAdoptionError extends Error {
     constructor() {
-        super("这次生成结果没能写进画布。请再试一次。");
+        super("這次生成結果沒能寫進畫布。請再試一次。");
         this.name = "CanvasBindProjectionAdoptionError";
     }
 }
@@ -186,14 +186,14 @@ async function pollMaterializedGenerationOutput(
         assertBindDispatchScope(state.expectedScope, state.liveScope);
         // A materialized ID can outlive its resource. Repeated bind refusals
         // share this deadline even when the task still reports that ID.
-        if (state.now() - state.startedAt >= GENERATION_MATERIALIZATION_BUDGET_MS) throw new CanvasGenerationMaterializationError(new Error("生成结果取回或写入画布超时，请继续取回"));
+        if (state.now() - state.startedAt >= GENERATION_MATERIALIZATION_BUDGET_MS) throw new CanvasGenerationMaterializationError(new Error("生成結果取回或寫入畫布超時，請繼續取回"));
         if (!skipCheck) {
             if (generationTaskOutputMaterialized(task, state.outputIndex)) return task;
             const deliveryCode = generationTaskOutput(task, outputIndexFromState(state))?.materializationErrorCode || task.stage;
             if (deliveryCode === "delivery_paused" || deliveryCode === "delivery_timed_out") {
-                throw new CanvasGenerationMaterializationError(new Error(deliveryCode === "delivery_paused" ? "已停止取回，可继续取回原结果" : "结果取回超时，可继续取回原结果"));
+                throw new CanvasGenerationMaterializationError(new Error(deliveryCode === "delivery_paused" ? "已停止取回，可繼續取回原結果" : "結果取回超時，可繼續取回原結果"));
             }
-            if (generationTaskOutputPermanentlyFailed(task, state.outputIndex)) throw new CanvasGenerationMaterializationError(new Error(task.resultState || task.error || "生成结果下载失败"));
+            if (generationTaskOutputPermanentlyFailed(task, state.outputIndex)) throw new CanvasGenerationMaterializationError(new Error(task.resultState || task.error || "生成結果下載失敗"));
         }
         await state.sleep(materializationPollDelay(attempt), state.signal);
         attempt += 1;
@@ -218,7 +218,7 @@ export async function bindBackendCanvasGenerationResult(input: {
     setNodes: Dispatch<SetStateAction<CanvasNodeData[]>>;
     runtime?: BindBackendCanvasGenerationRuntime;
 }) {
-    if (input.task.status !== "succeeded") throw new Error("只有成功的任务才能绑定到画布");
+    if (input.task.status !== "succeeded") throw new Error("只有成功的任務才能繫結到畫布");
     const runtime = input.runtime ?? {};
     const liveScope = runtime.liveScope ?? captureUserScope;
     const capturedScope = (runtime.captureScope ?? captureUserScope)();
@@ -320,8 +320,8 @@ export async function bindBackendCanvasGenerationResult(input: {
                     throw retryError instanceof CanvasBindFlushError ? retryError : new CanvasBindFlushError(retryError);
                 }
             } else if (!(isCanvasRevisionConflict(error) || error instanceof CanvasBackendSubmitPausedError)) {
-                // 画布 document.commit 的陈旧 revision / 已暂停提交不能当成生成失败：
-                // 资源已落盘，bind 回执才是画布真相；继续绑定后由三路合并保留并发节点。
+                // 畫布 document.commit 的陳舊 revision / 已暫停提交不能當成生成失敗：
+                // 資源已落盤，bind 回執才是畫布真相；繼續繫結後由三路合併保留併發節點。
                 throw error instanceof CanvasBindFlushError ? error : new CanvasBindFlushError(error);
             }
         }
@@ -386,8 +386,8 @@ export async function bindBackendCanvasGenerationResult(input: {
                 assertBindDispatchScope(capturedScope, liveScope);
                 continue;
             }
-            // 交付仍在进行时 bind 会以 output_not_ready/resource_not_ready 拒绝；
-            // 同一个 operationId 幂等，回到等待再重试，不把在途状态报成画布冲突。
+            // 交付仍在進行時 bind 會以 output_not_ready/resource_not_ready 拒絕；
+            // 同一個 operationId 冪等，回到等待再重試，不把在途狀態報成畫布衝突。
             if (!isOutputNotReadyError(error)) throw error;
             assertBindDispatchScope(capturedScope, liveScope);
             task = await waitForMaterialization(task, true);
@@ -455,7 +455,7 @@ export async function persistCanvasOperationContinuationEffect(input: {
     const capturedScope = captureUserScope();
     const currentNodes = input.nodesRef.current;
     const currentNode = currentNodes.find((node) => node.id === input.nodeId);
-    if (!currentNode) throw new Error("画布中找不到 Agent continuation 节点");
+    if (!currentNode) throw new Error("畫布中找不到 Agent continuation 節點");
     if (generationEffectApplied(currentNode.metadata || {}, input.effectKey) && currentNode.metadata?.agentGenerationContinuation?.status === "completed") return;
 
     const nodes = currentNodes.map((node) =>
@@ -476,7 +476,7 @@ export async function persistCanvasOperationContinuationEffect(input: {
         if (error instanceof Error && error.name === "AbortError") throw error;
         if (isUserScopeAbandonedError(error)) throw error;
         if (error instanceof CanvasStaleScopeError) throw error;
-        // 陈旧 revision / 已暂停提交不是生成失败：live 节点已在本地更新，普通保存会收敛。
+        // 陳舊 revision / 已暫停提交不是生成失敗：live 節點已在本地更新，普通儲存會收斂。
         if (!(isCanvasRevisionConflict(error) || error instanceof CanvasBackendSubmitPausedError)) {
             throw new CanvasGenerationDurableAckError(error);
         }

@@ -12,7 +12,7 @@ type SvgNodeContentProps = {
     theme: CanvasTheme;
 };
 
-/** 只取到第一个 <svg> 根元素，避免上游文本里的说明文字被一起塞进文档。 */
+/** 只取到第一個 <svg> 根元素，避免上游文本里的說明文字被一起塞進檔案。 */
 function extractSvgSource(text: string) {
     const start = text.indexOf("<svg");
     if (start < 0) return "";
@@ -21,10 +21,10 @@ function extractSvgSource(text: string) {
 }
 
 /**
- * SVG 展示节点：把 SVG 源码渲染成图形。
+ * SVG 展示節點：把 SVG 原始碼渲染成圖形。
  *
- * 源码取自身 metadata.content，为空时回落上游文本素材——「让 AI 输出 SVG 代码 → 连线 → 看图」
- * 是这个节点存在的理由。渲染走沙箱 iframe（见 sandboxed-frame），不给脚本权限。
+ * 原始碼取自身 metadata.content，為空時回落上游文本素材——「讓 AI 輸出 SVG 程式碼 → 連線 → 看圖」
+ * 是這個節點存在的理由。渲染走沙箱 iframe（見 sandboxed-frame），不給指令碼許可權。
  */
 export function SvgNodeContent({ node, theme }: SvgNodeContentProps) {
     const upstream = useUpstreamNodes(node.id);
@@ -36,7 +36,7 @@ export function SvgNodeContent({ node, theme }: SvgNodeContentProps) {
         return (
             <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-center" style={{ color: theme.node.muted }}>
                 <Shapes className="size-5 opacity-60" />
-                <span style={{ fontSize: "var(--fs-label)" }}>{raw.trim() ? "上游内容里没有找到 <svg> 源码" : "连接输出 SVG 的文本节点"}</span>
+                <span style={{ fontSize: "var(--fs-label)" }}>{raw.trim() ? "上游內容裡沒有找到 <svg> 原始碼" : "連線輸出 SVG 的文本節點"}</span>
             </div>
         );
     }

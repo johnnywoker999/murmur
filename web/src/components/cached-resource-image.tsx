@@ -13,8 +13,8 @@ type CachedResourceImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src">
 };
 
 /**
- * 资源图片优先读取按用户隔离的本地 Blob 缓存，避免刷新后再次从对象存储下载。
- * 任意本地图片 storageKey 都会自动从 LocalForage 恢复有效的 Object URL。
+ * 資源圖片優先讀取按使用者隔離的本地 Blob 快取，避免重新整理後再次從物件儲存下載。
+ * 任意本地圖片 storageKey 都會自動從 LocalForage 恢復有效的 Object URL。
  */
 export function CachedResourceImage({ storageKey, src = "", fallback = null, loadingFallback = fallback, eager = false, onError, ...props }: CachedResourceImageProps) {
     const remoteResource = Boolean(resourceIdFromStorageKey(storageKey));
@@ -70,7 +70,7 @@ export function CachedResourceImage({ storageKey, src = "", fallback = null, loa
                 })
                 .catch(() => {
                     if (!cancelled) {
-                        // 缓存读取失败时仍允许原始地址加载，真正的解码失败再显示占位。
+                        // 快取讀取失敗時仍允許原始地址載入，真正的解碼失敗再顯示佔位。
                         setCacheFailed(!src);
                         setCachedSrc(src);
                     }

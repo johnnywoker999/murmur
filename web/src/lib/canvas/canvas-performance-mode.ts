@@ -21,7 +21,7 @@ export function persistCanvasMediaPerformanceMode(mode: CanvasMediaPerformanceMo
     try {
         window.localStorage.setItem(STORAGE_KEY, mode);
     } catch {
-        // 浏览器禁用本地存储时保留当前会话内的选择。
+        // 瀏覽器停用本地儲存時保留當前會話內的選擇。
     }
 }
 

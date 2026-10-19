@@ -19,7 +19,7 @@ export function searchCanvasNodes(nodes: CanvasNodeData[], query: string, limit 
 }
 
 export function canvasNodeSearchContext(node: CanvasNodeData) {
-    const location = [node.metadata?.chapterTitle, typeof node.metadata?.shotIndex === "number" ? `镜头 ${node.metadata.shotIndex + 1}` : ""].filter(Boolean).join(" · ");
+    const location = [node.metadata?.chapterTitle, typeof node.metadata?.shotIndex === "number" ? `鏡頭 ${node.metadata.shotIndex + 1}` : ""].filter(Boolean).join(" · ");
     return location || node.metadata?.prompt || node.metadata?.composerContent || node.metadata?.workflowDescription || textualNodeContent(node) || getNodeListLabel(node.type);
 }
 
@@ -40,8 +40,8 @@ export function canvasNodeSearchTimes(node: CanvasNodeData) {
     return {
         createdAt,
         updatedAt,
-        createdLabel: createdAt ? searchTimeFormatter.format(new Date(createdAt)) : "未记录",
-        updatedLabel: updatedAt ? searchTimeFormatter.format(new Date(updatedAt)) : "未记录",
+        createdLabel: createdAt ? searchTimeFormatter.format(new Date(createdAt)) : "未記錄",
+        updatedLabel: updatedAt ? searchTimeFormatter.format(new Date(updatedAt)) : "未記錄",
     };
 }
 
@@ -57,7 +57,7 @@ function canvasNodeSearchTerms(node: CanvasNodeData) {
         node.metadata?.chapterTitle,
         node.metadata?.workflowTitle,
         node.metadata?.workflowDescription,
-        typeof node.metadata?.shotIndex === "number" ? `镜头 ${node.metadata.shotIndex + 1}` : "",
+        typeof node.metadata?.shotIndex === "number" ? `鏡頭 ${node.metadata.shotIndex + 1}` : "",
         ...(node.metadata?.assetTags || []),
     ].filter((value): value is string => typeof value === "string" && Boolean(value));
 }

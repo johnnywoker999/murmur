@@ -1,5 +1,5 @@
-// 默认由后端 ffmpeg 渲染并把产物写入资源存储；浏览器 ffmpeg.wasm 只承担离线降级。
-// 缺源阻止完整成片导出；规划错误在面板呈现，不中断编辑器。
+// 預設由後端 ffmpeg 渲染並把產物寫入資源儲存；瀏覽器 ffmpeg.wasm 只承擔離線降級。
+// 缺源阻止完整成片匯出；規劃錯誤在面板呈現，不中斷編輯器。
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Download, Loader2, PackageOpen, Server } from "lucide-react";
@@ -32,7 +32,7 @@ type ExportState = {
     result: TimelineRenderResult | null;
 };
 
-/** 从时间线 clip 收集渲染源（按 nodeId 关联；directMedia 提供本地媒体定位）。含静音音轨与图片。 */
+/** 從時間線 clip 收集渲染源（按 nodeId 關聯；directMedia 提供本地媒體定位）。含靜音音軌與圖片。 */
 function collectRenderSources(project: TimelineProject): TimelineRenderSource[] {
     const seen = new Set<string>();
     const sources: TimelineRenderSource[] = [];
@@ -104,7 +104,7 @@ export function EditorExport() {
                     }
                     setPreview({
                         plan: null,
-                        planError: error instanceof Error ? error.message : "无法生成导出计划",
+                        planError: error instanceof Error ? error.message : "無法生成匯出計劃",
                         loading: false,
                     });
                 });
@@ -117,7 +117,7 @@ export function EditorExport() {
     const plan = preview.plan;
     const planError = preview.planError;
 
-    // 主路径：提交后端渲染任务并轮询（服务端任务上限 60 分钟，前端多留余量）。
+    // 主路徑：提交後端渲染任務並輪詢（服務端任務上限 60 分鐘，前端多留餘量）。
     const renderRemote = async () => {
         if (!project || sources.length === 0 || runningRef.current) return;
         runningRef.current = true;
@@ -130,7 +130,7 @@ export function EditorExport() {
         const frozenInputKey = localExecutorFrozenInputKey(["timeline_render", originalProjectId, originalTimeline]);
         const clientOperationId = nextLocalExecutorClientOperationId(submitIntentRef.current, frozenInputKey);
         submitIntentRef.current = { clientOperationId, frozenInputKey };
-        setState({ phase: "running", mode: "remote", percent: 0, detail: "提交渲染任务…", result: null });
+        setState({ phase: "running", mode: "remote", percent: 0, detail: "提交渲染任務…", result: null });
         try {
             const session = beginLocalExecutorSession(originalProjectId, {
                 controller: observer,
@@ -176,19 +176,19 @@ export function EditorExport() {
                 phase: "error",
                 mode: "remote",
                 percent: 0,
-                detail: error instanceof Error ? error.message : "渲染失败",
+                detail: error instanceof Error ? error.message : "渲染失敗",
                 result: null,
             });
         } finally { runningRef.current = false; }
     };
 
-    // 降级路径：ffmpeg.wasm 浏览器本地合成（无后端/离线时可用）。
+    // 降級路徑：ffmpeg.wasm 瀏覽器本地合成（無後端/離線時可用）。
     const exportLocalMp4 = async () => {
         if (!project || sources.length === 0 || runningRef.current) return;
         runningRef.current = true;
         const controller = new AbortController();
         localControllerRef.current = controller;
-        setState({ phase: "running", mode: "local", percent: 0, detail: "准备导出", result: null });
+        setState({ phase: "running", mode: "local", percent: 0, detail: "準備匯出", result: null });
         try {
             const blob = await exportTimelineToMp4(project, sources, {
                 signal: controller.signal,
@@ -201,13 +201,13 @@ export function EditorExport() {
             a.download = "timeline-export.mp4";
             a.click();
             URL.revokeObjectURL(url);
-            setState({ phase: "done", mode: "local", percent: 100, detail: "导出完成，已开始下载", result: null });
+            setState({ phase: "done", mode: "local", percent: 100, detail: "匯出完成，已開始下載", result: null });
         } catch (error) {
             setState({
                 phase: "error",
                 mode: "local",
                 percent: 0,
-                detail: error instanceof Error ? error.message : "导出失败",
+                detail: error instanceof Error ? error.message : "匯出失敗",
                 result: null,
             });
         } finally { runningRef.current = false; localControllerRef.current = null; }
@@ -220,7 +220,7 @@ export function EditorExport() {
             <div className="director-scroll min-h-0 flex-1 overflow-y-auto p-3">
                 <div className="mb-3 rounded-md border border-[var(--director-sequencer-border)] bg-[var(--director-control-hover)] p-2.5">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-[var(--director-dock-fg-strong)]">渲染计划</span>
+                        <span className="text-xs font-medium text-[var(--director-dock-fg-strong)]">渲染計劃</span>
                         <span className="text-[10px] text-[var(--director-dock-fg)]/60">{plan ? `${plan.steps.length} 步` : "—"}</span>
                     </div>
                     {plan && plan.steps.length > 0 ? (
@@ -238,7 +238,7 @@ export function EditorExport() {
                             )}
                         </ul>
                     ) : (
-                        <p className="mt-2 text-[11px] text-[var(--director-dock-fg)]/55">{planError || (preview.loading ? "正在生成渲染计划" : "时间线没有可渲染的媒体片段。")}</p>
+                        <p className="mt-2 text-[11px] text-[var(--director-dock-fg)]/55">{planError || (preview.loading ? "正在生成渲染計劃" : "時間線沒有可渲染的媒體片段。")}</p>
                     )}
                 </div>
 
@@ -247,7 +247,7 @@ export function EditorExport() {
                         <PackageOpen className="size-3.5 text-[var(--director-dock-fg)]/60" />
                         渲染源
                     </span>
-                    <span className="tabular-nums text-[var(--director-dock-fg)]/80">{sources.length} 个</span>
+                    <span className="tabular-nums text-[var(--director-dock-fg)]/80">{sources.length} 個</span>
                 </div>
 
                 <button
@@ -261,7 +261,7 @@ export function EditorExport() {
                     ) : (
                         <Server className="size-3.5" />
                     )}
-                    {state.phase === "running" && state.mode === "remote" ? "渲染中…" : "渲染成片（服务端）"}
+                    {state.phase === "running" && state.mode === "remote" ? "渲染中…" : "渲染成片（服務端）"}
                 </button>
 
                 <button
@@ -275,12 +275,12 @@ export function EditorExport() {
                     ) : (
                         <Download className="size-3.5" />
                     )}
-                    {state.phase === "running" && state.mode === "local" ? "导出中…" : "本地导出（ffmpeg.wasm）"}
+                    {state.phase === "running" && state.mode === "local" ? "匯出中…" : "本地匯出（ffmpeg.wasm）"}
                 </button>
 
                 {state.phase === "running" && (
                     <div className="mt-3">
-                        {state.mode === "local" && <button type="button" onClick={() => localControllerRef.current?.abort()}>取消导出</button>}
+                        {state.mode === "local" && <button type="button" onClick={() => localControllerRef.current?.abort()}>取消匯出</button>}
                         <div className="mb-1 flex justify-between text-[10px] text-[var(--director-dock-fg)]/70">
                             <span>{state.detail}</span>
                             <span className="tabular-nums">{state.percent}%</span>
@@ -305,7 +305,7 @@ export function EditorExport() {
                                 className="flex shrink-0 items-center gap-1 text-[var(--director-accent)] hover:underline"
                             >
                                 <Download className="size-3" />
-                                下载
+                                下載
                             </a>
                         </div>
                     </div>
@@ -316,10 +316,10 @@ export function EditorExport() {
                 {state.phase === "error" && <p className="mt-2 text-[11px] text-[var(--director-danger)]">{state.detail}</p>}
 
                 <p className="mt-3 text-[11px] leading-relaxed text-[var(--director-dock-fg)]/55">
-                    默认提交服务端渲染任务（异步，产物可直接预览/下载）；本地 ffmpeg.wasm 导出保留为离线兜底。
+                    預設提交服務端渲染任務（非同步，產物可直接預覽/下載）；本地 ffmpeg.wasm 匯出保留為離線兜底。
                 </p>
                 {sources.length === 0 && (
-                    <p className="mt-1 text-[11px] text-[var(--director-dock-fg)]/55">请补齐缺失媒体后再导出完整成片。</p>
+                    <p className="mt-1 text-[11px] text-[var(--director-dock-fg)]/55">請補齊缺失媒體後再匯出完整成片。</p>
                 )}
             </div>
         </div>

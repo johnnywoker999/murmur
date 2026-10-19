@@ -22,8 +22,8 @@ type AnglePresetId = "front" | "left" | "right" | "back" | "top" | "bottom";
 const defaultParams: CanvasImageAngleParams = { horizontalAngle: 45, pitchAngle: 0, cameraDistance: 4.8, wideAngle: false };
 const presets: Array<{ id: AnglePresetId; label: string; horizontalAngle: number; pitchAngle: number }> = [
     { id: "front", label: "正面", horizontalAngle: 0, pitchAngle: 0 },
-    { id: "left", label: "左侧", horizontalAngle: -90, pitchAngle: 0 },
-    { id: "right", label: "右侧", horizontalAngle: 90, pitchAngle: 0 },
+    { id: "left", label: "左側", horizontalAngle: -90, pitchAngle: 0 },
+    { id: "right", label: "右側", horizontalAngle: 90, pitchAngle: 0 },
     { id: "back", label: "背面", horizontalAngle: 180, pitchAngle: 0 },
     { id: "top", label: "俯拍", horizontalAngle: 0, pitchAngle: 60 },
     { id: "bottom", label: "仰拍", horizontalAngle: 0, pitchAngle: -60 },
@@ -42,7 +42,7 @@ export function CanvasNodeAnglePanel({ dataUrl, onClose, onConfirm }: { dataUrl:
     const [mode, setMode] = useState<"camera" | "skybox">("camera");
     const update = <Key extends keyof CanvasImageAngleParams>(key: Key, value: CanvasImageAngleParams[Key]) => setParams((current) => ({ ...current, [key]: value }));
     const activePreset = presets.find((preset) => preset.horizontalAngle === params.horizontalAngle && preset.pitchAngle === params.pitchAngle);
-    const viewLabel = activePreset?.label || "自定义";
+    const viewLabel = activePreset?.label || "自定義";
 
     return (
         <SpotlightSurface
@@ -58,12 +58,12 @@ export function CanvasNodeAnglePanel({ dataUrl, onClose, onConfirm }: { dataUrl:
         >
             <div className="flex h-11 items-center gap-2 border-b px-2.5" style={{ borderColor: theme.toolbar.border }}>
                 <span className="grid size-7 shrink-0 place-items-center rounded-[var(--r-md)]" style={{ background: theme.toolbar.itemHover }}><Camera className="size-3.5" /></span>
-                <span className="text-xs font-semibold">多角度编辑器</span>
+                <span className="text-xs font-semibold">多角度編輯器</span>
                 <span className="min-w-0 flex-1" />
-                <Tooltip title="关闭"><button type="button" aria-label="关闭多角度编辑器" className="grid size-7 place-items-center rounded-full transition hover:bg-black/5 dark:hover:bg-white/10" onClick={onClose}><X className="size-3.5" /></button></Tooltip>
+                <Tooltip title="關閉"><button type="button" aria-label="關閉多角度編輯器" className="grid size-7 place-items-center rounded-full transition hover:bg-black/5 dark:hover:bg-white/10" onClick={onClose}><X className="size-3.5" /></button></Tooltip>
             </div>
             <div className="flex h-10 items-center gap-1 overflow-x-auto border-b px-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" style={{ borderColor: theme.toolbar.border }}>
-                <AnglePresetButton active={!activePreset} label="自定义" />
+                <AnglePresetButton active={!activePreset} label="自定義" />
                 {presets.map((preset) => (
                     <AnglePresetButton
                         key={preset.id}
@@ -83,23 +83,23 @@ export function CanvasNodeAnglePanel({ dataUrl, onClose, onConfirm }: { dataUrl:
                         imageSrc={dataUrl}
                         faceLabels={{
                             back: "背面",
-                            right: "右侧",
-                            left: "左侧",
-                            top: "顶面",
+                            right: "右側",
+                            left: "左側",
+                            top: "頂面",
                             bottom: "底面",
                         }}
                         dirLabels={{
                             up: "向上俯仰",
                             down: "向下俯仰",
-                            left: "向左环绕",
-                            right: "向右环绕",
+                            left: "向左環繞",
+                            right: "向右環繞",
                         }}
                         onRotateChange={(value) => update("horizontalAngle", value)}
                         onTiltChange={(value) => update("pitchAngle", value)}
                     />
                 </div>
                 <div className="flex min-w-0 flex-col justify-center gap-2 rounded-[var(--r-lg)] border px-2.5 py-2" style={{ background: theme.toolbar.itemHover, borderColor: theme.toolbar.border }}>
-                    <AngleSeg value={mode} options={[{ label: "天空盒", value: "skybox" }, { label: "摄像头", value: "camera" }]} onChange={(value) => setMode(value as "camera" | "skybox")} />
+                    <AngleSeg value={mode} options={[{ label: "天空盒", value: "skybox" }, { label: "攝像頭", value: "camera" }]} onChange={(value) => setMode(value as "camera" | "skybox")} />
                     <span className="text-[var(--fs-tiny)] font-medium opacity-70">常用角度</span>
                     <div className="grid grid-cols-2 gap-1.5">
                         {presets.map((preset) => (
@@ -114,17 +114,17 @@ export function CanvasNodeAnglePanel({ dataUrl, onClose, onConfirm }: { dataUrl:
                             </button>
                         ))}
                     </div>
-                    <AngleSlider label="水平环绕" value={params.horizontalAngle} min={-180} max={180} suffix="°" onChange={(value) => update("horizontalAngle", value)} />
+                    <AngleSlider label="水平環繞" value={params.horizontalAngle} min={-180} max={180} suffix="°" onChange={(value) => update("horizontalAngle", value)} />
                     <AngleSlider label="垂直俯仰" value={params.pitchAngle} min={-60} max={60} suffix="°" onChange={(value) => update("pitchAngle", value)} />
-                    <AngleSlider label="景别缩放" value={params.cameraDistance} min={1} max={10} step={0.1} suffix={distanceLabel(params.cameraDistance)} onChange={(value) => update("cameraDistance", value)} />
+                    <AngleSlider label="景別縮放" value={params.cameraDistance} min={1} max={10} step={0.1} suffix={distanceLabel(params.cameraDistance)} onChange={(value) => update("cameraDistance", value)} />
                     <div className="grid h-8 grid-cols-[62px_minmax(0,1fr)] items-center gap-2">
-                        <span className="text-[var(--fs-tiny)] font-medium opacity-60">镜头</span>
-                        <AngleSeg value={params.wideAngle ? "wide" : "standard"} options={[{ label: "标准", value: "standard" }, { label: "广角", value: "wide" }]} onChange={(value) => update("wideAngle", value === "wide")} />
+                        <span className="text-[var(--fs-tiny)] font-medium opacity-60">鏡頭</span>
+                        <AngleSeg value={params.wideAngle ? "wide" : "standard"} options={[{ label: "標準", value: "standard" }, { label: "廣角", value: "wide" }]} onChange={(value) => update("wideAngle", value === "wide")} />
                     </div>
                 </div>
             </div>
             <div className="flex h-11 items-center gap-2 border-t px-3" style={{ borderColor: theme.toolbar.border }}>
-                <span className="text-[var(--fs-tiny)] opacity-60">当前视角</span>
+                <span className="text-[var(--fs-tiny)] opacity-60">當前視角</span>
                 <span className="text-xs font-semibold">{viewLabel}</span>
                 <span className="text-[var(--fs-tiny)] opacity-60">{params.horizontalAngle}° / {params.pitchAngle}° · {params.cameraDistance.toFixed(1)} {distanceLabel(params.cameraDistance)}</span>
                 <span className="flex-1" />

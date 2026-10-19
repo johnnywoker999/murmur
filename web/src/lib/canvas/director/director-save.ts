@@ -335,8 +335,8 @@ export function createDirectorSaveCoordinator(options: DirectorSaveCoordinatorOp
     };
 
     /**
-     * 显式放弃本地草稿：真正删除该 scoped key，避免同一旧草稿每次重开都提示。
-     * 删除失败返回 false，调用方必须告知用户草稿仍在，不能假装已放弃。
+     * 顯式放棄本地草稿：真正刪除該 scoped key，避免同一舊草稿每次重開都提示。
+     * 刪除失敗返回 false，呼叫方必須告知使用者草稿仍在，不能假裝已放棄。
      */
     const discardDraft = (): boolean => {
         try {

@@ -5,7 +5,7 @@ export async function rasterizeTimelineSubtitle(text: string, width: number, hei
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("无法创建字幕图像");
+    if (!ctx) throw new Error("無法建立字幕影像");
     const fontSize = Math.max(16, Math.round(height / 24));
     ctx.font = `${fontSize}px sans-serif`;
     ctx.textAlign = "center";
@@ -19,7 +19,7 @@ export async function rasterizeTimelineSubtitle(text: string, width: number, hei
         }
         lines.push(line);
     }
-    if (lines.length * fontSize * 1.35 > height * 0.8) throw new Error("字幕过长，请拆分后导出");
+    if (lines.length * fontSize * 1.35 > height * 0.8) throw new Error("字幕過長，請拆分後匯出");
     ctx.fillStyle = "white";
     ctx.strokeStyle = "black";
     ctx.lineWidth = Math.max(2, fontSize / 12);
@@ -29,6 +29,6 @@ export async function rasterizeTimelineSubtitle(text: string, width: number, hei
         ctx.strokeText(line, width / 2, y);
         ctx.fillText(line, width / 2, y);
     });
-    const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error("字幕图像编码失败")), "image/png"));
+    const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error("字幕影像編碼失敗")), "image/png"));
     return new Uint8Array(await blob.arrayBuffer());
 }

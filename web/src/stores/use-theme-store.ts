@@ -20,8 +20,8 @@ export const useThemeStore = create<ThemeStore>()(
         }),
         {
             name: "infinite-canvas:theme_store",
-            // 持久化恢复校验：旧版本/坏 session 写入的非法值回退到 dark，
-            // 避免 canvasThemes[非法值] = undefined 触发 "reading 'node'" 崩溃
+            // 持久化恢復校驗：舊版本/壞 session 寫入的非法值回退到 dark，
+            // 避免 canvasThemes[非法值] = undefined 觸發 "reading 'node'" 崩潰
             merge: (persisted, current) => ({ ...current, theme: normalizeTheme((persisted as Partial<ThemeStore> | null)?.theme) }),
         },
     ),

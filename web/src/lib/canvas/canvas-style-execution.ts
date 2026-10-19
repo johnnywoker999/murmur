@@ -16,8 +16,8 @@ export function resolveCanvasStyleExecution(nodes: CanvasNodeData[], sourceNode:
     if (!profile) return null;
     const requestConfig = resolveModelRequestConfig(config, config.model);
     const plan = resolveStyleExecutionPlan(profile, { mode, model: requestConfig.model, interfaceType: requestConfig.interfaceType || requestConfig.apiFormat });
-    // 平台模型的真实供应模型由后端入队时路由，前端只能预览，最终兼容性由后端重算。
-    if (plan.status === "blocked" && !logicalModelIDForConfig(config)) throw new Error(`当前模型无法完整执行项目画风：${plan.warnings.join("；")}。请切换模型，或在项目设置中停用对应画风资产`);
+    // 平臺模型的真實供應模型由後端入隊時路由，前端只能預覽，最終相容性由後端重算。
+    if (plan.status === "blocked" && !logicalModelIDForConfig(config)) throw new Error(`當前模型無法完整執行專案畫風：${plan.warnings.join("；")}。請切換模型，或在專案設定中停用對應畫風資產`);
     return { profile, profileJson: serializeStyleProfile(profile), plan, prompt: applyStyleExecutionPlan(prompt, plan) };
 }
 
@@ -27,8 +27,8 @@ function legacyStyleNodeProfile(node: CanvasNodeData) {
     if (!prompt || !presetId) return null;
     return createStyleProfileSnapshot({
         presetId,
-        title: node.title.replace(/^(?:项目)?画风\s*[·：:]?\s*/, "").trim() || node.title,
-        description: node.metadata?.workflowDescription || "历史项目画风规范",
+        title: node.title.replace(/^(?:專案)?畫風\s*[·：:]?\s*/, "").trim() || node.title,
+        description: node.metadata?.workflowDescription || "歷史專案畫風規範",
         tags: [],
         prompt,
         assets: [],

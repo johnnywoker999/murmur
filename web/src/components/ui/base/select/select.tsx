@@ -5,18 +5,18 @@ import { Check, ChevronDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Select — 下拉选择（自研，react-aria-components 单选壳，无远程/多选）。
+ * Select — 下拉選擇（自研，react-aria-components 單選殼，無遠端/多選）。
  *
- * - API 对齐 AntD Select 的单选子集：value/onChange(options 值)/options/placeholder/
- *   disabled/allowClear/size/className，可直接替换纯单选场景；可直接置于 antd Form.Item。
- * - 浮层定位、进出场、焦点与类型选择由 RAC 承担（ADR-0008：复杂控件以 RAC 为无障碍地基）。
- * - Popover isNonModal：避免 RAC modal 滚动锁把页面滚动条锁死（同 boardui 注释）；
- *   isDismissable 与 isNonModal 互斥，故外部 dismiss 手动处理（全局 pointerdown capture）。
- * - 样式只吃语义 token：trigger border-border/bg-background/hover:border-foreground/40、
- *   popover bg-surface-strong + hairline、item hover:bg-surface-hover、选中 Check 前景色，无裸色。
- * - 范围外（本批不做，后续补）：mode="multiple"/"tags"、showSearch（需 ComboBox）、
+ * - API 對齊 AntD Select 的單選子集：value/onChange(options 值)/options/placeholder/
+ *   disabled/allowClear/size/className，可直接替換純單選場景；可直接置於 antd Form.Item。
+ * - 浮層定位、進出場、焦點與型別選擇由 RAC 承擔（ADR-0008：複雜控制元件以 RAC 為無障礙地基）。
+ * - Popover isNonModal：避免 RAC modal 滾動鎖把頁面捲軸鎖死（同 boardui 註釋）；
+ *   isDismissable 與 isNonModal 互斥，故外部 dismiss 手動處理（全域性 pointerdown capture）。
+ * - 樣式只吃語義 token：trigger border-border/bg-background/hover:border-foreground/40、
+ *   popover bg-surface-strong + hairline、item hover:bg-surface-hover、選中 Check 前景色，無裸色。
+ * - 範圍外（本批不做，後續補）：mode="multiple"/"tags"、showSearch（需 ComboBox）、
  *   loading、labelInValue、maxCount、suffixIcon。
- * 对标：AntD Select（单选）；boardui base/select。
+ * 對標：AntD Select（單選）；boardui base/select。
  */
 
 export type SelectSize = "sm" | "md";
@@ -111,7 +111,7 @@ export function Select<V extends string = string>({ value, onChange, options = [
                     <span
                         role="button"
                         tabIndex={-1}
-                        aria-label="清空选择"
+                        aria-label="清空選擇"
                         className="shrink-0 cursor-pointer rounded p-0.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground"
                         onPointerDown={(event) => event.stopPropagation()}
                         onClick={(event) => {
@@ -125,7 +125,7 @@ export function Select<V extends string = string>({ value, onChange, options = [
                 <ChevronDown aria-hidden="true" className={cn("size-4 shrink-0 text-muted-foreground transition-transform duration-200 motion-reduce:transition-none", open && "rotate-180")} />
             </AriaButton>
             <AriaPopover ref={popoverRef} isNonModal placement="bottom" offset={4} style={popoverWidth ? { width: popoverWidth } : undefined} className={cn("z-50 rounded-lg border border-border bg-surface-strong p-1 shadow-lg", "ra-pop-in")}>
-                <AriaListBox aria-label={ariaLabel ?? placeholder ?? "选项"} className="max-h-60 overflow-auto outline-none">
+                <AriaListBox aria-label={ariaLabel ?? placeholder ?? "選項"} className="max-h-60 overflow-auto outline-none">
                     {options.map((option) => (
                         <AriaListBoxItem
                             key={option.value}

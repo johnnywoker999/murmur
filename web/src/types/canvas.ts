@@ -235,7 +235,7 @@ export type CanvasNodeMetadata = {
     status?: CanvasNodeStatus;
     /** Local media operations use this while a derived node is being prepared. */
     processingLabel?: string;
-    /** 浏览器文件上传，与模型生成任务状态独立。 */
+    /** 瀏覽器檔案上傳，與模型生成任務狀態獨立。 */
     fileUpload?: "uploading" | "error";
     fileUploadProgress?: number;
     locked?: boolean;
@@ -253,7 +253,7 @@ export type CanvasNodeMetadata = {
     workflowProvider?: "model" | "runninghub";
     runningHubWorkflowId?: string;
     runningHubWorkflowKind?: "workflow" | "app";
-    /** 当前画布节点覆盖的工作流动态字段，键为 source:* 或 field:nodeId:fieldName。 */
+    /** 當前畫布節點覆蓋的工作流動態欄位，鍵為 source:* 或 field:nodeId:fieldName。 */
     workflowParameters?: Record<string, unknown>;
     size?: string;
     quality?: string;
@@ -267,7 +267,7 @@ export type CanvasNodeMetadata = {
     audioVoice?: string;
     audioFormat?: string;
     audioSpeed?: string;
-    /** 原版 LibTV 音频节点的音高/音量控制；以字符串保存以兼容工作流字段。 */
+    /** 原版 LibTV 音訊節點的音高/音量控制；以字串儲存以相容工作流欄位。 */
     audioPitch?: string;
     audioVolume?: string;
     audioInstructions?: string;
@@ -294,7 +294,7 @@ export type CanvasNodeMetadata = {
     workflowKind?: CanvasWorkflowKind;
     workflowTitle?: string;
     workflowDescription?: string;
-    /** 本地视觉回归夹具标记，不参与生成或远程同步语义。 */
+    /** 本地視覺迴歸夾具標記，不參與生成或遠端同步語義。 */
     fixture?: string;
     stylePresetId?: string;
     styleProfileJson?: string;
@@ -441,12 +441,12 @@ export type CanvasNodeMetadata = {
     skillId?: string;
     skillVersion?: number;
     skillSnapshot?: CanvasSkillSnapshot;
-    /** 图表节点的图形类型，缺省柱状图。落盘字段——新增扩展节点的自有字段都要在这里声明。 */
+    /** 圖表節點的圖形型別，預設柱狀圖。落盤欄位——新增擴充套件節點的自有欄位都要在這裡宣告。 */
     chartKind?: "bar" | "line";
-    /** 调色节点的参数；缺省视为未调色。 */
+    /** 調色節點的引數；預設視為未調色。 */
     colorGrade?: CanvasColorGrade;
     mediaConversion?: MediaConversionNodeState;
-    /** 用户手动拉伸过尺寸；图片按真实比例自动适配时避让它。 */
+    /** 使用者手動拉伸過尺寸；圖片按真實比例自動適配時避讓它。 */
     manualSize?: boolean;
     storyboard?: StoryboardData;
     storyboardShotDuration?: StoryboardShotDuration;
@@ -468,7 +468,7 @@ export type CanvasNodeMetadata = {
         style: CanvasFolderStyle;
         theme?: CanvasFolderTheme;
         createdAt: string;
-        // 自定义主题资源覆盖预置主题；目录内容永远从 childNodes 读取。
+        // 自定義主題資源覆蓋預置主題；目錄內容永遠從 childNodes 讀取。
         themeCover?: string;
         assetFolderId?: string;
         projectId?: string;
@@ -510,11 +510,11 @@ export type CanvasNodeMetadata = {
         editMode?: "provider-mask" | "local-composite";
     };
     portraitTexture?: PortraitTextureSettings;
-    /** AI 审美批改节点只保存当前报告和输入指纹，不保存图片二进制。 */
+    /** AI 審美批改節點只儲存當前報告和輸入指紋，不儲存圖片二進位制。 */
     artCritique?: ArtCritiqueNodeState;
-    /** 摄像机控制选项，启用后生成时自动追加摄影机/镜头/焦距/光圈提示词。 */
+    /** 攝像機控制選項，啟用後生成時自動追加攝影機/鏡頭/焦距/光圈提示詞。 */
     cameraControl?: CameraControlOptions;
-    /** 全景节点配置：投影方式、生成方式和比例兜底开关。 */
+    /** 全景節點配置：投影方式、生成方式和比例兜底開關。 */
     panoramaConfig?: {
         projection: "spherical" | "cylindrical";
         sourceMode: "ai" | "image";

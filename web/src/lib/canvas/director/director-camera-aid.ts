@@ -20,7 +20,7 @@ export function directorCameraFrameSegments(corners: readonly DirectorVec3[]): D
     return corners.flatMap((corner, index) => [corner, corners[(index + 1) % corners.length]]);
 }
 
-/** LibTV 导演视角里的两条取景延长线；只从下角延伸，不穿过画面中心。 */
+/** LibTV 導演視角里的兩條取景延長線；只從下角延伸，不穿過畫面中心。 */
 export function directorCameraGuideSegments(corners: readonly DirectorVec3[]): DirectorVec3[] {
     const height = corners[0][1] - corners[3][1];
     return [corners[3], [corners[3][0] * 0.93, corners[3][1] - height * 0.9, corners[3][2]],

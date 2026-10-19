@@ -21,8 +21,8 @@ type AssetStoreDraftWithSnapshot = AssetStoreDraftRecord & { asset?: Asset };
 
 export const WORKSPACE_ASSET_BATCH_LIMIT = 100;
 export const WORKSPACE_ASSET_RECENT_MS = 30 * 24 * 60 * 60 * 1000;
-export const WORKSPACE_ASSET_LINKED_PROJECT = "已关联项目";
-export const WORKSPACE_ASSET_UNLINKED_PROJECT = "未关联项目";
+export const WORKSPACE_ASSET_LINKED_PROJECT = "已關聯專案";
+export const WORKSPACE_ASSET_UNLINKED_PROJECT = "未關聯專案";
 
 /**
  * SQLite Library hard-deletes rows and GET /assets plus POST /assets/batch only
@@ -30,7 +30,7 @@ export const WORKSPACE_ASSET_UNLINKED_PROJECT = "未关联项目";
  * cache-only id cannot be distinguished from a server deletion.
  */
 export const WORKSPACE_ASSET_TOMBSTONE_SEAM =
-    "asset.Library 没有墓碑/导入清单：GET /assets 与 POST /assets/batch 只返回仍存在的所属记录。浏览器缓存里多出的 ID 无法区分「从未写入 SQLite」和「服务端已删除」。";
+    "asset.Library 沒有墓碑/匯入清單：GET /assets 與 POST /assets/batch 只返回仍存在的所屬記錄。瀏覽器快取裡多出的 ID 無法區分「從未寫入 SQLite」和「服務端已刪除」。";
 
 const preservedDraftScopes = new Set<string>();
 
@@ -122,7 +122,7 @@ export async function loadWorkspaceAssetsForUse(ids: Iterable<string>, expectedS
     if (!unique.length) return;
     if (!usesWorkspaceAssetLibraryApi()) {
         const available = new Set(useAssetStore.getState().assets.map((asset) => asset.id));
-        if (unique.some((id) => !available.has(id))) throw new Error("部分本地素材不存在，请重新选择素材");
+        if (unique.some((id) => !available.has(id))) throw new Error("部分本地素材不存在，請重新選擇素材");
         return;
     }
 
@@ -134,7 +134,7 @@ export async function loadWorkspaceAssetsForUse(ids: Iterable<string>, expectedS
     const deleted = new Set(drafts.deletes.map((draft) => draft.id));
     const upsertById = new Map(drafts.upserts.map((draft) => [draft.id, draft]));
     const storeById = new Map(useAssetStore.getState().assets.map((asset) => [asset.id, asset]));
-    if (unique.some((id) => deleted.has(id))) throw new Error("部分本地素材不存在，请重新选择素材");
+    if (unique.some((id) => deleted.has(id))) throw new Error("部分本地素材不存在，請重新選擇素材");
 
     const lookupIds = unique.filter((id) => !upsertById.has(id));
     const found = new Set<string>();
@@ -158,7 +158,7 @@ export async function loadWorkspaceAssetsForUse(ids: Iterable<string>, expectedS
     }
     projectCommittedAssets(loaded, expected);
     if (snapshots.length) projectDraftSnapshots(snapshots, expected);
-    if (unique.some((id) => !found.has(id))) throw new Error("部分本地素材不存在，请重新选择素材");
+    if (unique.some((id) => !found.has(id))) throw new Error("部分本地素材不存在，請重新選擇素材");
 }
 
 export async function preserveLegacyCacheOnlyAssetDrafts(expectedScope?: CapturedUserScope) {
@@ -339,7 +339,7 @@ function projectDraftSnapshots(assets: Asset[], expected: CapturedUserScope) {
 }
 
 function parseWorkspaceAssetPage(remote: WorkspaceAssetPageResponse): WorkspaceAssetLibraryPage {
-    if (!remote || !Array.isArray(remote.assets)) throw new Error("素材列表无效");
+    if (!remote || !Array.isArray(remote.assets)) throw new Error("素材列表無效");
     return {
         assets: parseWorkspaceAssetPayloads(remote.assets),
         kindCounts: numberMap(remote.kindCounts),
@@ -361,14 +361,14 @@ function parseWorkspaceAssetPage(remote: WorkspaceAssetPageResponse): WorkspaceA
 
 function parseWorkspaceAssetPayloads(values: unknown): Asset[] {
     if (values == null) return [];
-    if (!Array.isArray(values)) throw new Error("素材列表无效");
+    if (!Array.isArray(values)) throw new Error("素材列表無效");
     const assets: Asset[] = [];
     values.forEach((item, index) => {
         try {
             assets.push(normalizeWorkspaceAssetPayload(item));
         } catch (error) {
             const id = isRecord(item) && typeof item.id === "string" && item.id.trim() ? item.id : `#${index}`;
-            console.warn("已隔离无法展示的素材记录", { id, error: error instanceof Error ? error.message : String(error) });
+            console.warn("已隔離無法展示的素材記錄", { id, error: error instanceof Error ? error.message : String(error) });
         }
     });
     return assets;
@@ -540,7 +540,7 @@ function matchesExtraClientFilters(asset: Asset, options: WorkspaceAssetLibraryP
 
 export function isWorkspaceGeneratedHistoryAsset(asset: Pick<Asset, "kind" | "source" | "metadata">) {
     if (asset.kind !== "image" && asset.kind !== "video" && asset.kind !== "audio") return false;
-    return asset.source === "生成任务" || typeof asset.metadata?.generationEffectKey === "string";
+    return asset.source === "生成任務" || typeof asset.metadata?.generationEffectKey === "string";
 }
 
 export function workspaceAssetProjectLabel(asset: Pick<Asset, "metadata">) {

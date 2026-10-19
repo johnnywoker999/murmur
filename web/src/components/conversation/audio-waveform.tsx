@@ -2,19 +2,19 @@
 
 type AudioWaveformProps = {
     waveform: number[];
-    /** 波形颜色，默认使用 CSS 变量 */
+    /** 波形顏色，預設使用 CSS 變數 */
     color?: string;
-    /** 波形高度（像素），默认 48 */
+    /** 波形高度（畫素），預設 48 */
     height?: number;
-    /** 波形宽度（像素），默认 200 */
+    /** 波形寬度（畫素），預設 200 */
     width?: number;
-    /** 是否动画，默认 true */
+    /** 是否動畫，預設 true */
     animated?: boolean;
 };
 
 /**
- * 音频波形可视化组件
- * 使用 SVG 绘制实时波形
+ * 音訊波形視覺化元件
+ * 使用 SVG 繪製即時波形
  */
 export function AudioWaveform({
     waveform,
@@ -23,10 +23,10 @@ export function AudioWaveform({
     width = 200,
     animated = true,
 }: AudioWaveformProps) {
-    // 如果没有波形数据，显示占位波形
+    // 如果沒有波形資料，顯示佔位波形
     const displayWaveform = useMemo(() => {
         if (waveform.length === 0) {
-            // 生成静态占位波形
+            // 生成靜態佔位波形
             return Array.from({ length: 32 }, (_, i) => {
                 const x = i / 31;
                 return 0.3 + 0.2 * Math.sin(x * Math.PI * 2);

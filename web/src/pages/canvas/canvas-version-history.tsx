@@ -84,7 +84,7 @@ export function useCanvasVersionHistory(projectId: string, onRestore: (snapshotI
                 setCurrentRevision(result.currentRevision);
             })
             .catch((cause) => {
-                if (!controller.signal.aborted && isCurrentContext()) setError(cause instanceof Error ? cause.message : "历史版本读取失败");
+                if (!controller.signal.aborted && isCurrentContext()) setError(cause instanceof Error ? cause.message : "歷史版本讀取失敗");
             })
             .finally(() => {
                 if (!controller.signal.aborted && isCurrentContext()) setLoading(false);
@@ -103,7 +103,7 @@ export function useCanvasVersionHistory(projectId: string, onRestore: (snapshotI
                 if (active && isCurrentContext()) setDrafts(items.sort((a, b) => b.savedAt.localeCompare(a.savedAt)));
             })
             .catch(() => {
-                if (active && isCurrentContext()) setDraftError("本地草稿读取失败，请刷新重试");
+                if (active && isCurrentContext()) setDraftError("本地草稿讀取失敗，請重新整理重試");
             })
             .finally(() => {
                 if (active && isCurrentContext()) setDraftLoading(false);
@@ -131,7 +131,7 @@ export function useCanvasVersionHistory(projectId: string, onRestore: (snapshotI
                 if (!controller.signal.aborted && previewRequest.current === controller && isCurrentContext()) setPreview({ ...selection, project });
             })
             .catch((cause) => {
-                if (!controller.signal.aborted && previewRequest.current === controller && isCurrentContext()) setPreview({ ...selection, error: cause instanceof Error ? cause.message : "预览读取失败，请重新选择版本" });
+                if (!controller.signal.aborted && previewRequest.current === controller && isCurrentContext()) setPreview({ ...selection, error: cause instanceof Error ? cause.message : "預覽讀取失敗，請重新選擇版本" });
             });
     };
 
@@ -140,14 +140,14 @@ export function useCanvasVersionHistory(projectId: string, onRestore: (snapshotI
         if (!selected || !preview.project || currentRevision === undefined || restoring || confirming) return;
         setConfirming(true);
         modal.confirm({
-            title: `恢复${preview.label}的内容？`,
-            content: "恢复前会备份当前画布，并保留本机草稿。恢复后会生成一个新版本。",
-            okText: "恢复此版本",
+            title: `恢復${preview.label}的內容？`,
+            content: "恢復前會備份當前畫布，並保留本機草稿。恢復後會生成一個新版本。",
+            okText: "恢復此版本",
             cancelText: "取消",
             afterClose: () => setConfirming(false),
             onOk: async () => {
                 if (!isCurrentContext()) {
-                    message.error("画布或账号已切换，请重新打开版本记录");
+                    message.error("畫布或賬號已切換，請重新開啟版本記錄");
                     return;
                 }
                 setRestoring(true);
@@ -158,9 +158,9 @@ export function useCanvasVersionHistory(projectId: string, onRestore: (snapshotI
                     await onRestore(selected.id, currentRevision);
                     returnToCurrent();
                     setReload((value) => value + 1);
-                    message.success("已恢复内容并保存为新版本");
+                    message.success("已恢復內容並儲存為新版本");
                 } catch (cause) {
-                    const detail = cause instanceof Error ? cause.message : "恢复失败，请重试";
+                    const detail = cause instanceof Error ? cause.message : "恢復失敗，請重試";
                     setError(detail);
                     message.error(detail);
                 } finally {
@@ -176,9 +176,9 @@ export function useCanvasVersionHistory(projectId: string, onRestore: (snapshotI
         try {
             // Drawing strokes are not versioned; never mix today's local strokes into an old snapshot.
             const result = await exportCanvasProjects([preview.project], `${preview.project.title}-${preview.label}`, { includeLocalDrawings: false });
-            if (result === "saved") message.success("已下载，可从画布列表导入为新画布");
+            if (result === "saved") message.success("已下載，可從畫佈列表匯入為新畫布");
         } catch (cause) {
-            message.error(cause instanceof Error ? cause.message : "下载失败，请重试");
+            message.error(cause instanceof Error ? cause.message : "下載失敗，請重試");
         } finally {
             setExporting(false);
         }
@@ -234,7 +234,7 @@ export function useCanvasVersionHistory(projectId: string, onRestore: (snapshotI
         selectDraft: (draft: CanvasSyncDraft) => {
             if (restoring || confirming) return;
             previewRequest.current?.abort();
-            setPreview({ key: draft.id, label: "本机草稿", date: draft.savedAt, kind: "draft", project: draft.project });
+            setPreview({ key: draft.id, label: "本機草稿", date: draft.savedAt, kind: "draft", project: draft.project });
             setListOpen(false);
         },
         returnToCurrent: () => {
@@ -258,11 +258,11 @@ export function CanvasVersionHistory({ history }: { history: CanvasVersionHistor
     const content = (
         <div className="canvas-version-panel" data-canvas-no-zoom data-canvas-wheel-scroll>
             <header className="canvas-version-header">
-                <h2>版本记录</h2>
-                <Button type="text" size="small" aria-label="刷新版本记录" icon={<RefreshCw size={16} />} disabled={restoring || loading} onClick={history.refresh} />
-                <Button type="text" size="small" aria-label="关闭版本记录" icon={<X size={16} />} disabled={restoring} onClick={history.close} />
+                <h2>版本記錄</h2>
+                <Button type="text" size="small" aria-label="重新整理版本記錄" icon={<RefreshCw size={16} />} disabled={restoring || loading} onClick={history.refresh} />
+                <Button type="text" size="small" aria-label="關閉版本記錄" icon={<X size={16} />} disabled={restoring} onClick={history.close} />
             </header>
-            <div className="canvas-version-tabs" role="tablist" aria-label="版本来源" onKeyDown={event => {
+            <div className="canvas-version-tabs" role="tablist" aria-label="版本來源" onKeyDown={event => {
                 if (restoring || !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
                 event.preventDefault();
                 const next = event.key === "Home" ? "cloud" : event.key === "End" ? "draft" : tab === "cloud" ? "draft" : "cloud";
@@ -270,10 +270,10 @@ export function CanvasVersionHistory({ history }: { history: CanvasVersionHistor
                 event.currentTarget.querySelector<HTMLButtonElement>(`[data-tab="${next}"]`)?.focus();
             }}>
                 <button type="button" id="canvas-saved-tab" role="tab" data-tab="cloud" aria-selected={tab === "cloud"} aria-controls="canvas-version-list" tabIndex={tab === "cloud" ? 0 : -1} disabled={restoring} onClick={() => history.changeTab("cloud")}>
-                    已保存版本 <span className="canvas-version-count">{entries.length}</span>
+                    已儲存版本 <span className="canvas-version-count">{entries.length}</span>
                 </button>
                 <button type="button" id="canvas-draft-tab" role="tab" data-tab="draft" aria-selected={tab === "draft"} aria-controls="canvas-version-list" tabIndex={tab === "draft" ? 0 : -1} disabled={restoring} onClick={() => history.changeTab("draft")}>
-                    本机草稿 <span className="canvas-version-count">{displayDrafts.length}</span>
+                    本機草稿 <span className="canvas-version-count">{displayDrafts.length}</span>
                 </button>
             </div>
             <div id="canvas-version-list" role="tabpanel" aria-labelledby={tab === "cloud" ? "canvas-saved-tab" : "canvas-draft-tab"} className="canvas-version-list">
@@ -283,7 +283,7 @@ export function CanvasVersionHistory({ history }: { history: CanvasVersionHistor
                         <Check size={12} />
                     </span>
                     <span>
-                        <strong>当前画布</strong>
+                        <strong>當前畫布</strong>
                     </span>
                 </button>
                 {error ? (
@@ -296,7 +296,7 @@ export function CanvasVersionHistory({ history }: { history: CanvasVersionHistor
                         <Spin size="small" />
                     </div>
                 ) : !entries.length && !error ? (
-                    <EmptyState size="compact" description="暂无历史版本，后续保存时会自动保留" />
+                    <EmptyState size="compact" description="暫無歷史版本，後續儲存時會自動保留" />
                 ) : null}
                 {[...groups].map(([day, items]) => (
                     <details className="canvas-version-group" key={day} open>
@@ -311,9 +311,9 @@ export function CanvasVersionHistory({ history }: { history: CanvasVersionHistor
                                         <time dateTime={entry.contentUpdatedAt}>{formatTime(entry.contentUpdatedAt)}</time>
                                         <span className="canvas-version-tag">{canvasHistoryDisplayLabel(entries, entry.id)}</span>
                                     </span>
-                                    {entry.reason === "before_restore" ? <span className="canvas-version-reason">恢复前备份</span> : null}
+                                    {entry.reason === "before_restore" ? <span className="canvas-version-reason">恢復前備份</span> : null}
                                     <small>
-                                        {entry.nodeCount} 个节点 · {entry.connectionCount} 条连线
+                                        {entry.nodeCount} 個節點 · {entry.connectionCount} 條連線
                                     </small>
                                 </button>
                             ))}
@@ -322,12 +322,12 @@ export function CanvasVersionHistory({ history }: { history: CanvasVersionHistor
                 ))}
                 </> : <>
                     {draftError ? <p role="alert" className="canvas-version-error">{draftError}</p> : null}
-                    {draftLoading ? <div className="canvas-version-empty"><Spin size="small" /></div> : !displayDrafts.length && !draftError ? <EmptyState size="compact" description="暂无本机草稿" /> : null}
+                    {draftLoading ? <div className="canvas-version-empty"><Spin size="small" /></div> : !displayDrafts.length && !draftError ? <EmptyState size="compact" description="暫無本機草稿" /> : null}
                     {displayDrafts.map((draft) => (
                         <button type="button" key={draft.id} className="canvas-version-item canvas-version-draft" disabled={restoring} aria-pressed={preview?.key === draft.id} onClick={() => history.selectDraft(draft)}>
-                            <span className="canvas-version-item-title"><strong>本机备份</strong></span>
+                            <span className="canvas-version-item-title"><strong>本機備份</strong></span>
                             <time dateTime={draft.savedAt}>{new Date(draft.savedAt).toLocaleString("zh-CN")}</time>
-                            <small>{draft.project.nodes.length} 个节点 · {draft.project.connections.length} 条连线</small>
+                            <small>{draft.project.nodes.length} 個節點 · {draft.project.connections.length} 條連線</small>
                         </button>
                     ))}
                 </>}
@@ -337,21 +337,21 @@ export function CanvasVersionHistory({ history }: { history: CanvasVersionHistor
                     <>
                         <div className="canvas-version-item-title">
                             <strong>{preview.label}</strong>
-                            <span className="canvas-version-tag">只读预览</span>
+                            <span className="canvas-version-tag">只讀預覽</span>
                         </div>
                         <small>{new Date(preview.date).toLocaleString("zh-CN")}</small>
                         {preview.project ? (
                             <small>
-                                {preview.project.nodes.length} 个节点 · {preview.project.connections.length} 条连线
+                                {preview.project.nodes.length} 個節點 · {preview.project.connections.length} 條連線
                             </small>
                         ) : null}
-                        {preview.project?.nodes.some((node) => node.type === "drawing") ? <p className="canvas-version-hint">绘图仅保留已上传的预览，不含本机历史笔画。</p> : null}
+                        {preview.project?.nodes.some((node) => node.type === "drawing") ? <p className="canvas-version-hint">繪圖僅保留已上傳的預覽，不含本機歷史筆畫。</p> : null}
                         <div className="canvas-version-actions">
                             {preview.kind === "cloud" ? <Button block type="primary" loading={restoring} disabled={!preview.project || currentRevision === undefined || loading} onClick={history.restore}>
-                                    恢复此版本
+                                    恢復此版本
                             </Button> : null}
                             <Button block type={preview.kind === "draft" ? "primary" : "default"} icon={<Download size={14} />} loading={exporting} disabled={!preview.project || restoring} onClick={() => void history.download()}>
-                                {preview.kind === "draft" ? "下载草稿" : "下载此版本"}
+                                {preview.kind === "draft" ? "下載草稿" : "下載此版本"}
                             </Button>
                         </div>
                     </>
@@ -361,7 +361,7 @@ export function CanvasVersionHistory({ history }: { history: CanvasVersionHistor
     );
 
     return history.desktop ? (
-        <aside className="canvas-version-sidebar" aria-label="版本记录">
+        <aside className="canvas-version-sidebar" aria-label="版本記錄">
             {content}
         </aside>
     ) : (
@@ -376,7 +376,7 @@ export function CanvasVersionHistory({ history }: { history: CanvasVersionHistor
             maskClosable={!restoring}
             keyboard={!restoring}
             size="min(380px, 92vw)"
-            aria-label="版本记录"
+            aria-label="版本記錄"
         >
             {content}
         </AppDrawer>
@@ -391,5 +391,5 @@ function formatTime(date: string) {
 function canvasHistoryDisplayLabel(entries: CanvasHistoryEntry[], id: string) {
     const ordered = [...entries].sort((a, b) => a.revision - b.revision || a.id.localeCompare(b.id));
     const index = ordered.findIndex(entry => entry.id === id);
-    return index >= 0 ? `版本 ${index + 1}` : "历史版本";
+    return index >= 0 ? `版本 ${index + 1}` : "歷史版本";
 }

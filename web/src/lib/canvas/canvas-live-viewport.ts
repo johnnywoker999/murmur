@@ -43,7 +43,7 @@ export function applyCanvasLiveViewport(container: HTMLDivElement | null, viewpo
     }
     const worldLayer = elements.worldLayer;
     if (worldLayer) {
-        // 平移期间直接更新合成层，避免修改容器继承变量导致所有节点重新计算样式。
+        // 平移期間直接更新合成層，避免修改容器繼承變數導致所有節點重新計算樣式。
         worldLayer.style.transformOrigin = "0 0";
         worldLayer.style.transform = `translate3d(${viewport.x}px, ${viewport.y}px, 0) scale(${viewport.k / committedScale})`;
         worldLayer.style.willChange = container.dataset.canvasViewportInteracting === "true" ? "transform" : "";
@@ -53,9 +53,9 @@ export function applyCanvasLiveViewport(container: HTMLDivElement | null, viewpo
     container.style.setProperty("--canvas-live-x", String(viewport.x));
     container.style.setProperty("--canvas-live-y", String(viewport.y));
     container.style.setProperty("--canvas-live-scale", String(viewport.k));
-    // 外置节点标题用同一帧逆倍率抵消世界层缩放，避免等待 React 提交后再校正尺寸。
+    // 外接節點標題用同一幀逆倍率抵消世界層縮放，避免等待 React 提交後再校正尺寸。
     container.style.setProperty("--canvas-live-inverse-scale", String(1 / Math.max(viewport.k, 0.05)));
-    // 图形层必须逐帧跟随 DOM 世界层；浮层和滚动通知仍可按原频率节流。
+    // 圖形層必須逐幀跟隨 DOM 世界層；浮層和滾動通知仍可按原頻率節流。
     container.dispatchEvent(new CustomEvent<ViewportTransform>(CANVAS_GRAPHICS_VIEWPORT_PREVIEW_EVENT, { detail: viewport }));
     if (notify) {
         container.dispatchEvent(new CustomEvent<ViewportTransform>(CANVAS_VIEWPORT_PREVIEW_EVENT, { detail: viewport }));

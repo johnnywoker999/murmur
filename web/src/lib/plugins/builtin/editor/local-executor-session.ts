@@ -161,7 +161,7 @@ export async function runOwnedTimelineRender(input: {
         onTaskUpdate: input.onTaskUpdate,
     });
     const result = JSON.parse(task.resultJson ?? "{}") as TimelineRenderResult;
-    if (!result.resourceId) throw new Error("渲染任务未返回产物");
+    if (!result.resourceId) throw new Error("渲染任務未返回產物");
     assertLocalExecutorSession(input.session);
     return { task, result };
 }
@@ -227,7 +227,7 @@ export async function runOwnedDepthCapture(input: {
         onTaskUpdate: input.onTaskUpdate,
     });
     const capture = JSON.parse(task.resultJson || "{}") as DepthCaptureResult;
-    if (!capture.resourceId) throw new Error("任务完成但没有返回深度视频资源");
+    if (!capture.resourceId) throw new Error("任務完成但沒有返回深度影片資源");
     assertLocalExecutorSession(input.session);
     const resource = await getResource(capture.resourceId, {
         signal: input.session.controller.signal,

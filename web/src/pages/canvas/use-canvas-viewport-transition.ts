@@ -28,7 +28,7 @@ export function useCanvasViewportTransition(viewportRef: MutableRefObject<Viewpo
 
             const startedAt = performance.now();
             const duration = 220;
-            // 新导航指令会取消上一段动画，避免快捷键、滚轮和双击争夺视口。
+            // 新導航指令會取消上一段動畫，避免快捷鍵、滾輪和雙擊爭奪視口。
             const step = (now: number) => {
                 const next = interpolateViewport(from, target, (now - startedAt) / duration);
                 viewportRef.current = next;

@@ -41,13 +41,13 @@ export function resolvedCanvasGenerationRequirements(config: AiConfig, node: Can
 }
 
 export function buildGenerationConfig(config: AiConfig, node: CanvasNodeData | undefined, mode: CanvasGenerationMode, requirements?: ModelRequirements): AiConfig {
-    // 只有独立 Config 节点读取工作流元数据；普通图片/视频/音频节点始终按基础模型生成。
+    // 只有獨立 Config 節點讀取工作流後設資料；普通圖片/影片/音訊節點始終按基礎模型生成。
     const workflowProvider = mode !== "text" && node?.type === CanvasNodeType.Config && resolveCanvasWorkflowProvider(node.metadata) === "runninghub" ? "runninghub" : "model";
     const defaultModel = mode === "image" ? config.imageModel : mode === "video" ? config.videoModel : mode === "audio" ? config.audioModel : config.textModel;
     const fallbackModel = mode === "image" ? defaultConfig.imageModel : mode === "video" ? defaultConfig.videoModel : mode === "audio" ? defaultConfig.audioModel : defaultConfig.textModel;
     const storedModel = resolveCanvasGenerationModel(config, node?.metadata?.model, mode);
     const preferredModel = storedModel || resolveCanvasGenerationModel(config, defaultModel, mode) || fallbackModel;
-    // 先合并节点上的实时选择，再做兼容性匹配。否则路由只看到全局默认值，节点改过的时长、分辨率或布尔能力无法参与分流。
+    // 先合併節點上的即時選擇，再做相容性匹配。否則路由只看到全域性預設值，節點改過的時長、解析度或布林能力無法參與分流。
     const workflowParameters = node?.metadata?.workflowParameters || {};
     const runningHubWorkflowId = node?.metadata?.runningHubWorkflowId?.trim() || config.runningHub.workflowId.trim();
     const selectedRunningHubWorkflow =
@@ -87,8 +87,8 @@ export function buildGenerationConfig(config: AiConfig, node: CanvasNodeData | u
         count: String(node?.metadata?.count ?? (mode === "image" ? config.canvasImageCount || config.count || defaultConfig.count : config.count || defaultConfig.count)),
     };
     const imageSize = mode === "image" ? requestedConfig.size : undefined;
-    // 无 requirements 的调用（重试、媒体工具等）也按当前能力与尺寸路由到组内最低价兼容模型，
-    // 避免旧 metadata.model 不支持当前尺寸导致生成时被 normalize 回退。
+    // 無 requirements 的呼叫（重試、媒體工具等）也按當前能力與尺寸路由到組內最低價相容模型，
+    // 避免舊 metadata.model 不支援當前尺寸導致生成時被 normalize 回退。
     const liveOptions = modelRequestOptions(requestedConfig, mode);
     const baseRequirements = requirements?.capability ? { ...requirements, options: { ...liveOptions, ...(requirements.options || {}) } } : { capability: mode, options: liveOptions };
     if (mode === "video" && isH3Model(preferredModel) && requirements?.input) baseRequirements.videoOperation = h3VideoOperation(preferredModel, requirements.input, node?.metadata?.videoEditOperation);
@@ -178,8 +178,8 @@ function applyWorkflowParameterValues(fields: WorkflowFieldMapping[] | undefined
         const hasRandom = Object.prototype.hasOwnProperty.call(values, randomKey);
         if (!hasValue && !hasRandom) return field;
         const value = workflowFieldSubmissionValue(field, workflowFieldCurrentValue(field, values));
-        // 画布动态参数按具体字段覆盖，不能继续走 aspectRatio/quality 等全局来源，
-        // 否则同一工作流中的两个同类参数会被折叠成同一个值。
+        // 畫布動態引數按具體欄位覆蓋，不能繼續走 aspectRatio/quality 等全域性來源，
+        // 否則同一工作流中的兩個同類引數會被摺疊成同一個值。
         return {
             ...field,
             ...(hasValue ? { fieldValue: value, value } : {}),

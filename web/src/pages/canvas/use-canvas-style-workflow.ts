@@ -38,7 +38,7 @@ export function useCanvasStyleWorkflow({ canvasId, domainProjectId, nodesRef, se
                 prompt: preset.prompt,
                 status: "success",
                 workflowKind: "styleboard",
-                workflowTitle: "项目画风",
+                workflowTitle: "專案畫風",
                 workflowDescription: preset.description,
                 stylePresetId: preset.id,
                 styleProfileJson: profileJson,
@@ -46,11 +46,11 @@ export function useCanvasStyleWorkflow({ canvasId, domainProjectId, nodesRef, se
             };
             let styleNode: CanvasNodeData;
             if (current) {
-                styleNode = { ...current, title: `画风 · ${preset.title}`, metadata: { ...current.metadata, ...metadata } };
+                styleNode = { ...current, title: `畫風 · ${preset.title}`, metadata: { ...current.metadata, ...metadata } };
                 nodesRef.current = nodesRef.current.map((node) => (node.id === current.id ? styleNode : node));
             } else {
                 styleNode = createCanvasNode(CanvasNodeType.Text, getCanvasCenter(), metadata);
-                styleNode.title = `画风 · ${preset.title}`;
+                styleNode.title = `畫風 · ${preset.title}`;
                 styleNode.width = 420;
                 styleNode.height = 240;
                 nodesRef.current = [...nodesRef.current, styleNode];
@@ -62,20 +62,20 @@ export function useCanvasStyleWorkflow({ canvasId, domainProjectId, nodesRef, se
             setSelectedConnectionId(null);
             setDialogNodeId(null);
             setStylePickerOpen(false);
-            message.success(`已应用“${preset.title}”画风`);
+            message.success(`已應用“${preset.title}”畫風`);
         },
         [getCanvasCenter, message, nodesRef, selectedNodeIdsRef, setDialogNodeId, setNodes, setSelectedConnectionId, setSelectedNodeIds, setStylePickerOpen],
     );
 
     const persistStyleMutation = useMutation({
         mutationFn: ({ preset, profileJson }: { preset: CanvasStylePreset; profileJson: string }) => {
-            if (!domainProjectId) throw new Error("画布尚未关联项目");
+            if (!domainProjectId) throw new Error("畫布尚未關聯專案");
             return updateDomainProject(domainProjectId, { stylePresetId: preset.id, styleProfileJson: profileJson });
         },
     });
 
     const applyCanvasStyleAsync = useCallback(async (preset: CanvasStylePreset) => {
-        if (applyingRef.current) throw new Error("画风正在保存，请稍后重试");
+        if (applyingRef.current) throw new Error("畫風正在儲存，請稍後重試");
         const scope = getActiveUserScope();
         applyingRef.current = true;
         try {
@@ -84,14 +84,14 @@ export function useCanvasStyleWorkflow({ canvasId, domainProjectId, nodesRef, se
                 await persistStyleMutation.mutateAsync({ preset, profileJson });
                 void queryClient.invalidateQueries({ queryKey: ["project", domainProjectId] });
             }
-            if (!liveContext.current.mounted || liveContext.current.canvasId !== canvasId || liveContext.current.domainProjectId !== domainProjectId || getActiveUserScope() !== scope) throw new Error("页面或账号已变化，未向当前画布应用画风；如项目保存已完成，请回原项目查看");
+            if (!liveContext.current.mounted || liveContext.current.canvasId !== canvasId || liveContext.current.domainProjectId !== domainProjectId || getActiveUserScope() !== scope) throw new Error("頁面或賬號已變化，未向當前畫布應用畫風；如專案儲存已完成，請回原專案檢視");
             applyCanvasStyle(preset, profileJson);
         } finally { applyingRef.current = false; }
     }, [canvasId, domainProjectId, persistStyleMutation.mutateAsync, queryClient, applyCanvasStyle]);
 
     const selectCanvasStyle = useCallback(
         (preset: CanvasStylePreset) => {
-            void applyCanvasStyleAsync(preset).catch((error) => message.error(error instanceof Error ? error.message : "项目画风保存失败"));
+            void applyCanvasStyleAsync(preset).catch((error) => message.error(error instanceof Error ? error.message : "專案畫風儲存失敗"));
         },
         [applyCanvasStyleAsync, message],
     );

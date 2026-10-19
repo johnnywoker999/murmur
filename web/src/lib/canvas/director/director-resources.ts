@@ -2,7 +2,7 @@ import type { AnimationMixer, Material, Mesh, Object3D, Texture } from "three";
 
 type DisposableMaterial = Material & Record<string, unknown>;
 
-// 材质上可能承载纹理的常见槽位；只释放本 owner 真正引用到的纹理。
+// 材質上可能承載紋理的常見槽位；只釋放本 owner 真正引用到的紋理。
 const TEXTURE_SLOTS = [
     "map",
     "alphaMap",
@@ -31,7 +31,7 @@ const TEXTURE_SLOTS = [
 function collectTextures(material: DisposableMaterial, sink: Set<Texture>) {
     TEXTURE_SLOTS.forEach((slot) => {
         const value = material[slot];
-        // 必须真的是 Texture：仅凭「有 dispose」会把 RenderTarget 等误判成纹理并造成错误释放。
+        // 必須真的是 Texture：僅憑「有 dispose」會把 RenderTarget 等誤判成紋理並造成錯誤釋放。
         if (isDirectorTexture(value)) sink.add(value);
     });
 }
@@ -43,17 +43,17 @@ function isDirectorTexture(value: unknown): value is Texture {
 }
 
 /**
- * GLTF 加载结果的所有权判定。
- * SkeletonUtils.clone 与 source 共享 geometry/material/texture，
- * 因此被采纳（adopt）时绝不能释放 source —— 共享资源随 owned clone 的最终 cleanup 一并释放。
- * 只有未被采纳的晚到/失效 generation 才需要释放 source，避免孤儿泄漏。
+ * GLTF 載入結果的所有權判定。
+ * SkeletonUtils.clone 與 source 共享 geometry/material/texture，
+ * 因此被採納（adopt）時絕不能釋放 source —— 共享資源隨 owned clone 的最終 cleanup 一併釋放。
+ * 只有未被採納的晚到/失效 generation 才需要釋放 source，避免孤兒洩漏。
  */
 export function resolveDirectorLoadOwnership(input: { active: boolean; generation: number; currentGeneration: number }) {
     const adopt = input.active && input.generation === input.currentGeneration;
     return { adopt, disposeSource: !adopt };
 }
 
-/** 释放一组材质及其引用纹理；用于被替换掉的原材质，避免 actor 参考材质造成泄漏。 */
+/** 釋放一組材質及其引用紋理；用於被替換掉的原材質，避免 actor 參考材質造成洩漏。 */
 export function disposeDirectorMaterials(materials: Array<Material | null | undefined>) {
     const owned = new Set<DisposableMaterial>();
     materials.forEach((material) => {
@@ -88,9 +88,9 @@ function disposeCollected(geometries: Set<{ dispose: () => void }>, materials: S
 }
 
 /**
- * 释放一棵 owned Object3D 的 GPU 资源。
- * 共享的 geometry/material/texture 用 Set 去重，保证同一资源只 dispose 一次。
- * `<primitive object={...}>` 不会代为释放，必须由 owner 显式调用。
+ * 釋放一棵 owned Object3D 的 GPU 資源。
+ * 共享的 geometry/material/texture 用 Set 去重，保證同一資源只 dispose 一次。
+ * `<primitive object={...}>` 不會代為釋放，必須由 owner 顯式呼叫。
  */
 export function disposeDirectorObject3D(root: Object3D | null | undefined) {
     if (!root) return;
@@ -100,12 +100,12 @@ export function disposeDirectorObject3D(root: Object3D | null | undefined) {
     disposeCollected(geometries, materials);
 }
 
-/** SkeletonHelper 自带 geometry/material，必须单独释放。 */
+/** SkeletonHelper 自帶 geometry/material，必須單獨釋放。 */
 export function disposeDirectorHelper(helper: Object3D | null | undefined) {
     disposeDirectorObject3D(helper);
 }
 
-/** mixer 停止全部动作并解除 root 缓存，避免 clip 绑定泄漏。 */
+/** mixer 停止全部動作並解除 root 快取，避免 clip 繫結洩漏。 */
 export function disposeDirectorMixer(mixer: AnimationMixer | null | undefined, root?: Object3D | null) {
     if (!mixer) return;
     mixer.stopAllAction();
@@ -113,10 +113,10 @@ export function disposeDirectorMixer(mixer: AnimationMixer | null | undefined, r
 }
 
 /**
- * 一次性释放某个模型 generation 拥有的全部资源。
- * 只释放 owned clone 与 helper：clone 持有与 source 共享的 GPU 引用，
- * source 的 Object3D 层级本身可被 GC，不需要（也不能）在这里再 dispose 一遍。
- * model/helper 在同一次去重集合内收集，共享资源恰好 dispose 一次。
+ * 一次性釋放某個模型 generation 擁有的全部資源。
+ * 只釋放 owned clone 與 helper：clone 持有與 source 共享的 GPU 引用，
+ * source 的 Object3D 層級本身可被 GC，不需要（也不能）在這裡再 dispose 一遍。
+ * model/helper 在同一次去重集合內收集，共享資源恰好 dispose 一次。
  */
 export function disposeDirectorModelResources(input: { model?: Object3D | null; helper?: Object3D | null; mixer?: AnimationMixer | null }) {
     disposeDirectorMixer(input.mixer, input.model);
@@ -128,10 +128,10 @@ export function disposeDirectorModelResources(input: { model?: Object3D | null; 
 }
 
 /**
- * 采纳过程中途抛错时的精确清理，生产与测试共用。
- * 二选一，绝不 double-dispose：
- * - clone 已建成：它已持有与 source 共享的 GPU 引用，只释放 clone(+mixer)，source 交给 GC。
- * - clone 尚未建成：本次没有任何 owned 资源，只释放这份未被采纳的 source。
+ * 採納過程中途拋錯時的精確清理，生產與測試共用。
+ * 二選一，絕不 double-dispose：
+ * - clone 已建成：它已持有與 source 共享的 GPU 引用，只釋放 clone(+mixer)，source 交給 GC。
+ * - clone 尚未建成：本次沒有任何 owned 資源，只釋放這份未被採納的 source。
  */
 export function disposeDirectorAdoptionFailure(input: { clone?: Object3D | null; mixer?: AnimationMixer | null; source?: Object3D | null }) {
     if (input.clone) {

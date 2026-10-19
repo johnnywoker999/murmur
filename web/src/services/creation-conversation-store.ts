@@ -8,7 +8,7 @@ export const CREATION_CONVERSATIONS_KEY = "creation-conversations-v1";
 const CREATION_CONVERSATION_DRAFTS_KEY = "creation-conversation-drafts-v1";
 const CREATION_CONVERSATION_DRAFT_INDEX_KEY = "creation-conversation-drafts-v1:index";
 const CREATION_CONVERSATION_TOMBSTONES_KEY = "creation-conversation-tombstones-v1";
-const SCOPE_SWITCHED_MESSAGE = "工作区已更换，这次操作没有继续。";
+const SCOPE_SWITCHED_MESSAGE = "工作區已更換，這次操作沒有繼續。";
 
 type PendingCreationMessage = {
     id: string;
@@ -54,11 +54,11 @@ export function updateCreationConversationSnapshot<T extends { id: string }>(con
     return conversations.map((conversation) => (conversation.id === conversationId ? updater(conversation) : conversation));
 }
 
-// 对话、生成任务与素材是独立持久状态；删除历史记录不能在这里级联清理任务或资源。
+// 對話、生成任務與素材是獨立持久狀態；刪除歷史記錄不能在這裡級聯清理任務或資源。
 export function removeCreationConversationSnapshot<T extends { id: string }>(conversations: T[], conversationId: string) {
-    if (!conversationId) throw new Error("缺少要删除的创作对话 ID");
+    if (!conversationId) throw new Error("缺少要刪除的創作對話 ID");
     const next = conversations.filter((conversation) => conversation.id !== conversationId);
-    if (next.length === conversations.length) throw new Error("要删除的创作对话不存在");
+    if (next.length === conversations.length) throw new Error("要刪除的創作對話不存在");
     return next;
 }
 
@@ -123,7 +123,7 @@ function persistableDocument(conversation: StoredCreationConversation): Creation
     const { revision: _revision, pending: _pending, conflictRemote: _conflictRemote, ...rest } = conversation;
     const stripped = stripEphemeralMedia(rest) as Record<string, unknown>;
     const title = typeof stripped.title === "string" ? stripped.title.trim() : "";
-    stripped.title = title || "新创作";
+    stripped.title = title || "新創作";
     return stripped as CreationConversationDocument;
 }
 
@@ -271,13 +271,13 @@ function stripEphemeralMedia(value: unknown, key = ""): unknown {
 }
 
 function persistAttachment(value: unknown) {
-    if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("附件必须是对象");
+    if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("附件必須是物件");
     const attachment = value as Record<string, unknown>;
     const storageKey = stringField(attachment.storageKey) || stringField(attachment.storage_key);
     const out: Record<string, unknown> = {};
     for (const [childKey, item] of Object.entries(attachment)) {
         if (typeof item === "string" && isMediaURLKey(childKey) && isTempMediaBlob(item)) {
-            if (!storageKey) throw new Error("附件没有可恢复的存储引用");
+            if (!storageKey) throw new Error("附件沒有可恢復的儲存引用");
             continue;
         }
         const cleaned = stripEphemeralMedia(item, childKey);
@@ -339,9 +339,9 @@ async function readLegacyArray(scope: string): Promise<StoredCreationConversatio
     try {
         parsed = JSON.parse(value);
     } catch {
-        throw new Error("创作对话持久状态无效");
+        throw new Error("創作對話持久狀態無效");
     }
-    if (!Array.isArray(parsed)) throw new Error("创作对话持久状态无效");
+    if (!Array.isArray(parsed)) throw new Error("創作對話持久狀態無效");
     return parsed as StoredCreationConversation[];
 }
 
@@ -363,7 +363,7 @@ async function readJSON<T>(scope: string, key: string, fallback: T): Promise<T> 
     try {
         return JSON.parse(value) as T;
     } catch {
-        throw new Error("创作对话本地状态无效");
+        throw new Error("創作對話本地狀態無效");
     }
 }
 
@@ -697,7 +697,7 @@ export async function saveCreationConversations<T extends StoredCreationConversa
     const epoch = captureScope(scope);
     const resolveIds = new Set(options?.resolveConflictIds || []);
     const jobs = conversations.map((conversation) => {
-        if (!conversation?.id) throw new Error("缺少要保存的创作对话 ID");
+        if (!conversation?.id) throw new Error("缺少要儲存的創作對話 ID");
         const cloned = cloneConversation(conversation);
         const key = scopeKey(scope, cloned.id);
         const generation = nextGeneration(key);
@@ -743,8 +743,8 @@ export async function adoptServerConfirmedConversationDocument(
     assertUserScope(entryCapturedScope);
     const scope = entryCapturedScope.userScope;
     const id = conversationId.trim();
-    if (!id) throw new Error("缺少要采纳的创作对话 ID");
-    if (!Number.isInteger(revision) || revision < 1) throw new Error("对话版本无效");
+    if (!id) throw new Error("缺少要採納的創作對話 ID");
+    if (!Number.isInteger(revision) || revision < 1) throw new Error("對話版本無效");
     const canonical = cloneConversation({ ...document, id });
     let adopted: StoredCreationConversation | undefined;
 
@@ -801,7 +801,7 @@ export async function adoptServerConfirmedConversationDocument(
     });
 
     assertUserScope(entryCapturedScope);
-    if (!adopted) throw new Error("这次生成结果没能写进对话。请再试一次。");
+    if (!adopted) throw new Error("這次生成結果沒能寫進對話。請再試一次。");
     return adopted;
 }
 
@@ -861,7 +861,7 @@ export async function hasParkedCreationConversationDraft(id: string, scope = get
 }
 
 export async function deleteCreationConversation(conversationId: string, scope = getActiveUserScope()) {
-    if (!conversationId) throw new Error("缺少要删除的创作对话 ID");
+    if (!conversationId) throw new Error("缺少要刪除的創作對話 ID");
     const epoch = captureScope(scope);
     return enqueue(scope, conversationId, async () => {
         rejectIfScopeChanged(epoch);

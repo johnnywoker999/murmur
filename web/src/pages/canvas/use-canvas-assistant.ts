@@ -37,7 +37,7 @@ import { findRecoveredAssistantTurn, type PendingAssistantRecovery } from "./can
 export const ASSISTANT_MIN_WIDTH = 320;
 export const ASSISTANT_MAX_WIDTH = 560;
 export const ASSISTANT_DEFAULT_WIDTH = 380;
-/** 停靠宽度以下改成覆盖式抽屉：与版本记录侧栏共用同一个折返宽度。 */
+/** 停靠寬度以下改成覆蓋式抽屜：與版本記錄側欄共用同一個折返寬度。 */
 export const ASSISTANT_DOCK_MIN_SHELL_WIDTH = 1050;
 
 const OPEN_STORAGE_KEY = "canvas:assistant-open";
@@ -46,7 +46,7 @@ const PERMISSION_STORAGE_KEY = "canvas:assistant-permission";
 const PROPOSAL_STORAGE_KEY = "canvas:assistant-proposals";
 const PROPOSAL_MEMORY = 200;
 
-/** 已决定过的提议只记一个键：同意用 proposalId，谢绝加后缀，两种结果不会互相冒充。 */
+/** 已決定過的提議只記一個鍵：同意用 proposalId，謝絕加字尾，兩種結果不會互相冒充。 */
 export function dismissedProposalKey(proposalId: string) {
     return `${proposalId}:skipped`;
 }
@@ -54,8 +54,8 @@ export function dismissedProposalKey(proposalId: string) {
 export type CanvasRightPanel = "assistant" | "versions" | null;
 
 /**
- * 画布右侧只有一个栏位：版本记录一旦打开就占住它。
- * 渲染两侧都读这一个判断，避免出现两块面板同时挤压画布。
+ * 畫布右側只有一個欄位：版本記錄一旦開啟就佔住它。
+ * 渲染兩側都讀這一個判斷，避免出現兩塊面板同時擠壓畫布。
  */
 export function resolveCanvasRightPanel(assistantOpen: boolean, versionsOpen: boolean): CanvasRightPanel {
     if (versionsOpen) return "versions";
@@ -131,7 +131,7 @@ const createRun = (): CanvasRun => ({
 
 type Options = {
     canvasId: string;
-    /** 回合落地后画布要立刻拉取最新内容，并把改动过的节点高亮出来。 */
+    /** 回合落地後畫布要立刻拉取最新內容，並把改動過的節點高亮出來。 */
     onCanvasChanged?: (canvasId: string, changedNodeIds: string[]) => void;
 };
 
@@ -146,10 +146,10 @@ function readStoredProposals(): Set<string> {
 }
 
 /**
- * 画布内助手的全部状态。
+ * 畫布內助手的全部狀態。
  *
- * 每个画布各持一条运行记录：发送时冻结画布归属，异步结果只写回当时那条记录，
- * 切画布不会把回复落到别的画布上。已结束的回合来自服务端历史，刷新页面不丢。
+ * 每個畫布各持一條執行記錄：傳送時凍結畫布歸屬，非同步結果只寫回當時那條記錄，
+ * 切畫布不會把回覆落到別的畫布上。已結束的回合來自服務端歷史，重新整理頁面不丟。
  */
 export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
     const [open, setOpenState] = useState(() => scopedLocalStorage.getItem(OPEN_STORAGE_KEY) !== "0");
@@ -222,7 +222,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
         scopedLocalStorage.setItem(WIDTH_STORAGE_KEY, String(clamped));
     }, [expectedScope]);
 
-    // 状态只在面板打开时复查：关着的面板不该一直问后端。正在启动时节奏更快。
+    // 狀態只在面板開啟時複查：關著的面板不該一直問後端。正在啟動時節奏更快。
     const starting = status?.reason === "host_starting";
     useEffect(() => {
         if (!open) return;
@@ -276,7 +276,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
                 run.pendingPermissionMode = assistantPermissionMode(active.permissionMode);
                 run.supplements = active.supplementInputs?.length ? active.supplementInputs.map(input => ({ text: input.message, attachments: input.attachments, skills: input.skills, status: "accepted" })) : (active.supplements || []).map(text => ({ text, status: "accepted" }));
                 run.recovery = { sessionId: nextSession, turnId: active.turnId, knownTurnIds: history.turns.map(turn => turn.turnId), text: active.userText, selectedNodeIds: active.selectedNodeIds || [] };
-                run.lifecycleNotice = "这次创作仍在继续，正在读取最新结果。";
+                run.lifecycleNotice = "這次創作仍在繼續，正在讀取最新結果。";
                 run.error = null;
             }
             run.sessions = sessionList.sessions;
@@ -293,7 +293,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
             if (userScopeMatches(expectedScope) && request === run.historyRequest) {
                 run.historyHostUnavailable = error instanceof ApiError && (error.reason === "host_unreachable" || error.reason === "model_not_configured");
                 run.historyError = run.turns.length || run.pendingUserText || run.pendingAttachments.length || run.streamed
-                    ? "没能读取对话，已有内容仍然保留。请重新读取。" : "没能读取对话。请重新读取。";
+                    ? "沒能讀取對話，已有內容仍然保留。請重新讀取。" : "沒能讀取對話。請重新讀取。";
             }
             return false;
         } finally {
@@ -301,7 +301,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
         }
     }, [rerenderIfActive, runFor, expectedScope]);
 
-    // 打开面板或切画布时补齐这条画布的历史；已经载入过就不重复拉。
+    // 開啟面板或切畫布時補齊這條畫布的歷史；已經載入過就不重複拉。
     useEffect(() => {
         if (!open) return;
         let reading = false;
@@ -325,7 +325,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
         if (!userScopeMatches(expectedScope)) return;
         const message = text.trim();
         if (!message && !input.attachments?.length) return;
-        // 发送时冻结归属：此后即使用户切到别的画布，结果也只写回这条记录。
+        // 傳送時凍結歸屬：此後即使使用者切到別的畫布，結果也只寫回這條記錄。
         const targetCanvas = activeCanvasRef.current;
         const selectedSnapshot = [...selectedNodeIds];
         const referenceSnapshot = references.map((reference) => ({ ...reference }));
@@ -373,13 +373,13 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
             if (workspaceCapabilities().local) {
                 await flushModelConfig();
                 const persistence = getModelConfigPersistenceState();
-                if (persistence.dirty || persistence.status === "error") throw new Error("助手模型还没保存成功，请稍后重试");
+                if (persistence.dirty || persistence.status === "error") throw new Error("助手模型還沒儲存成功，請稍後重試");
             }
             controller.signal.throwIfAborted();
             const ready = await waitForAssistant(controller.signal);
             assertUserScope(expectedScope);
             setStatus(ready);
-            if (!run.historyLoaded && !await loadHistory(targetCanvas)) throw new Error("对话还没读回来，请重新读取后再发送");
+            if (!run.historyLoaded && !await loadHistory(targetCanvas)) throw new Error("對話還沒讀回來，請重新讀取後再傳送");
             assertUserScope(expectedScope);
             if (!run.sessionId) run.sessionId = await createAssistantSession(targetCanvas);
             assertUserScope(expectedScope);
@@ -419,7 +419,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
                         change: end.change ?? null,
                         proposals: end.proposals || [],
                         outputs: end.outputs || [],
-                        error: end.error ? agentAssistantFailureText(end.errorReason ?? undefined, "这一轮没有全部完成，请核对已经落地的改动。") : null,
+                        error: end.error ? agentAssistantFailureText(end.errorReason ?? undefined, "這一輪沒有全部完成，請核對已經落地的改動。") : null,
                         errorReason: end.errorReason,
                         cancelled: Boolean(end.cancelled),
                         supplements: end.supplements || current.supplements.filter(item => item.status === "accepted").map(item => item.text),
@@ -430,7 +430,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
                     };
                     current.turns = [...current.turns, turn];
                     current.recovery = null;
-                    // 旧 JSONL 会话首次发消息会交接给新的 Durable 会话：后续回合都走它。
+                    // 舊 JSONL 會話首次發訊息會交接給新的 Durable 會話：後續回合都走它。
                     if (end.sessionId && end.sessionId !== current.sessionId) current.sessionId = end.sessionId;
                     current.backgroundActive = false;
                     current.historyError = null;
@@ -450,22 +450,22 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
         } catch (streamError) {
             if (!userScopeMatches(expectedScope)) return;
             if (streamError instanceof AgentTurnFailedError) {
-                // onTurnEnd 已保存真实失败及画布变化，不再额外显示「结果未知」或触发重放。
+                // onTurnEnd 已儲存真實失敗及畫布變化，不再額外顯示「結果未知」或觸發重放。
                 runFor(targetCanvas).error = null;
                 rerenderIfActive(targetCanvas);
                 return;
             }
-            // 用户点「停止」会以 AbortError 结束这次请求：这是预期结果，不当成失败。
+            // 使用者點「停止」會以 AbortError 結束這次請求：這是預期結果，不當成失敗。
             const aborted = streamError instanceof DOMException && streamError.name === "AbortError";
             const current = runFor(targetCanvas);
             if (streamError instanceof AgentChatNotAdmittedError) {
                 current.dispatched = false;
                 current.recovery = null;
             }
-            // 停止和断线都先保留已显示的内容；只在读取到本轮回执后替换。
+            // 停止和斷線都先保留已顯示的內容；只在讀取到本輪迴執後替換。
             current.lifecycleNotice = null;
             current.error = aborted ? null : current.dispatched
-                ? "这一轮未能确认完成，可能已有改动。请先查看画布并重新读取对话，再决定下一步。"
+                ? "這一輪未能確認完成，可能已有改動。請先檢視畫布並重新讀取對話，再決定下一步。"
                 : streamError instanceof Error ? streamError.message : String(streamError);
             if (current.dispatched) {
                 onCanvasChangedRef.current?.(targetCanvas, []);
@@ -485,11 +485,11 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
                 latest.sessions = list.sessions;
                 if (!latest.sessionId) latest.sessionId = list.currentSessionId;
                 rerenderIfActive(targetCanvas);
-            }).catch(() => { /* 会话列表读取失败不覆盖本轮结果；重新读取入口仍可用。 */ });
+            }).catch(() => { /* 會話列表讀取失敗不覆蓋本輪結果；重新讀取入口仍可用。 */ });
         }
     }, [loadHistory, rerenderIfActive, runFor, expectedScope, preferredPermissionMode]);
 
-    // 停止只作用于当前正在查看的画布，不会取消别的画布。
+    // 停止只作用於當前正在檢視的畫布，不會取消別的畫布。
     const stop = useCallback(async () => {
         if (!userScopeMatches(expectedScope)) return;
         const targetCanvas = activeCanvasRef.current;
@@ -543,7 +543,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
             run.historyError = null;
             void loadHistory(targetCanvas);
         } catch {
-            run.error = "没能新建对话，当前对话仍然保留。请重试。";
+            run.error = "沒能新建對話，當前對話仍然保留。請重試。";
         } finally {
             run.sessionBusy = false;
             rerenderIfActive(targetCanvas);
@@ -561,7 +561,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
         try {
             const activated = await activateAssistantSession(targetCanvas, sessionId);
             if (!activated || !userScopeMatches(expectedScope)) return;
-            // 激活成功但读取失败时阻止把旧显示当作新对话继续发送。
+            // 啟用成功但讀取失敗時阻止把舊顯示當作新對話繼續傳送。
             run.historyLoaded = false;
             if (await loadHistory(targetCanvas, activated)) {
                 run.recovery = null;
@@ -571,7 +571,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
                 run.pendingUserText = null;
             }
         } catch {
-            run.error = "没能切换对话，当前对话仍然保留。请重试。";
+            run.error = "沒能切換對話，當前對話仍然保留。請重試。";
         } finally {
             run.sessionBusy = false;
             rerenderIfActive(targetCanvas);
@@ -677,7 +677,7 @@ export function useCanvasAssistant({ canvasId, onCanvasChanged }: Options) {
 export type CanvasAssistantController = ReturnType<typeof useCanvasAssistant>;
 
 /**
- * 编辑器外壳够宽才做停靠栏；窄了改成覆盖式抽屉，不把画布挤到不能用。
+ * 編輯器外殼夠寬才做停靠欄；窄了改成覆蓋式抽屜，不把畫布擠到不能用。
  */
 export function useCanvasAssistantDockable(shellRef: { current: HTMLElement | null }) {
     const desktop = Boolean(Grid.useBreakpoint().lg);

@@ -58,7 +58,7 @@ export async function assertChannelBlob(blob: Blob): Promise<void> {
     if (!/json|^text\//.test(mime) && !/^[{[]|^<(?:!doctype|html|head|body)/i.test(prefix)) return;
     const payload = await boundedBlobPayload(blob);
     assertChannelPayload(payload);
-    throw new ChannelResponseError({ code: "malformed_response", message: "模型服务返回了无法解析的内容" });
+    throw new ChannelResponseError({ code: "malformed_response", message: "模型服務返回了無法解析的內容" });
 }
 
 export function isChannelCancellation(error: unknown): boolean {
@@ -105,7 +105,7 @@ export type ChannelTransport = {
 };
 
 /**
- * 自定义渠道的唯一 HTTP 边界。image / video / audio 只组协议 payload，不再各自 axios + channelRequest。
+ * 自定義渠道的唯一 HTTP 邊界。image / video / audio 只組協議 payload，不再各自 axios + channelRequest。
  */
 export function createChannelTransport(config: ChannelTransportConfig, scene?: ChannelScene): ChannelTransport {
     const sceneHeaders = (contentType?: string, extra?: Record<string, string>) => ({

@@ -47,7 +47,7 @@ export type CanvasDrawingRender = CanvasDrawingRenderDraft & {
 
 export class CanvasDrawingCanonicalMissingError extends Error {
     constructor() {
-        super("画板在工作区中不存在或已删除，本地草稿已保留");
+        super("畫板在工作區中不存在或已刪除，本地草稿已保留");
         this.name = "CanvasDrawingCanonicalMissingError";
     }
 }
@@ -705,10 +705,10 @@ export async function createCanvasDrawingFromImage(
     const expected = captureScope(expectedScope);
     const dataUrl = await imageToDataUrl({ url: image.url, storageKey: image.storageKey, name: image.name, mimeType: image.mimeType });
     assertUserScope(expected);
-    if (!dataUrl?.startsWith("data:image/")) throw new Error("无法读取来源图片");
+    if (!dataUrl?.startsWith("data:image/")) throw new Error("無法讀取來源圖片");
 
     const { width, height, mimeType } = await readImageMeta(dataUrl);
-    const source = { dataUrl, width, height, mimeType: mimeType || image.mimeType || "image/png", name: image.name || "来源图片" };
+    const source = { dataUrl, width, height, mimeType: mimeType || image.mimeType || "image/png", name: image.name || "來源圖片" };
     const document = (await import("@/lib/canvas/canvas-drawing-excalidraw-document")).createExcalidrawDrawingFromImage(source);
     assertUserScope(expected);
 
@@ -873,7 +873,7 @@ export function summarizeCanvasDrawing(engine: CanvasDrawingEngine, snapshot: un
 function normalizeCanvasDrawingSnapshot(saved: CanvasDrawingSnapshot | null) {
     if (!saved) return null;
     if (saved.version === 2 && saved.engine === "excalidraw") return saved;
-    throw new Error("绘图文档版本或引擎无效");
+    throw new Error("繪圖檔案版本或引擎無效");
 }
 
 async function persistCanvasDrawingToBackend(
@@ -1021,7 +1021,7 @@ async function createInitialDrawingRender(dataUrl: string, width: number, height
     canvas.width = Math.max(1, Math.round(paddedWidth * scale));
     canvas.height = Math.max(1, Math.round(paddedHeight * scale));
     const context = canvas.getContext("2d");
-    if (!context) throw new Error("浏览器无法创建绘图预览");
+    if (!context) throw new Error("瀏覽器無法建立繪圖預覽");
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(
@@ -1046,14 +1046,14 @@ function loadDrawingImage(dataUrl: string) {
     return new Promise<HTMLImageElement>((resolve, reject) => {
         const image = new Image();
         image.onload = () => resolve(image);
-        image.onerror = () => reject(new Error("来源图片无法载入绘图"));
+        image.onerror = () => reject(new Error("來源圖片無法載入繪圖"));
         image.src = dataUrl;
     });
 }
 
 function canvasToPngBlob(canvas: HTMLCanvasElement) {
     return new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("无法生成绘图预览")), "image/png");
+        canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("無法生成繪圖預覽")), "image/png");
     });
 }
 

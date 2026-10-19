@@ -1,5 +1,5 @@
-// 转写由后端 whisper.cpp 任务执行；前端只提交资源 ID、观察任务状态，
-// 并将成功结果转换为 SrtEntry[]，通过 rebuildSubtitleClips 原子替换字幕轨道快照。
+// 轉寫由後端 whisper.cpp 任務執行；前端只提交資源 ID、觀察任務狀態，
+// 並將成功結果轉換為 SrtEntry[]，通過 rebuildSubtitleClips 原子替換字幕軌道快照。
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AudioLines, Loader2 } from "lucide-react";
@@ -24,7 +24,7 @@ import type { SrtEntry } from "@/types/timeline";
 
 const WHISPER_WAIT_TIMEOUT_MS = 25 * 60 * 1000;
 
-// 上传素材的底层对象以 resource:<id> 形式存储在资源表，取其中的资源 ID 提交转写。
+// 上傳素材的底層物件以 resource:<id> 形式儲存在資源表，取其中的資源 ID 提交轉寫。
 function resourceIdOfAsset(asset: ProjectAsset): string | null {
     const key = asset.storageKey ?? "";
     if (key.startsWith("resource:")) return key.slice("resource:".length);
@@ -48,7 +48,7 @@ export function EditorTranscription() {
         };
     }, []);
     useEffect(() => () => observationRef.current?.abort(), [projectId]);
-    // 音频与视频素材均可转写（视频静音会由后端明确报错）。
+    // 音訊與影片素材均可轉寫（影片靜音會由後端明確報錯）。
     const transcribableAssets = useMemo(
         () => assets.filter((a) => a.mediaType === "audio" || a.mediaType === "video"),
         [assets],
@@ -85,7 +85,7 @@ export function EditorTranscription() {
         const resourceId = resourceIdOfAsset(selected);
         if (!resourceId) {
             setFailed(true);
-            setMessage("该素材没有可转写的媒体对象（缺少 storageKey）");
+            setMessage("該素材沒有可轉寫的媒體物件（缺少 storageKey）");
             return;
         }
         runningRef.current = true;
@@ -103,7 +103,7 @@ export function EditorTranscription() {
         setRunning(true);
         setFailed(false);
         setMessage(null);
-        setProgressLabel("排队中…");
+        setProgressLabel("排隊中…");
         try {
             const session = beginLocalExecutorSession(originalProjectId, {
                 controller: observer,
@@ -130,16 +130,16 @@ export function EditorTranscription() {
             const entries = toSrtEntries(result.segments ?? []);
             await attachLocalExecutorResult(session, () => {
                 if (entries.length === 0) {
-                    setMessage("转写完成，但没有识别出可用字幕（语音内容为空？）");
+                    setMessage("轉寫完成，但沒有識別出可用字幕（語音內容為空？）");
                 } else if (!originalTrackId) {
-                    setMessage("项目没有字幕轨道，无法写入转写字幕");
+                    setMessage("專案沒有字幕軌道，無法寫入轉寫字幕");
                 } else {
                     originalDispatch({
                         op: "rebuildSubtitleClips",
                         payload: { nodeId: `transcription:${originalSelectedId}`, entries, trackId: originalTrackId },
                     });
                     const langHint = result.language ? `（${result.language}）` : "";
-                    setMessage(`已写入 ${entries.length} 条转写字幕${langHint}`);
+                    setMessage(`已寫入 ${entries.length} 條轉寫字幕${langHint}`);
                 }
                 setProgressLabel(null);
             });
@@ -153,7 +153,7 @@ export function EditorTranscription() {
             }
             submitIntentRef.current = localExecutorIntentAfterError(submitIntentRef.current ?? { clientOperationId, frozenInputKey }, err);
             setFailed(true);
-            setMessage(err instanceof Error ? err.message : "转写失败，请稍后重试");
+            setMessage(err instanceof Error ? err.message : "轉寫失敗，請稍後重試");
             setProgressLabel(null);
         } finally {
             runningRef.current = false;
@@ -167,13 +167,13 @@ export function EditorTranscription() {
                 {transcribableAssets.length === 0 ? (
                     <div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center">
                         <AudioLines className="size-5 text-[var(--director-dock-fg)]/40" />
-                        <p className="text-xs text-[var(--director-dock-fg)]/60">项目暂无音视频素材</p>
-                        <p className="max-w-[200px] text-[11px] leading-relaxed text-[var(--director-dock-fg)]/45">素材库加入音频或视频后可转写自动字幕</p>
+                        <p className="text-xs text-[var(--director-dock-fg)]/60">專案暫無音影片素材</p>
+                        <p className="max-w-[200px] text-[11px] leading-relaxed text-[var(--director-dock-fg)]/45">素材庫加入音訊或影片後可轉寫自動字幕</p>
                     </div>
                 ) : (
                     <>
                         <label className="mb-2 block">
-                            <span className="mb-1 block text-[11px] text-[var(--director-dock-fg)]/70">音视频素材</span>
+                            <span className="mb-1 block text-[11px] text-[var(--director-dock-fg)]/70">音影片素材</span>
                             <select
                                 value={selectedId ?? ""}
                                 onChange={(e) => setSelectedId(e.target.value)}
@@ -194,7 +194,7 @@ export function EditorTranscription() {
                             className="flex w-full items-center justify-center gap-2 rounded-md bg-[var(--director-accent)] px-2 py-1.5 text-xs font-medium text-[var(--director-on-accent)] hover:bg-[var(--director-accent-hover)] disabled:opacity-40"
                         >
                             {running && <Loader2 className="size-3.5 animate-spin" />}
-                            {running ? "转写中…" : "转写自动字幕"}
+                            {running ? "轉寫中…" : "轉寫自動字幕"}
                         </button>
 
                         {running && progressLabel && (
@@ -206,7 +206,7 @@ export function EditorTranscription() {
                             </p>
                         )}
                         <p className="mt-2 text-[11px] leading-relaxed text-[var(--director-dock-fg)]/45">
-                            由本地 whisper.cpp 识别，音视频不出本机；识别结果写入字幕轨道，可再编辑。
+                            由本地 whisper.cpp 識別，音影片不出本機；識別結果寫入字幕軌道，可再編輯。
                         </p>
                     </>
                 )}

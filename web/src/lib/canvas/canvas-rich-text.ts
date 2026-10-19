@@ -23,7 +23,7 @@ export function createCanvasRichTextExtensions(placeholder?: string) {
 export function canvasRichTextHTML(document?: Record<string, unknown>) {
     if (!document) return "";
     try {
-        // 仅接受 Tiptap 结构化 JSON，不启用原始 HTML；输出链接再按协议收口。
+        // 僅接受 Tiptap 結構化 JSON，不啟用原始 HTML；輸出連結再按協議收口。
         const template = window.document.createElement("template");
         template.innerHTML = generateHTML(document as JSONContent, createCanvasRichTextExtensions());
         template.content.querySelectorAll("a[href]").forEach((link) => {

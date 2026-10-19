@@ -13,7 +13,7 @@ export type VideoTransport = {
 };
 
 /**
- * 统一视频 Provider 的 HTTP 边界。Provider 只负责协议和 payload，不再重复拼接中转请求。
+ * 統一影片 Provider 的 HTTP 邊界。Provider 只負責協議和 payload，不再重複拼接中轉請求。
  */
 export function createVideoTransport(config: ResolvedAiConfig): VideoTransport {
     const transport = createChannelTransport(config, "video");

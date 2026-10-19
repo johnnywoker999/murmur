@@ -13,14 +13,14 @@ import { resolveVideoImageReferences } from "./video-reference-roles";
 
 export async function createMiniMaxVideoTask(deps: VideoProviderDeps, config: ResolvedAiConfig, model: string, prompt: string, references: ReferenceImage[], videoReferences: ReferenceVideo[], audioReferences: ReferenceAudio[], options?: RequestOptions): Promise<VideoGenerationTask> {
     const imageUrls = await Promise.all(references.slice(0, 9).map((image) => resolveMiniMaxImageUrl(image)));
-    const videoUrls = await Promise.all(videoReferences.slice(0, 3).map((video) => resolveMiniMaxMediaUrl(video, "参考视频")));
-    const audioUrls = await Promise.all(audioReferences.slice(0, 3).map((audio) => resolveMiniMaxMediaUrl(audio, "参考音频")));
+    const videoUrls = await Promise.all(videoReferences.slice(0, 3).map((video) => resolveMiniMaxMediaUrl(video, "參考影片")));
+    const audioUrls = await Promise.all(audioReferences.slice(0, 3).map((audio) => resolveMiniMaxMediaUrl(audio, "參考音訊")));
     const content: Array<Record<string, unknown>> = [{ type: "text", text: prompt.trim() }];
     const imagePlan = resolveVideoImageReferences(references.slice(0, 9), options, { videoCount: videoUrls.length, audioCount: audioUrls.length });
     const frameMode = imagePlan.some(({ role }) => role === "first_frame" || role === "last_frame");
     imageUrls.forEach((url, index) => {
         const role = imagePlan[index]?.role || "reference_image";
-        if (frameMode && role === "reference_image") throw new Error("MiniMax 首尾帧模式不能混合未标记的参考图");
+        if (frameMode && role === "reference_image") throw new Error("MiniMax 首尾幀模式不能混合未標記的參考圖");
         content.push({ type: "image_url", image_url: { url }, role });
     });
     videoUrls.forEach((url) => content.push({ type: "video_url", video_url: { url }, role: "reference_video" }));
@@ -36,10 +36,10 @@ export async function createMiniMaxVideoTask(deps: VideoProviderDeps, config: Re
     try {
         const created = await deps.transport.post<MiniMaxVideoCreateResponse>(miniMaxVideoUrl(config, "/video_generation"), payload, options);
         const id = created.task_id || created.request_id || created.data?.task_id || created.data?.id || "";
-        if (!id) throw new Error("MiniMax 视频接口没有返回任务 ID");
+        if (!id) throw new Error("MiniMax 影片介面沒有返回任務 ID");
         return { id, provider: "minimax", model };
     } catch (error) {
-        throw new Error(deps.response.readAxiosError(error, "MiniMax 视频任务创建失败"));
+        throw new Error(deps.response.readAxiosError(error, "MiniMax 影片任務建立失敗"));
     }
 }
 
@@ -50,16 +50,16 @@ export async function pollMiniMaxVideoTask(deps: VideoProviderDeps, config: Reso
         const status = String(state.status || "").toLowerCase();
         if (status === "succeeded" || status === "completed") {
             const url = state.content?.url || "";
-            if (!url) return { status: "failed", error: "MiniMax 视频任务已完成但没有返回视频地址" };
+            if (!url) return { status: "failed", error: "MiniMax 影片任務已完成但沒有返回影片地址" };
             return { status: "completed", result: await deps.response.videoResultFromUrl(url, options) };
         }
         if (status === "failed" || status === "cancelled") {
             const code = state.error?.code ? `${state.error.code}：` : "";
-            return { status: "failed", error: `${code}${state.error?.message || "MiniMax 视频生成失败"}` };
+            return { status: "failed", error: `${code}${state.error?.message || "MiniMax 影片生成失敗"}` };
         }
         return { status: "pending" };
     } catch (error) {
-        throw new Error(deps.response.readAxiosError(error, "MiniMax 视频任务查询失败"));
+        throw new Error(deps.response.readAxiosError(error, "MiniMax 影片任務查詢失敗"));
     }
 }
 
@@ -87,7 +87,7 @@ async function resolveMiniMaxImageUrl(image: ReferenceImage) {
     const directUrl = image.url || image.dataUrl;
     if (isPublicMediaUrl(directUrl) || directUrl.startsWith("data:")) return directUrl;
     const dataUrl = await imageToDataUrl(image);
-    if (!dataUrl) throw new Error("MiniMax 参考图读取失败，请换一张图片或重新上传");
+    if (!dataUrl) throw new Error("MiniMax 參考圖讀取失敗，請換一張圖片或重新上傳");
     return dataUrl;
 }
 
@@ -96,6 +96,6 @@ async function resolveMiniMaxMediaUrl(media: ReferenceVideo | ReferenceAudio, la
     let blob: Blob | null = null;
     if (media.storageKey) blob = await getMediaBlob(media.storageKey);
     if (!blob && media.url?.startsWith("blob:")) blob = await (await fetch(media.url)).blob();
-    if (!blob) throw new Error(`MiniMax ${label}必须是公网 URL 或本地已保存素材`);
+    if (!blob) throw new Error(`MiniMax ${label}必須是公網 URL 或本地已儲存素材`);
     return blobToDataUrl(blob);
 }

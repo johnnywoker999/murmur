@@ -20,7 +20,7 @@ export function createCanvasNode(type: CanvasNodeTypeId, position: Position, met
     const builtinSpec = type in NODE_DEFAULT_SIZE ? getNodeSpec(type as CanvasNodeType) : undefined;
     const pluginDefinition = getNodeDefinition(type);
     const spec = builtinSpec || (pluginDefinition ? { width: pluginDefinition.defaultSize.width, height: pluginDefinition.defaultSize.height, title: pluginDefinition.defaultTitle, metadata: pluginDefinition.defaultMetadata } : undefined);
-    if (!spec) throw new Error(`未注册的画布节点类型：${type}`);
+    if (!spec) throw new Error(`未註冊的畫布節點型別：${type}`);
     const id = `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
     const now = new Date().toISOString();
 
@@ -72,7 +72,7 @@ export function createStoryboardRow(shotNumber: number, patch: Partial<Storyboar
     };
 }
 
-// 有结构化变量时由服务端按最新平台模板和用户偏好编译；变量被清除表示用户已做镜头级手动覆盖。
+// 有結構化變數時由服務端按最新平臺模板和使用者偏好編譯；變數被清除表示使用者已做鏡頭級手動覆蓋。
 export function storyboardPromptTemplateMetadata(row: StoryboardRow, kind: "image" | "video"): Pick<CanvasNodeMetadata, "promptTemplateOperation" | "promptTemplateVariables"> {
     const variables = kind === "image" ? row.imagePromptTemplateVariables : row.videoPromptTemplateVariables;
     return variables
@@ -101,28 +101,28 @@ export function cinematicStoryboardColumns(columns?: StoryboardColumn[]): Storyb
     ])) as StoryboardColumn[];
 }
 
-// 分镜文本任务的模型侧输出契约，字段与 storyboardRowsFromTask 的解析结构一一对应。
-// 后端只有带 metadata.promptTemplateOperation 的任务才会编译服务端分镜模板（含 JSON 契约），
-// 章节分镜走的是自定义 prompt，缺这段约束时模型会按自然语言习惯返回 Markdown 表格，解析阶段拿不到 rows。
+// 分鏡文本任務的模型側輸出契約，欄位與 storyboardRowsFromTask 的解析結構一一對應。
+// 後端只有帶 metadata.promptTemplateOperation 的任務才會編譯服務端分鏡模板（含 JSON 契約），
+// 章節分鏡走的是自定義 prompt，缺這段約束時模型會按自然語言習慣返回 Markdown 表格，解析階段拿不到 rows。
 export function storyboardRowsOutputContract(requirement: string) {
     return [
-        "【受保护输出契约】",
-        "- 只返回一个 JSON 对象，不要 Markdown、表格、代码块、注释或任何解释文字。",
-        `- 顶层固定为 {"title": string, "rows": object[]}，rows 至少 1 项。${requirement}`,
-        "- rows 每项对应一个镜头，按剧情顺序排列；字段缺失时填空字符串或空数组，不要省略字段：",
-        "  shotNumber（整数，从 1 递增）、durationSeconds（整数，1-60）、plotDescription（本镜可见的剧情与关键动作）、",
-        "  dialogue（本镜实际念出的台词或简短旁白，超长必须拆镜）、characters（本镜出现的角色名数组）、",
-        "  narrativeIntent、viewerPOV、performanceBlocking、shotSize（景别）、emotion、lightingAndAtmosphere、",
-        "  audioEffects、camera、motion、timeBeats、imageGenerationPrompt（首帧画面提示词）、",
-        "  videoMotionPrompt（运镜与结尾状态）、continuityOut、negativePrompt、",
-        "  mustHave（数组，最多 3 项）、optionalDetails（数组）。",
-        "- 镜头数量以完整覆盖剧情因果、人物关系和关键台词为准，不要为压缩数量删减关键情节。",
+        "【受保護輸出契約】",
+        "- 只返回一個 JSON 物件，不要 Markdown、表格、程式碼塊、註釋或任何解釋文字。",
+        `- 頂層固定為 {"title": string, "rows": object[]}，rows 至少 1 項。${requirement}`,
+        "- rows 每項對應一個鏡頭，按劇情順序排列；欄位缺失時填空字串或空陣列，不要省略欄位：",
+        "  shotNumber（整數，從 1 遞增）、durationSeconds（整數，1-60）、plotDescription（本鏡可見的劇情與關鍵動作）、",
+        "  dialogue（本鏡實際念出的臺詞或簡短旁白，超長必須拆鏡）、characters（本鏡出現的角色名陣列）、",
+        "  narrativeIntent、viewerPOV、performanceBlocking、shotSize（景別）、emotion、lightingAndAtmosphere、",
+        "  audioEffects、camera、motion、timeBeats、imageGenerationPrompt（首幀畫面提示詞）、",
+        "  videoMotionPrompt（運鏡與結尾狀態）、continuityOut、negativePrompt、",
+        "  mustHave（陣列，最多 3 項）、optionalDetails（陣列）。",
+        "- 鏡頭數量以完整覆蓋劇情因果、人物關係和關鍵臺詞為準，不要為壓縮數量刪減關鍵情節。",
     ].join("\n");
 }
 
-// 文本任务的 result_json 外层是 {mode, reasoning, text} 包装，分镜表在 text 字段的内层 JSON 字符串里；
-// 历史模板路径可能直接落 {title, rows}。两种结构都要能解析，内层再做代码块剥离与首尾大括号截取兜底，
-// 模型偶发违反契约（包 ```json 或混入解释文字）时仍能取出分镜表。
+// 文本任務的 result_json 外層是 {mode, reasoning, text} 包裝，分鏡表在 text 欄位的內層 JSON 字串裡；
+// 歷史模板路徑可能直接落 {title, rows}。兩種結構都要能解析，內層再做程式碼塊剝離與首尾大括號擷取兜底，
+// 模型偶發違反契約（包 ```json 或混入解釋文字）時仍能取出分鏡表。
 function parseStoryboardRowsPayload(raw: string): { title?: string; rows?: Array<Partial<StoryboardRow>> } {
     const parsed = JSON.parse(raw) as { title?: string; rows?: Array<Partial<StoryboardRow>>; text?: unknown };
     if (Array.isArray(parsed.rows)) return parsed;
@@ -135,7 +135,7 @@ function parseStoryboardRowsPayload(raw: string): { title?: string; rows?: Array
                 const innerParsed = JSON.parse(inner.slice(start, end + 1)) as { title?: string; rows?: Array<Partial<StoryboardRow>> };
                 if (Array.isArray(innerParsed.rows)) return innerParsed;
             } catch {
-                // 内层不是合法 JSON 时落到外层结构，由调用方的缺行校验统一报错。
+                // 內層不是合法 JSON 時落到外層結構，由呼叫方的缺行校驗統一報錯。
             }
         }
     }
@@ -144,7 +144,7 @@ function parseStoryboardRowsPayload(raw: string): { title?: string; rows?: Array
 
 export function storyboardRowsFromTask(task: GenerationTask) {
     const result = parseStoryboardRowsPayload(task.resultJson || "{}");
-    if (!Array.isArray(result.rows) || !result.rows.length) throw new Error("分镜任务没有返回镜头行");
+    if (!Array.isArray(result.rows) || !result.rows.length) throw new Error("分鏡任務沒有返回鏡頭行");
     return {
         title: result.title?.trim(),
         rows: result.rows.map((row, index) => {
@@ -164,8 +164,8 @@ export function storyboardRowsFromTask(task: GenerationTask) {
 }
 
 
-// 模型切换时必须清理的节点级生成参数：这些参数属于旧模型的能力档位（分辨率/宽高比/质量等），
-// 新模型不支持时若残留，会在 buildNodeConfig 的「节点优先、全局兜底」合并中反复叠加（issue #254）。
+// 模型切換時必須清理的節點級生成引數：這些引數屬於舊模型的能力檔位（解析度/寬高比/質量等），
+// 新模型不支援時若殘留，會在 buildNodeConfig 的「節點優先、全域性兜底」合併中反覆疊加（issue #254）。
 const NODE_MODEL_GENERATION_PARAMS: ReadonlyArray<keyof CanvasNodeMetadata> = [
     "size",
     "quality",
@@ -192,8 +192,8 @@ export function applyNodeConfigPatch(node: CanvasNodeData, patch: Partial<Canvas
     return size && (node.type === CanvasNodeType.Image || node.type === CanvasNodeType.Video) ? { ...next, ...size, position: { x: node.position.x + node.width / 2 - size.width / 2, y: node.position.y + node.height / 2 - size.height / 2 } } : next;
 }
 
-// 切换模型（不同模型标识）时，节点级生成参数必须随旧模型一起失效，回落全局配置；
-// 显式传入的同批 patch（如用户同时调整了参数）仍然优先。
+// 切換模型（不同模型標識）時，節點級生成引數必須隨舊模型一起失效，回落全域性配置；
+// 顯式傳入的同批 patch（如使用者同時調整了引數）仍然優先。
 function resetGenerationParamsOnModelSwitch(node: CanvasNodeData, patch: Partial<CanvasNodeMetadata>): Partial<CanvasNodeMetadata> {
     if (typeof patch.model !== "string" || patch.model === node.metadata?.model) {
         return patch;
@@ -206,8 +206,8 @@ function resetGenerationParamsOnModelSwitch(node: CanvasNodeData, patch: Partial
 }
 
 /**
- * 连线落到目标节点上的吸附点。单端口一侧取边的正中——与 connectionHandleY 保持同一个
- * 口径，否则吸附点和实际画出来的线会对不上（这两处是同一规则的两份实现，改一处必错）。
+ * 連線落到目標節點上的吸附點。單埠一側取邊的正中——與 connectionHandleY 保持同一個
+ * 口徑，否則吸附點和實際畫出來的線會對不上（這兩處是同一規則的兩份實現，改一處必錯）。
  */
 export function getConnectionTargetAnchor(node: CanvasNodeData, current: ConnectionHandle, handleId?: string, scrollTop = 0) {
     return {
@@ -269,7 +269,7 @@ export function attachNodeToStoryboardRow(nodes: CanvasNodeData[], connection: P
 
     return nodes.map((node) => {
         if (row && node.id === linkedNode.id && scriptNodeId === connection.fromNodeId && node.type === CanvasNodeType.Video) {
-            return { ...node, title: `镜头 ${row.shotNumber} · 视频`, metadata: { ...node.metadata, prompt: videoPrompt, composerContent: videoComposerContent, ...storyboardPromptTemplateMetadata(row, "video"), workflowKind: "shot" as const, workflowTitle: `镜头 ${row.shotNumber} 视频`, shotIndex: row.shotNumber, generationMode: "video" as const, videoEditOperation: node.metadata?.videoEditOperation || "text_to_video", seconds: String(row.durationSeconds) } };
+            return { ...node, title: `鏡頭 ${row.shotNumber} · 影片`, metadata: { ...node.metadata, prompt: videoPrompt, composerContent: videoComposerContent, ...storyboardPromptTemplateMetadata(row, "video"), workflowKind: "shot" as const, workflowTitle: `鏡頭 ${row.shotNumber} 影片`, shotIndex: row.shotNumber, generationMode: "video" as const, videoEditOperation: node.metadata?.videoEditOperation || "text_to_video", seconds: String(row.durationSeconds) } };
         }
         if (node.id !== scriptNodeId || node.type !== CanvasNodeType.Script) return node;
         const storyboard = node.metadata?.storyboard;
@@ -300,7 +300,7 @@ export function storyboardRowFromHandle(nodes: CanvasNodeData[], nodeId: string,
 export function expandStoryboardTextMentions(prompt: string, references: CanvasResourceReference[]) {
     let expanded = prompt;
     references.filter((reference) => reference.active && reference.kind === "text" && reference.text?.trim()).forEach((reference) => {
-        const replacement = `【项目设定：${reference.title}】\n${reference.text!.trim()}`;
+        const replacement = `【專案設定：${reference.title}】\n${reference.text!.trim()}`;
         for (const token of [canvasResourceMentionToken(reference), `@${reference.label}`, reference.nodeId ? canvasNodeMentionToken(reference.nodeId) : ""]) {
             if (!token) continue;
             if (expanded.includes(token)) expanded = expanded.split(token).join(replacement);
@@ -405,7 +405,7 @@ export function sameNodeSemanticData(left: CanvasNodeData, right: CanvasNodeData
 }
 
 export function applyBatchPrimaryImage(root: CanvasNodeData, primary: CanvasNodeData): CanvasNodeData {
-    // 主图是根节点对媒体的完整代理；可选字段也必须显式覆盖，避免残留上一张图的存储身份。
+    // 主圖是根節點對媒體的完整代理；可選欄位也必須顯式覆蓋，避免殘留上一張圖的儲存身份。
     const nextMetadata: NonNullable<CanvasNodeData["metadata"]> = {
         ...root.metadata,
         primaryImageId: primary.id,
@@ -475,11 +475,11 @@ export function removeCanvasNodes(nodes: CanvasNodeData[], requestedIds: Set<str
 }
 
 export function buildAngleLabel(params: CanvasImageAngleParams) {
-    const horizontal = params.horizontalAngle === 0 ? "正面视角" : params.horizontalAngle > 0 ? `向右旋转 ${params.horizontalAngle} 度` : `向左旋转 ${Math.abs(params.horizontalAngle)} 度`;
-    const pitch = params.pitchAngle === 0 ? "水平视角" : params.pitchAngle > 0 ? `俯视 ${params.pitchAngle} 度` : `仰视 ${Math.abs(params.pitchAngle)} 度`;
-    return `AI 多角度：${horizontal}，${pitch}，镜头距离 ${params.cameraDistance.toFixed(1)}，${params.wideAngle ? "广角" : "标准"}镜头`;
+    const horizontal = params.horizontalAngle === 0 ? "正面視角" : params.horizontalAngle > 0 ? `向右旋轉 ${params.horizontalAngle} 度` : `向左旋轉 ${Math.abs(params.horizontalAngle)} 度`;
+    const pitch = params.pitchAngle === 0 ? "水平視角" : params.pitchAngle > 0 ? `俯視 ${params.pitchAngle} 度` : `仰視 ${Math.abs(params.pitchAngle)} 度`;
+    return `AI 多角度：${horizontal}，${pitch}，鏡頭距離 ${params.cameraDistance.toFixed(1)}，${params.wideAngle ? "廣角" : "標準"}鏡頭`;
 }
 
 export function buildAnglePrompt(params: CanvasImageAngleParams) {
-    return `基于参考图重新生成同一主体的新视角，保持主体、颜色、材质和画面风格一致，不要只做透视变形。${buildAngleLabel(params)}。`;
+    return `基於參考圖重新生成同一主體的新視角，保持主體、顏色、材質和畫面風格一致，不要只做透視變形。${buildAngleLabel(params)}。`;
 }

@@ -19,7 +19,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
     useWorkspaceButtonFeedback(productWorkspace);
 
     useLayoutEffect(() => {
-        // Ant Design 浮层挂载在 body，必须用路由级标记隔离用户工作台与画布编辑器、运营后台。
+        // Ant Design 浮層掛載在 body，必須用路由級標記隔離使用者工作臺與畫布編輯器、運營後臺。
         document.body.classList.add("app-user-overlays");
         document.body.classList.toggle("app-spatial-overlays", spatialWorkbench);
         document.body.classList.toggle("app-product-overlays", productWorkspace);

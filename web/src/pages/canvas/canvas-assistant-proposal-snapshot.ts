@@ -54,12 +54,12 @@ export type AssistantProposalBlockedReason =
 
 /** What the user reads on the proposal card: what happened, then what to do next. */
 export const ASSISTANT_PROPOSAL_BLOCKED_TEXT: Record<AssistantProposalBlockedReason, string> = {
-    invalid_source: "这项方案缺少核对信息。请让助手重新提出方案。",
-    canvas_saving: "画布还在保存。稍等几秒再点生成。",
-    settings_unsaved: "生成设置还没保存。保存后再点生成。",
-    canvas_changed: "画布在提出方案后改过。请让助手重新提出方案。",
-    settings_changed: "生成设置在提出方案后改过。请让助手重新提出方案。",
-    content_mismatch: "画布显示的内容和已保存的不一致。请重新打开这个画布，再让助手重新提出方案。",
+    invalid_source: "這項方案缺少核對資訊。請讓助手重新提出方案。",
+    canvas_saving: "畫布還在儲存。稍等幾秒再點生成。",
+    settings_unsaved: "生成設定還沒儲存。儲存後再點生成。",
+    canvas_changed: "畫布在提出方案後改過。請讓助手重新提出方案。",
+    settings_changed: "生成設定在提出方案後改過。請讓助手重新提出方案。",
+    content_mismatch: "畫布顯示的內容和已儲存的不一致。請重新開啟這個畫布，再讓助手重新提出方案。",
 };
 
 export class AssistantProposalBlockedError extends Error {

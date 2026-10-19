@@ -62,7 +62,7 @@ export function capturedScopeFromAssetQueryKey(queryKey: readonly unknown[]): Ca
 
 export function expectedScopeFromQueryKey(queryKey: readonly unknown[]): CapturedUserScope {
     const captured = capturedScopeFromAssetQueryKey(queryKey);
-    if (!captured) throw new Error("素材查询缺少账号世代");
+    if (!captured) throw new Error("素材查詢缺少賬號世代");
     return captured;
 }
 

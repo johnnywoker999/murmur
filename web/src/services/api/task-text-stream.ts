@@ -51,7 +51,7 @@ function emitTaskTextStreamBlock(block: string, onEvent: (event: TaskTextStreamE
     try {
         parsed = JSON.parse(raw);
     } catch {
-        throw new Error("任务文本流返回了无效数据");
+        throw new Error("任務文本流返回了無效資料");
     }
     onEvent({ event, ...(id !== undefined ? { id } : {}), data: parsed });
 }

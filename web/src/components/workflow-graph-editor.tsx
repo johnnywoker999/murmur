@@ -35,7 +35,7 @@ const rowGap = 20;
 const graphPadding = 24;
 const allEnabledFieldsNodeId = "__all_enabled_fields__";
 
-export function WorkflowGraphEditor({ workflowJson, workflowGraph, fields, onChange, disabled = false, emptyDescription = "尚未读取到工作流拓扑" }: WorkflowGraphEditorProps) {
+export function WorkflowGraphEditor({ workflowJson, workflowGraph, fields, onChange, disabled = false, emptyDescription = "尚未讀取到工作流拓撲" }: WorkflowGraphEditorProps) {
     const graph = useMemo(() => buildWorkflowGraph(workflowJson, workflowGraph), [workflowGraph, workflowJson]);
     const [selectedNodeId, setSelectedNodeId] = useState("");
     const [scale, setScale] = useState(1);
@@ -75,7 +75,7 @@ export function WorkflowGraphEditor({ workflowJson, workflowGraph, fields, onCha
 
     useEffect(() => {
         if (!graph.nodes.length) return;
-        // 工作流切换后自动适配一次；用户后续缩放不应被普通重渲染重置。
+        // 工作流切換後自動適配一次；使用者後續縮放不應被普通重渲染重置。
         const frame = requestAnimationFrame(fitGraph);
         return () => cancelAnimationFrame(frame);
     }, [fitGraph, graph.nodes.length]);
@@ -112,7 +112,7 @@ export function WorkflowGraphEditor({ workflowJson, workflowGraph, fields, onCha
     useEffect(() => {
         const viewport = viewportRef.current;
         if (!viewport) return;
-        // React 的 wheel 事件在部分浏览器中可能被注册为 passive，使用原生监听确保能阻止外层页面滚动。
+        // React 的 wheel 事件在部分瀏覽器中可能被註冊為 passive，使用原生監聽確保能阻止外層頁面滾動。
         viewport.addEventListener("wheel", handleViewportWheel, { passive: false });
         return () => viewport.removeEventListener("wheel", handleViewportWheel);
     }, [handleViewportWheel]);
@@ -138,11 +138,11 @@ export function WorkflowGraphEditor({ workflowJson, workflowGraph, fields, onCha
             <aside className="workflow-graph-sidebar">
                 <div className="workflow-graph-summary">
                     <span>
-                        <small>节点</small>
+                        <small>節點</small>
                         <strong>{graph.nodes.length}</strong>
                     </span>
                     <span>
-                        <small>字段</small>
+                        <small>欄位</small>
                         <strong>
                             {enabledFields.length} / {fields.length}
                         </strong>
@@ -154,36 +154,36 @@ export function WorkflowGraphEditor({ workflowJson, workflowGraph, fields, onCha
                 </div>
                 <div className="flex flex-wrap gap-1">
                     <Button size="small" type="text" icon={<PowerOff className="size-3.5" />} danger disabled={disabled || enabledControllableCount === 0} onClick={() => updateAllFields(false)}>
-                        关闭全部开关
+                        關閉全部開關
                     </Button>
                     <Button size="small" type="text" icon={<Power className="size-3.5" />} disabled={disabled || enabledControllableCount === controllableFields.length} onClick={() => updateAllFields(true)}>
-                        开启全部开关
+                        開啟全部開關
                     </Button>
                 </div>
                 <label className="workflow-graph-node-select">
-                    <span>正在设置的节点</span>
+                    <span>正在設定的節點</span>
                     <Select
                         showSearch
                         value={selectedNodeId || undefined}
-                        placeholder="选择节点"
+                        placeholder="選擇節點"
                         optionFilterProp="label"
-                        options={[{ label: `全部已开启字段 · ${enabledFields.length}`, value: allEnabledFieldsNodeId }, ...graph.nodes.map((node) => ({ label: `${node.title} · #${node.id}`, value: node.id }))]}
+                        options={[{ label: `全部已開啟欄位 · ${enabledFields.length}`, value: allEnabledFieldsNodeId }, ...graph.nodes.map((node) => ({ label: `${node.title} · #${node.id}`, value: node.id }))]}
                         onChange={setSelectedNodeId}
                     />
                 </label>
                 <div className="workflow-graph-selected-heading">
-                    <strong>{selectedNodeId === allEnabledFieldsNodeId ? "全部已开启字段" : selectedNode?.title || "工作流字段"}</strong>
-                    <span>{selectedNodeId === allEnabledFieldsNodeId ? `${enabledFields.length} 个字段` : selectedNode ? `${selectedNode.classType} · #${selectedNode.id}` : "选择右侧节点进行设置"}</span>
+                    <strong>{selectedNodeId === allEnabledFieldsNodeId ? "全部已開啟欄位" : selectedNode?.title || "工作流欄位"}</strong>
+                    <span>{selectedNodeId === allEnabledFieldsNodeId ? `${enabledFields.length} 個欄位` : selectedNode ? `${selectedNode.classType} · #${selectedNode.id}` : "選擇右側節點進行設定"}</span>
                 </div>
                 <WorkflowFieldMappingEditor fields={selectedFields} disabled={disabled} onChange={updateSelectedFields} />
             </aside>
 
             <section className="workflow-graph-stage">
                 <div className="workflow-graph-controls">
-                    <IconButton size="sm" variant="ghost" icon={ZoomOut} aria-label="缩小工作流" onClick={() => zoom(-1)} />
+                    <IconButton size="sm" variant="ghost" icon={ZoomOut} aria-label="縮小工作流" onClick={() => zoom(-1)} />
                     <span>{Math.round(scale * 100)}%</span>
                     <IconButton size="sm" variant="ghost" icon={ZoomIn} aria-label="放大工作流" onClick={() => zoom(1)} />
-                    <IconButton size="sm" variant="ghost" icon={Maximize} aria-label="适应窗口" onClick={fitGraph} />
+                    <IconButton size="sm" variant="ghost" icon={Maximize} aria-label="適應視窗" onClick={fitGraph} />
                 </div>
                 <div
                     ref={viewportRef}

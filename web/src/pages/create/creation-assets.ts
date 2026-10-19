@@ -91,7 +91,7 @@ export function isSameCreationAsset(asset: Pick<Asset, "metadata">, identity: Cr
     if (!key) return false;
     if (asset.metadata?.creationAssetKey === key) return true;
 
-    // 兼容修复前已经写入的素材：旧记录没有结果序号，只能将同一任务的首个结果视为已处理。
+    // 相容修復前已經寫入的素材：舊記錄沒有結果序號，只能將同一任務的首個結果視為已處理。
     const isLegacyResult = identity.resultIndex === 0 && typeof identity.taskId === "string";
     return isLegacyResult && asset.metadata?.source === "create-generation" && asset.metadata?.taskId === identity.taskId && asset.metadata?.resultIndex === undefined;
 }
@@ -155,7 +155,7 @@ export function creationAttachmentFromAsset(asset: ImageAsset): CreationAttachme
     const url = resolveResourceUrl(asset.data.storageKey, asset.data.dataUrl || asset.coverUrl);
     return {
         id: `asset:${asset.id}`,
-        name: asset.title || "素材图片",
+        name: asset.title || "素材圖片",
         type: asset.data.mimeType || "image/png",
         dataUrl: url,
         url,
@@ -170,7 +170,7 @@ export function creationAttachmentFromAsset(asset: ImageAsset): CreationAttachme
 export function creationAttachmentFromVideoAsset(asset: Extract<Asset, { kind: "video" }>): CreationAttachment {
     return {
         id: `asset:${asset.id}`,
-        name: asset.title || "素材视频",
+        name: asset.title || "素材影片",
         type: asset.data.mimeType || "video/mp4",
         url: asset.data.url,
         storageKey: asset.data.storageKey,
@@ -185,7 +185,7 @@ export function creationAttachmentFromVideoAsset(asset: Extract<Asset, { kind: "
 export function creationAttachmentFromAudioAsset(asset: AudioAsset): CreationAttachment {
     return {
         id: `asset:${asset.id}`,
-        name: asset.title || "素材音频",
+        name: asset.title || "素材音訊",
         type: asset.data.mimeType || "audio/mpeg",
         url: asset.data.url,
         storageKey: asset.data.storageKey,
@@ -198,13 +198,13 @@ export function creationAttachmentFromAudioAsset(asset: AudioAsset): CreationAtt
 export function creationAttachmentFromExternalAsset(reference: ExternalAssetPickerReference): CreationAttachment {
     const item = reference.item;
     const url = item.fileUrl || "";
-    if (!url) throw new Error("“" + item.title + "”暂时无法读取，请先在 Eagle 中确认文件可用");
+    if (!url) throw new Error("“" + item.title + "”暫時無法讀取，請先在 Eagle 中確認檔案可用");
     const id = "external:" + reference.sourceId + ":" + item.id;
     const type = item.mimeType || (item.kind === "image" ? "image/png" : item.kind === "video" ? "video/mp4" : "audio/mpeg");
     if (item.kind === "image") {
         return {
             id,
-            name: item.title || "素材图片",
+            name: item.title || "素材圖片",
             type,
             dataUrl: url,
             url,
@@ -217,7 +217,7 @@ export function creationAttachmentFromExternalAsset(reference: ExternalAssetPick
     if (item.kind === "video") {
         return {
             id,
-            name: item.title || "素材视频",
+            name: item.title || "素材影片",
             type,
             url,
             bytes: item.bytes,
@@ -229,23 +229,23 @@ export function creationAttachmentFromExternalAsset(reference: ExternalAssetPick
     if (item.kind === "audio") {
         return {
             id,
-            name: item.title || "素材音频",
+            name: item.title || "素材音訊",
             type,
             url,
             bytes: item.bytes,
             previewUrl: item.thumbnailUrl || url,
         };
     }
-    throw new Error("“" + item.title + "”不是可用于创作参考的媒体文件");
+    throw new Error("“" + item.title + "”不是可用於創作參考的媒體檔案");
 }
 export function creationImageAsset({ title, uploaded, metadata }: { title: string; uploaded: UploadedImage; metadata?: Record<string, unknown> }): NewAsset {
     return {
         kind: "image",
-        title: title.trim() || "创作图片",
+        title: title.trim() || "創作圖片",
         coverUrl: uploaded.url,
-        tags: ["创作"],
+        tags: ["創作"],
         status: "confirmed",
-        source: "创作页",
+        source: "創作頁",
         metadata: { source: "create-page", ...metadata },
         data: {
             dataUrl: uploaded.url,
@@ -261,11 +261,11 @@ export function creationImageAsset({ title, uploaded, metadata }: { title: strin
 export function creationAudioAsset({ title, uploaded, metadata }: { title: string; uploaded: UploadedFile; metadata?: Record<string, unknown> }): NewAsset {
     return {
         kind: "audio",
-        title: title.trim() || "创作音频",
+        title: title.trim() || "創作音訊",
         coverUrl: "",
-        tags: ["创作"],
+        tags: ["創作"],
         status: "confirmed",
-        source: "创作页",
+        source: "創作頁",
         metadata: { source: "create-page", ...metadata },
         data: {
             url: uploaded.url,
@@ -280,11 +280,11 @@ export function creationAudioAsset({ title, uploaded, metadata }: { title: strin
 export function creationVideoAsset({ title, uploaded, metadata }: { title: string; uploaded: UploadedFile; metadata?: Record<string, unknown> }): NewAsset {
     return {
         kind: "video",
-        title: title.trim() || "创作视频",
+        title: title.trim() || "創作影片",
         coverUrl: canvasVideoAssetPreviewUrl(uploaded.url, uploaded.preview?.url),
-        tags: ["创作"],
+        tags: ["創作"],
         status: "confirmed",
-        source: "创作页",
+        source: "創作頁",
         metadata: { source: "create-page", ...metadata },
         data: {
             url: uploaded.url,

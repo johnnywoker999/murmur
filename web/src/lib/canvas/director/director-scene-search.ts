@@ -33,7 +33,7 @@ export function searchDirectorSceneItems(scene: DirectorScene, query: string): D
     return items;
 }
 
-/** 场景行的 Shift 连续多选。筛选使锚点不在当前列表时退化为单选。 */
+/** 場景行的 Shift 連續多選。篩選使錨點不在當前列表時退化為單選。 */
 export function resolveDirectorSceneSelection(order: string[], current: string[], anchor: string | null, target: string, shift: boolean): string[] {
     const targetIndex = order.indexOf(target);
     if (targetIndex < 0) return current.filter((id) => order.includes(id));

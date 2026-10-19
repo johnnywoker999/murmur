@@ -20,7 +20,7 @@ export function canGenerateMediaInPlace(sourceNode: CanvasNodeData | undefined, 
     if (!sourceNode.metadata?.content) return true;
     if (canvasMediaNodeRole(sourceNode) === "generator") return true;
     if (canvasMediaNodeOrigin(sourceNode) === "generated" && Boolean((sourceNode.metadata?.composerContent || sourceNode.metadata?.prompt)?.trim())) return true;
-    // 兼容显式落点字段引入前创建的复制节点和版本节点。
+    // 相容顯式落點欄位引入前建立的複製節點和版本節點。
     return Boolean(sourceNode.metadata?.copiedFromNodeId || sourceNode.metadata?.versionOfNodeId);
 }
 
@@ -73,7 +73,7 @@ export function findAvailableGenerationGroupPosition(nodes: CanvasNodeData[], pr
     return downDistance <= rightDistance ? down : right;
 }
 
-// 分别沿下方和右侧求出最近空位，再选择移动距离更短的方向，避免生成组覆盖已有节点。
+// 分別沿下方和右側求出最近空位，再選擇移動距離更短的方向，避免生成組覆蓋已有節點。
 function resolveCollisions(nodes: CanvasNodeData[], preferred: Position, groupSize: Size, direction: "down" | "right"): Position {
     const candidate = { ...preferred };
     for (let attempt = 0; attempt <= nodes.length; attempt += 1) {

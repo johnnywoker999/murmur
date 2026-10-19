@@ -1,6 +1,6 @@
-// 时间线摘要作为上下文发送给文本模型，模型输出必须通过 ai-command-schema 校验。
-// 小批命令直接进入统一 dispatch，大批命令先由用户确认；宿主拒绝无效命令并显示 saveError。
-// 请求显式携带用户选择的文本模型，不能沿用可能指向图片模型的全局默认值。
+// 時間線摘要作為上下文傳送給文本模型，模型輸出必須通過 ai-command-schema 校驗。
+// 小批命令直接進入統一 dispatch，大批命令先由使用者確認；宿主拒絕無效命令並顯示 saveError。
+// 請求顯式攜帶使用者選擇的文本模型，不能沿用可能指向圖片模型的全域性預設值。
 import { useRef, useState, useEffect } from "react";
 import { Bot, Loader2, RotateCcw, Send, ShieldAlert } from "lucide-react";
 import { requestImageQuestion } from "@/services/api/image";
@@ -22,19 +22,19 @@ type UiEntry =
     | { kind: "error"; id: string; text: string; retry: string }
     | { kind: "preview"; id: string; plan: AiCommandPlan };
 
-const FAILED_MARK = "（上一轮指令被宿主拒绝）";
-const RETRY_MODIFY_PREFIX = "宿主拒绝了上一轮输出，错误：";
+const FAILED_MARK = "（上一輪指令被宿主拒絕）";
+const RETRY_MODIFY_PREFIX = "宿主拒絕了上一輪輸出，錯誤：";
 const MAX_VISIBLE_RAW = 240;
-const PREVIEW_HEAD = "以下指令将直接修改时间线，请确认后执行：";
-// 空态建议指令：点击直接发送（对应参考图的 suggestion chips）。
+const PREVIEW_HEAD = "以下指令將直接修改時間線，請確認後執行：";
+// 空態建議指令：點選直接傳送（對應參考圖的 suggestion chips）。
 const SUGGESTED_PROMPTS = [
-    "把第二段素材换成封面图",
-    "删掉所有片段之间的空隙",
-    "给全部字幕加上黑色描边",
-    "当前时间线一共有多少片段？",
+    "把第二段素材換成封面圖",
+    "刪掉所有片段之間的空隙",
+    "給全部字幕加上黑色描邊",
+    "當前時間線一共有多少片段？",
 ];
 
-/** 指令行人类可读摘要（op + payload 截断），用于执行汇报与预览清单。 */
+/** 指令行人類可讀摘要（op + payload 截斷），用於執行彙報與預覽清單。 */
 function commandLine(cmd: { op: string; payload?: unknown }, index: number): string {
     const brief = JSON.stringify(cmd.payload);
     const trimmed = brief.length > 96 ? `${brief.slice(0, 96)}…` : brief;
@@ -43,7 +43,7 @@ function commandLine(cmd: { op: string; payload?: unknown }, index: number): str
 
 function describePlan(plan: AiCommandPlan): string {
     const lines = plan.commands.map((c, i) => commandLine(c, i));
-    return [plan.reasoning?.trim(), `已提交 ${plan.commands.length} 条指令：`, ...lines]
+    return [plan.reasoning?.trim(), `已提交 ${plan.commands.length} 條指令：`, ...lines]
         .filter((line): line is string => Boolean(line))
         .join("\n");
 }
@@ -56,7 +56,7 @@ export function EditorAiAssistant() {
     const textModels = effective.textModels ?? [];
     const defaultModel =
         effective.textModel && textModels.includes(effective.textModel) ? effective.textModel : textModels[0] ?? "";
-    // 用户在本面板显式选择过的模型优先；未选择时跟随全局 textModel / 首个文本模型。
+    // 使用者在本面板顯式選擇過的模型優先；未選擇時跟隨全域性 textModel / 首個文本模型。
     const [model, setModel] = useState("");
     const modelValue = model || defaultModel || "";
     const [entries, setEntries] = useState<UiEntry[]>([]);
@@ -64,7 +64,7 @@ export function EditorAiAssistant() {
     const [busy, setBusy] = useState(false);
     const historyRef = useRef<AiTextMessage[]>([]);
     const scrollRef = useRef<HTMLDivElement | null>(null);
-    // 条目 id 走 ref（非模块级可变变量）：StrictMode 双调用 updater 时也无跨组件副作用。
+    // 條目 id 走 ref（非模組級可變變數）：StrictMode 雙呼叫 updater 時也無跨元件副作用。
     const idSeqRef = useRef(0);
     function nextId(): string {
         idSeqRef.current += 1;
@@ -99,8 +99,8 @@ export function EditorAiAssistant() {
         );
     }
 
-    /** 逐条 dispatch 并把目标条目替换为“已提交 N 条指令”汇报气泡。
-     *  预览确认卡因此整卡替换、按钮卸载，重复点击不会二次提交同一批指令。 */
+    /** 逐條 dispatch 並把目標條目替換為“已提交 N 條指令”彙報氣泡。
+     *  預覽確認卡因此整卡替換、按鈕解除安裝，重複點選不會二次提交同一批指令。 */
     function applyPlan(targetId: string, plan: AiCommandPlan): void {
         for (const cmd of plan.commands) dispatch(cmd);
         const report = describePlan(plan);
@@ -109,7 +109,7 @@ export function EditorAiAssistant() {
         );
         pushHistory({
             role: "assistant",
-            content: `已提交 ${plan.commands.length} 条指令：${plan.commands.map((c) => c.op).join("、")}`,
+            content: `已提交 ${plan.commands.length} 條指令：${plan.commands.map((c) => c.op).join("、")}`,
         });
         setBusy(false);
     }
@@ -125,10 +125,10 @@ export function EditorAiAssistant() {
     function failTurn(assistantId: string, reason: string, userText: string, fixable: boolean): void {
         patchEntry(
             assistantId,
-            `指令未应用：${reason.slice(0, MAX_VISIBLE_RAW)}${reason.length > MAX_VISIBLE_RAW ? "…" : ""}`,
+            `指令未應用：${reason.slice(0, MAX_VISIBLE_RAW)}${reason.length > MAX_VISIBLE_RAW ? "…" : ""}`,
         );
         pushHistory({ role: "assistant", content: FAILED_MARK });
-        const retry = fixable ? `${RETRY_MODIFY_PREFIX}${reason}。请只输出修正后的命令 JSON。` : userText;
+        const retry = fixable ? `${RETRY_MODIFY_PREFIX}${reason}。請只輸出修正後的命令 JSON。` : userText;
         const errId = nextId();
         setEntries((prev) => [...prev, { kind: "error", id: errId, text: reason, retry }]);
         setBusy(false);
@@ -147,7 +147,7 @@ export function EditorAiAssistant() {
         const userMsg: AiTextMessage = { role: "user", content: text };
         const history = [...historyRef.current, userMsg];
         try {
-            // 同时覆写 model 与 textModel，绕过 config.model 可能是图像模型的默认值问题。
+            // 同時覆寫 model 與 textModel，繞過 config.model 可能是影像模型的預設值問題。
             const answer = await requestImageQuestion(
                 {
                     ...effective,
@@ -162,7 +162,7 @@ export function EditorAiAssistant() {
             settleAnswer(assistantId, answer, text);
         } catch (err) {
             const reason = err instanceof Error ? err.message : String(err);
-            patchEntry(assistantId, `请求失败：${reason.slice(0, MAX_VISIBLE_RAW)}`);
+            patchEntry(assistantId, `請求失敗：${reason.slice(0, MAX_VISIBLE_RAW)}`);
             const errId = nextId();
             setEntries((prev) => [...prev, { kind: "error", id: errId, text: reason, retry: text }]);
             setBusy(false);
@@ -171,7 +171,7 @@ export function EditorAiAssistant() {
 
     function settleAnswer(assistantId: string, answer: string, userText: string): void {
         if (!project) {
-            failTurn(assistantId, "编辑器项目已不可用，无法校验指令。", userText, false);
+            failTurn(assistantId, "編輯器專案已不可用，無法校驗指令。", userText, false);
             return;
         }
         let plan: AiCommandPlan;
@@ -193,7 +193,7 @@ export function EditorAiAssistant() {
         if (!verdict.ok) {
             failTurn(
                 assistantId,
-                `命令校验失败：${verdict.op}（第 ${verdict.index + 1} 条）：${verdict.error}`,
+                `命令校驗失敗：${verdict.op}（第 ${verdict.index + 1} 條）：${verdict.error}`,
                 userText,
                 true,
             );
@@ -203,12 +203,12 @@ export function EditorAiAssistant() {
             applyPlan(assistantId, plan);
             return;
         }
-        patchEntry(assistantId, plan.reasoning?.trim() || `${PREVIEW_HEAD}共 ${plan.commands.length} 条。`);
+        patchEntry(assistantId, plan.reasoning?.trim() || `${PREVIEW_HEAD}共 ${plan.commands.length} 條。`);
         const previewId = nextId();
         setEntries((prev) => [...prev, { kind: "preview", id: previewId, plan }]);
         pushHistory({
             role: "assistant",
-            content: `输出 ${plan.commands.length} 条指令，等待用户确认后执行。`,
+            content: `輸出 ${plan.commands.length} 條指令，等待使用者確認後執行。`,
         });
         setBusy(false);
     }
@@ -218,7 +218,7 @@ export function EditorAiAssistant() {
             (e): e is Extract<UiEntry, { kind: "preview" }> => e.id === entryId && e.kind === "preview",
         );
         if (!entry || busy) return;
-        // applyPlan 会把预览卡整卡替换为汇报气泡：按钮卸载，重复点击不会二次提交同一批指令。
+        // applyPlan 會把預覽卡整卡替換為彙報氣泡：按鈕解除安裝，重複點選不會二次提交同一批指令。
         applyPlan(entryId, entry.plan);
     }
 
@@ -238,24 +238,24 @@ export function EditorAiAssistant() {
     const ready = hasProject && Boolean(modelValue);
     const canSend = ready && !busy && input.trim().length > 0;
     const placeholder = !hasProject
-        ? "编辑器尚未就绪"
+        ? "編輯器尚未就緒"
         : !modelValue
-          ? "未检测到文本模型，请先在「AI 设置」启用文本渠道"
-          : "描述编辑意图，或提问当前时间线…";
+          ? "未檢測到文本模型，請先在「AI 設定」啟用文本渠道"
+          : "描述編輯意圖，或提問當前時間線…";
 
     return (
         <div className="flex h-full min-h-0 flex-col bg-[var(--director-sequencer-surface)]">
             <div className="flex shrink-0 items-center gap-2 border-b border-[var(--director-sequencer-border)] px-3 py-2">
                 <span className="shrink-0 text-[10px] uppercase tracking-wider text-[var(--director-dock-fg)]/50">
-                    对话模型
+                    對話模型
                 </span>
                 {textModels.length > 0 ? (
                     <select
                         value={modelValue}
                         onChange={(e) => onModelChange(e.target.value)}
                         disabled={busy}
-                        aria-label="选择文本对话模型"
-                        title="选择文本对话模型"
+                        aria-label="選擇文本對話模型"
+                        title="選擇文本對話模型"
                         className="h-7 min-w-0 flex-1 rounded-md border border-[var(--director-sequencer-border)] bg-[var(--director-control-hover)] px-1.5 text-xs text-[var(--director-dock-fg)] outline-none focus:border-[var(--director-accent)] disabled:opacity-50 [&>option]:bg-[var(--director-sequencer-surface-raised)] [&>option]:text-[var(--director-dock-fg)]"
                     >
                         {textModels.map((m) => (
@@ -266,7 +266,7 @@ export function EditorAiAssistant() {
                     </select>
                 ) : (
                     <span className="text-[11px] text-[var(--director-warning)]">
-                        未检测到可用文本模型，请先配置渠道
+                        未檢測到可用文本模型，請先配置渠道
                     </span>
                 )}
             </div>
@@ -279,10 +279,10 @@ export function EditorAiAssistant() {
                         <div className="grid size-10 place-items-center rounded-full bg-[var(--director-dock-active-surface)]">
                             <Bot className="size-4 text-[var(--director-dock-fg)]/80" />
                         </div>
-                        <p className="text-xs text-[var(--director-dock-fg)]/70">AI 剪辑助手</p>
+                        <p className="text-xs text-[var(--director-dock-fg)]/70">AI 剪輯助手</p>
                         <p className="max-w-[240px] text-[11px] leading-relaxed text-[var(--director-dock-fg)]/50">
-                            基于当前时间线提问，或描述编辑意图（如"把第二段素材换成封面图"）。
-                            修改指令会先在宿主侧校验，数量超过 3 条时需你确认后才执行。
+                            基於當前時間線提問，或描述編輯意圖（如"把第二段素材換成封面圖"）。
+                            修改指令會先在宿主側校驗，數量超過 3 條時需你確認後才執行。
                         </p>
                         <div className="flex max-w-[260px] flex-wrap items-center justify-center gap-1.5">
                             {SUGGESTED_PROMPTS.map((s) => (
@@ -345,7 +345,7 @@ export function EditorAiAssistant() {
                                                 className="mt-1 inline-flex items-center gap-1 rounded border border-[var(--director-sequencer-border)] px-1.5 py-0.5 text-[10px] text-[var(--director-dock-fg)]/80 hover:bg-[var(--director-control-hover)] disabled:opacity-40"
                                             >
                                                 <RotateCcw className="size-2.5" />
-                                                修正后重试
+                                                修正後重試
                                             </button>
                                         )}
                                     </div>
@@ -378,7 +378,7 @@ export function EditorAiAssistant() {
                                     disabled={busy}
                                     className="rounded-md border border-[var(--director-sequencer-border)] px-2 py-1 text-[10px] text-[var(--director-dock-fg)]/80 hover:bg-[var(--director-control-hover)] disabled:opacity-40"
                                 >
-                                    放弃
+                                    放棄
                                 </button>
                                 <button
                                     type="button"
@@ -386,7 +386,7 @@ export function EditorAiAssistant() {
                                     disabled={busy}
                                     className="flex items-center gap-1 rounded-md bg-[var(--director-accent)] px-2 py-1 text-[10px] font-medium text-[var(--director-on-accent)] hover:bg-[var(--director-accent-hover)] disabled:opacity-40"
                                 >
-                                    确认执行（{entry.plan.commands.length}）
+                                    確認執行（{entry.plan.commands.length}）
                                 </button>
                             </div>
                         </div>
@@ -411,8 +411,8 @@ export function EditorAiAssistant() {
                     type="button"
                     onClick={() => void send()}
                     disabled={!canSend}
-                    aria-label={modelValue ? "发送" : "无可用文本模型"}
-                    title={modelValue ? "发送" : "请先选择文本模型"}
+                    aria-label={modelValue ? "傳送" : "無可用文本模型"}
+                    title={modelValue ? "傳送" : "請先選擇文本模型"}
                     className="grid size-7 shrink-0 place-items-center rounded-md bg-[var(--director-accent)] text-[var(--director-on-accent)] hover:bg-[var(--director-accent-hover)] disabled:opacity-40"
                 >
                     {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Send className="size-3.5" />}

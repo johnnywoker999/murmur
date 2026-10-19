@@ -65,20 +65,20 @@ type WorkflowSelectOption = {
 };
 
 const videoOperationOptions: Array<{ label: string; value: CanvasVideoEditOperation }> = [
-    { label: "文生视频", value: "text_to_video" },
-    { label: "图生视频", value: "image_to_video" },
-    { label: "全模态参考", value: "reference_to_video" },
-    { label: "视频续写", value: "extend" },
-    { label: "局部修改", value: "inpaint" },
-    { label: "元素替换", value: "replace_element" },
-    { label: "运镜调整", value: "camera_motion" },
-    { label: "风格迁移", value: "style_transfer" },
-    { label: "音频生视频", value: "audio_to_video" },
-    { label: "版本对比", value: "compare_versions" },
+    { label: "文生影片", value: "text_to_video" },
+    { label: "圖生影片", value: "image_to_video" },
+    { label: "全模態參考", value: "reference_to_video" },
+    { label: "影片續寫", value: "extend" },
+    { label: "區域性修改", value: "inpaint" },
+    { label: "元素替換", value: "replace_element" },
+    { label: "運鏡調整", value: "camera_motion" },
+    { label: "風格遷移", value: "style_transfer" },
+    { label: "音訊生影片", value: "audio_to_video" },
+    { label: "版本對比", value: "compare_versions" },
 ];
 
 function capabilityLabel(capability: RunningHubCapability) {
-    return capability === "video" ? "视频" : capability === "audio" ? "音频" : "图片";
+    return capability === "video" ? "影片" : capability === "audio" ? "音訊" : "圖片";
 }
 
 function runningHubWorkflowKind(workflow: RunningHubWorkflow): RunningHubWorkflowKind {
@@ -110,8 +110,8 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
     useEffect(() => {
         if (workflowProvider === "runninghub" && !node.metadata?.runningHubWorkflowId?.trim()) {
             const capability = normalizeRunningHubCapability(globalConfig.runningHub.capability);
-            // 模式切换后优先按当前能力选择工作流，不能沿用全局默认的视频工作流，
-            // 否则点击“生图”会在下一次渲染时被自动改回“视频”。
+            // 模式切換後優先按當前能力選擇工作流，不能沿用全域性預設的影片工作流，
+            // 否則點選“生圖”會在下一次渲染時被自動改回“影片”。
             const workflow =
                 globalConfig.runningHub.workflows.find(
                     (item) =>
@@ -136,8 +136,8 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
         workflowProvider,
     ]);
     const runningHubEntries = globalConfig.runningHub.workflows
-        // 正常情况下只显示当前模式的条目；旧画布已引用的错配条目保留在列表中，
-        // 这样用户可以看到并重新选择，而不是出现“选项消失”的死路。
+        // 正常情況下只顯示當前模式的條目；舊畫布已引用的錯配條目保留在列表中，
+        // 這樣使用者可以看到並重新選擇，而不是出現“選項消失”的死路。
         .filter(
             (item) =>
                 normalizeRunningHubCapability(item.capability, defaultWorkflowCapability) === workflowCapability ||
@@ -153,7 +153,7 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
     const runningHubApps = runningHubEntries.filter((item) => item.kind === "app");
     const runningHubWorkflows = runningHubEntries.filter((item) => item.kind === "workflow");
     const runningHubOptions: WorkflowSelectOption[] = [
-        ...(runningHubApps.length ? [{ label: <WorkflowOptionGroupLabel label="AI 应用" count={runningHubApps.length} />, options: runningHubApps }] : []),
+        ...(runningHubApps.length ? [{ label: <WorkflowOptionGroupLabel label="AI 應用" count={runningHubApps.length} />, options: runningHubApps }] : []),
         ...(runningHubWorkflows.length ? [{ label: <WorkflowOptionGroupLabel label="工作流" count={runningHubWorkflows.length} />, options: runningHubWorkflows }] : []),
     ];
     const chipStyle = { background: theme.node.fill, color: theme.node.text };
@@ -164,15 +164,15 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
         workflowParameterError ||
         (workflowProvider === "runninghub"
             ? !workflowProviderPluginEnabled(runtimeStatuses, "runninghub")
-                ? "RunningHub 工作流插件未启用"
+                ? "RunningHub 工作流外掛未啟用"
                 : !globalConfig.runningHub.enabled
-                  ? "请先在设置中启用 RunningHub"
+                  ? "請先在設定中啟用 RunningHub"
                   : !node.metadata?.runningHubWorkflowId
-                    ? `请选择${capabilityLabel(workflowCapability)}工作流或 App`
+                    ? `請選擇${capabilityLabel(workflowCapability)}工作流或 App`
                     : !selectedRunningHubWorkflow
-                      ? "当前画布引用的 RunningHub 条目已不存在，请重新选择"
+                      ? "當前畫布引用的 RunningHub 條目已不存在，請重新選擇"
                       : selectedRunningHubCapability !== workflowCapability
-                        ? `当前条目用途为${capabilityLabel(selectedRunningHubCapability || "image")}，请切换画布模式或重新选择条目`
+                        ? `當前條目用途為${capabilityLabel(selectedRunningHubCapability || "image")}，請切換畫布模式或重新選擇條目`
                         : undefined
             : undefined);
     const canGenerate = (hasComposerContent || (mode === "audio" ? inputSummary.textCount > 0 : hasAnyInput)) && !capabilityError;
@@ -183,7 +183,7 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                 <div className="shrink-0 text-sm font-semibold">{simpleMode ? "快速生成" : workflowProvider === "model" ? "生成配置" : "工作流生成"}</div>
                 {simpleMode ? (
                     <span className="rounded-md px-2 py-1 text-[var(--fs-tiny)]" style={{ background: theme.node.fill, color: theme.node.muted }}>
-                        自动配置
+                        自動配置
                     </span>
                 ) : (
                     <div className="cursor-default" data-canvas-no-zoom onMouseDown={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
@@ -198,7 +198,7 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                                     label: (
                                         <span className="inline-flex items-center gap-1">
                                             <ImageIcon className="size-3.5" />
-                                            生图
+                                            生圖
                                         </span>
                                     ),
                                 },
@@ -207,7 +207,7 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                                     label: (
                                         <span className="inline-flex items-center gap-1">
                                             <Video className="size-3.5" />
-                                            视频
+                                            影片
                                         </span>
                                     ),
                                 },
@@ -216,7 +216,7 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                                     label: (
                                         <span className="inline-flex items-center gap-1">
                                             <Music2 className="size-3.5" />
-                                            音频
+                                            音訊
                                         </span>
                                     ),
                                 },
@@ -227,11 +227,11 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
             </div>
 
             <div className="flex min-w-0 flex-wrap items-center gap-2">
-                <InputChip label="提示词" value={`${inputSummary.textCount} 个`} style={chipStyle} />
-                <InputChip label="参考图" value={`${inputSummary.imageCount} 张`} style={chipStyle} />
-                <InputChip label="参考视频" value={`${inputSummary.videoCount} 个`} style={chipStyle} />
-                <InputChip label="参考音频" value={`${inputSummary.audioCount} 个`} style={chipStyle} />
-                {inputSummary.characterCount ? <InputChip label="角色卡" value={`${inputSummary.characterCount} 个`} style={chipStyle} /> : null}
+                <InputChip label="提示詞" value={`${inputSummary.textCount} 個`} style={chipStyle} />
+                <InputChip label="參考圖" value={`${inputSummary.imageCount} 張`} style={chipStyle} />
+                <InputChip label="參考影片" value={`${inputSummary.videoCount} 個`} style={chipStyle} />
+                <InputChip label="參考音訊" value={`${inputSummary.audioCount} 個`} style={chipStyle} />
+                {inputSummary.characterCount ? <InputChip label="角色卡" value={`${inputSummary.characterCount} 個`} style={chipStyle} /> : null}
             </div>
 
             <button
@@ -245,9 +245,9 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                     {simpleMode ? <MessageSquare className="size-3.5" /> : <Sparkles className="size-3.5" />}
                 </span>
                 <span className="min-w-0 flex-1">
-                    <span className="block text-[var(--fs-label)] font-semibold">{simpleMode ? "编辑生成内容" : "组装提示词"}</span>
+                    <span className="block text-[var(--fs-label)] font-semibold">{simpleMode ? "編輯生成內容" : "組裝提示詞"}</span>
                     <span className="block truncate text-[var(--fs-tiny)]" style={{ color: theme.node.muted }}>
-                        {hasComposerContent ? "已填写，可继续编辑或引用素材" : "输入提示词，或用 @ 引用连接素材"}
+                        {hasComposerContent ? "已填寫，可繼續編輯或引用素材" : "輸入提示詞，或用 @ 引用連線素材"}
                     </span>
                 </span>
                 <ChevronDown className="size-3.5 -rotate-90 opacity-45 transition-transform group-hover:translate-x-0.5" />
@@ -257,7 +257,7 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                 <div className="cursor-default" data-canvas-no-zoom onMouseDown={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
                     {workflowProvider === "model" && (isSeedance25Model(modelOptionName(config.model)) || isH3Model(config.model)) ? (
                         <Select
-                            aria-label="视频生成模式"
+                            aria-label="影片生成模式"
                             className="w-full"
                             value={isH3Model(config.model) ? h3VideoOperation(config.model, inputSummary, node.metadata?.videoEditOperation) : resolveVideoOperation(inputSummary, node.metadata?.videoEditOperation)}
                             options={videoOperationOptions
@@ -267,7 +267,7 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                                 )
                                 .map((option) => ({
                                     ...option,
-                                    label: option.value === "image_to_video" ? "首帧 / 首尾帧" : option.value === "reference_to_video" ? "参考生成" : option.label,
+                                    label: option.value === "image_to_video" ? "首幀 / 首尾幀" : option.value === "reference_to_video" ? "參考生成" : option.label,
                                     disabled:
                                         option.value === "image_to_video"
                                             ? inputSummary.imageCount + inputSummary.characterCount < 1 ||
@@ -288,11 +288,11 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                         <div
                             className="flex h-9 min-w-0 items-center gap-2 rounded-lg border px-2 text-[var(--fs-label)]"
                             style={{ background: theme.node.fill, borderColor: theme.node.stroke, color: theme.node.text }}
-                            title="已连接的图片、视频和音频会按当前工作流字段映射自动传入"
+                            title="已連線的圖片、影片和音訊會按當前工作流欄位對映自動傳入"
                         >
                             <ImageIcon className="size-3.5 shrink-0 opacity-75" />
-                            <span className="shrink-0 font-medium">{modelCapabilityConfigFor(config, config.model).video?.operations.includes("reference_to_video") ? "参考生成" : "图片生成"}</span>
-                            <span className="min-w-0 truncate opacity-60">已连接媒体自动映射</span>
+                            <span className="shrink-0 font-medium">{modelCapabilityConfigFor(config, config.model).video?.operations.includes("reference_to_video") ? "參考生成" : "圖片生成"}</span>
+                            <span className="min-w-0 truncate opacity-60">已連線媒體自動對映</span>
                         </div>
                     )}
                 </div>
@@ -311,13 +311,13 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
 
             {simpleMode ? (
                 <div className="rounded-lg px-3 py-2.5 text-[var(--fs-label)]" style={{ background: theme.node.fill, color: theme.node.muted }}>
-                    将使用当前默认模型与生成参数
+                    將使用當前預設模型與生成引數
                 </div>
             ) : (
                 <div className="flex min-w-0 flex-col gap-3">
                     <div className="flex items-center gap-3" data-canvas-no-zoom onMouseDown={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
                         <span className="shrink-0 text-[var(--fs-tiny)] font-medium" style={{ color: theme.node.muted }}>
-                            生成来源
+                            生成來源
                         </span>
                         <Segmented
                             block
@@ -343,7 +343,7 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                                 className="canvas-compact-control !h-9 w-full"
                                 value={selectedRunningHubWorkflow ? runningHubWorkflowEntryKey(selectedRunningHubWorkflow) : undefined}
                                 title={selectedRunningHubWorkflow ? `${selectedRunningHubWorkflow.kind === "app" ? "App" : "工作流"} · ${selectedRunningHubWorkflow.title || selectedRunningHubWorkflow.workflowId}` : undefined}
-                                placeholder={`选择${capabilityLabel(workflowCapability)}工作流或 App`}
+                                placeholder={`選擇${capabilityLabel(workflowCapability)}工作流或 App`}
                                 showSearch
                                 options={runningHubOptions}
                                 optionFilterProp="label"
@@ -352,7 +352,7 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                                     const workflow = runningHubEntries.find((item) => item.value === selected.value);
                                     return <WorkflowSelectedLabel kind={workflow?.kind || "workflow"} label={workflow?.label || String(selected.label || "")} />;
                                 }}
-                                notFoundContent={`暂无${capabilityLabel(workflowCapability)}工作流`}
+                                notFoundContent={`暫無${capabilityLabel(workflowCapability)}工作流`}
                                 popupMatchSelectWidth={false}
                                 virtual={false}
                                 listHeight={320}
@@ -390,7 +390,7 @@ export function CanvasConfigNodePanel({ node, isRunning, inputSummary, onConfigC
                         <>
                             <span>生成</span>
                             <Play className="size-4" />
-                            <span>开始生成</span>
+                            <span>開始生成</span>
                         </>
                     )}
                 </span>
@@ -434,17 +434,17 @@ export function WorkflowParameterControls({
         <div className="flex min-w-0 flex-col gap-2 rounded-lg px-2 py-2" style={{ background: theme.node.fill }} data-canvas-no-zoom onMouseDown={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
             <div className="flex h-7 min-w-0 items-center justify-between gap-2">
                 <div className="flex min-w-0 items-center gap-1.5 text-[var(--fs-tiny)]" style={{ color: theme.node.muted }}>
-                    <span className="font-semibold">工作流参数</span>
-                    <span>{fields.length} 项</span>
+                    <span className="font-semibold">工作流引數</span>
+                    <span>{fields.length} 項</span>
                 </div>
-                <Tooltip title={expanded ? "折叠工作流参数" : "展开工作流参数"}>
+                <Tooltip title={expanded ? "摺疊工作流引數" : "展開工作流引數"}>
                     <Button
                         type="text"
                         size="small"
                         className="!size-7 !shrink-0 !p-0"
                         icon={<ChevronDown className={`size-3.5 transition-transform ${expanded ? "" : "-rotate-90"}`} />}
                         aria-expanded={expanded}
-                        aria-label={expanded ? "折叠工作流参数" : "展开工作流参数"}
+                        aria-label={expanded ? "摺疊工作流引數" : "展開工作流引數"}
                         onMouseDown={(event) => event.stopPropagation()}
                         onClick={() => setExpanded((current) => !current)}
                     />
@@ -518,7 +518,7 @@ export function WorkflowParameterControls({
                               <div className={field.randomEnabled ? "grid min-w-0 grid-cols-[minmax(0,1fr)_28px] items-center gap-1" : "min-w-0"}>
                                   {control}
                                   {field.randomEnabled ? (
-                                      <Tooltip title={randomEnabled ? "每次生成使用随机值，点击改为固定值" : "当前使用固定值，点击恢复随机"}>
+                                      <Tooltip title={randomEnabled ? "每次生成使用隨機值，點選改為固定值" : "當前使用固定值，點選恢復隨機"}>
                                           <Button
                                               type="text"
                                               size="small"

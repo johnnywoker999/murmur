@@ -33,45 +33,45 @@ export const PORTRAIT_TEXTURE_GROUPS: readonly PortraitTextureGroup[] = [
         key: "personSceneFusion",
         label: "人景融合",
         options: [
-            { value: "light", label: "轻度对齐", prompt: "轻度对齐人物与场景，仅修正明显边缘和空间关系" },
-            { value: "natural", label: "自然融合", prompt: "自然融合人物与场景，统一边缘、色调和空间关系" },
-            { value: "deep", label: "深度融合", prompt: "深度融合人物与场景，细致统一边缘、环境色和空间层次" },
+            { value: "light", label: "輕度對齊", prompt: "輕度對齊人物與場景，僅修正明顯邊緣和空間關係" },
+            { value: "natural", label: "自然融合", prompt: "自然融合人物與場景，統一邊緣、色調和空間關係" },
+            { value: "deep", label: "深度融合", prompt: "深度融合人物與場景，細緻統一邊緣、環境色和空間層次" },
         ],
     },
     {
         key: "lightingFusion",
         label: "光影融合",
         options: [
-            { value: "soft", label: "柔和补光", prompt: "使用柔和补光，减弱生硬阴影并保留自然明暗" },
-            { value: "natural", label: "自然匹配", prompt: "让人物光向、色温与场景光线自然匹配" },
-            { value: "atmosphere", label: "氛围强化", prompt: "强化环境光与氛围光，保持光影方向合理" },
+            { value: "soft", label: "柔和補光", prompt: "使用柔和補光，減弱生硬陰影並保留自然明暗" },
+            { value: "natural", label: "自然匹配", prompt: "讓人物光向、色溫與場景光線自然匹配" },
+            { value: "atmosphere", label: "氛圍強化", prompt: "強化環境光與氛圍光，保持光影方向合理" },
         ],
     },
     {
         key: "skin",
-        label: "皮肤",
+        label: "皮膚",
         options: [
-            { value: "clear", label: "清透修饰", prompt: "清透修饰皮肤，适度均匀肤色且不过度磨皮" },
-            { value: "natural", label: "自然肤质", prompt: "保留自然肤质、毛孔和真实肤色过渡" },
-            { value: "real", label: "真实肌理", prompt: "强化真实皮肤肌理和细微质感，避免塑料感" },
+            { value: "clear", label: "清透修飾", prompt: "清透修飾皮膚，適度均勻膚色且不過度磨皮" },
+            { value: "natural", label: "自然膚質", prompt: "保留自然膚質、毛孔和真實膚色過渡" },
+            { value: "real", label: "真實肌理", prompt: "強化真實皮膚肌理和細微質感，避免塑膠感" },
         ],
     },
     {
         key: "texture",
-        label: "纹理",
+        label: "紋理",
         options: [
-            { value: "soft", label: "柔和纹理", prompt: "使用柔和细腻的整体纹理，减少粗糙噪点" },
-            { value: "natural", label: "自然纹理", prompt: "保持服装、头发、皮肤和场景材质的自然纹理" },
-            { value: "grain", label: "颗粒质感", prompt: "增加克制的颗粒质感和材质层次" },
+            { value: "soft", label: "柔和紋理", prompt: "使用柔和細膩的整體紋理，減少粗糙噪點" },
+            { value: "natural", label: "自然紋理", prompt: "保持服裝、頭髮、皮膚和場景材質的自然紋理" },
+            { value: "grain", label: "顆粒質感", prompt: "增加剋制的顆粒質感和材質層次" },
         ],
     },
     {
         key: "sharpness",
-        label: "锐度",
+        label: "銳度",
         options: [
-            { value: "soft", label: "柔焦", prompt: "使用轻柔焦效果，保持主体轮廓可辨" },
-            { value: "standard", label: "标准清晰", prompt: "保持标准清晰度，细节自然且不过度锐化" },
-            { value: "high", label: "高清锐化", prompt: "提升关键细节清晰度，避免锐化光晕和噪点" },
+            { value: "soft", label: "柔焦", prompt: "使用輕柔焦效果，保持主體輪廓可辨" },
+            { value: "standard", label: "標準清晰", prompt: "保持標準清晰度，細節自然且不過度銳化" },
+            { value: "high", label: "高畫質銳化", prompt: "提升關鍵細節清晰度，避免銳化光暈和噪點" },
         ],
     },
 ] as const;
@@ -91,14 +91,14 @@ export function buildPortraitTexturePrompt(userPrompt: string, value: unknown) {
     const settings = normalizePortraitTextureSettings(value);
     const instructions = PORTRAIT_TEXTURE_GROUPS.map((group) => {
         const selected = group.options.find((option) => option.value === settings[group.key]);
-        return `${group.label}（${selected?.label || "默认"}）：${selected?.prompt || "保持自然"}`;
+        return `${group.label}（${selected?.label || "預設"}）：${selected?.prompt || "保持自然"}`;
     });
 
     return [
         userPrompt.trim(),
-        "请基于参考图片进行人物质感调节，只优化下列视觉属性：",
+        "請基於參考圖片進行人物質感調節，只最佳化下列視覺屬性：",
         ...instructions.map((instruction) => `- ${instruction}`),
-        "必须保持原人物身份、五官、发型、服装、姿势、构图、场景和画面比例；不得新增或删除主体，不得添加文字、水印或标志。",
+        "必須保持原人物身份、五官、髮型、服裝、姿勢、構圖、場景和畫面比例；不得新增或刪除主體，不得新增文字、水印或標誌。",
     ].filter(Boolean).join("\n");
 }
 

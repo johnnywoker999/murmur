@@ -5,10 +5,10 @@ import { prewarmFFmpeg, withFFmpegLease, type CanvasFFmpegProgress } from "./can
 export type MergeVideoInput = { id: string; url?: string; storageKey?: string };
 export type MergeVideoProgress = CanvasFFmpegProgress;
 
-// ffmpeg 只在用户明确合并视频时加载，避免把 wasm 和 worker 放进画布首屏包体。
+// ffmpeg 只在使用者明確合併影片時載入，避免把 wasm 和 worker 放進畫布首屏包體。
 export async function loadFFmpeg(onProgress?: (progress: MergeVideoProgress) => void) {
     if (typeof __BEEFTV_HEAVY_MEDIA_ENABLED__ !== "undefined" && !__BEEFTV_HEAVY_MEDIA_ENABLED__) {
-        throw new Error("精简版未包含 FFmpeg 本地媒体工具；请安装完整媒体包或使用模型生成与原素材编排");
+        throw new Error("精簡版未包含 FFmpeg 本地媒體工具；請安裝完整媒體包或使用模型生成與原素材編排");
     }
     return prewarmFFmpeg(onProgress);
 }
@@ -23,7 +23,7 @@ export function warmFFmpeg() {
 }
 
 export async function mergeVideos(inputs: MergeVideoInput[], onProgress?: (progress: MergeVideoProgress) => void, signal?: AbortSignal) {
-    if (inputs.length < 2) throw new Error("至少选择 2 个视频才能合并");
+    if (inputs.length < 2) throw new Error("至少選擇 2 個影片才能合併");
     signal?.throwIfAborted();
     return withFFmpegLease(async ({ ffmpeg, filePrefix }) => {
         const { fetchFile } = await import("@ffmpeg/util");
@@ -36,11 +36,11 @@ export async function mergeVideos(inputs: MergeVideoInput[], onProgress?: (progr
                 const input = inputs[index];
                 const storedBlob = input.storageKey ? await getMediaBlob(input.storageKey) : null;
                 const remoteBlob = !storedBlob && input.url ? await fetch(input.url, { signal }).then((response) => {
-                    if (!response.ok) throw new Error(`视频资源请求失败（${response.status}）`);
+                    if (!response.ok) throw new Error(`影片資源請求失敗（${response.status}）`);
                     return response.blob();
                 }) : null;
                 const blob = storedBlob || remoteBlob;
-                if (!blob) throw new Error(`无法读取第 ${index + 1} 个视频`);
+                if (!blob) throw new Error(`無法讀取第 ${index + 1} 個影片`);
                 const name = `${filePrefix}input-${index}.mp4`;
                 await ffmpeg.writeFile(name, await fetchFile(blob));
                 files.push(name);
@@ -49,12 +49,12 @@ export async function mergeVideos(inputs: MergeVideoInput[], onProgress?: (progr
             const concatList = files.map((file) => `file '${file}'`).join("\n");
             await ffmpeg.writeFile(concatName, concatList);
             onProgress?.({ phase: "encoding", progress: 55 });
-            // 先尝试无损拼接；不同模型输出的编码参数不一致时再回退到统一转码。
+            // 先嚐試無損拼接；不同模型輸出的編碼引數不一致時再回退到統一轉碼。
             let exitCode = await ffmpeg.exec(["-f", "concat", "-safe", "0", "-i", concatName, "-c", "copy", mergedName]);
             if (exitCode !== 0) {
                 exitCode = await ffmpeg.exec(["-f", "concat", "-safe", "0", "-i", concatName, "-c:v", "libx264", "-c:a", "aac", "-movflags", "+faststart", mergedName]);
             }
-            if (exitCode !== 0) throw new Error("视频编码失败，请确认视频编码格式兼容");
+            if (exitCode !== 0) throw new Error("影片編碼失敗，請確認影片編碼格式相容");
             signal?.throwIfAborted();
             const output = await ffmpeg.readFile(mergedName);
             assertUsableSegmentOutput(output, "video");

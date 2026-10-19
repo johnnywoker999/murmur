@@ -3,8 +3,8 @@ import type { CanvasNodeMetadata } from "@/types/canvas";
 export type CanvasWorkflowProvider = "model" | "runninghub";
 
 /**
- * 统一解析画布节点的工作流渠道；旧节点可能没有 workflowProvider，
- * 但已经保存了具体工作流 ID，此时不能退回普通模型的首尾帧逻辑。
+ * 統一解析畫布節點的工作流渠道；舊節點可能沒有 workflowProvider，
+ * 但已經儲存了具體工作流 ID，此時不能退回普通模型的首尾幀邏輯。
  */
 export function resolveCanvasWorkflowProvider(metadata?: CanvasNodeMetadata): CanvasWorkflowProvider {
     if (metadata?.workflowProvider) return metadata.workflowProvider;

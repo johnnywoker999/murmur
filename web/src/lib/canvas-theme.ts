@@ -47,7 +47,7 @@ export const canvasThemes = {
             glowStrong: "rgba(17,17,17,.42)",
             shadow: "rgba(15,23,42,.18)",
         },
-        // 时间线/字幕组件语义色：轨道底、按类型区分的片段、标尺与播放头、字幕列表条目态。
+        // 時間線/字幕元件語義色：軌道底、按型別區分的片段、標尺與播放頭、字幕列表條目態。
         timeline: {
             trackFill: "#f6f8fb",
             trackBorder: "rgba(17,24,39,.08)",
@@ -71,7 +71,7 @@ export const canvasThemes = {
     },
     dark: {
         canvas: {
-            // LibTV 原版画布采样基线为 #141414，而不是纯黑；点阵保持低对比度。
+            // LibTV 原版畫布取樣基線為 #141414，而不是純黑；點陣保持低對比度。
             background: "#141414",
             dot: "rgba(175,175,175,.24)",
             line: "rgba(175,175,175,.24)",

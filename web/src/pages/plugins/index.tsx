@@ -27,43 +27,43 @@ import "./plugins.css";
 
 const categoryLabels: Record<string, string> = {
     provider: "模型渠道",
-    "canvas-node": "画布节点",
+    "canvas-node": "畫布節點",
     workflow: "工作流",
-    transform: "媒体转换",
-    "asset-source": "素材来源",
+    transform: "媒體轉換",
+    "asset-source": "素材來源",
     "ai-capability": "AI 能力",
-    "usage-observer": "用量观察",
-    agent: "智能体",
-    "import-export": "导入导出",
+    "usage-observer": "用量觀察",
+    agent: "智慧體",
+    "import-export": "匯入匯出",
 };
 
 const surfaceLabels: Record<string, string> = {
-    node: "画布节点",
-    fullscreen: "全屏工作台",
+    node: "畫布節點",
+    fullscreen: "全屏工作臺",
     hybrid: "混合接入",
-    "asset-source": "素材库",
+    "asset-source": "素材庫",
 };
 
 const permissionLabels: Record<string, string> = {
-    "canvas.read": "读取画布",
-    "canvas.write": "修改画布",
-    "asset.read": "读取素材",
-    "asset.search": "搜索素材",
-    "asset.import": "导入素材",
-    "asset.upload": "上传素材",
-    "generation.run": "调用生成",
-    "ai.text": "调用已配置的文本/视觉理解模型",
-    "media.read": "读取输入媒体",
-    "external.open": "打开外部详情",
+    "canvas.read": "讀取畫布",
+    "canvas.write": "修改畫布",
+    "asset.read": "讀取素材",
+    "asset.search": "搜尋素材",
+    "asset.import": "匯入素材",
+    "asset.upload": "上傳素材",
+    "generation.run": "呼叫生成",
+    "ai.text": "呼叫已配置的文本/視覺理解模型",
+    "media.read": "讀取輸入媒體",
+    "external.open": "開啟外部詳情",
 };
 
 const pluginDateFormatter = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "short", day: "numeric" });
 
 const protocolSectionMeta = [
-    { key: "text", label: "文本协议", description: "对话、推理与流式响应", icon: MessageSquareText },
-    { key: "image", label: "图片协议", description: "生成、编辑与参考图", icon: ImageIcon },
-    { key: "video", label: "视频协议", description: "创建任务、轮询与媒体结果", icon: Film },
-    { key: "audio", label: "音频协议", description: "语音与异步音频任务", icon: AudioLines },
+    { key: "text", label: "文本協議", description: "對話、推理與流式響應", icon: MessageSquareText },
+    { key: "image", label: "圖片協議", description: "生成、編輯與參考圖", icon: ImageIcon },
+    { key: "video", label: "影片協議", description: "建立任務、輪詢與媒體結果", icon: Film },
+    { key: "audio", label: "音訊協議", description: "語音與非同步音訊任務", icon: AudioLines },
 ] as const;
 
 export default function PluginsPage() {
@@ -114,7 +114,7 @@ export default function PluginsPage() {
             setBackendPlugins(result.plugins);
             setPluginStates(result.states);
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "读取插件中心失败");
+            message.error(error instanceof Error ? error.message : "讀取外掛中心失敗");
             setBackendPlugins([]);
         } finally {
             setBackendPluginsLoading(false);
@@ -169,7 +169,7 @@ export default function PluginsPage() {
         () =>
             [
                 ...visibleProtocolSectionMeta.map((section) => ({ ...section, plugins: filteredPlugins.filter((plugin) => pluginMatchesCategory(plugin.manifest, section.key)) })),
-                { key: "other", label: "应用插件", description: "画布、素材与工作流扩展", icon: PlugZap, plugins: filteredPlugins.filter((plugin) => pluginMatchesCategory(plugin.manifest, "other")) },
+                { key: "other", label: "應用外掛", description: "畫布、素材與工作流擴充套件", icon: PlugZap, plugins: filteredPlugins.filter((plugin) => pluginMatchesCategory(plugin.manifest, "other")) },
             ].filter((section) => categoryFilter === "all" || section.key === categoryFilter),
         [categoryFilter, filteredPlugins, visibleProtocolSectionMeta],
     );
@@ -212,7 +212,7 @@ export default function PluginsPage() {
         try {
             if (localRuntime) {
                 setEnabled(plugin.manifest.id, enabled);
-                message.success(`${plugin.manifest.name}${enabled ? "已启用" : "已停用"}`);
+                message.success(`${plugin.manifest.name}${enabled ? "已啟用" : "已停用"}`);
                 return;
             }
             const next = await setUserPluginEnabled(plugin.manifest.id, enabled);
@@ -221,9 +221,9 @@ export default function PluginsPage() {
             if (next.pluginId === RUNNINGHUB_PLUGIN_ID) {
                 setRuntimeStatuses({ ...usePluginStore.getState().runtimeStatuses, [next.pluginId]: next.effectiveEnabled ? "enabled" : "disabled" });
             }
-            message.success(`${plugin.manifest.name}${enabled ? "已启用" : "已停用"}`);
+            message.success(`${plugin.manifest.name}${enabled ? "已啟用" : "已停用"}`);
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "更新插件状态失败");
+            message.error(error instanceof Error ? error.message : "更新外掛狀態失敗");
         }
     };
 
@@ -234,7 +234,7 @@ export default function PluginsPage() {
             const result = await getEagleLibrary(url.trim().replace(/\/$/, ""));
             setEagleFolders(result.library.folders || []);
         } catch (reason) {
-            setEagleFoldersError(reason instanceof Error ? reason.message : "读取 Eagle 文件夹失败");
+            setEagleFoldersError(reason instanceof Error ? reason.message : "讀取 Eagle 資料夾失敗");
             setEagleFolders([]);
         } finally {
             setEagleFoldersLoading(false);
@@ -244,26 +244,26 @@ export default function PluginsPage() {
     const saveEagleConfig = () => {
         const baseUrl = eagleBaseUrl.trim().replace(/\/$/, "");
         if (!/^https?:\/\//i.test(baseUrl)) {
-            message.error("Eagle 地址必须以 http:// 或 https:// 开头");
+            message.error("Eagle 地址必須以 http:// 或 https:// 開頭");
             return;
         }
         updateConfig(EAGLE_PLUGIN_ID, { baseUrl, autoUploadGenerated: eagleAutoUploadGenerated, generatedFolderId: eagleGeneratedFolderId });
-        message.success("Eagle 插件配置已保存");
+        message.success("Eagle 外掛配置已儲存");
     };
 
     return (
         <main className="app-workspace-page plugins-page flex h-full min-h-0 flex-col text-foreground">
             <div ref={scrollContainerRef} className="app-workspace-scroll min-h-0 flex-1 overflow-y-auto">
                 <div className="plugins-page-layout">
-                    <aside className="plugins-sidebar" aria-label="插件分类">
+                    <aside className="plugins-sidebar" aria-label="外掛分類">
                         <div className="plugins-sidebar-heading">
-                            <PageHeader title="插件中心" description="连接模型、素材与工作流，拓展你的创作工具。" />
+                            <PageHeader title="外掛中心" description="連線模型、素材與工作流，拓展你的創作工具。" />
                         </div>
                         <nav className="plugins-sidebar-nav">
                             <button type="button" className={`plugins-sidebar-item${categoryFilter === "all" ? " is-active" : ""}`} aria-current={categoryFilter === "all" ? "page" : undefined} onClick={() => selectCategory("all")}>
                                 <span className="plugins-sidebar-item-label">
                                     <PlugZap className="size-4" />
-                                    全部插件
+                                    全部外掛
                                 </span>
                                 <span>{categoryCounts.all}</span>
                             </button>
@@ -288,16 +288,16 @@ export default function PluginsPage() {
                             <button type="button" className={`plugins-sidebar-item${categoryFilter === "other" ? " is-active" : ""}`} aria-current={categoryFilter === "other" ? "page" : undefined} onClick={() => selectCategory("other")}>
                                 <span className="plugins-sidebar-item-label">
                                     <PlugZap className="size-4" />
-                                    应用插件
+                                    應用外掛
                                 </span>
                                 <span>{categoryCounts.other}</span>
                             </button>
                         </nav>
                     </aside>
                     <div className="plugins-page-content">
-                        <CollectionToolbar label="插件筛选" trailing={<div className="plugins-toolbar-actions">
+                        <CollectionToolbar label="外掛篩選" trailing={<div className="plugins-toolbar-actions">
                                 <Button icon={<RefreshCw className="size-4" />} loading={backendPluginsLoading} onClick={() => void reloadBackendPlugins()}>
-                                    刷新插件
+                                    重新整理外掛
                                 </Button>
                             </div>}>
                             <Input
@@ -305,29 +305,29 @@ export default function PluginsPage() {
                                 prefix={<Search className="size-4 text-foreground/38" aria-hidden="true" />}
                                 value={search}
                                 allowClear
-                                placeholder="搜索插件名称、描述或作者"
+                                placeholder="搜尋外掛名稱、描述或作者"
                                 onChange={(event) => setSearch(event.target.value)}
                             />
                             <Select
                                 className="plugins-filter"
                                 value={statusFilter}
                                 options={[
-                                    { value: "all", label: "全部状态" },
-                                    { value: "enabled", label: "已启用" },
+                                    { value: "all", label: "全部狀態" },
+                                    { value: "enabled", label: "已啟用" },
                                     { value: "disabled", label: "已停用" },
                                 ]}
                                 onChange={(value) => setStatusFilter(value as "all" | "enabled" | "disabled")}
-                                aria-label="按状态筛选"
+                                aria-label="按狀態篩選"
                             />
                             <Select
                                 className="plugins-filter"
                                 value={trustFilter}
                                 options={[
-                                    { value: "all", label: "全部来源" },
-                                    { value: "trusted", label: "可信插件" },
+                                    { value: "all", label: "全部來源" },
+                                    { value: "trusted", label: "可信外掛" },
                                 ]}
                                 onChange={(value) => setTrustFilter(value as "all" | "trusted")}
-                                aria-label="按来源筛选"
+                                aria-label="按來源篩選"
                             />
                         </CollectionToolbar>
 
@@ -368,7 +368,7 @@ export default function PluginsPage() {
                                                                 <button
                                                                     type="button"
                                                                     className="plugin-card-main"
-                                                                    aria-label={`查看${plugin.manifest.name}文档`}
+                                                                    aria-label={`檢視${plugin.manifest.name}檔案`}
                                                                     onClick={(event) => {
                                                                         const openedByKeyboard = event.detail === 0;
                                                                         setDetailsRestoreFocus(openedByKeyboard);
@@ -386,11 +386,11 @@ export default function PluginsPage() {
                                                                                 <span className="plugin-version">v{plugin.manifest.version}</span>
                                                                             </div>
                                                                             <div className="plugin-card-labels">
-                                                                                <span className={`plugin-source-label${sourceLabel === "系统插件" ? " is-system" : ""}`}>{sourceLabel}</span>
+                                                                                <span className={`plugin-source-label${sourceLabel === "系統外掛" ? " is-system" : ""}`}>{sourceLabel}</span>
                                                                                 {trusted ? (
                                                                                     <span className="plugin-trust-label">
                                                                                         <ShieldCheck className="size-3.5" />
-                                                                                        可信插件
+                                                                                        可信外掛
                                                                                     </span>
                                                                                 ) : null}
                                                                                 <span className="plugin-category-label">
@@ -407,7 +407,7 @@ export default function PluginsPage() {
                                                                     <div className="plugin-card-meta">
                                                                         <span>
                                                                             <CalendarDays className="size-3.5" />
-                                                                            发布 {formatPluginDate(plugin.manifest.publishedAt)}
+                                                                            釋出 {formatPluginDate(plugin.manifest.publishedAt)}
                                                                         </span>
                                                                         <span>
                                                                             <Clock3 className="size-3.5" />
@@ -422,21 +422,21 @@ export default function PluginsPage() {
                                                                         {providerCapabilitiesFor(plugin.manifest).map((capability) => (
                                                                             <span key={capability}>{capabilityLabel(capability)}</span>
                                                                         ))}
-                                                                        {plugin.manifest.contributes.providers?.some((provider) => provider.poll) ? <span>异步轮询</span> : null}
-                                                                        <span>{plugin.manifest.permissions.length} 项能力</span>
+                                                                        {plugin.manifest.contributes.providers?.some((provider) => provider.poll) ? <span>非同步輪詢</span> : null}
+                                                                        <span>{plugin.manifest.permissions.length} 項能力</span>
                                                                     </div>
                                                                 </button>
 
                                                                 <div className="plugin-card-actions">
                                                                     <span role="status" className={`settings-channel-status ${enabled ? "is-ready" : ""}`}>
                                                                         <i aria-hidden="true" />
-                                                                        {!state?.platformAvailable && state?.blockedReason ? state.blockedReason : enabled ? "已启用" : "已停用"}
+                                                                        {!state?.platformAvailable && state?.blockedReason ? state.blockedReason : enabled ? "已啟用" : "已停用"}
                                                                     </span>
                                                                     <Switch
                                                                         className="plugin-state-switch"
                                                                         disabled={!canToggle}
                                                                         checked={enabled}
-                                                                        aria-label={`${plugin.manifest.name}，当前${enabled ? "已启用，点击停用" : "已停用，点击启用"}`}
+                                                                        aria-label={`${plugin.manifest.name}，當前${enabled ? "已啟用，點選停用" : "已停用，點選啟用"}`}
                                                                         title={state?.blockedReason}
                                                                         onChange={(checked) => void togglePlugin(plugin, checked)}
                                                                     />
@@ -448,7 +448,7 @@ export default function PluginsPage() {
                                                                             aria-haspopup="dialog"
                                                                             onClick={() => setSettingsPluginId(plugin.manifest.id)}
                                                                         >
-                                                                            设置
+                                                                            設定
                                                                         </Button>
                                                                     ) : null}
                                                                 </div>
@@ -464,7 +464,7 @@ export default function PluginsPage() {
                                                 </div>
                                             ) : (
                                                 <div className="plugin-section-empty-hint">
-                                                    <span>暂无该类型的插件</span>
+                                                    <span>暫無該型別的外掛</span>
                                                 </div>
                                             )}
                                         </section>
@@ -475,8 +475,8 @@ export default function PluginsPage() {
                             <EmptyState
                                 className="min-h-[260px] rounded-[var(--plugins-card-radius)] bg-foreground/[0.03]"
                                 icon={SlidersHorizontal}
-                                title="没有匹配的插件"
-                                description="试试清空搜索词，或放宽筛选条件。"
+                                title="沒有匹配的外掛"
+                                description="試試清空搜尋詞，或放寬篩選條件。"
                                 action={
                                     <Button
                                         onClick={() => {
@@ -486,7 +486,7 @@ export default function PluginsPage() {
                                             setTrustFilter("all");
                                         }}
                                     >
-                                        清除筛选
+                                        清除篩選
                                     </Button>
                                 }
                             />
@@ -494,7 +494,7 @@ export default function PluginsPage() {
 
                         <Modal
                             className="workspace-modal workspace-modal-wide plugin-settings-modal"
-                            title={settingsPlugin ? `${settingsPlugin.manifest.name} 设置` : null}
+                            title={settingsPlugin ? `${settingsPlugin.manifest.name} 設定` : null}
                             open={Boolean(settingsPlugin)}
                             centered
                             footer={null}
@@ -506,15 +506,15 @@ export default function PluginsPage() {
                                 <div className="plugin-settings-panel plugin-settings-modal-panel">
                                     <div className="plugin-settings-heading">
                                         <div>
-                                            <p>只展示这个插件实际支持的配置项。</p>
+                                            <p>只展示這個外掛實際支援的配置項。</p>
                                         </div>
                                         {settingsPlugin.manifest.trusted ? (
                                             <span className="plugin-trust-label">
                                                 <ShieldCheck className="size-3.5" />
-                                                可信插件
+                                                可信外掛
                                             </span>
                                         ) : (
-                                            <span className="plugin-category-label">第三方插件</span>
+                                            <span className="plugin-category-label">第三方外掛</span>
                                         )}
                                     </div>
 
@@ -524,56 +524,56 @@ export default function PluginsPage() {
                                                 <div className="min-w-0">
                                                     <label htmlFor="eagle-base-url">Eagle 本地 API 地址</label>
                                                     <Input id="eagle-base-url" aria-label="Eagle 本地 API 地址" value={eagleBaseUrl} onChange={(event) => setEagleBaseUrl(event.target.value)} placeholder="http://localhost:41595" />
-                                                    <p>Eagle 必须在本机运行；{brandName}通过插件直接读取和写入 Eagle 原始文件。</p>
+                                                    <p>Eagle 必須在本機執行；{brandName}通過外掛直接讀取和寫入 Eagle 原始檔案。</p>
                                                 </div>
                                                 <div className="min-w-0">
                                                     <div className="plugin-setting-label-row">
-                                                        <label htmlFor="eagle-auto-upload-generated">自动归档生成结果</label>
-                                                        <Switch id="eagle-auto-upload-generated" checked={eagleAutoUploadGenerated} onChange={setEagleAutoUploadGenerated} aria-label="自动归档生成结果到 Eagle" />
+                                                        <label htmlFor="eagle-auto-upload-generated">自動歸檔生成結果</label>
+                                                        <Switch id="eagle-auto-upload-generated" checked={eagleAutoUploadGenerated} onChange={setEagleAutoUploadGenerated} aria-label="自動歸檔生成結果到 Eagle" />
                                                     </div>
-                                                    <p>图片、视频和音频生成成功后，自动写入 Eagle；{brandName}本地素材仍会保留。</p>
+                                                    <p>圖片、影片和音訊生成成功後，自動寫入 Eagle；{brandName}本地素材仍會保留。</p>
                                                 </div>
                                                 <div className="min-w-0">
                                                     <div className="plugin-setting-label-row">
-                                                        <label htmlFor="eagle-generated-folder">生成结果写入文件夹</label>
+                                                        <label htmlFor="eagle-generated-folder">生成結果寫入資料夾</label>
                                                         <Button type="link" size="small" loading={eagleFoldersLoading} onClick={() => void loadEagleFolders()}>
-                                                            读取文件夹
+                                                            讀取資料夾
                                                         </Button>
                                                     </div>
                                                     <Select
                                                         id="eagle-generated-folder"
-                                                        aria-label="生成结果写入文件夹"
+                                                        aria-label="生成結果寫入資料夾"
                                                         showSearch
                                                         allowClear
                                                         value={eagleGeneratedFolderId || undefined}
-                                                        placeholder="Eagle 根目录"
+                                                        placeholder="Eagle 根目錄"
                                                         optionFilterProp="label"
-                                                        options={[{ value: "__root__", label: "Eagle 根目录" }, ...eagleFolderOptions(eagleFolders)]}
+                                                        options={[{ value: "__root__", label: "Eagle 根目錄" }, ...eagleFolderOptions(eagleFolders)]}
                                                         onChange={(value) => setEagleGeneratedFolderId(value === "__root__" || !value ? "" : value)}
                                                     />
-                                                    <p>{eagleFoldersError || "默认写入 Eagle 根目录；选择文件夹后按 Eagle 原始目录归档。"}</p>
+                                                    <p>{eagleFoldersError || "預設寫入 Eagle 根目錄；選擇資料夾後按 Eagle 原始目錄歸檔。"}</p>
                                                 </div>
                                             </div>
                                             <div className="plugin-settings-actions">
                                                 <Button type="primary" icon={<CheckCircle2 className="size-4" />} onClick={saveEagleConfig}>
-                                                    保存配置
+                                                    儲存配置
                                                 </Button>
                                                 <Button icon={<FolderOpen className="size-4" />} disabled={!settingsEnabled} onClick={() => navigate("/plugins/eagle")}>
-                                                    打开 Eagle 素材库
+                                                    開啟 Eagle 素材庫
                                                 </Button>
                                                 <Button icon={<ExternalLink className="size-4" />} href="https://api.eagle.cool/" target="_blank">
-                                                    查看 API
+                                                    檢視 API
                                                 </Button>
                                             </div>
                                         </>
                                     ) : settingsPlugin.manifest.id === PROMPT_OPTIMIZER_PLUGIN_ID ? (
                                         <div className="rounded-[var(--r-md)] border border-border/60 bg-muted/25 px-3 py-3 text-[var(--fs-body)] leading-6 text-foreground/70">
-                                            <p>在创作页或图片、视频节点的提示词编辑器中使用“优化”按钮，即可让当前文本模型整理提示词。</p>
-                                            <p className="mt-2 text-[var(--fs-micro)] text-foreground/50">插件不会自动覆盖原提示词，只有点击“采用”后才会回填到当前输入框。</p>
+                                            <p>在創作頁或圖片、影片節點的提示詞編輯器中使用“最佳化”按鈕，即可讓當前文本模型整理提示詞。</p>
+                                            <p className="mt-2 text-[var(--fs-micro)] text-foreground/50">外掛不會自動覆蓋原提示詞，只有點選“採用”後才會回填到當前輸入框。</p>
                                         </div>
                                     ) : settingsPlugin.manifest.id === RUNNINGHUB_PLUGIN_ID ? (
                                         <div className="plugin-settings-empty">
-                                            <p>RunningHub 的 API Key、Workflow / App 和字段映射在宿主设置页维护。</p>
+                                            <p>RunningHub 的 API Key、Workflow / App 和欄位對映在宿主設定頁維護。</p>
                                             <Button
                                                 type="primary"
                                                 icon={<ExternalLink className="size-4" />}
@@ -582,26 +582,26 @@ export default function PluginsPage() {
                                                     navigate("/settings?section=runninghub");
                                                 }}
                                             >
-                                                打开工作流设置
+                                                開啟工作流設定
                                             </Button>
                                         </div>
                                     ) : (
                                         <div className="plugin-settings-empty">
-                                            {`贡献能力：${
+                                            {`貢獻能力：${
                                                 contributionKindsFor(settingsPlugin.manifest)
                                                     .map((kind) => categoryLabels[kind] || kind)
-                                                    .join("、") || "未声明"
-                                            }。当前接入位置和权限会根据插件清单自动生效。`}
+                                                    .join("、") || "未宣告"
+                                            }。當前接入位置和許可權會根據外掛清單自動生效。`}
                                         </div>
                                     )}
 
                                     <div className="plugin-permissions">
                                         <div>
                                             <span>接入位置</span>
-                                            {(settingsPlugin.manifest.surfaces || []).map((surface) => surfaceLabels[surface] ?? surface).join("、") || "由贡献点决定"}
+                                            {(settingsPlugin.manifest.surfaces || []).map((surface) => surfaceLabels[surface] ?? surface).join("、") || "由貢獻點決定"}
                                         </div>
                                         <div>
-                                            <span>插件能力</span>
+                                            <span>外掛能力</span>
                                             {settingsPlugin.manifest.permissions.map((permission) => permissionLabels[permission] ?? permission).join("、")}
                                         </div>
                                     </div>
@@ -617,9 +617,9 @@ export default function PluginsPage() {
 }
 
 function formatPluginDate(value?: string) {
-    if (!value) return "未记录";
+    if (!value) return "未記錄";
     const timestamp = Date.parse(value);
-    return Number.isFinite(timestamp) ? pluginDateFormatter.format(timestamp) : "未记录";
+    return Number.isFinite(timestamp) ? pluginDateFormatter.format(timestamp) : "未記錄";
 }
 
 function toRegisteredPlugin(plugin: BackendPlugin): RegisteredPlugin {
@@ -627,10 +627,10 @@ function toRegisteredPlugin(plugin: BackendPlugin): RegisteredPlugin {
 }
 
 function pluginSourceLabel(plugin: RegisteredPlugin, state?: PluginState) {
-    if (plugin.source === "uploaded") return "自定义插件";
-    if (plugin.source === "system") return "系统插件";
-    if (state?.canToggle || isOfficialApplicationPluginId(plugin.manifest.id)) return "官方插件";
-    return "系统插件";
+    if (plugin.source === "uploaded") return "自定義外掛";
+    if (plugin.source === "system") return "系統外掛";
+    if (state?.canToggle || isOfficialApplicationPluginId(plugin.manifest.id)) return "官方外掛";
+    return "系統外掛";
 }
 
 function contributionKindsFor(manifest: PluginManifest | PluginManifestV2): string[] {
@@ -659,7 +659,7 @@ function pluginMatchesCategory(manifest: PluginManifest | PluginManifestV2, cate
 }
 
 function capabilityLabel(value: string) {
-    return ({ text: "文本", image: "图片", video: "视频", audio: "音频" } as Record<string, string>)[value] || value;
+    return ({ text: "文本", image: "圖片", video: "影片", audio: "音訊" } as Record<string, string>)[value] || value;
 }
 
 function eagleFolderOptions(folders: EagleFolder[]) {

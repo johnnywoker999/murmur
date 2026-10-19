@@ -6,7 +6,7 @@ export function seedanceSettingsConstraints(model: string, imageCount: number, v
     const firstFrame = operation !== "reference_to_video" && (explicitFrame || (imageCount > 0 && imageCount <= 2 && !videoCount && !audioCount));
     const edit = videoCount > 0 && ["inpaint", "replace_element", "style_transfer"].includes(operation || "");
     const extend = videoCount > 0 && operation === "extend";
-    return { ratioLabel: firstFrame ? "随首帧" : edit || extend ? "随原视频" : undefined, durationLocked: edit };
+    return { ratioLabel: firstFrame ? "隨首幀" : edit || extend ? "隨原影片" : undefined, durationLocked: edit };
 }
 
 // Task intent comes from roles and the selected operation, never prompt keywords.

@@ -13,8 +13,8 @@
     overflow: hidden;
 }
 
-/* 子面板脱离父菜单的布局流，避免打开二/三级菜单时 rc-trigger 重新测量
-   整个 popup，导致一级菜单向左跳动。 */
+/* 子面板脫離父選單的佈局流，避免開啟二/三級選單時 rc-trigger 重新測量
+   整個 popup，導致一級選單向左跳動。 */
 .canvas-node-toolbar-menu-split > .canvas-grid-split-picker {
     position: absolute;
     z-index: 2;

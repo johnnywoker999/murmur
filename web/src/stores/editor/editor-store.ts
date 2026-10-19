@@ -1,8 +1,8 @@
-// 编辑器状态机（ADR-0002）：命令唯一入口 + 有界快照撤销 + 1.5s 防抖保存。
-// - dispatch：同步 apply 命令，失败（fail-closed）不改状态、错误进 saveError 供 UI 上报
-// - 保存层依赖注入（saveTimeline），当前由页面绑定本地存储；保存串行化防止旧快照覆盖新状态
-// - previewGesture/commitGesture/cancelGesture：拖拽等连续手势期间只改渲染态，
-//   松手提交时一次性入历史（手势不逐帧污染撤销栈）
+// 編輯器狀態機（ADR-0002）：命令唯一入口 + 有界快照撤銷 + 1.5s 防抖儲存。
+// - dispatch：同步 apply 命令，失敗（fail-closed）不改狀態、錯誤進 saveError 供 UI 上報
+// - 儲存層依賴注入（saveTimeline），當前由頁面繫結本地儲存；儲存序列化防止舊快照覆蓋新狀態
+// - previewGesture/commitGesture/cancelGesture：拖拽等連續手勢期間只改渲染態，
+//   鬆手提交時一次性入歷史（手勢不逐幀汙染撤銷棧）
 
 import { create, type StoreApi, type UseBoundStore } from "zustand";
 
@@ -21,34 +21,34 @@ export type SaveTimeline = (project: TimelineProject) => Promise<void>;
 export const EDITOR_SAVE_DEBOUNCE_MS = 1500;
 
 export type EditorStore = {
-    /** 编辑器当前项目；null 表示尚未加载（进入编辑器前由 load 注入）。 */
+    /** 編輯器當前專案；null 表示尚未載入（進入編輯器前由 load 注入）。 */
     project: TimelineProject | null;
     history: EditorHistory | null;
-    /** 手势预览进行中（drag/trim 未松手）：期间 dispatch/undo/redo 被拒绝。 */
+    /** 手勢預覽進行中（drag/trim 未鬆手）：期間 dispatch/undo/redo 被拒絕。 */
     inPreview: boolean;
     isDirty: boolean;
     saving: boolean;
     saveError: string | null;
     lastSavedAt: number | null;
-    /** 当前选中片段 id（检查器/预览联动；纯 UI 状态，不入命令历史）。 */
+    /** 當前選中片段 id（檢查器/預覽聯動；純 UI 狀態，不入命令歷史）。 */
     selectedClipId: string | null;
     selectClip: (id: string | null) => void;
-    /** 播放头位置（监视器与时间线面板共享的 transport，毫秒；纯 UI 状态，不入命令历史）。 */
+    /** 播放頭位置（監視器與時間線面板共享的 transport，毫秒；純 UI 狀態，不入命令歷史）。 */
     transportMs: number;
     setTransportMs: (ms: number) => void;
-    /** 加载/切换项目：重置历史与保存状态（数据由外部传入，不触发保存）。 */
+    /** 載入/切換專案：重置歷史與儲存狀態（資料由外部傳入，不觸發儲存）。 */
     load: (project: TimelineProject) => void;
-    /** 应用一条编辑命令（唯一修改入口）。 */
+    /** 應用一條編輯命令（唯一修改入口）。 */
     dispatch: (cmd: EditCommand) => void;
     undo: () => void;
     redo: () => void;
-    /** 手势预览：临时应用命令到渲染态，不入历史。 */
+    /** 手勢預覽：臨時應用命令到渲染態，不入歷史。 */
     previewGesture: (cmd: EditCommand) => void;
-    /** 提交预览：预览态作为一次历史入栈并触发保存。 */
+    /** 提交預覽：預覽態作為一次歷史入棧並觸發儲存。 */
     commitGesture: () => void;
-    /** 取消预览：丢弃预览态，回到手势前状态。 */
+    /** 取消預覽：丟棄預覽態，回到手勢前狀態。 */
     cancelGesture: () => void;
-    /** 立即保存（离开编辑器/卸载前调用）。 */
+    /** 立即儲存（離開編輯器/解除安裝前呼叫）。 */
     flushSave: () => Promise<void>;
     hasActiveSave: () => boolean;
 };
@@ -60,11 +60,11 @@ export type EditorStoreOptions = {
 };
 
 /**
- * 创建一个项目级时间线状态容器。
+ * 建立一個專案級時間線狀態容器。
  *
- * 状态容器不负责服务端持久化：saveTimeline 是调用方注入的本地存储适配器，
- * 这里仅保证命令、撤销历史和保存队列的一致性。保存失败必须保留 isDirty，
- * 让 UI 能提示未落盘并在下一次变更或卸载冲刷时重试。
+ * 狀態容器不負責服務端持久化：saveTimeline 是呼叫方注入的本地儲存介面卡，
+ * 這裡僅保證命令、撤銷歷史和儲存佇列的一致性。儲存失敗必須保留 isDirty，
+ * 讓 UI 能提示未落盤並在下一次變更或解除安裝沖刷時重試。
  */
 export function createEditorStore(options: EditorStoreOptions = {}): UseBoundStore<StoreApi<EditorStore>> {
     const registry = options.registry ?? getEditorCommandRegistry();
@@ -73,7 +73,7 @@ export function createEditorStore(options: EditorStoreOptions = {}): UseBoundSto
 
     return create<EditorStore>((set, get) => {
         let saveTimer: ReturnType<typeof setTimeout> | null = null;
-        // 保存串行链：避免并行保存导致旧快照后落地覆盖新状态
+        // 儲存序列鏈：避免並行儲存導致舊快照後落地覆蓋新狀態
         let saveChain: Promise<void> = Promise.resolve();
         let pendingSaves = 0;
 
@@ -96,7 +96,7 @@ export function createEditorStore(options: EditorStoreOptions = {}): UseBoundSto
         };
 
         const scheduleSave = () => {
-            if (!saveTimeline) return; // 未注入保存层：保持 dirty，由上层决定持久化时机
+            if (!saveTimeline) return; // 未注入儲存層：保持 dirty，由上層決定持久化時機
             if (saveTimer) clearTimeout(saveTimer);
             saveTimer = setTimeout(() => {
                 saveTimer = null;
@@ -166,8 +166,8 @@ export function createEditorStore(options: EditorStoreOptions = {}): UseBoundSto
             previewGesture: (cmd) => {
                 const { project, history } = get();
                 if (!project || !history) return;
-                // 手势进行中允许基于当前预览态继续应用（拖拽每帧调用）；
-                // 预览始终从手势前历史提交，因此预览期间不触碰历史。
+                // 手勢進行中允許基於當前預覽態繼續應用（拖拽每幀呼叫）；
+                // 預覽始終從手勢前歷史提交，因此預覽期間不觸碰歷史。
                 let next: TimelineProject;
                 try {
                     next = registry.apply(project, cmd);

@@ -64,12 +64,12 @@ export function eagleItemFileUrl(itemId: string, baseUrl: string) {
 export async function downloadEagleItem(itemId: string, baseUrl: string, signal?: AbortSignal) {
     const response = await fetch(`${String(apiBaseURL).replace(/\/+$/, "")}/plugins/eagle/items/${encodeURIComponent(itemId)}/file?baseUrl=${encodeURIComponent(baseUrl)}`, { credentials: "include", signal });
     if (!response.ok) {
-        let message = "读取 Eagle 素材失败";
+        let message = "讀取 Eagle 素材失敗";
         try {
             const body = await response.json() as { msg?: string };
             message = body.msg || message;
         } catch {
-            // 保留通用错误，避免把 HTML 或服务器内部信息展示给用户。
+            // 保留通用錯誤，避免把 HTML 或伺服器內部資訊展示給使用者。
         }
         throw new Error(message);
     }

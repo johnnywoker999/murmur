@@ -15,10 +15,10 @@ const capabilityChoices: Array<{
     icon: ReactNode;
     brands: string[];
 }> = [
-    { value: "text", label: "文本", description: "对话与推理", icon: <MessageSquareText className="size-4" />, brands: ["openai", "deepseek", "glm"] },
-    { value: "image", label: "图片", description: "生成与编辑", icon: <Image className="size-4" />, brands: ["openai", "gemini"] },
-    { value: "video", label: "视频", description: "生成与续写", icon: <Film className="size-4" />, brands: ["grok", "gemini"] },
-    { value: "audio", label: "音频", description: "语音与音效", icon: <AudioLines className="size-4" />, brands: ["openai"] },
+    { value: "text", label: "文本", description: "對話與推理", icon: <MessageSquareText className="size-4" />, brands: ["openai", "deepseek", "glm"] },
+    { value: "image", label: "圖片", description: "生成與編輯", icon: <Image className="size-4" />, brands: ["openai", "gemini"] },
+    { value: "video", label: "影片", description: "生成與續寫", icon: <Film className="size-4" />, brands: ["grok", "gemini"] },
+    { value: "audio", label: "音訊", description: "語音與音效", icon: <AudioLines className="size-4" />, brands: ["openai"] },
 ];
 
 type PickerDensity = "comfortable" | "compact";
@@ -72,7 +72,7 @@ export function ProtocolCardPicker({
 }) {
     const availableProtocols = protocols.filter((item) => item.capability === capability && item.enabled !== false);
     return (
-        <div className={cn("grid grid-cols-1 gap-2 sm:grid-cols-2", density === "compact" && "gap-1.5 xl:grid-cols-3")} role="radiogroup" aria-label="模型请求协议">
+        <div className={cn("grid grid-cols-1 gap-2 sm:grid-cols-2", density === "compact" && "gap-1.5 xl:grid-cols-3")} role="radiogroup" aria-label="模型請求協議">
             {availableProtocols.map((protocol) => {
                 const selected = value === protocol.value;
                 return (
@@ -105,7 +105,7 @@ export function ProtocolCardPicker({
                                 <div className="mt-2 line-clamp-2 text-xs leading-5 text-foreground/58">{protocol.media}</div>
                                 <div className="mt-auto flex items-center justify-between gap-2 pt-2 text-[var(--fs-tiny)] text-foreground/42">
                                     <span className="truncate">{protocol.contentType}</span>
-                                    {protocol.poll ? <span className="shrink-0">异步轮询</span> : <span className="shrink-0">同步响应</span>}
+                                    {protocol.poll ? <span className="shrink-0">非同步輪詢</span> : <span className="shrink-0">同步響應</span>}
                                 </div>
                             </>
                         ) : null}
@@ -153,13 +153,13 @@ export function ModelCapabilityProtocolModal({
                 </span>
             </Button>
             <Modal
-                title="配置模型能力与请求协议"
+                title="配置模型能力與請求協議"
                 open={open}
                 width="min(720px, calc(100vw - 24px))"
                 centered
                 destroyOnHidden
                 onCancel={() => setOpen(false)}
-                okText="应用配置"
+                okText="應用配置"
                 cancelText="取消"
                 onOk={() => {
                     onChange(draft);
@@ -172,7 +172,7 @@ export function ModelCapabilityProtocolModal({
                         <CapabilityCardPicker value={draft.capability} onChange={updateCapability} />
                     </section>
                     <section>
-                        <div className="mb-2 text-xs font-semibold text-foreground/65">请求协议</div>
+                        <div className="mb-2 text-xs font-semibold text-foreground/65">請求協議</div>
                         <ProtocolCardPicker capability={draft.capability} value={draft.protocol} protocols={protocols} onChange={(protocol) => setDraft((current) => ({ ...current, protocol }))} />
                     </section>
                 </div>
@@ -184,7 +184,7 @@ export function ModelCapabilityProtocolModal({
 function ProtocolBrandMark({ protocol, compact = false }: { protocol: ModelProtocolDefinition; compact?: boolean }) {
     const iconSize = compact ? "size-6" : "size-8";
     const vendor = `${protocol.vendor || ""} ${protocol.label}`.toLowerCase();
-    if (vendor.includes("jimeng") || vendor.includes("即梦"))
+    if (vendor.includes("jimeng") || vendor.includes("即夢"))
         return (
             <span className={cn("grid shrink-0 place-items-center rounded-md bg-muted text-foreground/65", iconSize)}>
                 <Sparkles className={compact ? "size-3" : "size-4"} />
@@ -219,10 +219,10 @@ function BrandIconRow({ models, compact = false, className }: { models: string[]
 }
 
 function modelBrandLabel(model: string) {
-    const labels: Record<string, string> = { openai: "OpenAI", deepseek: "DeepSeek", glm: "智谱 GLM", gemini: "Google Gemini", grok: "xAI Grok" };
+    const labels: Record<string, string> = { openai: "OpenAI", deepseek: "DeepSeek", glm: "智譜 GLM", gemini: "Google Gemini", grok: "xAI Grok" };
     return labels[model] || model;
 }
 
 function capabilityLabel(value: ModelCapabilityChoice) {
-    return { text: "文本", image: "图片", video: "视频", audio: "音频" }[value];
+    return { text: "文本", image: "圖片", video: "影片", audio: "音訊" }[value];
 }

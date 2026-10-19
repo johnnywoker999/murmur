@@ -4,19 +4,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * StatusBadge — 语义状态徽章。
+ * StatusBadge — 語義狀態徽章。
  *
- * 两种形态：
- * - outline（默认）：圆点 + 文本，圆点承担状态色，底色 bg-secondary/60。
- * - filled：tone 色块纯文本胶囊（AntD Tag variant="filled" 观感），无圆点。
+ * 兩種形態：
+ * - outline（預設）：圓點 + 文本，圓點承擔狀態色，底色 bg-secondary/60。
+ * - filled：tone 色塊純文本膠囊（AntD Tag variant="filled" 觀感），無圓點。
  *
- * 用途：展示实体的语义状态（成功/告警/失败/进行中/中性），如任务状态、同步状态、
- *   节点状态；替代 AntD Tag 的状态标签场景与各页面私有实现。
- * token：outline 圆点取 bg-status-{success|warning|error|loading}、中性取前景色；
+ * 用途：展示實體的語義狀態（成功/告警/失敗/進行中/中性），如任務狀態、同步狀態、
+ *   節點狀態；替代 AntD Tag 的狀態標籤場景與各頁面私有實現。
+ * token：outline 圓點取 bg-status-{success|warning|error|loading}、中性取前景色；
  *   底色 bg-secondary/60、文本 text-muted-foreground；filled 容器取
  *   bg-status-{tone}/15 + text-status-{tone}（中性取前景色混合）。
- * 对标：AntD Tag（状态色标签，variant="filled" 对应 filled）、BoardUI status-dot（状态点）。
- * 明暗：全部颜色走 token，明暗双主题自动适配。
+ * 對標：AntD Tag（狀態色標籤，variant="filled" 對應 filled）、BoardUI status-dot（狀態點）。
+ * 明暗：全部顏色走 token，明暗雙主題自動適配。
  */
 export const statusBadgeTone = cva("shrink-0 rounded-full", {
     variants: {
@@ -50,7 +50,7 @@ export const statusBadgeVariants = cva("inline-flex items-center gap-1.5 whitesp
     },
 });
 
-/** filled 容器底色：tone 色 12–15% 淡底（中性为前景色 8%） */
+/** filled 容器底色：tone 色 12–15% 淡底（中性為前景色 8%） */
 const filledTintClass: Record<string, string> = {
     neutral: "bg-foreground/8",
     success: "bg-status-success/15",
@@ -59,7 +59,7 @@ const filledTintClass: Record<string, string> = {
     loading: "bg-status-loading/15",
 };
 
-/** filled 文本色：tone 原色（中性为前景色 70%） */
+/** filled 文本色：tone 原色（中性為前景色 70%） */
 const filledInkClass: Record<string, string> = {
     neutral: "text-foreground/70",
     success: "text-status-success",
@@ -71,7 +71,7 @@ const filledInkClass: Record<string, string> = {
 export type StatusBadgeProps = HTMLAttributes<HTMLSpanElement> &
     VariantProps<typeof statusBadgeTone> &
     VariantProps<typeof statusBadgeVariants> & {
-        /** 徽章文本；状态语义由文本承担（无文本时组件退化为纯圆点/色块） */
+        /** 徽章文本；狀態語義由文本承擔（無文本時元件退化為純圓點/色塊） */
         label?: ReactNode;
     };
 

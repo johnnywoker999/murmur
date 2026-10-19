@@ -20,9 +20,9 @@ import {
 type CustomizationMode = UserPromptCustomization["mode"];
 
 const modeOptions = [
-    { label: "跟随平台", value: "inherit" },
+    { label: "跟隨平臺", value: "inherit" },
     { label: "追加要求", value: "append" },
-    { label: "高级改写", value: "rewrite" },
+    { label: "高階改寫", value: "rewrite" },
 ];
 
 export function PromptPreferencesPane() {
@@ -50,7 +50,7 @@ export function PromptPreferencesPane() {
             setSelectedOperation((current) => preferredOperation || current || result.preferences[0]?.definition.operation || "");
         } catch (error) {
             if (reqId !== requestIdRef.current) return;
-            const msg = error instanceof Error ? error.message : "读取提示词偏好失败";
+            const msg = error instanceof Error ? error.message : "讀取提示詞偏好失敗";
             setLoadError(msg);
             message.error(msg);
         } finally {
@@ -73,7 +73,7 @@ export function PromptPreferencesPane() {
 
     useEffect(() => registerDesktopUpdatePreparation(() => {
         if (pendingWrites.current > 0) throw new DesktopUpdateSaveInProgressError();
-        if (dirtyRef.current) throw new Error("请先保存或放弃提示词设置中的改动。");
+        if (dirtyRef.current) throw new Error("請先儲存或放棄提示詞設定中的改動。");
     }, () => pendingWrites.current > 0), []);
 
     const restoreDraft = (preference = selected) => {
@@ -101,10 +101,10 @@ export function PromptPreferencesPane() {
             return;
         }
         modal.confirm({
-            title: "切换模板并放弃修改？",
-            content: "当前模板还有未保存内容。切换后这些修改将丢失。",
-            okText: "放弃并切换",
-            cancelText: "继续编辑",
+            title: "切換模板並放棄修改？",
+            content: "當前模板還有未儲存內容。切換後這些修改將丟失。",
+            okText: "放棄並切換",
+            cancelText: "繼續編輯",
             okButtonProps: { danger: true },
             onOk: () => setSelectedOperation(operation),
         });
@@ -114,7 +114,7 @@ export function PromptPreferencesPane() {
         if (!selected) return;
         const content = mode === "append" ? appendContent : mode === "rewrite" ? rewriteContent : "";
         if (mode !== "inherit" && !content.trim()) {
-            message.warning("请填写个人提示词内容");
+            message.warning("請填寫個人提示詞內容");
             return;
         }
         pendingWrites.current += 1;
@@ -122,9 +122,9 @@ export function PromptPreferencesPane() {
         try {
             await updateUserPromptCustomization(selected.definition.operation, { mode, content });
             await reload(selected.definition.operation);
-            message.success("提示词偏好已保存");
+            message.success("提示詞偏好已儲存");
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "保存提示词偏好失败");
+            message.error(error instanceof Error ? error.message : "儲存提示詞偏好失敗");
         } finally {
             pendingWrites.current -= 1;
             setSaving(pendingWrites.current > 0);
@@ -134,9 +134,9 @@ export function PromptPreferencesPane() {
     const reset = () => {
         if (!selected) return;
         modal.confirm({
-            title: "恢复平台模板？",
-            content: `将删除“${selected.definition.label}”的个人定制，后续自动跟随平台版本。`,
-            okText: "恢复平台模板",
+            title: "恢復平臺模板？",
+            content: `將刪除“${selected.definition.label}”的個人定製，後續自動跟隨平臺版本。`,
+            okText: "恢復平臺模板",
             cancelText: "取消",
             onOk: async () => {
                 pendingWrites.current += 1;
@@ -144,9 +144,9 @@ export function PromptPreferencesPane() {
                 try {
                     await resetUserPromptCustomization(selected.definition.operation);
                     await reload(selected.definition.operation);
-                    message.success("已恢复平台模板");
+                    message.success("已恢復平臺模板");
                 } catch (error) {
-                    message.error(error instanceof Error ? error.message : "恢复平台模板失败");
+                    message.error(error instanceof Error ? error.message : "恢復平臺模板失敗");
                 } finally {
                     pendingWrites.current -= 1;
                     setSaving(pendingWrites.current > 0);
@@ -159,15 +159,15 @@ export function PromptPreferencesPane() {
     if (loadError && preferences.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center gap-3 py-16">
-                <Callout tone="error" title="加载提示词偏好失败">{loadError}</Callout>
-                <Button icon={<RotateCcw className="size-4" />} onClick={() => void reload()}>重试</Button>
+                <Callout tone="error" title="載入提示詞偏好失敗">{loadError}</Callout>
+                <Button icon={<RotateCcw className="size-4" />} onClick={() => void reload()}>重試</Button>
             </div>
         );
     }
-    if (!selected) return <EmptyState title="暂无可配置的提示词模板" />;
+    if (!selected) return <EmptyState title="暫無可配置的提示詞模板" />;
 
-    const templateContent = selected.template?.content || "当前没有启用的平台模板";
-    const previewCreative = mode === "inherit" ? templateContent : mode === "append" ? `${templateContent}\n\n【用户个性化创作要求】\n${appendContent}` : rewriteContent;
+    const templateContent = selected.template?.content || "當前沒有啟用的平臺模板";
+    const previewCreative = mode === "inherit" ? templateContent : mode === "append" ? `${templateContent}\n\n【使用者個性化創作要求】\n${appendContent}` : rewriteContent;
     const outputLabel = selected.definition.outputType === "json" ? selected.definition.schemaKey || "JSON" : "文本";
 
     return (
@@ -175,22 +175,22 @@ export function PromptPreferencesPane() {
             <header className="shrink-0 pb-4">
                 <div className="flex flex-wrap items-end justify-between gap-4">
                     <div className="min-w-0 flex-1">
-                         <label className="mb-2 block text-xs font-medium text-foreground/55">提示词模板</label>
+                         <label className="mb-2 block text-xs font-medium text-foreground/55">提示詞模板</label>
                         <Select
-                             ariaLabel="提示词模板"
+                             ariaLabel="提示詞模板"
                             className="w-full max-w-md"
                             value={selectedOperation}
                             onChange={selectOperation}
                             options={preferences.map((item) => ({
                                 value: item.definition.operation,
-                                label: `${item.definition.category} · ${item.definition.label}${item.customization && item.customization.mode !== "inherit" ? " · 已定制" : ""}`,
+                                label: `${item.definition.category} · ${item.definition.label}${item.customization && item.customization.mode !== "inherit" ? " · 已定製" : ""}`,
                             }))}
                         />
                     </div>
                     <div className="flex shrink-0 flex-wrap gap-2">
-                        <Button icon={<Undo2 className="size-4" />} disabled={!dirty || saving} onClick={() => restoreDraft()}>撤销修改</Button>
-                        <Button icon={<RotateCcw className="size-4" />} disabled={!selected.customization || saving} onClick={reset}>恢复平台</Button>
-                        <Button type="primary" icon={<Save className="size-4" />} loading={saving} disabled={!dirty} onClick={() => void save()}>保存更改</Button>
+                        <Button icon={<Undo2 className="size-4" />} disabled={!dirty || saving} onClick={() => restoreDraft()}>撤銷修改</Button>
+                        <Button icon={<RotateCcw className="size-4" />} disabled={!selected.customization || saving} onClick={reset}>恢復平臺</Button>
+                        <Button type="primary" icon={<Save className="size-4" />} loading={saving} disabled={!dirty} onClick={() => void save()}>儲存更改</Button>
                     </div>
                 </div>
 
@@ -198,9 +198,9 @@ export function PromptPreferencesPane() {
                     <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                             <h2 className="text-base font-semibold">{selected.definition.label}</h2>
-                            <StatusBadge variant="filled" tone="neutral" label={`平台 v${selected.template?.version || "--"}`} />
+                            <StatusBadge variant="filled" tone="neutral" label={`平臺 v${selected.template?.version || "--"}`} />
                             <StatusBadge variant="filled" tone="neutral" label={outputLabel} />
-                            {dirty ? <StatusBadge variant="filled" tone="warning" label="未保存" /> : null}
+                            {dirty ? <StatusBadge variant="filled" tone="warning" label="未儲存" /> : null}
                         </div>
                         <p className="mt-1 text-xs leading-5 text-foreground/55">{selected.definition.description}</p>
                     </div>
@@ -208,14 +208,14 @@ export function PromptPreferencesPane() {
                 </div>
             </header>
 
-            {selected.outdated ? <Callout className="mt-4" tone="warning" title="平台模板已更新">当前高级改写基于旧版本。可以保留现有改写，或恢复平台后再基于新版本调整。</Callout> : null}
+            {selected.outdated ? <Callout className="mt-4" tone="warning" title="平臺模板已更新">當前高階改寫基於舊版本。可以保留現有改寫，或恢復平臺後再基於新版本調整。</Callout> : null}
 
             <div className="grid min-h-0 flex-1 gap-4 pt-4 lg:grid-cols-3">
                 <section className="flex min-h-0 flex-col lg:col-span-2">
                     <div className="mb-3 shrink-0">
-                        <h3 className="text-sm font-semibold">{mode === "inherit" ? "当前平台模板" : mode === "append" ? "追加个人要求" : "改写创作策略"}</h3>
+                        <h3 className="text-sm font-semibold">{mode === "inherit" ? "當前平臺模板" : mode === "append" ? "追加個人要求" : "改寫創作策略"}</h3>
                         <p className="mt-1 text-xs leading-5 text-foreground/50">
-                            {mode === "inherit" ? "平台升级后自动使用新版本。" : mode === "append" ? "内容追加在平台策略之后，仍会自动继承平台升级。" : "只替换创作策略；动态项目数据和输出契约仍由服务端强制注入。"}
+                            {mode === "inherit" ? "平臺升級後自動使用新版本。" : mode === "append" ? "內容追加在平臺策略之後，仍會自動繼承平臺升級。" : "只替換創作策略；動態專案資料和輸出契約仍由服務端強制注入。"}
                         </p>
                     </div>
                     {mode === "append" ? (
@@ -224,7 +224,7 @@ export function PromptPreferencesPane() {
                             value={appendContent}
                             maxLength={12000}
                             showCount
-                            placeholder="例如：仙侠项目采用明亮、宏大、高清的休闲剧质感；避免阴森恐怖色调，人物表演自然、轻松。"
+                            placeholder="例如：仙俠專案採用明亮、宏大、高畫質的休閒劇質感；避免陰森恐怖色調，人物表演自然、輕鬆。"
                             onChange={(event) => setAppendContent(event.target.value)}
                         />
                     ) : (
@@ -232,7 +232,7 @@ export function PromptPreferencesPane() {
                             <PromptCodeEditor
                                 value={mode === "inherit" ? templateContent : rewriteContent}
                                 readOnly={mode === "inherit"}
-                                ariaLabel={mode === "inherit" ? "平台提示词模板" : "个人提示词改写"}
+                                ariaLabel={mode === "inherit" ? "平臺提示詞模板" : "個人提示詞改寫"}
                                 onChange={mode === "rewrite" ? setRewriteContent : undefined}
                             />
                         </div>
@@ -245,18 +245,18 @@ export function PromptPreferencesPane() {
                         items={[
                             {
                                 key: "baseline",
-                                label: "平台基线",
+                                label: "平臺基線",
                                 children: <pre className="thin-scrollbar max-h-96 overflow-auto whitespace-pre-wrap text-xs leading-6 text-foreground/65">{templateContent}</pre>,
                             },
                             {
                                 key: "contract",
-                                label: "输出契约",
-                                children: <div><div className="mb-3 flex items-center gap-2 text-xs font-medium"><ShieldCheck className="size-4" />服务端只读</div><pre className="thin-scrollbar max-h-96 overflow-auto whitespace-pre-wrap text-xs leading-6 text-foreground/65">{selected.definition.outputContract}</pre></div>,
+                                label: "輸出契約",
+                                children: <div><div className="mb-3 flex items-center gap-2 text-xs font-medium"><ShieldCheck className="size-4" />服務端只讀</div><pre className="thin-scrollbar max-h-96 overflow-auto whitespace-pre-wrap text-xs leading-6 text-foreground/65">{selected.definition.outputContract}</pre></div>,
                             },
                             {
                                 key: "preview",
-                                label: "最终结构",
-                                children: <div className="space-y-5 text-xs leading-6"><section><div className="mb-2 font-medium text-foreground/80">创作策略</div><pre className="thin-scrollbar max-h-64 overflow-auto whitespace-pre-wrap text-foreground/65">{previewCreative || "尚未填写"}</pre></section><section><div className="mb-2 font-medium text-foreground/80">运行时强制追加</div><p className="text-foreground/55">当前剧情、项目画风、当前角色版本、画布资产与受保护输出契约。</p></section></div>,
+                                label: "最終結構",
+                                children: <div className="space-y-5 text-xs leading-6"><section><div className="mb-2 font-medium text-foreground/80">創作策略</div><pre className="thin-scrollbar max-h-64 overflow-auto whitespace-pre-wrap text-foreground/65">{previewCreative || "尚未填寫"}</pre></section><section><div className="mb-2 font-medium text-foreground/80">執行時強制追加</div><p className="text-foreground/55">當前劇情、專案畫風、當前角色版本、畫布資產與受保護輸出契約。</p></section></div>,
                             },
                         ]}
                     />

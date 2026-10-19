@@ -11,17 +11,17 @@ export async function resolveResourceVideoPlayback(storageKey: string, fallback:
             resource = await prepareResourcePlayback(id, { signal, expectedScope });
         }
         for (let attempt = 0; resource.playbackStatus === "processing"; attempt += 1) {
-            if (attempt >= 120) throw new Error("视频预览仍在准备中，请稍后重新打开");
+            if (attempt >= 120) throw new Error("影片預覽仍在準備中，請稍後重新開啟");
             await waitForPlaybackPoll(signal);
             resource = await refreshResource(id, { signal, expectedScope });
         }
         if (resource.playbackStatus === "ready") {
             const playback = await getResourcePlayback(storageKey, { signal, expectedScope });
             assertUserScope(expectedScope);
-            if (!playback) throw new Error("视频预览不可用，请重试");
+            if (!playback) throw new Error("影片預覽不可用，請重試");
             return playback;
         }
-        if (needsCompatible && resource.playbackStatus !== "ready") throw new Error("视频已导入，暂时无法准备预览，请重试。原文件仍可下载。");
+        if (needsCompatible && resource.playbackStatus !== "ready") throw new Error("影片已匯入，暫時無法準備預覽，請重試。原檔案仍可下載。");
     }
     const url = await resolveMediaUrl(storageKey, fallback);
     assertUserScope(expectedScope);

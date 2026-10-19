@@ -1,5 +1,5 @@
-// 时间线轨道管理（移植自 lingji-cut 的 timeline-tracks.ts，按本项目类型精简）。
-// 默认三轨：视频轨、音频轨、字幕轨；提供轨道查询与规范化。
+// 時間線軌道管理（移植自 lingji-cut 的 timeline-tracks.ts，按本專案型別精簡）。
+// 預設三軌：影片軌、音訊軌、字幕軌；提供軌道查詢與規範化。
 
 import type { TimelineProject, TimelineTrack } from "@/types/timeline";
 
@@ -9,8 +9,8 @@ export const DEFAULT_SUBTITLE_TRACK_ID = "subtitle-1";
 
 export function createDefaultTracks(): TimelineTrack[] {
     return [
-        { id: DEFAULT_VIDEO_TRACK_ID, kind: "video", label: "视频 1", order: 0 },
-        { id: DEFAULT_AUDIO_TRACK_ID, kind: "audio", label: "音频 1", order: 1 },
+        { id: DEFAULT_VIDEO_TRACK_ID, kind: "video", label: "影片 1", order: 0 },
+        { id: DEFAULT_AUDIO_TRACK_ID, kind: "audio", label: "音訊 1", order: 1 },
         { id: DEFAULT_SUBTITLE_TRACK_ID, kind: "subtitle", label: "字幕 1", order: 2 },
     ];
 }
@@ -31,7 +31,7 @@ export function getTracksByKind(tracks: TimelineTrack[], kind: TimelineTrack["ki
     return tracks.filter((track) => track.kind === kind).sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
 }
 
-/** 规范化时间线数据：轨道去重、补默认轨、时长取片段末端最大值。 */
+/** 規範化時間線資料：軌道去重、補預設軌、時長取片段末端最大值。 */
 export function normalizeTimelineProject(timeline: Partial<TimelineProject> | null | undefined): TimelineProject {
     const rawTracks = Array.isArray(timeline?.tracks) ? timeline.tracks : [];
     const seen = new Set<string>();

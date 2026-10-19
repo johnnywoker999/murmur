@@ -10,7 +10,7 @@ export function ReferenceLinkFields({ references, onChange }: { references: Refe
     const [links, setLinks] = useState<Record<string, string>>({});
     return (
         <div data-canvas-no-zoom data-canvas-wheel-scroll>
-            <p>当前渠道只能读取在线素材。请填写对应素材的 HTTPS 链接，用于本次生成。</p>
+            <p>當前渠道只能讀取線上素材。請填寫對應素材的 HTTPS 連結，用於本次生成。</p>
             <div style={{ maxHeight: "45vh", overflowY: "auto", display: "grid", gap: 12 }}>
                 {references.map((reference) => (
                     <label key={reference.key} style={{ display: "grid", gap: 4 }}>
@@ -33,7 +33,7 @@ export function ReferenceLinkFields({ references, onChange }: { references: Refe
                     </label>
                 ))}
             </div>
-            <p>链接需允许服务商直接读取。原素材会保留。</p>
+            <p>連結需允許服務商直接讀取。原素材會保留。</p>
         </div>
     );
 }
@@ -65,16 +65,16 @@ export function createReferenceLinkResolver(modal: ModalAPI): ResolveReferenceLi
                     resolve(result);
                 };
                 const dialog = modal.confirm({
-                    title: "填写参考素材链接",
+                    title: "填寫參考素材連結",
                     centered: true,
                     closable: true,
                     width: 520,
-                    okText: "使用链接并生成",
+                    okText: "使用連結並生成",
                     cancelText: "取消",
                     okButtonProps: { disabled: true },
                     content: (
                         <>
-                            {uploadError && <Alert type="warning" showIcon title="对象存储上传未完成" description={`${uploadError}。可检查存储设置，或填写可公开读取的 HTTPS 链接继续。`} style={{ marginBottom: 16 }} />}
+                            {uploadError && <Alert type="warning" showIcon title="物件儲存上傳未完成" description={`${uploadError}。可檢查儲存設定，或填寫可公開讀取的 HTTPS 連結繼續。`} style={{ marginBottom: 16 }} />}
                             <ReferenceLinkFields
                                 references={missing}
                                 onChange={(value) => {
@@ -89,10 +89,10 @@ export function createReferenceLinkResolver(modal: ModalAPI): ResolveReferenceLi
                                     navigateToSettings({ section: "channels", continueCreation: true });
                                 }}
                             >
-                                切换渠道
+                                切換渠道
                             </Button>
                             <Button onClick={() => { finish(null); dialog.destroy(); navigateToSettings({ section: "storage", continueCreation: true }); }}>
-                                配置对象存储
+                                配置物件儲存
                             </Button>
                         </>
                     ),

@@ -12,23 +12,23 @@ import {
 
 export type TimelineRenderSource = {
     nodeId: string;
-    /** 已写入 ffmpeg 工作区的文件名（如 input-0.mp4） */
+    /** 已寫入 ffmpeg 工作區的檔名（如 input-0.mp4） */
     fileName: string;
     durationMs: number;
     hasAudio?: boolean;
-    /** 媒体定位（运行时用）：本地缓存 storageKey 或远程资源地址，至少提供一个 */
+    /** 媒體定位（執行時用）：本地快取 storageKey 或遠端資源地址，至少提供一個 */
     storageKey?: string;
     url?: string;
 };
 
 export type TimelineRenderStep = {
     kind: "trim" | "gap" | "concat" | "subtitle" | "burn" | "mix";
-    /** 本步骤输出文件名 */
+    /** 本步驟輸出檔名 */
     output: string;
-    /** ffmpeg 参数数组（不含可执行文件名与 -y 覆盖参数） */
+    /** ffmpeg 引數陣列（不含執行檔名與 -y 覆蓋引數） */
     args: string[];
     description: string;
-    /** 该步骤依赖 libass 与字体；失败必须阻止导出。 */
+    /** 該步驟依賴 libass 與字型；失敗必須阻止匯出。 */
     requiresLibass?: boolean;
 };
 
@@ -37,9 +37,9 @@ export type TimelineRenderContext = {
     height: number;
     fps: number;
     sampleRate: number;
-    /** 是否烧录字幕；false 时跳过 burn 步骤 */
+    /** 是否燒錄字幕；false 時跳過 burn 步驟 */
     burnSubtitles: boolean;
-    /** 最终输出文件名 */
+    /** 最終輸出檔名 */
     outputName: string;
     subtitleImages?: string[];
 };
@@ -55,7 +55,7 @@ export type TimelineRenderRequest = {
 export type TimelineRenderPlan = {
     steps: TimelineRenderStep[];
     finalOutput: string;
-    /** concat 输入文件列表（trim/gap 输出），运行时据此写 concat.txt */
+    /** concat 輸入檔案列表（trim/gap 輸出），執行時據此寫 concat.txt */
     concatEntries: string[];
     /** Requested export content. Execution must not succeed after dropping any of these. */
     request: TimelineRenderRequest;
@@ -93,7 +93,7 @@ export function getOrderedSubtitleClips(timeline: TimelineProject): TimelineClip
         .sort((a, b) => a.startMs - b.startMs || a.trackId.localeCompare(b.trackId));
 }
 
-/** 毫秒 → SRT 时间码 hh:mm:ss,mmm */
+/** 毫秒 → SRT 時間碼 hh:mm:ss,mmm */
 export function formatSrtTimestamp(ms: number): string {
     const safe = Math.max(0, Math.round(ms));
     const pad = (value: number, length = 2) => String(value).padStart(length, "0");
@@ -104,7 +104,7 @@ export function formatSrtTimestamp(ms: number): string {
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)},${pad(millis, 3)}`;
 }
 
-/** 字幕轨片段 → SRT 文件内容（时间线全局时间，直接用于烧录） */
+/** 字幕軌片段 → SRT 檔案內容（時間線全域性時間，直接用於燒錄） */
 export function buildSubtitleSrt(clips: TimelineClip[]): string {
     return getOrderedSubtitleClips({ version: 2, tracks: [], clips, durationMs: 0 })
         .filter((clip) => clip.text && clip.durationMs > 0)
@@ -128,11 +128,11 @@ function defaultContext(plan: CanonicalTimelinePlan): TimelineRenderContext {
 
 function assertPlanOwnedOutput(plan: CanonicalTimelinePlan, context: Partial<TimelineRenderContext>): void {
     const output = defaultContext(plan);
-    if (context.width != null && context.width !== output.width) throw new Error("导出尺寸必须与渲染计划一致");
-    if (context.height != null && context.height !== output.height) throw new Error("导出尺寸必须与渲染计划一致");
-    if (context.fps != null && context.fps !== output.fps) throw new Error("导出帧率必须与渲染计划一致");
-    if (context.sampleRate != null && context.sampleRate !== output.sampleRate) throw new Error("导出采样率必须与渲染计划一致");
-    if (context.burnSubtitles != null && context.burnSubtitles !== output.burnSubtitles) throw new Error("字幕烧录必须与渲染计划一致");
+    if (context.width != null && context.width !== output.width) throw new Error("匯出尺寸必須與渲染計劃一致");
+    if (context.height != null && context.height !== output.height) throw new Error("匯出尺寸必須與渲染計劃一致");
+    if (context.fps != null && context.fps !== output.fps) throw new Error("匯出幀率必須與渲染計劃一致");
+    if (context.sampleRate != null && context.sampleRate !== output.sampleRate) throw new Error("匯出取樣率必須與渲染計劃一致");
+    if (context.burnSubtitles != null && context.burnSubtitles !== output.burnSubtitles) throw new Error("字幕燒錄必須與渲染計劃一致");
 }
 
 function renderContext(plan: CanonicalTimelinePlan, context: Partial<TimelineRenderContext>): TimelineRenderContext {
@@ -172,7 +172,7 @@ function lowerGap(segment: CanonicalSegment, index: number, cfg: TimelineRenderC
             "-t", String(durationSec),
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "aac", "-shortest", output,
         ],
-        description: `补黑场 ${(segment.durationMs / 1000).toFixed(2)}s`,
+        description: `補黑場 ${(segment.durationMs / 1000).toFixed(2)}s`,
     };
 }
 
@@ -194,7 +194,7 @@ function lowerVisual(segment: CanonicalSegment, index: number, fileName: string,
         kind: "trim",
         output,
         args,
-        description: segment.kind === "image" ? `图片片段 ${index + 1}` : `裁切片段 ${index + 1}`,
+        description: segment.kind === "image" ? `圖片片段 ${index + 1}` : `裁切片段 ${index + 1}`,
     };
 }
 
@@ -210,7 +210,7 @@ function lowerMix(plan: CanonicalTimelinePlan, concatOutput: string, files: Map<
     });
     filters.push(`[base]${audioClips.map((_, index) => `[a${index}]`).join("")}amix=inputs=${audioClips.length + 1}:normalize=0:duration=first[a]`);
     args.push("-filter_complex", filters.join(";"), "-map", "[v]", "-map", "[a]", "-t", String(durationSec), "-c:v", "libx264", "-preset", "veryfast", "-c:a", "aac", "timeline-mixed.mp4");
-    return { kind: "mix", output: "timeline-mixed.mp4", args, description: "混合配音与背景音乐" };
+    return { kind: "mix", output: "timeline-mixed.mp4", args, description: "混合配音與背景音樂" };
 }
 
 /**
@@ -242,7 +242,7 @@ export function lowerCanonicalPlan(plan: CanonicalTimelinePlan, sources: Timelin
             kind: "concat",
             output: concatOutput,
             args: ["-f", "concat", "-safe", "0", "-i", "concat.txt", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "aac", concatOutput],
-            description: "拼接视频轨",
+            description: "拼接影片軌",
         });
     }
 
@@ -260,7 +260,7 @@ export function lowerCanonicalPlan(plan: CanonicalTimelinePlan, sources: Timelin
 
     const finalOutput = cfg.outputName;
     if (concatEntries.length && steps.some((step) => step.kind === "subtitle") && cfg.subtitleImages) {
-        if (cfg.subtitleImages.length !== subtitles.length) throw new Error("字幕图像不完整");
+        if (cfg.subtitleImages.length !== subtitles.length) throw new Error("字幕影像不完整");
         const args = ["-i", concatOutput];
         const filters: string[] = [];
         subtitles.forEach((clip, index) => {
@@ -268,13 +268,13 @@ export function lowerCanonicalPlan(plan: CanonicalTimelinePlan, sources: Timelin
             filters.push(`[${index ? `sub${index - 1}` : "0:v"}][${index + 1}:v]overlay=enable='gte(t,${clip.startMs / 1000})*lt(t,${(clip.startMs + clip.durationMs) / 1000})'[sub${index}]`);
         });
         args.push("-filter_complex", filters.join(";"), "-map", `[sub${subtitles.length - 1}]`, "-map", "0:a", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "copy", finalOutput);
-        steps.push({ kind: "burn", output: finalOutput, args, description: "烧录字幕并输出" });
+        steps.push({ kind: "burn", output: finalOutput, args, description: "燒錄字幕並輸出" });
     } else if (concatEntries.length && steps.some((step) => step.kind === "subtitle")) {
         steps.push({
             kind: "burn",
             output: finalOutput,
             args: ["-i", concatOutput, "-vf", `subtitles=${SUBTITLE_FILE}`, "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "copy", finalOutput],
-            description: "烧录字幕并输出",
+            description: "燒錄字幕並輸出",
             requiresLibass: true,
         });
     } else if (concatEntries.length) {
@@ -282,7 +282,7 @@ export function lowerCanonicalPlan(plan: CanonicalTimelinePlan, sources: Timelin
             kind: "concat",
             output: finalOutput,
             args: ["-i", concatOutput, "-c", "copy", finalOutput],
-            description: "输出成片（无字幕）",
+            description: "輸出成片（無字幕）",
         });
     }
 
@@ -293,14 +293,14 @@ export function lowerCanonicalPlan(plan: CanonicalTimelinePlan, sources: Timelin
         durationMs: plan.durationMs,
         burnSubtitles: subtitles.length > 0,
     };
-    if (request.videoClipIds.length && !concatEntries.length) throw new Error("导出计划丢失了视频片段，未生成不完整成片");
-    if (request.audioClipIds.length && !steps.some((step) => step.kind === "mix")) throw new Error("导出计划丢失了独立音轨，未生成不完整成片");
-    if (request.burnSubtitles && !steps.some((step) => step.kind === "burn")) throw new Error("导出计划丢失了字幕烧录，未生成无字幕成片");
+    if (request.videoClipIds.length && !concatEntries.length) throw new Error("匯出計劃丟失了影片片段，未生成不完整成片");
+    if (request.audioClipIds.length && !steps.some((step) => step.kind === "mix")) throw new Error("匯出計劃丟失了獨立音軌，未生成不完整成片");
+    if (request.burnSubtitles && !steps.some((step) => step.kind === "burn")) throw new Error("匯出計劃丟失了字幕燒錄，未生成無字幕成片");
 
     return { steps, finalOutput, concatEntries, request, subtitleSrt: plan.subtitleSrt };
 }
 
-/** 供导出对话框/文档展示的人类可读命令预览 */
+/** 供匯出對話方塊/檔案展示的人類可讀命令預覽 */
 export function describeRenderPlan(plan: TimelineRenderPlan): string {
     return plan.steps.map((step) => `# ${step.description}\nffmpeg -y ${step.args.join(" ")}`).join("\n\n");
 }

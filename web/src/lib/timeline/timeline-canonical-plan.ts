@@ -79,11 +79,11 @@ export type CanonicalSourceFacts = {
 
 export function assertCanonicalPlan(plan: CanonicalTimelinePlan): void {
     if (!plan || plan.version !== CANONICAL_PLAN_VERSION) {
-        throw new Error("不支持的渲染计划版本");
+        throw new Error("不支援的渲染計劃版本");
     }
     const hasVisual = plan.segments?.some((segment) => segment.kind !== "gap");
     if (!hasVisual && !(plan.audio?.length)) {
-        throw new Error("时间线没有可渲染的媒体片段");
+        throw new Error("時間線沒有可渲染的媒體片段");
     }
 }
 
@@ -101,10 +101,10 @@ export function applySourceFacts(plan: CanonicalTimelinePlan, facts: Record<stri
             continue;
         }
         if (segment.kind === "video") {
-            if (!fact.hasVideo) throw new Error("素材缺少所需音视频轨：" + (segment.clipId || ""));
-            if (fact.durationMs <= 0) throw new Error("无法解析素材：" + (segment.clipId || ""));
+            if (!fact.hasVideo) throw new Error("素材缺少所需音影片軌：" + (segment.clipId || ""));
+            if (fact.durationMs <= 0) throw new Error("無法解析素材：" + (segment.clipId || ""));
             if ((segment.sourceStartMs || 0) + segment.durationMs > fact.durationMs + DURATION_TOLERANCE_MS) {
-                throw new Error("素材时长不足，请调整裁剪范围：" + (segment.clipId || ""));
+                throw new Error("素材時長不足，請調整裁剪範圍：" + (segment.clipId || ""));
             }
             segment.hasAudio = fact.hasAudio && !segment.muted;
         }
@@ -112,10 +112,10 @@ export function applySourceFacts(plan: CanonicalTimelinePlan, facts: Record<stri
     for (const clip of plan.audio || []) {
         const fact = facts[clip.sourceId];
         if (!fact) throw new Error("找不到素材：" + clip.clipId);
-        if (!fact.hasAudio) throw new Error("独立音频素材没有可用音轨");
-        if (fact.durationMs <= 0) throw new Error("无法解析素材：" + clip.clipId);
+        if (!fact.hasAudio) throw new Error("獨立音訊素材沒有可用音軌");
+        if (fact.durationMs <= 0) throw new Error("無法解析素材：" + clip.clipId);
         if (clip.sourceStartMs + clip.durationMs > fact.durationMs + DURATION_TOLERANCE_MS) {
-            throw new Error("素材时长不足，请调整裁剪范围：" + clip.clipId);
+            throw new Error("素材時長不足，請調整裁剪範圍：" + clip.clipId);
         }
     }
 }

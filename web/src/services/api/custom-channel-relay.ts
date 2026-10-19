@@ -19,13 +19,13 @@ function isManagedEnterpriseRelay(config: Pick<RelayConfig, "baseUrl" | "credent
     }
 }
 
-/** 自定义渠道统一经登录态后端中转，避免依赖第三方服务的浏览器 CORS。 */
+/** 自定義渠道統一經登入態後端中轉，避免依賴第三方服務的瀏覽器 CORS。 */
 export function channelRequest(config: RelayConfig, upstreamUrl: string, headers: HeadersInit = {}): ChannelRequest {
     const normalizedHeaders = new Headers(headers);
     const managed = isManagedEnterpriseRelay(config);
     // Mac Wails uses wails:; WebView2 uses http://wails.localhost and still has CORS.
     if (typeof window !== "undefined" && window.location?.protocol === "wails:" && !managed) {
-        const normalizedUpstreamUrl = requireHttpUrl(upstreamUrl, "当前模型请求地址");
+        const normalizedUpstreamUrl = requireHttpUrl(upstreamUrl, "當前模型請求地址");
         normalizedHeaders.set("Authorization", `Bearer ${config.apiKey}`);
         for (const header of config.headers || []) {
             const name = header.name.trim();
@@ -37,8 +37,8 @@ export function channelRequest(config: RelayConfig, upstreamUrl: string, headers
         return { url: upstreamUrl, headers: Object.fromEntries(normalizedHeaders.entries()), credentials: "include" };
     }
 
-    const normalizedBaseUrl = requireHttpUrl(config.baseUrl, "当前模型渠道 Base URL");
-    const normalizedUpstreamUrl = requireHttpUrl(upstreamUrl, "当前模型请求地址");
+    const normalizedBaseUrl = requireHttpUrl(config.baseUrl, "當前模型渠道 Base URL");
+    const normalizedUpstreamUrl = requireHttpUrl(upstreamUrl, "當前模型請求地址");
     normalizedHeaders.delete("X-Canvas-Upstream-Headers");
     normalizedHeaders.delete("x-goog-api-key");
     normalizedHeaders.set("Authorization", `Bearer ${config.apiKey}`);
@@ -59,10 +59,10 @@ function requireHttpUrl(value: string, label: string) {
     try {
         parsed = new URL(normalized);
     } catch {
-        throw new Error(`${label} 无效，请填写完整地址，例如：https://api.example.com/v1`);
+        throw new Error(`${label} 無效，請填寫完整地址，例如：https://api.example.com/v1`);
     }
     if (!parsed.hostname || (parsed.protocol !== "http:" && parsed.protocol !== "https:")) {
-        throw new Error(`${label} 无效，请填写完整地址，例如：https://api.example.com/v1`);
+        throw new Error(`${label} 無效，請填寫完整地址，例如：https://api.example.com/v1`);
     }
     return parsed.toString();
 }

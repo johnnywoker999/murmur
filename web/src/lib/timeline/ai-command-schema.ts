@@ -1,11 +1,11 @@
-// AI 编辑命令的边界层：同一份注册表同时约束模型输出和宿主执行，避免提示词与真实能力列表分叉。
-// 本文件只负责 JSON 结构解析、批量预检和提示词契约生成；命令的参数合法性仍由编辑命令注册表统一判定。
-// 预检使用与正式执行相同的纯函数注册表，保证“模型看见的能力”和“宿主实际允许的能力”一致。
+// AI 編輯命令的邊界層：同一份登入檔同時約束模型輸出和宿主執行，避擴音示詞與真實能力列表分叉。
+// 本檔案只負責 JSON 結構解析、批次預檢和提示詞契約生成；命令的引數合法性仍由編輯命令登入檔統一判定。
+// 預檢使用與正式執行相同的純函式登入檔，保證“模型看見的能力”和“宿主實際允許的能力”一致。
 
 import { getEditorCommandRegistry, type EditCommand } from "@/lib/timeline/editor-commands";
 import type { TimelineProject } from "@/types/timeline";
 
-/** LLM 输出 JSON 结构：reasoning 可选，commands 至少一条。 */
+/** LLM 輸出 JSON 結構：reasoning 可選，commands 至少一條。 */
 export type AiCommandPlan = {
     reasoning?: string;
     commands: EditCommand[];
@@ -22,13 +22,13 @@ export class AiCommandPlanError extends Error {
     }
 }
 
-/** 从 LLM 回复中提取首个 JSON 对象（容忍 markdown fence / 前后缀杂讯）。 */
+/** 從 LLM 回覆中提取首個 JSON 物件（容忍 markdown fence / 前字尾雜訊）。 */
 function extractFirstJsonObject(text: string): string {
     const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
     const candidate = fenced ? fenced[1] : text;
     const start = candidate.indexOf("{");
-    if (start < 0) throw new AiCommandPlanError("输出中未找到 JSON 对象（需要 { commands: [...] }）");
-    // 从首个 { 起逐字符数括号，找配对的收尾 }（字符串内括号不计）。
+    if (start < 0) throw new AiCommandPlanError("輸出中未找到 JSON 物件（需要 { commands: [...] }）");
+    // 從首個 { 起逐字元數括號，找配對的收尾 }（字串內括號不計）。
     let depth = 0;
     let inString = false;
     let escaped = false;
@@ -53,33 +53,33 @@ function extractFirstJsonObject(text: string): string {
             if (depth === 0) return candidate.slice(start, i + 1);
         }
     }
-    throw new AiCommandPlanError("JSON 对象未闭合（缺少收尾 }）");
+    throw new AiCommandPlanError("JSON 物件未閉合（缺少收尾 }）");
 }
 
 function assertPlanShape(raw: unknown): asserts raw is AiCommandPlan {
-    if (typeof raw !== "object" || raw === null) throw new AiCommandPlanError("输出必须是 JSON 对象");
+    if (typeof raw !== "object" || raw === null) throw new AiCommandPlanError("輸出必須是 JSON 物件");
     const plan = raw as Record<string, unknown>;
     if (plan.reasoning !== undefined && typeof plan.reasoning !== "string") {
-        throw new AiCommandPlanError("reasoning 必须是字符串");
+        throw new AiCommandPlanError("reasoning 必須是字串");
     }
-    if (!Array.isArray(plan.commands)) throw new AiCommandPlanError("缺少 commands 数组");
+    if (!Array.isArray(plan.commands)) throw new AiCommandPlanError("缺少 commands 陣列");
     if (plan.commands.length > AI_EDITING_MAX_COMMANDS) {
-        throw new AiCommandPlanError(`commands 超过 ${AI_EDITING_MAX_COMMANDS} 条上限`);
+        throw new AiCommandPlanError(`commands 超過 ${AI_EDITING_MAX_COMMANDS} 條上限`);
     }
-    // commands 为空数组 = 只读问答 / 无可用命令，合法终态
+    // commands 為空陣列 = 只讀問答 / 無可用命令，合法終態
     plan.commands.forEach((cmd, i) => {
-        if (typeof cmd !== "object" || cmd === null) throw new AiCommandPlanError(`commands[${i}] 必须是对象`);
+        if (typeof cmd !== "object" || cmd === null) throw new AiCommandPlanError(`commands[${i}] 必須是物件`);
         const c = cmd as Record<string, unknown>;
-        if (typeof c.op !== "string" || c.op.length === 0) throw new AiCommandPlanError(`commands[${i}].op 必须是非空字符串`);
+        if (typeof c.op !== "string" || c.op.length === 0) throw new AiCommandPlanError(`commands[${i}].op 必須是非空字串`);
         if (typeof c.payload !== "object" || c.payload === null || Array.isArray(c.payload)) {
-            throw new AiCommandPlanError(`commands[${i}].op=${c.op} 缺少对象 payload`);
+            throw new AiCommandPlanError(`commands[${i}].op=${c.op} 缺少物件 payload`);
         }
     });
 }
 
 /**
- * 解析模型文本为 AiCommandPlan；结构非法时抛 AiCommandPlanError，调用方可将明确原因展示给用户或回传模型修正。
- * commands 为空数组表示只读问答或当前能力无法完成，调用方不应把它当成“执行成功的空修改”。
+ * 解析模型文本為 AiCommandPlan；結構非法時拋 AiCommandPlanError，呼叫方可將明確原因展示給使用者或回傳模型修正。
+ * commands 為空陣列表示只讀問答或當前能力無法完成，呼叫方不應把它當成“執行成功的空修改”。
  */
 export function parseAiCommandPlan(text: string): AiCommandPlan {
     let raw: unknown;
@@ -87,16 +87,16 @@ export function parseAiCommandPlan(text: string): AiCommandPlan {
         raw = JSON.parse(extractFirstJsonObject(text));
     } catch (error) {
         if (error instanceof AiCommandPlanError) throw error;
-        throw new AiCommandPlanError(`JSON 解析失败：${(error as Error).message}`);
+        throw new AiCommandPlanError(`JSON 解析失敗：${(error as Error).message}`);
     }
     assertPlanShape(raw);
     return raw;
 }
 
 /**
- * 批级预检：把整批命令按序 dry-run 到当前时间线（immutable 纯函数，无副作用）。
- * 任何一条触发注册表的拒绝规则（未知 op、非法 payload 或引用不存在）即整批拒绝，
- * 返回首个失败命令的位置和原因；正式执行不得绕过这一步或只提交部分命令。
+ * 批級預檢：把整批命令按序 dry-run 到當前時間線（immutable 純函式，無副作用）。
+ * 任何一條觸發登入檔的拒絕規則（未知 op、非法 payload 或引用不存在）即整批拒絕，
+ * 返回首個失敗命令的位置和原因；正式執行不得繞過這一步或只提交部分命令。
  */
 export function validateAiCommandBatch(project: TimelineProject, plan: AiCommandPlan): AiCommandBatchVerdict {
     const registry = getEditorCommandRegistry();
@@ -113,16 +113,16 @@ export function validateAiCommandBatch(project: TimelineProject, plan: AiCommand
 }
 
 // ---------------------------------------------------------------------------
-// 模型提示词契约：schema 同时用于宿主校验与模型输出约束，具体交互决策见 ADR-0007。
+// 模型提示詞契約：schema 同時用於宿主校驗與模型輸出約束，具體互動決策見 ADR-0007。
 // ---------------------------------------------------------------------------
 
-/** AI 命令 schema 版本；提示词契约或解析规则变化时递增，用于 golden 测试和缓存失效对齐。 */
+/** AI 命令 schema 版本；提示詞契約或解析規則變化時遞增，用於 golden 測試和快取失效對齊。 */
 export const AI_COMMAND_SCHEMA_VERSION = 1;
 
-/** 单次 AI 编辑最多允许的命令条数，防止一次模型输出造成不可控的大范围变更。 */
+/** 單次 AI 編輯最多允許的命令條數，防止一次模型輸出造成不可控的大範圍變更。 */
 export const AI_EDITING_MAX_COMMANDS = 8;
 
-/** 12 个黄金 op 的 LLM 可读 payload 契约；op 集合与注册表黄金同步（见测试）。 */
+/** 12 個黃金 op 的 LLM 可讀 payload 契約；op 集合與登入檔黃金同步（見測試）。 */
 export const AI_EDITING_OP_CATALOG: ReadonlyArray<{
     op: string;
     desc: string;
@@ -130,91 +130,91 @@ export const AI_EDITING_OP_CATALOG: ReadonlyArray<{
 }> = [
     {
         op: "addClip",
-        desc: "新增媒体/文本片段到已存在轨道",
-        payload: "{ clip: { id(新唯一), kind: video|audio|image|text, trackId(必须存在), nodeId(源素材), startMs≥0, durationMs>0, title?, volume?, fadeInMs?, fadeOutMs? } }",
+        desc: "新增媒體/文本片段到已存在軌道",
+        payload: "{ clip: { id(新唯一), kind: video|audio|image|text, trackId(必須存在), nodeId(源素材), startMs≥0, durationMs>0, title?, volume?, fadeInMs?, fadeOutMs? } }",
     },
     {
         op: "moveClip",
-        desc: "移动片段（时间点/跨轨）",
-        payload: "{ id, startMs≥0, trackId?(可选, 必须存在) }",
+        desc: "移動片段（時間點/跨軌）",
+        payload: "{ id, startMs≥0, trackId?(可選, 必須存在) }",
     },
     {
         op: "trimClip",
-        desc: "裁剪片段（时间线位置/时长/源内起点）",
-        payload: "{ id, startMs?(≥0), durationMs?(>0 且≤sourceDurationMs), sourceStartMs?(≥0, 与 durationMs 之和≤sourceDurationMs) }",
+        desc: "裁剪片段（時間線位置/時長/源內起點）",
+        payload: "{ id, startMs?(≥0), durationMs?(>0 且≤sourceDurationMs), sourceStartMs?(≥0, 與 durationMs 之和≤sourceDurationMs) }",
     },
     {
         op: "splitClip",
-        desc: "在片段内部切一刀成两段",
-        payload: "{ id, splitAtMs(严格大于 startMs 且小于 startMs+durationMs) }",
+        desc: "在片段內部切一刀成兩段",
+        payload: "{ id, splitAtMs(嚴格大於 startMs 且小於 startMs+durationMs) }",
     },
     {
         op: "removeClip",
-        desc: "删除片段",
+        desc: "刪除片段",
         payload: "{ id }",
     },
     {
         op: "setClipProperty",
-        desc: "修改片段属性（白名单）",
-        payload: "{ id, patch: { title? | text? | volume? | fadeInMs? | fadeOutMs? | subtitleEntryIndex? }（至少一项） }",
+        desc: "修改片段屬性（白名單）",
+        payload: "{ id, patch: { title? | text? | volume? | fadeInMs? | fadeOutMs? | subtitleEntryIndex? }（至少一項） }",
     },
     {
         op: "addSubtitle",
         desc: "新增字幕片段",
-        payload: "{ clip: { kind: subtitle, trackId(字幕轨), id/nodeId/startMs/durationMs/text } }",
+        payload: "{ clip: { kind: subtitle, trackId(字幕軌), id/nodeId/startMs/durationMs/text } }",
     },
     {
         op: "removeSubtitle",
-        desc: "删除字幕片段",
+        desc: "刪除字幕片段",
         payload: "{ id }",
     },
     {
         op: "rebuildSubtitleClips",
-        desc: "按节点字幕条目重建字幕片段",
-        payload: "{ nodeId, entries: [{ index≥0(唯一), startMs≥0, endMs>startMs, text }], trackId?(字幕轨) }",
+        desc: "按節點字幕條目重建字幕片段",
+        payload: "{ nodeId, entries: [{ index≥0(唯一), startMs≥0, endMs>startMs, text }], trackId?(字幕軌) }",
     },
     {
         op: "addTrack",
-        desc: "新增轨道（id/label 由系统生成，勿传）",
+        desc: "新增軌道（id/label 由系統生成，勿傳）",
         payload: "{ kind: video|image|text|audio|subtitle }",
     },
     {
         op: "removeTrack",
-        desc: "删除整条轨道及片段（每种轨道至少保留一条）",
+        desc: "刪除整條軌道及片段（每種軌道至少保留一條）",
         payload: "{ trackId }",
     },
     {
         op: "setTrackFlag",
-        desc: "轨道开关",
+        desc: "軌道開關",
         payload: "{ trackId, flag: visible|muted, value: boolean }",
     },
 ];
 
-/** LLM 输出结构说明（追加到系统提示词，约束其为纯 JSON）。 */
-export const AI_EDITING_OUTPUT_FORMAT = `输出要求：
-- 只输出一个 JSON 对象，不要任何解释文字或 markdown。
-- 结构：{ "reasoning": "一句话说明意图", "commands": [ { "op": "命令名", "payload": { ... } } ] }
-- commands：能执行时 1-8 条；用户只是提问或无法用现有命令完成时为空数组 []，此时 reasoning 直接回答用户。
-- payload 字段严格按命令契约；时间一律毫秒；文本用简体中文。
-- 所有 id（clip/track/nodeId）必须来自上面时间线摘要，禁止编造。`;
+/** LLM 輸出結構說明（追加到系統提示詞，約束其為純 JSON）。 */
+export const AI_EDITING_OUTPUT_FORMAT = `輸出要求：
+- 只輸出一個 JSON 物件，不要任何解釋文字或 markdown。
+- 結構：{ "reasoning": "一句話說明意圖", "commands": [ { "op": "命令名", "payload": { ... } } ] }
+- commands：能執行時 1-8 條；使用者只是提問或無法用現有命令完成時為空陣列 []，此時 reasoning 直接回答使用者。
+- payload 欄位嚴格按命令契約；時間一律毫秒；文本用簡體中文。
+- 所有 id（clip/track/nodeId）必須來自上面時間線摘要，禁止編造。`;
 
-/** 示例（示意完整 JSON 输出，加入 system prompt）。 */
+/** 示例（示意完整 JSON 輸出，加入 system prompt）。 */
 const AI_EDITING_OUTPUT_EXAMPLE = `示例：
-{ "reasoning": "把第一个视频片段移到第 5 秒", "commands": [ { "op": "moveClip", "payload": { "id": "clip-a", "startMs": 5000 } } ] }`;
+{ "reasoning": "把第一個影片片段移到第 5 秒", "commands": [ { "op": "moveClip", "payload": { "id": "clip-a", "startMs": 5000 } } ] }`;
 
-/** 组装 AI 编辑系统提示词：时间线摘要、可用 op 契约和输出约束必须来自同一份注册表。 */
+/** 組裝 AI 編輯系統提示詞：時間線摘要、可用 op 契約和輸出約束必須來自同一份登入檔。 */
 export function buildAiEditingSystemPrompt(timelineSummary: string): string {
     const catalogLines = AI_EDITING_OP_CATALOG.map(
         (entry) => `- ${entry.op}：${entry.desc}。payload：${entry.payload}`,
     ).join("\n");
     return [
-        "你是 MURMUR AI 视频剪辑工作台的 AI 剪辑助手。根据用户指令对时间线输出受约束的编辑命令 JSON。",
-        "时间线当前状态：",
+        "你是 MURMUR AI 影片剪輯工作臺的 AI 剪輯助手。根據使用者指令對時間線輸出受約束的編輯命令 JSON。",
+        "時間線當前狀態：",
         timelineSummary,
-        "可用命令契约（与编辑器同源，非法命令会被整批拒绝）：",
+        "可用命令契約（與編輯器同源，非法命令會被整批拒絕）：",
         catalogLines,
         AI_EDITING_OUTPUT_FORMAT,
         AI_EDITING_OUTPUT_EXAMPLE,
-        "若用户指令无法用现有命令完成（如要转场、滤镜、模板），输出 commands: [] 并在 reasoning 说明缺什么能力。",
+        "若使用者指令無法用現有命令完成（如要轉場、濾鏡、模板），輸出 commands: [] 並在 reasoning 說明缺什麼能力。",
     ].join("\n");
 }

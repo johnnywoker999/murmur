@@ -9,7 +9,7 @@ type CreationRuntime = typeof import("./creation-runtime");
 type PersistedCreationTask = GenerationTask & { creationResultUrls?: string[]; creationError?: string };
 
 export function newConversation(): CreationConversation {
-    return { id: createClientId(), title: "新创作", updatedAt: new Date().toISOString(), messages: [] };
+    return { id: createClientId(), title: "新創作", updatedAt: new Date().toISOString(), messages: [] };
 }
 
 export function newMessage(role: CreationMessage["role"], content: string, extra: Partial<CreationMessage> = {}): CreationMessage {
@@ -71,14 +71,14 @@ export function attachCreationTaskContexts(tasks: GenerationTask[], conversation
 
 export async function materializeCreationTaskResults(runtime: CreationRuntime, tasks: GenerationTask[], signal?: AbortSignal): Promise<PersistedCreationTask[]> {
     return Promise.all(tasks.map(async (task): Promise<PersistedCreationTask> => {
-        // 文本正文保存在 resultJson，不进入媒体资源化链路。
+        // 文本正文儲存在 resultJson，不進入媒體資源化鏈路。
         if (task.status !== "succeeded" || !task.clientContext || task.type === "canvas_text") return task;
         try {
             const materialized = await runtime.runGenerationConsumer(signal, (managedSignal: AbortSignal) => runtime.materializeGenerationTaskAssets(task, managedSignal));
             const creationResultUrls = runtime.generationTaskMaterializedUrls(materialized);
             return creationResultUrls.length ? { ...materialized, creationResultUrls } : materialized;
         } catch (error) {
-            return { ...task, creationError: error instanceof Error ? error.message : "生成结果资源化失败" };
+            return { ...task, creationError: error instanceof Error ? error.message : "生成結果資源化失敗" };
         }
     }));
 }
@@ -113,14 +113,14 @@ export function reconcileCreationTaskMessages(runtime: CreationRuntime, conversa
             changed = true;
 
             if (resultUrls.length) {
-                const content = message.mode === "video" ? "视频已生成" : failedCount ? `${resultUrls.length} 张图片已生成，${failedCount} 张失败` : "图片已生成";
+                const content = message.mode === "video" ? "影片已生成" : failedCount ? `${resultUrls.length} 張圖片已生成，${failedCount} 張失敗` : "圖片已生成";
                 return { ...message, status: "done" as const, content, resultUrls, error: undefined, taskIds: nextTaskIds };
             }
             if (matches.every((task) => task.status === "cancelled")) {
                 return { ...message, status: "cancelled" as const, content: "已停止", error: undefined, taskIds: nextTaskIds };
             }
             const failed = matches.find((task) => task.status === "failed" || task.creationError);
-            return { ...message, status: "error" as const, content: "生成失败", error: generationErrorMessage(failed?.creationError || failed?.error || "任务已结束，但生成结果暂时无法读取"), taskIds: nextTaskIds };
+            return { ...message, status: "error" as const, content: "生成失敗", error: generationErrorMessage(failed?.creationError || failed?.error || "任務已結束，但生成結果暫時無法讀取"), taskIds: nextTaskIds };
         });
         return conversationChanged ? { ...conversation, messages, updatedAt: completedAt } : conversation;
     });

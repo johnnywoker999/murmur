@@ -5,8 +5,8 @@ import { WorkspaceTopBarExtensionSlot } from "@/components/layout/workspace-top-
 import { useAppearanceStore } from "@/stores/use-appearance-store";
 
 const PAGE_TITLES: Record<string, string> = {
-    home: "创作", create: "创作", projects: "项目", canvas: "自由画布",
-    assets: "资产", skills: "技能", plugins: "插件", settings: "设置",
+    home: "創作", create: "創作", projects: "專案", canvas: "自由畫布",
+    assets: "資產", skills: "技能", plugins: "外掛", settings: "設定",
 };
 
 /** Compatibility workspace chrome retained for non-canvas routes. Canvas owns its own top bar. */
@@ -19,10 +19,10 @@ export function WorkspaceTopBar({ sidebarOpen, onToggleSidebar }: { sidebarOpen:
 
     return (
         <header className="app-workspace-topbar">
-            <button type="button" className="app-workspace-mobile-menu app-workspace-topbar-icon-button" aria-label={sidebarOpen ? "收起侧栏" : "展开侧栏"} onClick={onToggleSidebar}>
+            <button type="button" className="app-workspace-mobile-menu app-workspace-topbar-icon-button" aria-label={sidebarOpen ? "收起側欄" : "展開側欄"} onClick={onToggleSidebar}>
                 {sidebarOpen ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}
             </button>
-            {!isHome ? <nav className="app-workspace-topbar-breadcrumb" aria-label="当前位置">
+            {!isHome ? <nav className="app-workspace-topbar-breadcrumb" aria-label="當前位置">
                 <Link to="/" className="font-medium text-foreground/65 transition-colors hover:text-foreground">{brandName}</Link>
                 <span aria-hidden="true">/</span>
                 <span className="truncate font-medium text-foreground">{pageTitle}</span>

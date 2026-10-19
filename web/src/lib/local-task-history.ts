@@ -3,8 +3,8 @@ import type { CanvasProject } from "@/stores/canvas/use-canvas-store";
 import { CanvasNodeType, type CanvasNodeTypeId } from "@/types/canvas";
 
 /**
- * 本地工作区不拥有服务端任务队列，因此任务历史从画布节点的本地快照派生。
- * 这让“创作历史”仍然有用，同时避免为了读取历史而重新触发云端请求。
+ * 本地工作區不擁有服務端任務佇列，因此任務歷史從畫布節點的本地快照派生。
+ * 這讓“創作歷史”仍然有用，同時避免為了讀取歷史而重新觸發雲端請求。
  */
 export function localTaskHistoryFromProjects(projects: CanvasProject[]): GenerationTask[] {
     const tasks: GenerationTask[] = [];
@@ -28,7 +28,7 @@ export function localTaskHistoryFromProjects(projects: CanvasProject[]): Generat
                 status,
                 progress: metadata?.taskProgress ?? (status === "succeeded" ? 100 : status === "running" ? 50 : undefined),
                 stage: metadata?.taskStage,
-                prompt: metadata?.prompt || node.title || "未命名本地任务",
+                prompt: metadata?.prompt || node.title || "未命名本地任務",
                 model: metadata?.model,
                 provider: metadata?.taskProvider || "local",
                 previewUrl,

@@ -9,7 +9,7 @@ export const CANVAS_MODE_TOOL_ID = "tool-canvas-mode";
 export const LEGACY_CANVAS_MODE_TOOL_IDS = ["tool-move", "tool-box-select"] as const;
 
 /**
- * 读取工具栏偏好。缺失或解析失败时返回 null（由调用方决定是否用默认值）
+ * 讀取工具欄偏好。缺失或解析失敗時返回 null（由呼叫方決定是否用預設值）
  */
 export function readToolbarPrefs(toolbar: ToolbarId): ToolbarPrefs | null {
     try {
@@ -28,7 +28,7 @@ export function persistToolbarPrefs(toolbar: ToolbarId, prefs: ToolbarPrefs) {
     try {
         scopedLocalStorage.setItem(storageKey(toolbar), JSON.stringify(prefs));
     } catch {
-        // 浏览器禁用本地存储时保留当前会话内的选择
+        // 瀏覽器停用本地儲存時保留當前會話內的選擇
     }
 }
 
@@ -44,7 +44,7 @@ function isPrefsShape(value: unknown): value is Partial<ToolbarPrefs> {
     return typeof value === "object" && value !== null;
 }
 
-/** 把旧的抓手/框选两个独立按钮偏好合并成一个开关项 */
+/** 把舊的抓手/框選兩個獨立按鈕偏好合併成一個開關項 */
 export function migrateToolbarPrefs(toolbar: ToolbarId, prefs: ToolbarPrefs): ToolbarPrefs {
     if (toolbar !== "main") return prefs;
     const legacyIds = new Set<string>(LEGACY_CANVAS_MODE_TOOL_IDS);

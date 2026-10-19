@@ -27,8 +27,8 @@ export type ArtCritiqueLabelPlacement = {
 };
 
 /**
- * 小于这个跨度的框通常不是可读的目标框，而是模型把两个点放到了同一条线上。
- * 这是显示层的最低约束，避免错误数据变成一条横线或竖线。
+ * 小於這個跨度的框通常不是可讀的目標框，而是模型把兩個點放到了同一條線上。
+ * 這是顯示層的最低約束，避免錯誤資料變成一條橫線或豎線。
  */
 export const MIN_ART_CRITIQUE_BOX_SPAN = 0.025;
 
@@ -79,8 +79,8 @@ export function isRenderableArtCritiqueTarget(target: ArtCritiqueTarget) {
 }
 
 /**
- * 对历史报告和模型返回的异常目标做显示层修复。
- * 这不会改写节点状态，但能保证旧报告重新打开时也不会出现零高度标注。
+ * 對歷史報告和模型返回的異常目標做顯示層修復。
+ * 這不會改寫節點狀態，但能保證舊報告重新開啟時也不會出現零高度標註。
  */
 export function repairIssueTarget(issue: ArtCritiqueIssue): ArtCritiqueIssue {
     if (isRenderableArtCritiqueTarget(issue.target)) return issue;
@@ -95,24 +95,24 @@ export function repairIssueTarget(issue: ArtCritiqueIssue): ArtCritiqueIssue {
 type ArtCritiqueReferenceInput = Pick<ArtCritiqueIssue, "category" | "title" | "explanation" | "targetDescription">;
 
 /**
- * Grounding 服务不可用时的保守兜底。
+ * Grounding 服務不可用時的保守兜底。
  *
- * 这里不是目标检测，而是把报告里的自然语言位置描述映射到一组固定的原图参考区域，
- * 让用户可以先知道“问题大概落在哪一带”。没有明确位置线索时仍返回 global。
+ * 這裡不是目標檢測，而是把報告裡的自然語言位置描述對映到一組固定的原圖參考區域，
+ * 讓使用者可以先知道“問題大概落在哪一帶”。沒有明確位置線索時仍返回 global。
  */
 export function referenceTargetForIssue(issue: ArtCritiqueReferenceInput): ArtCritiqueTarget {
     const text = [issue.targetDescription, issue.title, issue.explanation].filter(Boolean).join(" ").toLowerCase();
-    if (!text || matches(text, ["整体", "全局", "全图", "总体", "overall", "global", "whole image"])) return globalTarget();
+    if (!text || matches(text, ["整體", "全域性", "全圖", "總體", "overall", "global", "whole image"])) return globalTarget();
 
-    const left = matches(text, ["左侧", "左边", "左方", "左上", "左下", "left"]);
-    const right = matches(text, ["右侧", "右边", "右方", "右上", "右下", "right"]);
-    const top = matches(text, ["上方", "顶部", "上部", "上半", "天空", "top", "upper"]);
+    const left = matches(text, ["左側", "左邊", "左方", "左上", "左下", "left"]);
+    const right = matches(text, ["右側", "右邊", "右方", "右上", "右下", "right"]);
+    const top = matches(text, ["上方", "頂部", "上部", "上半", "天空", "top", "upper"]);
     const bottom = matches(text, ["下方", "底部", "下部", "下半", "地面", "bottom", "lower"]);
     const foreground = matches(text, ["前景", "近景", "foreground"]);
-    const table = matches(text, ["桌", "台面", "台子", "桌腿", "table", "desk"]);
-    const subject = matches(text, ["人物", "少女", "男孩", "女孩", "脸", "面部", "主体", "人像", "产品", "物体", "subject", "person", "face", "portrait"]);
-    const head = matches(text, ["头部", "发丝", "发际", "head", "hair"]);
-    const scattered = matches(text, ["多处", "多个", "多块", "散落", "分散", "亮点", "光点", "色块", "高饱和", "暖色", "反光", "highlight", "hotspot", "specular"]);
+    const table = matches(text, ["桌", "檯面", "臺子", "桌腿", "table", "desk"]);
+    const subject = matches(text, ["人物", "少女", "男孩", "女孩", "臉", "面部", "主體", "人像", "產品", "物體", "subject", "person", "face", "portrait"]);
+    const head = matches(text, ["頭部", "髮絲", "髮際", "head", "hair"]);
+    const scattered = matches(text, ["多處", "多個", "多塊", "散落", "分散", "亮點", "光點", "色塊", "高飽和", "暖色", "反光", "highlight", "hotspot", "specular"]);
 
     if (table) {
         if (left && !right) return referenceBox(0.08, 0.53, 0.38, 0.38);
@@ -126,7 +126,7 @@ export function referenceTargetForIssue(issue: ArtCritiqueReferenceInput): ArtCr
         return referenceBox(0.16, 0.54, 0.68, 0.4);
     }
 
-    const headClearance = head && matches(text, ["留白", "拥挤", "切线", "贴近", "轮廓", "装饰", "clearance"]);
+    const headClearance = head && matches(text, ["留白", "擁擠", "切線", "貼近", "輪廓", "裝飾", "clearance"]);
     if (headClearance) {
         if (left && !right) return referenceBox(0.08, 0.08, 0.34, 0.34);
         if (right && !left) return referenceBox(0.58, 0.08, 0.34, 0.34);
@@ -165,8 +165,8 @@ export function referenceTargetForIssue(issue: ArtCritiqueReferenceInput): ArtCr
 }
 
 /**
- * 给标注标题分配稳定的起点。它不是精确排版引擎，但能处理最常见的上下重叠，
- * 并且始终把标题留在 SVG 视口内。
+ * 給標註標題分配穩定的起點。它不是精確排版引擎，但能處理最常見的上下重疊，
+ * 並且始終把標題留在 SVG 視口內。
  */
 export function layoutArtCritiqueLabels(issues: readonly ArtCritiqueIssue[]): ArtCritiqueLabelPlacement[] {
     const placements: ArtCritiqueLabelPlacement[] = [];

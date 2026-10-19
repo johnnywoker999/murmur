@@ -1,7 +1,7 @@
 import { Drawer, type DrawerProps } from "antd";
 import type { CSSProperties } from "react";
 
-// 用途：产品侧栏壳。消费 token 由内容自己负责。默认 destroyOnHidden，可选 flush 去内边距。
+// 用途：產品側欄殼。消費 token 由內容自己負責。預設 destroyOnHidden，可選 flush 去內邊距。
 export type AppDrawerProps = DrawerProps & {
     flush?: boolean;
 };

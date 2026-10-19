@@ -1,6 +1,6 @@
 import type { CanvasGenerationBatch, CanvasGenerationBatchStatus } from "@/types/canvas";
 
-const TASK_CAPACITY_MESSAGE = /同时排队或运行的任务最多 \d+ 个/;
+const TASK_CAPACITY_MESSAGE = /同時排隊或執行的任務最多 \d+ 個/;
 
 export function isGenerationTaskCapacityError(error: unknown) {
     return error instanceof Error && TASK_CAPACITY_MESSAGE.test(error.message);
@@ -8,7 +8,7 @@ export function isGenerationTaskCapacityError(error: unknown) {
 
 export function isGenerationSubmissionUncertainError(error: unknown) {
     const message = error instanceof Error ? error.message : String(error || "");
-    return /(?:^|\D)524(?:\D|$)|提交状态不确定|可能仍在服务端执行/i.test(message);
+    return /(?:^|\D)524(?:\D|$)|提交狀態不確定|可能仍在服務端執行/i.test(message);
 }
 
 export function generationBatchStatus(batch: CanvasGenerationBatch): CanvasGenerationBatchStatus {

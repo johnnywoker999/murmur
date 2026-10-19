@@ -48,13 +48,13 @@ export async function loadCanvasProjectForEditing(
     return project || undefined;
 }
 
-// 画布内容被其他写入者（远端刷新、任务回写）替换后通知本地编辑器合并。
+// 畫布內容被其他寫入者（遠端重新整理、任務回寫）替換後通知本地編輯器合併。
 export function subscribeCanvasRefresh(listener: (project: CanvasProject, previous: CanvasProject | undefined) => void) {
     canvasRefreshListeners.add(listener);
     return () => { canvasRefreshListeners.delete(listener); };
 }
 
-/** 外部写入已投影到本地存储后，把这次替换交给正在编辑的页面。 */
+/** 外部寫入已投影到本地儲存後，把這次替換交給正在編輯的頁面。 */
 export function notifyCanvasRefresh(project: CanvasProject, previous: CanvasProject | undefined) {
     for (const listener of [...canvasRefreshListeners]) listener(project, previous);
 }
@@ -68,13 +68,13 @@ export async function syncLocalCanvasSnapshot(id: string, patch: Partial<Pick<Ca
     const expected = expectedScope ?? captureUserScope();
     assertUserScope(expected);
     const current = openLocalCanvasProject(id);
-    if (!current) throw new Error("本地画布不存在");
+    if (!current) throw new Error("本地畫布不存在");
     const { viewport, ...documentPatch } = patch;
     if (viewport) useCanvasStore.getState().updateProject(id, { viewport });
     if (Object.keys(documentPatch).length > 0) await persistCanvasDocument(id, documentPatch, expected);
     assertUserScope(expected);
     const saved = openLocalCanvasProject(id);
-    if (!saved) throw new Error("本地画布不存在");
+    if (!saved) throw new Error("本地畫布不存在");
     return saved;
 }
 
@@ -89,8 +89,8 @@ export function loadAssetsForUse(ids: Iterable<string>, expectedScope?: Workspac
 }
 
 export function localSavedRemotePendingMessage(localAction: string, error: unknown) {
-    const detail = error instanceof Error && error.message.trim() ? error.message.trim() : "未知错误";
-    return `${localAction}失败：${detail}`;
+    const detail = error instanceof Error && error.message.trim() ? error.message.trim() : "未知錯誤";
+    return `${localAction}失敗：${detail}`;
 }
 
 export async function createCanvasProjectWithRemoteSync(
@@ -103,7 +103,7 @@ export async function createCanvasProjectWithRemoteSync(
 
 export async function deleteAssetWithRemoteSync(id: string) {
     const assetId = id.trim();
-    if (!assetId) throw new Error("素材 ID 不能为空");
+    if (!assetId) throw new Error("素材 ID 不能為空");
     await useAssetStore.getState().removeAsset(assetId);
     await flushAssetStorePersistence();
 }
@@ -118,7 +118,7 @@ export async function saveRemoteUserDataNow(_input?: string | readonly string[] 
 }
 
 export function scheduleRemoteUserDataSync() {
-    void saveRemoteUserDataNow().catch((error) => console.error("本地工作区保存失败", error));
+    void saveRemoteUserDataNow().catch((error) => console.error("本地工作區儲存失敗", error));
 }
 
 export async function forceOverwriteRemoteCanvasSync(): Promise<CanvasAssetRebindResult> {

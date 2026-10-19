@@ -25,7 +25,7 @@
     object-fit: contain;
 }
 
-/* 语义化定位：按控件内容识别组，避免依赖 Vidstack 组的首尾顺序。 */
+/* 語義化定位：按控制元件內容識別組，避免依賴 Vidstack 組的首尾順序。 */
 .canvas-video-player:not([data-fullscreen]) .vds-video-layout .vds-controls-group {
     align-items: center;
     gap: var(--canvas-video-control-gap);
@@ -153,7 +153,7 @@
     pointer-events: none;
 }
 
-/* 画布节点保持轻量，只显示播放、时间、音量和全屏，避免窄节点中额外图标挤压布局。 */
+/* 畫布節點保持輕量，只顯示播放、時間、音量和全屏，避免窄節點中額外圖示擠壓佈局。 */
 .canvas-video-player[data-player-variant="compact"]:not([data-fullscreen]) .vds-video-layout .vds-controls-group > :is(.vds-caption-button, .vds-download-button, .vds-pip-button, .vds-airplay-button, .vds-google-cast-button, .vds-chapters-button) {
     display: none;
 }
@@ -197,7 +197,7 @@
     pointer-events: auto;
 }
 
-/* 小布局沿用 LibTV 的单行控件：播放、时间、进度、音量、全屏共享同一底边。 */
+/* 小布局沿用 LibTV 的單行控制元件：播放、時間、進度、音量、全屏共享同一底邊。 */
 .canvas-video-player[data-player-variant="compact"]:not([data-fullscreen]) .vds-video-layout[data-sm] .vds-controls-group:has(.vds-time-slider) {
     position: absolute;
     left: calc(var(--canvas-video-control-size) * 3 + var(--canvas-video-control-gap) + 40px);
@@ -339,12 +339,12 @@
     cursor: pointer;
 }
 
-/* 预览弹窗沿用完整控件，但同样固定按钮和时间区域，防止弹窗窄化时发生重叠。 */
+/* 預覽彈窗沿用完整控制元件，但同樣固定按鈕和時間區域，防止彈窗窄化時發生重疊。 */
 .canvas-video-player[data-player-variant="dialog"]:not([data-fullscreen]) .vds-video-layout .vds-controls-group:has(.vds-time-group) {
     padding-inline: 12px;
 }
 
-/* 节点内保持紧凑；全屏使用桌面播放器级别的控制尺寸，不依赖 Vidstack 小布局的默认值。 */
+/* 節點內保持緊湊；全屏使用桌面播放器級別的控制尺寸，不依賴 Vidstack 小布局的預設值。 */
 .canvas-video-player[data-fullscreen],
 .canvas-video-player:fullscreen,
 .canvas-video-player:-webkit-full-screen {

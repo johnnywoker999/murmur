@@ -62,9 +62,9 @@ export function CanvasTranscriptionControls({
             const result = await getTranscriptionModels({ expectedScope: captureUserScope() });
             if (!mountedRef.current || request !== requestRef.current) return;
             setModels(result.map((item) => ({ value: item.id, label: `${item.displayName || item.id} · MURMUR AI` })));
-            if (!result.length) setStatus("当前连接没有可用的云端转写模型");
+            if (!result.length) setStatus("當前連線沒有可用的雲端轉寫模型");
         } catch (error) {
-            if (mountedRef.current && request === requestRef.current && !isUserScopeAbandonedError(error)) setStatus(error instanceof Error ? error.message : "读取转写模型失败");
+            if (mountedRef.current && request === requestRef.current && !isUserScopeAbandonedError(error)) setStatus(error instanceof Error ? error.message : "讀取轉寫模型失敗");
         } finally {
             if (mountedRef.current && request === requestRef.current) setLoading(false);
         }
@@ -75,7 +75,7 @@ export function CanvasTranscriptionControls({
         busyRef.current = true;
         setRunning(true);
         onRunningChange(true);
-        setStatus("排队中…");
+        setStatus("排隊中…");
         const controller = new AbortController();
         controllerRef.current = controller;
         const session = beginLocalExecutorSession(projectId, { controller, getLiveProjectId: () => projectRef.current });
@@ -94,22 +94,22 @@ export function CanvasTranscriptionControls({
                     intentRef.current = localExecutorIntentAfterSubmit(clientOperationId, task, intent);
                 },
                 onTaskUpdate: (task) => {
-                    if (mountedRef.current) setStatus(task.stage || "正在转写…");
+                    if (mountedRef.current) setStatus(task.stage || "正在轉寫…");
                 },
             });
             intentRef.current = localExecutorIntentAfterSubmit(clientOperationId, task, intent);
             await attachLocalExecutorResult(session, () => {
                 const entries = result.segments.filter((segment) => segment.text.trim() && segment.endMs > segment.startMs).map((segment, index) => ({ ...segment, index: index + 1 }));
                 if (!entries.length) {
-                    setStatus("没有识别出可用字幕");
+                    setStatus("沒有識別出可用字幕");
                     return;
                 }
                 onResult(entries);
-                setStatus(`已识别 ${entries.length} 条字幕，可编辑后保存或导出 SRT`);
+                setStatus(`已識別 ${entries.length} 條字幕，可編輯後儲存或匯出 SRT`);
             });
         } catch (error) {
             intentRef.current = localExecutorIntentAfterError(intentRef.current || intent, error);
-            if (mountedRef.current && !isLocalExecutorSessionStop(error)) setStatus(error instanceof Error ? error.message : "转写失败");
+            if (mountedRef.current && !isLocalExecutorSessionStop(error)) setStatus(error instanceof Error ? error.message : "轉寫失敗");
         } finally {
             busyRef.current = false;
             if (mountedRef.current) {
@@ -122,21 +122,21 @@ export function CanvasTranscriptionControls({
     return (
         <div className="media-editor-transcription flex flex-col gap-2" style={{ borderColor: "var(--workspace-border)" }}>
             <div className="flex flex-wrap items-center gap-2">
-                <Select aria-label="转写模型" size="small" className="min-w-[200px] flex-1" value={model} onChange={setModel} disabled={disabled || loading} options={[{ value: "", label: "本地 whisper.cpp" }, ...models]} />
+                <Select aria-label="轉寫模型" size="small" className="min-w-[200px] flex-1" value={model} onChange={setModel} disabled={disabled || loading} options={[{ value: "", label: "本地 whisper.cpp" }, ...models]} />
                 <Button size="small" disabled={disabled} loading={loading} onClick={() => void refresh()}>
-                    刷新转写模型
+                    重新整理轉寫模型
                 </Button>
                 <Button size="small" disabled={disabled || !resourceId || loading} loading={running} onClick={() => void transcribe()}>
-                    自动转写字幕
+                    自動轉寫字幕
                 </Button>
             </div>
-            <p className="text-xs opacity-60">{!resourceId ? "素材上传完成后即可自动转写。" : model ? "音频将上传到云端识别，并按所选模型计费；转写结果会替换当前字幕草稿。" : "使用本地 whisper.cpp 识别，音视频不出本机；转写结果会替换当前字幕草稿。"}</p>
+            <p className="text-xs opacity-60">{!resourceId ? "素材上傳完成後即可自動轉寫。" : model ? "音訊將上傳到雲端識別，並按所選模型計費；轉寫結果會替換當前字幕草稿。" : "使用本地 whisper.cpp 識別，音影片不出本機；轉寫結果會替換當前字幕草稿。"}</p>
             {status && (
                 <p role="status" className="text-xs">
                     {status}
                 </p>
             )}
-            {running && <p className="text-xs opacity-60">关闭窗口后，转写任务仍会继续，可在任务中心查看。</p>}
+            {running && <p className="text-xs opacity-60">關閉視窗後，轉寫任務仍會繼續，可在任務中心檢視。</p>}
         </div>
     );
 }

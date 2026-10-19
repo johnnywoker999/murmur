@@ -59,7 +59,7 @@ export async function fetchImageModels(config: Pick<AiConfig, "baseUrl" | "apiKe
         const catalog = await fetchOpenAIModelCatalog(config);
         return catalog.map((model) => model.id).sort((a, b) => a.localeCompare(b));
     } catch (error) {
-        throw new Error(readAxiosError(error, "读取模型失败"));
+        throw new Error(readAxiosError(error, "讀取模型失敗"));
     }
 }
 
@@ -81,7 +81,7 @@ export async function fetchChannelModels(channel: ModelChannel, viaBackend = fal
         return { models, catalog: models.map((id) => ({ id })) };
     }
     try {
-        // 登录态由同源后端代取模型目录，避免每个 OpenAI 兼容服务分别维护浏览器 CORS 白名单。
+        // 登入態由同源後端代取模型目錄，避免每個 OpenAI 相容服務分別維護瀏覽器 CORS 白名單。
         const result = await http.post<{ models?: Array<string | ChannelModelCatalogItem> }>(managed ? "/beefapi/connection/models" : "/ai/models", managed ? {} : {
             baseUrl: channel.baseUrl,
             apiKey: managed ? "" : channel.apiKey,
@@ -106,6 +106,6 @@ export async function fetchChannelModels(channel: ModelChannel, viaBackend = fal
         // Running generation-error classification again turns a precise 502
         // auth/unsupported-catalog message into a generic unavailable message.
         if (error instanceof ApiError || isUserScopeAbandonedError(error) || (error instanceof DOMException && error.name === "AbortError")) throw error;
-        throw new Error(readAxiosError(error, "读取模型失败"));
+        throw new Error(readAxiosError(error, "讀取模型失敗"));
     }
 }

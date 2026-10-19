@@ -143,11 +143,11 @@ function isModuleId(value: unknown): value is LocalRuntimeModuleId {
 }
 
 function invalidResponse(status: number) {
-    return new LocalRuntimeClientError("runtime_response_invalid", "本机运行时响应无效", status);
+    return new LocalRuntimeClientError("runtime_response_invalid", "本機執行時響應無效", status);
 }
 
 function publicRequestError(code: string) {
-    if (code === "session_required") return "本机会话已失效，请重新连接";
-    if (code === "scope_denied") return "本机会话权限不足";
-    return "本机运行时请求失败";
+    if (code === "session_required") return "本機會話已失效，請重新連線";
+    if (code === "scope_denied") return "本機會話許可權不足";
+    return "本機執行時請求失敗";
 }

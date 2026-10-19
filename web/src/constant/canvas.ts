@@ -9,29 +9,29 @@ type CanvasNodeSpec = {
 };
 
 export const NODE_DEFAULT_SIZE = {
-    [CanvasNodeType.Image]: { width: 720, height: 405, title: "图片" },
-    // LibTV 的文本节点以近似正方形卡片承载提示词与生成入口，作为首屏复刻基准固定为 350×350。
-    [CanvasNodeType.Text]: { width: 350, height: 350, title: "文本节点" },
-    [CanvasNodeType.Drawing]: { width: 440, height: 300, title: "绘图" },
-    [CanvasNodeType.Script]: { width: 920, height: 360, title: "分镜脚本" },
+    [CanvasNodeType.Image]: { width: 720, height: 405, title: "圖片" },
+    // LibTV 的文本節點以近似正方形卡片承載提示詞與生成入口，作為首屏復刻基準固定為 350×350。
+    [CanvasNodeType.Text]: { width: 350, height: 350, title: "文本節點" },
+    [CanvasNodeType.Drawing]: { width: 440, height: 300, title: "繪圖" },
+    [CanvasNodeType.Script]: { width: 920, height: 360, title: "分鏡指令碼" },
     [CanvasNodeType.Skill]: { width: 360, height: 220, title: "技能" },
-    // 配置节点同时承载模式、渠道、工作流和参数；预留稳定空间，避免控件和错误状态互相挤压。
+    // 配置節點同時承載模式、渠道、工作流和引數；預留穩定空間，避免控制元件和錯誤狀態互相擠壓。
     [CanvasNodeType.Config]: { width: 480, height: 390, title: "生成配置" },
-    [CanvasNodeType.Video]: { width: 720, height: 405, title: "视频" },
+    [CanvasNodeType.Video]: { width: 720, height: 405, title: "影片" },
     // LibTV renders an empty audio node as a square media card, not a
     // shallow waveform strip; this keeps the empty-state affordance visible.
-    [CanvasNodeType.Audio]: { width: 320, height: 320, title: "音频" },
+    [CanvasNodeType.Audio]: { width: 320, height: 320, title: "音訊" },
     [CanvasNodeType.Frame]: { width: 760, height: 520, title: "未命名背板" },
     [CanvasNodeType.Markdown]: { width: 420, height: 320, title: "Markdown" },
     [CanvasNodeType.Svg]: { width: 420, height: 320, title: "SVG" },
     [CanvasNodeType.Html]: { width: 520, height: 380, title: "HTML" },
     [CanvasNodeType.Panorama]: { width: 520, height: 300, title: "全景" },
-    [CanvasNodeType.Compare]: { width: 520, height: 320, title: "对比" },
-    [CanvasNodeType.Chart]: { width: 480, height: 320, title: "图表" },
-    [CanvasNodeType.ColorGrade]: { width: 420, height: 360, title: "调色" },
-    [CanvasNodeType.MediaConversion]: { width: 480, height: 460, title: "转换" },
-    [CanvasNodeType.BatchTable]: { width: 1280, height: 560, title: "批量创作表" },
-    [CanvasNodeType.Director]: { width: 640, height: 640, title: "导演台" },
+    [CanvasNodeType.Compare]: { width: 520, height: 320, title: "對比" },
+    [CanvasNodeType.Chart]: { width: 480, height: 320, title: "圖表" },
+    [CanvasNodeType.ColorGrade]: { width: 420, height: 360, title: "調色" },
+    [CanvasNodeType.MediaConversion]: { width: 480, height: 460, title: "轉換" },
+    [CanvasNodeType.BatchTable]: { width: 1280, height: 560, title: "批次創作表" },
+    [CanvasNodeType.Director]: { width: 640, height: 640, title: "導演臺" },
 } satisfies Record<CanvasNodeType, { width: number; height: number; title: string }>;
 
 export const NODE_SPECS = {
@@ -116,9 +116,9 @@ export const NODE_SPECS = {
                 operation: "try_on",
                 concurrency: 10,
                 referenceColumns: [
-                    { id: "reference-1", label: "参考图 1" },
-                    { id: "reference-2", label: "参考图 2" },
-                    { id: "reference-3", label: "参考图 3" },
+                    { id: "reference-1", label: "參考圖 1" },
+                    { id: "reference-2", label: "參考圖 2" },
+                    { id: "reference-3", label: "參考圖 3" },
                 ],
                 rows: [],
             },

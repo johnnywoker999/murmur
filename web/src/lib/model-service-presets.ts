@@ -5,13 +5,13 @@ import { inferProtocolCapabilityFromModel, type ModelProtocolDefinition } from "
 import { catalogEndpointCapability, type ChannelModelCatalogItem } from "@/lib/channel-model-catalog";
 
 export const MODEL_SERVICE_PRESETS = [
-    { id: "compatible", name: "第三方模型服务", subtitle: "OpenAI 兼容 API · 中转服务", icon: "OpenAI", baseUrl: "", apiFormat: "openai" },
-    { id: "openai", name: "OpenAI", subtitle: "文本 · 图片 · 视频", icon: "OpenAI", baseUrl: "https://api.openai.com/v1", apiFormat: "openai" },
-    { id: "gemini", name: "Google Gemini", subtitle: "文本 · 图片 · Veo 视频", icon: "Gemini", baseUrl: "https://generativelanguage.googleapis.com", apiFormat: "gemini" },
-    { id: "ark", name: "火山方舟", subtitle: "文本 · 即梦图片 · Seedance 视频", icon: "Volcengine", baseUrl: "https://ark.cn-beijing.volces.com/api/v3", apiFormat: "openai" },
+    { id: "compatible", name: "第三方模型服務", subtitle: "OpenAI 相容 API · 中轉服務", icon: "OpenAI", baseUrl: "", apiFormat: "openai" },
+    { id: "openai", name: "OpenAI", subtitle: "文本 · 圖片 · 影片", icon: "OpenAI", baseUrl: "https://api.openai.com/v1", apiFormat: "openai" },
+    { id: "gemini", name: "Google Gemini", subtitle: "文本 · 圖片 · Veo 影片", icon: "Gemini", baseUrl: "https://generativelanguage.googleapis.com", apiFormat: "gemini" },
+    { id: "ark", name: "火山方舟", subtitle: "文本 · 即夢圖片 · Seedance 影片", icon: "Volcengine", baseUrl: "https://ark.cn-beijing.volces.com/api/v3", apiFormat: "openai" },
 ] as const;
 export type ModelServicePresetId = typeof MODEL_SERVICE_PRESETS[number]["id"];
-export const CAPABILITY_LABELS: Record<ModelCapability, string> = { text: "文本", image: "图片", video: "视频", audio: "音频" };
+export const CAPABILITY_LABELS: Record<ModelCapability, string> = { text: "文本", image: "圖片", video: "影片", audio: "音訊" };
 
 export function servicePresetFor(channel: ModelChannel): ModelServicePresetId {
     try {
@@ -31,7 +31,7 @@ export function serviceModelProfile(channel: ModelChannel, item: ChannelModelCat
         if (definition && definition.authType !== existing.authType) return { ...existing, authType: definition.authType };
         return existing;
     }
-    const fullvideoFull = ["sd-native-full-2.0", "sd-native-full-2.5", "原生不卡人脸-全参2.0", "原生不卡人脸-全参2.5"].includes(item.id);
+    const fullvideoFull = ["sd-native-full-2.0", "sd-native-full-2.5", "原生不卡人臉-全參2.0", "原生不卡人臉-全參2.5"].includes(item.id);
     const capability = explicitCapability || existing?.capability || item.modelType || catalogEndpointCapability(item) || (fullvideoFull ? "video" : inferProtocolCapabilityFromModel(item.id));
     const preset = channel.apiFormat === "gemini" ? "gemini" : servicePresetFor(channel);
     const candidates: Record<ModelServicePresetId, Partial<Record<ModelCapability, string>>> = {
@@ -69,15 +69,15 @@ export function serviceConnectionError(channel: ModelChannel, options?: { protoc
     if (channel.referenceAssetOrigin?.trim()) {
         try {
             const origin = new URL(channel.referenceAssetOrigin.trim());
-            if (!["https:", "http:"].includes(origin.protocol) || origin.username || origin.password || origin.search || origin.hash || origin.pathname !== "/") return "素材服务地址只填写源站，不包含路径、账号或查询参数。公网请使用 HTTPS；本机、局域网或 CGNAT 可使用 HTTP 和端口";
-        } catch { return "请填写完整的素材服务地址"; }
+            if (!["https:", "http:"].includes(origin.protocol) || origin.username || origin.password || origin.search || origin.hash || origin.pathname !== "/") return "素材服務地址只填寫源站，不包含路徑、賬號或查詢引數。公網請使用 HTTPS；本機、區域網或 CGNAT 可使用 HTTP 和埠";
+        } catch { return "請填寫完整的素材服務地址"; }
     }
     try {
         const url = new URL(channel.baseUrl.trim());
-        if (!["https:", "http:"].includes(url.protocol) || url.username || url.password || url.search || url.hash) return "请填写不含账号、查询参数或片段的 HTTP(S) 服务地址";
-        if (/\/(chat\/completions|responses|images\/generations|models)\/?$/i.test(url.pathname)) return "请填写服务的基础地址，不要包含模型或生成接口路径";
-    } catch { return "请填写完整的服务地址，例如 https://api.example.com/v1"; }
-    if (options?.requireCredential !== false && !channel.apiKey.trim() && !channel.hasApiKey && !channelAllowsEmptyAPIKey(channel, options?.protocols)) return "请填写 API Key";
+        if (!["https:", "http:"].includes(url.protocol) || url.username || url.password || url.search || url.hash) return "請填寫不含賬號、查詢引數或片段的 HTTP(S) 服務地址";
+        if (/\/(chat\/completions|responses|images\/generations|models)\/?$/i.test(url.pathname)) return "請填寫服務的基礎地址，不要包含模型或生成介面路徑";
+    } catch { return "請填寫完整的服務地址，例如 https://api.example.com/v1"; }
+    if (options?.requireCredential !== false && !channel.apiKey.trim() && !channel.hasApiKey && !channelAllowsEmptyAPIKey(channel, options?.protocols)) return "請填寫 API Key";
     return "";
 }
 

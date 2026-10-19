@@ -5,7 +5,7 @@ import type { CanvasConnection, CanvasNodeData } from "@/types/canvas";
 
 export class CanvasMediaPersistUnconfirmedError extends Error {
     constructor() {
-        super("素材还没有保存完成，无法写入画布，请稍后重试");
+        super("素材還沒有儲存完成，無法寫入畫布，請稍後重試");
         this.name = "CanvasMediaPersistUnconfirmedError";
     }
 }
@@ -92,12 +92,12 @@ export async function persistOwnedCanvasMediaNodes(
         } catch (error) {
             if (isPersistStop(error)) throw error;
             assertPersistOwnership();
-            const details = error instanceof Error ? error.message : "未知错误";
+            const details = error instanceof Error ? error.message : "未知錯誤";
             if (required) {
-                deps.warn?.(`已有媒体节点尚未完成素材库绑定，无法保存本次结果：${details}`);
+                deps.warn?.(`已有媒體節點尚未完成素材庫繫結，無法儲存本次結果：${details}`);
                 throw error;
             }
-            deps.warn?.(`媒体节点已创建，但素材库写入失败：${details}`);
+            deps.warn?.(`媒體節點已建立，但素材庫寫入失敗：${details}`);
             return undefined;
         }
     };
@@ -148,7 +148,7 @@ export async function persistOwnedCanvasMediaNodes(
         assertPersistOwnership();
     }
     if (!deps.hasProject(originalProjectId)) {
-        throw new Error("当前画布未载入本地项目库，无法保存媒体结果");
+        throw new Error("當前畫布未載入本地專案庫，無法儲存媒體結果");
     }
 
     assertPersistOwnership();
@@ -168,13 +168,13 @@ export async function persistOwnedCanvasMediaNodes(
             const saved = await deps.readSavedProject?.(originalProjectId, expected);
             assertPersistOwnership();
             if (!saved || input.mediaNodes.some((node) => !saved.nodes.some((savedNode) => savedNode.id === node.id))) {
-                throw new Error("本地项目库回读校验未包含刚生成的媒体节点");
+                throw new Error("本地專案庫回讀校驗未包含剛生成的媒體節點");
             }
         }
     } catch (error) {
         if (isPersistStop(error)) throw error;
         assertPersistOwnership();
-        deps.error?.(`媒体结果已生成，但本地画布保存失败：${error instanceof Error ? error.message : "未知错误"}`);
+        deps.error?.(`媒體結果已生成，但本地畫布儲存失敗：${error instanceof Error ? error.message : "未知錯誤"}`);
         throw error;
     }
     return assetIds;

@@ -31,7 +31,7 @@ export function parseGeneratedStory(answer: string): GeneratedShortDramaOutline 
 
 export function storyTitleFromAnswer(answer: string) {
     const line = answer.split(/\r?\n/).find((item) => item.trim());
-    return line ? line.trim().slice(0, 24) : "AI 生成短剧";
+    return line ? line.trim().slice(0, 24) : "AI 生成短劇";
 }
 
 export function shortDramaOutlineVariables(input: {
@@ -45,13 +45,13 @@ export function shortDramaOutlineVariables(input: {
     chapterLength: string;
 }) {
     return {
-        用户故事: input.story,
-        章节数量: input.chapterCount,
-        叙事结构: input.structure,
-        每章字数: input.wordCount,
-        叙事视角: input.perspective,
-        整体基调: input.tone,
-        角色规模: input.characterScale,
-        章节篇幅: input.chapterLength,
+        使用者故事: input.story,
+        章節數量: input.chapterCount,
+        敘事結構: input.structure,
+        每章字數: input.wordCount,
+        敘事視角: input.perspective,
+        整體基調: input.tone,
+        角色規模: input.characterScale,
+        章節篇幅: input.chapterLength,
     };
 }

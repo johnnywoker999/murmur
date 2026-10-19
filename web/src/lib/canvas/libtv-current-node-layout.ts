@@ -6,7 +6,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 765,
         "width": 62,
         "height": 35,
-        "text": "截图 00:07.355"
+        "text": "截圖 00:07.355"
     },
     {
         "type": "video",
@@ -14,7 +14,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 863,
         "width": 62,
         "height": 35,
-        "text": "高清"
+        "text": "高畫質"
     },
     {
         "type": "video",
@@ -22,7 +22,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 863,
         "width": 62,
         "height": 35,
-        "text": "视频节点 15 - 副本"
+        "text": "影片節點 15 - 副本"
     },
     {
         "type": "video",
@@ -30,7 +30,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 818,
         "width": 62,
         "height": 35,
-        "text": "视频节点 15"
+        "text": "影片節點 15"
     },
     {
         "type": "audio",
@@ -54,7 +54,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 771,
         "width": 62,
         "height": 35,
-        "text": "尾帧"
+        "text": "尾幀"
     },
     {
         "type": "video",
@@ -62,7 +62,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 813,
         "width": 62,
         "height": 35,
-        "text": "视频节点 6 - 副本"
+        "text": "影片節點 6 - 副本"
     },
     {
         "type": "image",
@@ -78,7 +78,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 768,
         "width": 62,
         "height": 35,
-        "text": "视频节点 6 - 副本"
+        "text": "影片節點 6 - 副本"
     },
     {
         "type": "video",
@@ -86,7 +86,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 723,
         "width": 62,
         "height": 35,
-        "text": "视频节点 6"
+        "text": "影片節點 6"
     },
     {
         "type": "audio",
@@ -126,7 +126,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 672,
         "width": 62,
         "height": 35,
-        "text": "尾帧 (2)"
+        "text": "尾幀 (2)"
     },
     {
         "type": "image",
@@ -134,7 +134,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 532,
         "width": 62,
         "height": 35,
-        "text": "尾帧"
+        "text": "尾幀"
     },
     {
         "type": "video",
@@ -142,7 +142,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 577,
         "width": 62,
         "height": 35,
-        "text": "视频节点 10 - 副本"
+        "text": "影片節點 10 - 副本"
     },
     {
         "type": "audio",
@@ -246,7 +246,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 774,
         "width": 62,
         "height": 35,
-        "text": "截图 00_14.237"
+        "text": "截圖 00_14.237"
     },
     {
         "type": "image",
@@ -270,7 +270,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 341,
         "width": 62,
         "height": 35,
-        "text": "尾帧"
+        "text": "尾幀"
     },
     {
         "type": "image",
@@ -286,7 +286,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 455,
         "width": 62,
         "height": 35,
-        "text": "尾帧"
+        "text": "尾幀"
     },
     {
         "type": "image",
@@ -302,7 +302,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 98,
         "width": 62,
         "height": 35,
-        "text": "尾帧"
+        "text": "尾幀"
     },
     {
         "type": "image",
@@ -334,7 +334,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 546,
         "width": 62,
         "height": 35,
-        "text": "截图 00:05.252"
+        "text": "截圖 00:05.252"
     },
     {
         "type": "image",
@@ -358,7 +358,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 456,
         "width": 62,
         "height": 35,
-        "text": "截图 00:14.237"
+        "text": "截圖 00:14.237"
     },
     {
         "type": "image",
@@ -366,7 +366,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 351,
         "width": 62,
         "height": 35,
-        "text": "截图 00:08.608"
+        "text": "截圖 00:08.608"
     },
     {
         "type": "image",
@@ -406,7 +406,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 234,
         "width": 62,
         "height": 35,
-        "text": "尾帧"
+        "text": "尾幀"
     },
     {
         "type": "video",
@@ -414,7 +414,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 456,
         "width": 62,
         "height": 35,
-        "text": "视频节点 4"
+        "text": "影片節點 4"
     },
     {
         "type": "video",
@@ -422,7 +422,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 34,
         "width": 62,
         "height": 35,
-        "text": "视频节点 4 - 副本"
+        "text": "影片節點 4 - 副本"
     },
     {
         "type": "video",
@@ -430,7 +430,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 153,
         "width": 62,
         "height": 35,
-        "text": "视频节点 6 - 副本"
+        "text": "影片節點 6 - 副本"
     },
     {
         "type": "video",
@@ -438,7 +438,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 108,
         "width": 62,
         "height": 35,
-        "text": "视频节点 6"
+        "text": "影片節點 6"
     },
     {
         "type": "video",
@@ -446,7 +446,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 345,
         "width": 62,
         "height": 35,
-        "text": "视频节点 6 - 副本"
+        "text": "影片節點 6 - 副本"
     },
     {
         "type": "video",
@@ -454,7 +454,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 300,
         "width": 62,
         "height": 35,
-        "text": "视频节点 6"
+        "text": "影片節點 6"
     },
     {
         "type": "video",
@@ -462,7 +462,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 591,
         "width": 62,
         "height": 35,
-        "text": "视频节点 4 - 副本"
+        "text": "影片節點 4 - 副本"
     },
     {
         "type": "video",
@@ -470,7 +470,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 501,
         "width": 62,
         "height": 35,
-        "text": "视频节点 4 - 副本"
+        "text": "影片節點 4 - 副本"
     },
     {
         "type": "video",
@@ -478,7 +478,7 @@ export const libtvCurrentVisibleNodes = [
         "y": 546,
         "width": 62,
         "height": 35,
-        "text": "视频节点 4 - 副本"
+        "text": "影片節點 4 - 副本"
     },
     {
         "type": "video",
@@ -486,6 +486,6 @@ export const libtvCurrentVisibleNodes = [
         "y": 532,
         "width": 62,
         "height": 35,
-        "text": "视频节点 10"
+        "text": "影片節點 10"
     }
 ] as const;

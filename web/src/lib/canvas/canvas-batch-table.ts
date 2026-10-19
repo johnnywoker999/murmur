@@ -2,17 +2,17 @@ import { nanoid } from "nanoid";
 
 import type { CanvasBatchOperation, CanvasBatchReferenceColumn, CanvasBatchRow, CanvasBatchTableData, CanvasConnection, CanvasNodeData } from "@/types/canvas";
 
-export const TRY_ON_BATCH_PROMPT = "参考图1是人物原图，参考图2是目标服装。保持人物身份、五官、姿态和背景不变，将人物服装替换为参考图2中的款式。准确还原服装版型、颜色、材质、纹理和装饰细节，穿着关系自然，光影与原图一致。";
-export const CREATIVE_BATCH_PROMPT = "基于参考图创作一张新的商业图片，保留主体身份和关键产品细节，画面构图完整，光影自然。";
+export const TRY_ON_BATCH_PROMPT = "參考圖1是人物原圖，參考圖2是目標服裝。保持人物身份、五官、姿態和背景不變，將人物服裝替換為參考圖2中的款式。準確還原服裝版型、顏色、材質、紋理和裝飾細節，穿著關係自然，光影與原圖一致。";
+export const CREATIVE_BATCH_PROMPT = "基於參考圖創作一張新的商業圖片，保留主體身份和關鍵產品細節，畫面構圖完整，光影自然。";
 export const BATCH_REFERENCE_HANDLE_PREFIX = "batch-reference:";
-/** 两行工具栏（操作栏 44 + 全局提示词 36 + 分隔 1）之后，对准表头中线。 */
+/** 兩行工具欄（操作欄 44 + 全域性提示詞 36 + 分隔 1）之後，對準錶頭中線。 */
 export const BATCH_REFERENCE_HANDLE_TOP = 102;
 export const BATCH_REFERENCE_HANDLE_GAP = 40;
 export const MIN_BATCH_REFERENCE_COLUMNS = 1;
 export const MAX_BATCH_REFERENCE_COLUMNS = 6;
 const LEGACY_BATCH_TABLE_WIDTH = 900;
 
-/** 旧默认 900 宽的批量创作表升级到当前默认尺寸，已经手动改过宽度的节点保持原样。 */
+/** 舊預設 900 寬的批次創作表升級到當前預設尺寸，已經手動改過寬度的節點保持原樣。 */
 export function promoteLegacyBatchTableSize(node: CanvasNodeData): CanvasNodeData {
     if (node.type !== "batch-table" || node.width !== LEGACY_BATCH_TABLE_WIDTH) return node;
     return { ...node, width: 1280, height: Math.max(node.height, 560) };
@@ -20,9 +20,9 @@ export function promoteLegacyBatchTableSize(node: CanvasNodeData): CanvasNodeDat
 
 export function defaultBatchReferenceColumns(): CanvasBatchReferenceColumn[] {
     return [
-        { id: "reference-1", label: "参考图 1" },
-        { id: "reference-2", label: "参考图 2" },
-        { id: "reference-3", label: "参考图 3" },
+        { id: "reference-1", label: "參考圖 1" },
+        { id: "reference-2", label: "參考圖 2" },
+        { id: "reference-3", label: "參考圖 3" },
     ];
 }
 
@@ -37,7 +37,7 @@ export function batchReferenceHandleId(columnId: string) {
 }
 
 export function batchReferenceMentionToken(index: number) {
-    return `@参考图${index + 1}`;
+    return `@參考圖${index + 1}`;
 }
 
 export function batchReferenceColumnId(handleId?: string) {
@@ -71,7 +71,7 @@ export function batchReferenceHandleAtY(node: CanvasNodeData, worldY: number, hi
 export function removeLastBatchReferenceColumn(table: CanvasBatchTableData): CanvasBatchTableData | null {
     const columns = batchReferenceColumns(table);
     if (columns.length <= MIN_BATCH_REFERENCE_COLUMNS) return null;
-    const nextColumns = columns.slice(0, -1).map((column, index) => ({ ...column, label: `参考图 ${index + 1}` }));
+    const nextColumns = columns.slice(0, -1).map((column, index) => ({ ...column, label: `參考圖 ${index + 1}` }));
     return {
         ...table,
         referenceColumns: nextColumns,
@@ -89,7 +89,7 @@ export function reorderBatchReferenceColumns(table: CanvasBatchTableData, fromCo
     nextColumns.splice(toIndex, 0, moved);
     return {
         ...table,
-        referenceColumns: nextColumns.map((column, index) => ({ ...column, label: `参考图 ${index + 1}` })),
+        referenceColumns: nextColumns.map((column, index) => ({ ...column, label: `參考圖 ${index + 1}` })),
         rows: table.rows.map((row) => ({
             ...row,
             inputNodeIds: nextColumns.map((column) => {
@@ -144,7 +144,7 @@ export function createBatchRow(operation: CanvasBatchOperation, inputNodeIds: st
     };
 }
 
-/** 手工追加任务时沿用上一行的参考图，但重新使用当前任务类型的默认提示词。 */
+/** 手工追加任務時沿用上一行的參考圖，但重新使用當前任務型別的預設提示詞。 */
 export function createInheritedBatchRow(operation: CanvasBatchOperation, rows: CanvasBatchRow[]) {
     return createBatchRow(operation, [...(rows.at(-1)?.inputNodeIds || [])]);
 }
@@ -163,8 +163,8 @@ export function createBatchRowsFromInputs(operation: CanvasBatchOperation, input
 /**
  * Zip equally sized columns and broadcast singleton columns across every row.
  *
- * 同步连线是增量操作：匹配到的行更新参考图，未被本次连线覆盖的手工行继续保留。
- * 这样用户在表格内追加或编辑的任务不会因为再次点击“同步连线”而被删除。
+ * 同步連線是增量操作：匹配到的行更新參考圖，未被本次連線覆蓋的手工行繼續保留。
+ * 這樣使用者在表格內追加或編輯的任務不會因為再次點選“同步連線”而被刪除。
  */
 export function createBatchRowsFromColumns(operation: CanvasBatchOperation, columns: string[][], previousRows: CanvasBatchRow[] = []) {
     const rowCount = Math.max(0, ...columns.map((column) => column.length));

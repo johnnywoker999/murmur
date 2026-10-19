@@ -193,38 +193,38 @@ export function CanvasNodeContextMenu({
                 <div className="thin-scrollbar min-h-0 overflow-y-auto">
                     {menu.type === "node" && isMedia && categoryOpen ? (
                         <>
-                            <MenuHeader title="资产分类" description={node?.title || nodeTypeLabel(node)} onBack={() => setCategoryOpen(false)} />
-                            <MenuSection label="项目用途" />
+                            <MenuHeader title="資產分類" description={node?.title || nodeTypeLabel(node)} onBack={() => setCategoryOpen(false)} />
+                            <MenuSection label="專案用途" />
                             {assetCategoryOptions.map((option) => (
                                 <MenuButton key={option.value} icon={assetCategory === option.value ? <Check /> : <Tags />} label={option.label} active={assetCategory === option.value} onClick={() => runAction(() => onSetAssetCategory(option.value))} />
                             ))}
                         </>
                     ) : menu.type === "canvas" ? (
                         <>
-                            <MenuHeader title="画布命令" />
+                            <MenuHeader title="畫布命令" />
                             {hasMultiSelection ? (
                                 <>
-                                    <MenuButton icon={<LayoutTemplate className="size-4" />} label="自适应整理画布" detail="保持相对布局并加大边距" disabled={!onSpreadSelection} onClick={() => onSpreadSelection && runAction(onSpreadSelection)} />
+                                    <MenuButton icon={<LayoutTemplate className="size-4" />} label="自適應整理畫布" detail="保持相對佈局並加大邊距" disabled={!onSpreadSelection} onClick={() => onSpreadSelection && runAction(onSpreadSelection)} />
                                     <MenuDivider />
                                 </>
                             ) : null}
-                            <MenuButton icon={<Plus className="size-4" />} label="添加节点" chevron active={addOpen} onClick={() => setAddOpen((value) => !value)} />
-                            <MenuButton icon={<Upload className="size-4" />} label="上传到这里" onClick={() => runAction(onUpload)} />
-                            {!isProjectLinked ? <MenuButton icon={<FolderOpen className="size-4" />} label="从素材库插入" onClick={() => runAction(onOpenAssets)} /> : null}
+                            <MenuButton icon={<Plus className="size-4" />} label="新增節點" chevron active={addOpen} onClick={() => setAddOpen((value) => !value)} />
+                            <MenuButton icon={<Upload className="size-4" />} label="上傳到這裡" onClick={() => runAction(onUpload)} />
+                            {!isProjectLinked ? <MenuButton icon={<FolderOpen className="size-4" />} label="從素材庫插入" onClick={() => runAction(onOpenAssets)} /> : null}
                             <MenuDivider />
-                            <MenuSection label="历史与剪贴板" />
-                            <MenuButton icon={<Undo2 className="size-4" />} label="撤销" shortcut="⌘Z" disabled={!canUndo} onClick={() => runAction(onUndo)} />
+                            <MenuSection label="歷史與剪貼簿" />
+                            <MenuButton icon={<Undo2 className="size-4" />} label="撤銷" shortcut="⌘Z" disabled={!canUndo} onClick={() => runAction(onUndo)} />
                             <MenuButton icon={<Redo2 className="size-4" />} label="重做" shortcut="⇧⌘Z" disabled={!canRedo} onClick={() => runAction(onRedo)} />
-                            <MenuButton icon={<Clipboard className="size-4" />} label="粘贴" shortcut="⌘V" disabled={!canPaste} onClick={() => runAction(onPaste)} />
+                            <MenuButton icon={<Clipboard className="size-4" />} label="貼上" shortcut="⌘V" disabled={!canPaste} onClick={() => runAction(onPaste)} />
                         </>
                     ) : menu.type === "node" && hasMultiSelection ? (
                         <>
-                            <MenuHeader title={`已选 ${selectedCount} 个节点`} />
-                            <MenuSection label="选区" />
-                            <MenuButton icon={<LayoutTemplate />} label="自适应整理画布" detail="保持相对布局并加大边距" disabled={!onSpreadSelection} onClick={() => onSpreadSelection && runAction(onSpreadSelection)} />
+                            <MenuHeader title={`已選 ${selectedCount} 個節點`} />
+                            <MenuSection label="選區" />
+                            <MenuButton icon={<LayoutTemplate />} label="自適應整理畫布" detail="保持相對佈局並加大邊距" disabled={!onSpreadSelection} onClick={() => onSpreadSelection && runAction(onSpreadSelection)} />
                             <MenuDivider />
-                            <MenuButton icon={<Copy />} label={`复制 ${selectedCount} 个节点`} shortcut="⌘C" disabled={!onCopySelection} onClick={() => onCopySelection && runAction(onCopySelection)} />
-                            <MenuButton icon={<Trash2 />} label={`删除 ${selectedCount} 个节点`} danger disabled={!onDeleteSelection} onClick={() => onDeleteSelection && runAction(onDeleteSelection)} />
+                            <MenuButton icon={<Copy />} label={`複製 ${selectedCount} 個節點`} shortcut="⌘C" disabled={!onCopySelection} onClick={() => onCopySelection && runAction(onCopySelection)} />
+                            <MenuButton icon={<Trash2 />} label={`刪除 ${selectedCount} 個節點`} danger disabled={!onDeleteSelection} onClick={() => onDeleteSelection && runAction(onDeleteSelection)} />
                         </>
                     ) : menu.type === "node" ? (
                         <>
@@ -232,60 +232,60 @@ export function CanvasNodeContextMenu({
                                 <>
                                     <MenuHeader title="角色卡" description={node?.metadata?.characterName || node?.title} />
                                     <MenuSection label="角色引用" />
-                                    <MenuButton icon={<UserRound />} label="查看角色详情" onClick={() => runAction(onEditText)} />
+                                    <MenuButton icon={<UserRound />} label="檢視角色詳情" onClick={() => runAction(onEditText)} />
                                     <MenuDivider />
-                                    <MenuSection label="节点" />
-                                            <MenuButton icon={<Copy />} label="复制角色引用" shortcut="⌘C" onClick={() => runAction(onCopyNode)} />
-                                    <MenuButton icon={<Layers3 />} label="创建引用副本" shortcut="⌘D" onClick={() => runAction(onDuplicate)} />
-                                    <MenuButton icon={<Trash2 />} label="删除节点" danger onClick={() => runAction(onDelete)} />
+                                    <MenuSection label="節點" />
+                                            <MenuButton icon={<Copy />} label="複製角色引用" shortcut="⌘C" onClick={() => runAction(onCopyNode)} />
+                                    <MenuButton icon={<Layers3 />} label="建立引用副本" shortcut="⌘D" onClick={() => runAction(onDuplicate)} />
+                                    <MenuButton icon={<Trash2 />} label="刪除節點" danger onClick={() => runAction(onDelete)} />
                                 </>
                             ) : isMedia ? (
                                 <>
                                     {isImage ? (
                                         <>
-                                            <MenuButton icon={<Maximize2 />} label="全景预览" disabled={!canOpenPreview} onClick={() => runAction(onViewMedia)} />
-                                            <MenuButton icon={<Tags />} label="资产分类" chevron onClick={() => setCategoryOpen(true)} />
-                                            <MenuButton icon={<Copy />} label="复制节点" shortcut="⌘C" onClick={() => runAction(onCopyNode)} />
+                                            <MenuButton icon={<Maximize2 />} label="全景預覽" disabled={!canOpenPreview} onClick={() => runAction(onViewMedia)} />
+                                            <MenuButton icon={<Tags />} label="資產分類" chevron onClick={() => setCategoryOpen(true)} />
+                                            <MenuButton icon={<Copy />} label="複製節點" shortcut="⌘C" onClick={() => runAction(onCopyNode)} />
                                         </>
                                     ) : (
                                         <>
-                                            <MenuButton icon={<Maximize2 />} label="全景预览" disabled={!canOpenPreview} onClick={() => runAction(onViewMedia)} />
-                                            <MenuButton icon={<Tags />} label="资产分类" chevron onClick={() => setCategoryOpen(true)} />
-                                            <MenuButton icon={<Copy />} label="复制节点" shortcut="⌘C" onClick={() => runAction(onCopyNode)} />
+                                            <MenuButton icon={<Maximize2 />} label="全景預覽" disabled={!canOpenPreview} onClick={() => runAction(onViewMedia)} />
+                                            <MenuButton icon={<Tags />} label="資產分類" chevron onClick={() => setCategoryOpen(true)} />
+                                            <MenuButton icon={<Copy />} label="複製節點" shortcut="⌘C" onClick={() => runAction(onCopyNode)} />
                                         </>
                                     )}
-                                    <MenuButton icon={<Trash2 />} label="删除节点" danger onClick={() => runAction(onDelete)} />
+                                    <MenuButton icon={<Trash2 />} label="刪除節點" danger onClick={() => runAction(onDelete)} />
                                 </>
                             ) : (
                                 <>
                                     <MenuHeader title={node?.title || nodeTypeLabel(node)} />
-                                    <MenuSection label="节点操作" />
+                                    <MenuSection label="節點操作" />
                                     {isFrame ? (
                                         <MenuButton
                                             icon={isFolder ? <FolderOpen /> : <PanelTop />}
-                                            label={node?.metadata?.frame?.collapsed ? `展开${isFolder ? "文件夹" : "背板"}` : `折叠${isFolder ? "文件夹" : "背板"}`}
+                                            label={node?.metadata?.frame?.collapsed ? `展開${isFolder ? "資料夾" : "背板"}` : `摺疊${isFolder ? "資料夾" : "背板"}`}
                                             onClick={() => runAction(onToggleFrame)}
                                         />
                                     ) : (
-                                        <MenuButton icon={<FolderPlus />} label="保存到我的素材" disabled={!canSaveAsset} onClick={() => runAction(onSaveAsset)} />
+                                        <MenuButton icon={<FolderPlus />} label="儲存到我的素材" disabled={!canSaveAsset} onClick={() => runAction(onSaveAsset)} />
                                     )}
-                                    {isText ? <MenuButton icon={<Maximize2 />} label="放大编辑" onClick={() => runAction(onEditText)} /> : null}
-                                    {isDrawing ? <MenuButton icon={<Pencil />} label="打开绘图" onClick={() => runAction(onOpenDrawing)} /> : null}
-                                    {isText ? <MenuButton icon={<ImageIcon />} label="用文本生图" disabled={!canGenerateFromText} onClick={() => runAction(onGenerateImage)} /> : null}
+                                    {isText ? <MenuButton icon={<Maximize2 />} label="放大編輯" onClick={() => runAction(onEditText)} /> : null}
+                                    {isDrawing ? <MenuButton icon={<Pencil />} label="開啟繪圖" onClick={() => runAction(onOpenDrawing)} /> : null}
+                                    {isText ? <MenuButton icon={<ImageIcon />} label="用文本生圖" disabled={!canGenerateFromText} onClick={() => runAction(onGenerateImage)} /> : null}
                                     <MenuDivider />
-                                    <MenuSection label="副本与内容" />
-                                            <MenuButton icon={<Copy />} label={isFrame ? `复制${isFolder ? "文件夹" : "背板"}及内容` : "复制节点"} shortcut="⌘C" onClick={() => runAction(onCopyNode)} />
-                                    {isText ? <MenuButton icon={<Clipboard />} label="复制文本" disabled={!hasNodeContent} onClick={() => runAction(onCopyContent)} /> : null}
-                                    <MenuButton icon={<Copy />} label={isFrame ? `创建${isFolder ? "文件夹" : "背板"}副本` : "创建参数变体"} shortcut="⌘D" onClick={() => runAction(onDuplicate)} />
-                                    <MenuButton icon={<Clipboard />} label="粘贴" shortcut="⌘V" disabled={!canPaste} onClick={() => runAction(onPaste)} />
-                                    <MenuButton icon={<Trash2 />} label={isFrame ? `删除${isFolder ? "文件夹" : "背板"}` : "删除节点"} danger onClick={() => runAction(onDelete)} />
+                                    <MenuSection label="副本與內容" />
+                                            <MenuButton icon={<Copy />} label={isFrame ? `複製${isFolder ? "資料夾" : "背板"}及內容` : "複製節點"} shortcut="⌘C" onClick={() => runAction(onCopyNode)} />
+                                    {isText ? <MenuButton icon={<Clipboard />} label="複製文本" disabled={!hasNodeContent} onClick={() => runAction(onCopyContent)} /> : null}
+                                    <MenuButton icon={<Copy />} label={isFrame ? `建立${isFolder ? "資料夾" : "背板"}副本` : "建立引數變體"} shortcut="⌘D" onClick={() => runAction(onDuplicate)} />
+                                    <MenuButton icon={<Clipboard />} label="貼上" shortcut="⌘V" disabled={!canPaste} onClick={() => runAction(onPaste)} />
+                                    <MenuButton icon={<Trash2 />} label={isFrame ? `刪除${isFolder ? "資料夾" : "背板"}` : "刪除節點"} danger onClick={() => runAction(onDelete)} />
                                 </>
                             )}
                         </>
                     ) : (
                         <>
-                            <MenuHeader title="连接" />
-                            <MenuButton icon={<Trash2 className="size-4" />} label="删除连接" danger onClick={() => runAction(onDelete)} />
+                            <MenuHeader title="連線" />
+                            <MenuButton icon={<Trash2 className="size-4" />} label="刪除連線" danger onClick={() => runAction(onDelete)} />
                         </>
                     )}
                 </div>
@@ -399,7 +399,7 @@ function MenuHeader({ title, description, onBack }: { title: string; description
     return (
         <div className="mb-0.5 flex items-start gap-1 px-1.5 py-1.5">
             {onBack ? (
-                <button type="button" onClick={onBack} className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-md outline-none hover:bg-black/5 focus-visible:ring-2 dark:hover:bg-white/8" aria-label="返回媒体操作">
+                <button type="button" onClick={onBack} className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-md outline-none hover:bg-black/5 focus-visible:ring-2 dark:hover:bg-white/8" aria-label="返回媒體操作">
                     <ArrowLeft className="size-3.5" />
                 </button>
             ) : null}
@@ -525,14 +525,14 @@ function clamp(value: number, min: number, max: number) {
 }
 
 function nodeTypeLabel(node?: CanvasNodeData | null) {
-    if (!node) return "节点";
-    if (node.type === CanvasNodeType.Image) return "图片节点";
-    if (node.type === CanvasNodeType.Text) return "文本节点";
-    if (node.type === CanvasNodeType.Script) return "分镜脚本节点";
-    if (node.type === CanvasNodeType.Skill) return "技能节点";
-    if (node.type === CanvasNodeType.Video) return "视频节点";
-    if (node.type === CanvasNodeType.Audio) return "音频节点";
-    if (node.type === CanvasNodeType.Drawing) return "绘图节点";
-    if (node.type === CanvasNodeType.Frame) return isCanvasFolderNode(node) ? "文件夹" : "背板";
-    return "生成配置节点";
+    if (!node) return "節點";
+    if (node.type === CanvasNodeType.Image) return "圖片節點";
+    if (node.type === CanvasNodeType.Text) return "文本節點";
+    if (node.type === CanvasNodeType.Script) return "分鏡指令碼節點";
+    if (node.type === CanvasNodeType.Skill) return "技能節點";
+    if (node.type === CanvasNodeType.Video) return "影片節點";
+    if (node.type === CanvasNodeType.Audio) return "音訊節點";
+    if (node.type === CanvasNodeType.Drawing) return "繪圖節點";
+    if (node.type === CanvasNodeType.Frame) return isCanvasFolderNode(node) ? "資料夾" : "背板";
+    return "生成配置節點";
 }

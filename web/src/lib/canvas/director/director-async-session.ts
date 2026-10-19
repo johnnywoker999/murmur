@@ -19,7 +19,7 @@ export function directorAsyncSession(signal: AbortSignal, expectedScope: Capture
         expectedScope,
         current,
         assertCurrent: () => {
-            if (signal.aborted) throw new DOMException("导演台会话已结束", "AbortError");
+            if (signal.aborted) throw new DOMException("導演臺會話已結束", "AbortError");
             assertUserScope(expectedScope);
         },
     };

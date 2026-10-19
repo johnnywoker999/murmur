@@ -32,13 +32,13 @@ const assetCommitChains = new Map<string, Promise<unknown>>();
 
 export class WorkspaceAssetMediaPendingError extends Error {
     constructor() {
-        super("素材文件尚未保存到工作区，修改已保留在本机");
+        super("素材檔案尚未儲存到工作區，修改已保留在本機");
         this.name = "WorkspaceAssetMediaPendingError";
     }
 }
 
 function assertAssetWriteReceipt(receipt: AssetWriteReceipt | undefined, id: string): asserts receipt is AssetWriteReceipt {
-    if (!receipt || receipt.id !== id) throw new Error("素材保存回执无效，修改已保留在本机");
+    if (!receipt || receipt.id !== id) throw new Error("素材儲存回執無效，修改已保留在本機");
 }
 
 function throwIfAborted(signal?: AbortSignal) {
@@ -242,7 +242,7 @@ export type DeleteWorkspaceAssetOptions = {
 export async function deleteWorkspaceAsset(id: string, expectedScope?: CapturedUserScope, options?: DeleteWorkspaceAssetOptions) {
     const expected = expectedScope ?? captureUserScope();
     const assetId = id.trim();
-    if (!assetId) throw new Error("素材 ID 不能为空");
+    if (!assetId) throw new Error("素材 ID 不能為空");
     assertUserScope(expected);
     await hydrateAssetStoreDrafts(expected.userScope);
     assertUserScope(expected);
@@ -251,7 +251,7 @@ export async function deleteWorkspaceAsset(id: string, expectedScope?: CapturedU
         if (options?.expectedStatus) {
             const live = useAssetStore.getState().assets.find((item) => item.id === assetId);
             if (live && live.status !== options.expectedStatus) {
-                throw new ApiError("素材已不在回收站，未删除", { status: 409, code: 409 });
+                throw new ApiError("素材已不在回收站，未刪除", { status: 409, code: 409 });
             }
         }
         await useAssetStore.getState().removeAsset(assetId);

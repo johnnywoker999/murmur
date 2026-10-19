@@ -17,9 +17,9 @@ export function seedanceReferenceRatioWarning(input: { model: string; baseUrl?: 
     try { host = new URL(input.baseUrl || "").hostname.toLowerCase(); } catch { /* Managed credentials may not expose a URL. */ }
     if (input.credentialRef !== "beefapi-enterprise" && !["beeftv.app", "enterprise.beefapi.com", "whatstoken.ai", "www.whatstoken.ai"].includes(host)) return undefined;
     return {
-        title: "输出比例可能与设置不一致",
-        content: `当前模型带参考视频生成时，可能不会按设置的 ${input.ratio} 输出。继续生成仍会计费，比例不符不会自动退款。你也可以更换模型，或移除参考视频后再生成。`,
-        okText: "接受风险并生成",
-        cancelText: "返回调整",
+        title: "輸出比例可能與設定不一致",
+        content: `當前模型帶參考影片生成時，可能不會按設定的 ${input.ratio} 輸出。繼續生成仍會計費，比例不符不會自動退款。你也可以更換模型，或移除參考影片後再生成。`,
+        okText: "接受風險並生成",
+        cancelText: "返回調整",
     };
 }

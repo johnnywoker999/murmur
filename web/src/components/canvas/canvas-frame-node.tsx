@@ -70,7 +70,7 @@ export const CanvasFrameNode = React.memo(function CanvasFrameNode({
     useEffect(() => setTitle(data.title), [data.title]);
 
     const commitTitle = () => {
-        const next = title.trim() || (folder ? "未命名文件夹" : "未命名背板");
+        const next = title.trim() || (folder ? "未命名資料夾" : "未命名背板");
         setTitle(next);
         setEditing(false);
         onTitleChange(data.id, next);
@@ -150,7 +150,7 @@ export const CanvasFrameNode = React.memo(function CanvasFrameNode({
     const linkedFolder = Boolean(data.metadata?.folder?.assetFolderId);
     const workflowLabel = frameWorkflowLabel(data.metadata?.workflowKind);
     const headerInverseScale = scale < 0.5 ? 1 / Math.max(scale, 0.05) : 1;
-    const compactFrameTitle = scale < 0.5 && (data.metadata?.fixture === "libtv-storyboard" || workflowLabel === "分镜")
+    const compactFrameTitle = scale < 0.5 && (data.metadata?.fixture === "libtv-storyboard" || workflowLabel === "分鏡")
         ? data.title.split("｜", 1)[0]
         : data.title;
 
@@ -164,7 +164,7 @@ export const CanvasFrameNode = React.memo(function CanvasFrameNode({
             data-canvas-child-count={String(childNodes.length)}
             role={folder && collapsed ? "group" : undefined}
             tabIndex={folder && collapsed ? 0 : undefined}
-            aria-label={folder && collapsed ? `${data.title}，文件夹，${childNodes.length} 项内容。按回车打开` : undefined}
+            aria-label={folder && collapsed ? `${data.title}，資料夾，${childNodes.length} 項內容。按回車開啟` : undefined}
             className={`absolute z-0 select-none${folder && collapsed ? " canvas-folder-node" : ""} ${dragOffset ? "cursor-grabbing" : "cursor-default"}`}
             style={{ transform: `translate(${data.position.x + (dragOffset?.x || 0)}px, ${data.position.y + (dragOffset?.y || 0)}px)`, width: data.width, height: data.height, contain: "layout style" }}
             onMouseDown={(event) => onMouseDown(event, data.id)}
@@ -183,7 +183,7 @@ export const CanvasFrameNode = React.memo(function CanvasFrameNode({
             onMouseEnter={() => onHoverStart?.(data.id)}
             onMouseLeave={() => onHoverEnd?.(data.id)}
         >
-            {/* 帧节点同样禁用指针跟随 3D 位移，hover 使用 CSS 静态抬升 */}
+            {/* 幀節點同樣停用指標跟隨 3D 位移，hover 使用 CSS 靜態抬升 */}
             <CometCard
                 containerClassName="h-full w-full"
                 className={folder && collapsed ? "canvas-folder-shell overflow-visible" : `canvas-frame-shell overflow-hidden rounded-[var(--dock-radius)] border${folder ? " canvas-folder-expanded" : ""}`}
@@ -193,13 +193,13 @@ export const CanvasFrameNode = React.memo(function CanvasFrameNode({
                     background: folder && collapsed ? "transparent" : active ? theme.frame.activeFill : theme.frame.fill,
                     borderColor: folder && collapsed ? "transparent" : active ? theme.frame.activeStroke : theme.frame.stroke,
                     borderWidth: folder && collapsed ? 0 : 1 / Math.max(scale, 0.05),
-                    // 原版公开画布的分组更接近“空间分区”而不是浮起的卡片：
-                    // 默认只保留很轻的环境阴影，选中时再用描边承担反馈，避免密集节点被大面积阴影吞掉。
+                    // 原版公開畫布的分組更接近“空間分割槽”而不是浮起的卡片：
+                    // 預設只保留很輕的環境陰影，選中時再用描邊承擔反饋，避免密集節點被大面積陰影吞掉。
                     boxShadow: folder && collapsed ? "none" : isSelected ? `0 0 0 ${1 / Math.max(scale, 0.05)}px ${theme.frame.activeStroke}33, 0 10px 28px color-mix(in srgb, ${theme.spatial.shadow} 52%, transparent)` : `0 8px 24px color-mix(in srgb, ${theme.spatial.shadow} 40%, transparent)`,
                 }}
             >
                 {folder && collapsed ? (
-                    // 素材库目录是单一事实源；画布节点只负责浏览和调用，避免本地改名后被同步结果覆盖。
+                    // 素材庫目錄是單一事實源；畫布節點只負責瀏覽和呼叫，避免本地改名後被同步結果覆蓋。
                     <CanvasFolderPreview
                         data={data}
                         childNodes={childNodes}
@@ -227,7 +227,7 @@ export const CanvasFrameNode = React.memo(function CanvasFrameNode({
                         type="button"
                         className="grid size-8 shrink-0 place-items-center rounded-md transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 dark:hover:bg-white/10"
                         style={{ outlineColor: theme.frame.activeStroke }}
-                        aria-label={collapsed ? "展开背板" : "折叠背板"}
+                        aria-label={collapsed ? "展開背板" : "摺疊背板"}
                         onMouseDown={(event) => event.stopPropagation()}
                         onClick={(event) => {
                             event.stopPropagation();
@@ -298,10 +298,10 @@ export const CanvasFrameNode = React.memo(function CanvasFrameNode({
 });
 
 function frameWorkflowLabel(kind?: NonNullable<CanvasNodeData["metadata"]>["workflowKind"]) {
-    if (kind === "storyboard") return "分镜";
+    if (kind === "storyboard") return "分鏡";
     if (kind === "reference_set") return "引用";
     if (kind === "character") return "角色";
-    if (kind === "styleboard") return "画风";
+    if (kind === "styleboard") return "畫風";
     return undefined;
 }
 
@@ -339,7 +339,7 @@ function FramePreview({ nodes, frame, theme }: { nodes: CanvasNodeData[]; frame:
                         {videoPreview ? <img src={videoPreview} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" draggable={false} /> : null}
                         {node.type === CanvasNodeType.Video && !videoPreview ? <Video className="m-auto size-4 h-full opacity-40" /> : null}
                         {node.type === CanvasNodeType.Text ? <div className="line-clamp-3 p-1 text-[var(--fs-nano)] leading-[9px]" style={{ color: theme.node.text }}>{node.metadata?.content || node.title}</div> : null}
-                        {node.type === CanvasNodeType.Script ? <div className="p-1 text-[var(--fs-nano)] leading-[9px]" style={{ color: theme.node.text }}>分镜脚本 · {node.metadata?.storyboard?.rows.length || 0} 镜</div> : null}
+                        {node.type === CanvasNodeType.Script ? <div className="p-1 text-[var(--fs-nano)] leading-[9px]" style={{ color: theme.node.text }}>分鏡指令碼 · {node.metadata?.storyboard?.rows.length || 0} 鏡</div> : null}
                     </div>;
                 })
             ) : (
@@ -360,7 +360,7 @@ function ResizeHandle({ corner, scale, theme, onMouseDown }: { corner: ResizeCor
     return (
         <button
             type="button"
-            aria-label="调整背板尺寸"
+            aria-label="調整背板尺寸"
             className="pointer-events-auto absolute z-20 rounded-sm shadow-sm"
             style={{
                 top: fromTop ? offset : undefined,

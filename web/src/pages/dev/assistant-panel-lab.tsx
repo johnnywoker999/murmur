@@ -9,22 +9,22 @@ import { useThemeStore } from "@/stores/use-theme-store";
 import { CanvasNodeType } from "@/types/canvas";
 
 /**
- * DEV 实验室：只为验收助手停靠栏的视觉与状态分支。
+ * DEV 實驗室：只為驗收助手停靠欄的視覺與狀態分支。
  *
- * 不连后端、不调模型：所有数据都是本页写死的样例，用查询参数切换场景
- * （?state=ready|unavailable|starting&narrow=1&dark=1）。生产构建不含此路由。
+ * 不連後端、不調模型：所有資料都是本頁寫死的樣例，用查詢引數切換場景
+ * （?state=ready|unavailable|starting&narrow=1&dark=1）。生產構建不含此路由。
  */
 const REFERENCES: CanvasResourceReference[] = [
-    { id: "n1", nodeId: "n1", kind: "text", label: "镜头1", title: "镜头1-开场", active: true, sourceType: CanvasNodeType.Text, mentionToken: "@[node:n1]" },
-    { id: "n2", nodeId: "n2", kind: "image", label: "镜头2", title: "镜头2-冲突", active: true, sourceType: CanvasNodeType.Image, mentionToken: "@[node:n2]" },
+    { id: "n1", nodeId: "n1", kind: "text", label: "鏡頭1", title: "鏡頭1-開場", active: true, sourceType: CanvasNodeType.Text, mentionToken: "@[node:n1]" },
+    { id: "n2", nodeId: "n2", kind: "image", label: "鏡頭2", title: "鏡頭2-衝突", active: true, sourceType: CanvasNodeType.Image, mentionToken: "@[node:n2]" },
 ];
 
 const TURNS: AssistantTurn[] = [
     {
         turnId: "turn-1",
-        userText: "把剧本拆成三个镜头，并按顺序连起来",
+        userText: "把劇本拆成三個鏡頭，並按順序連起來",
         selectedNodeIds: ["n1", "n2"],
-        reply: "已经按开场、冲突、收尾拆成三个镜头，并按这个顺序连好。\n\n- **镜头1 开场**：雨夜巷口，远景压住情绪\n- **镜头2 冲突**：近景对峙，光只打半张脸\n- **镜头3 收尾**：中景离场，留一句没说完的台词",
+        reply: "已經按開場、衝突、收尾拆成三個鏡頭，並按這個順序連好。\n\n- **鏡頭1 開場**：雨夜巷口，遠景壓住情緒\n- **鏡頭2 衝突**：近景對峙，光只打半張臉\n- **鏡頭3 收尾**：中景離場，留一句沒說完的臺詞",
         toolCalls: [
             { toolCallId: "t1", tool: "canvas.nodes.create" },
             { toolCallId: "t2", tool: "canvas.edge.create" },
@@ -51,8 +51,8 @@ function stubController(open: boolean, setOpen: (next: boolean) => void, width: 
         statusBusy: false,
         modelBusy: false,
         sessions: [
-            { sessionId: "s1", title: "把剧本拆成三个镜头，并按顺序连起来", updatedAt: new Date().toISOString(), turnCount: 1 },
-            { sessionId: "s2", title: "检查哪些镜头还缺参考图", updatedAt: new Date().toISOString(), turnCount: 3 },
+            { sessionId: "s1", title: "把劇本拆成三個鏡頭，並按順序連起來", updatedAt: new Date().toISOString(), turnCount: 1 },
+            { sessionId: "s2", title: "檢查哪些鏡頭還缺參考圖", updatedAt: new Date().toISOString(), turnCount: 3 },
         ],
         sessionId: "s1",
         turns: status?.available ? TURNS : [],
@@ -99,7 +99,7 @@ export default function AssistantPanelLab() {
     const [open, setOpen] = useState(true);
     const [width, setWidth] = useState(380);
 
-    // CSS 变量和 antd 主题必须同时切：只切一边会让按钮文字和底色撞在一起。
+    // CSS 變數和 antd 主題必須同時切：只切一邊會讓按鈕文字和底色撞在一起。
     useEffect(() => {
         document.documentElement.classList.toggle("dark", dark);
         useThemeStore.getState().setTheme(dark ? "dark" : "light");
@@ -116,21 +116,21 @@ export default function AssistantPanelLab() {
 
     const assistant = stubController(open, setOpen, width, setWidth, status);
     if (state === "interrupted") {
-        assistant.turns = [{ ...TURNS[0], proposals: [], error: "本轮达到等待上限", errorReason: "turn_timeout", change: { ...TURNS[0].change!, timelineUpdated: true } }];
+        assistant.turns = [{ ...TURNS[0], proposals: [], error: "本輪達到等待上限", errorReason: "turn_timeout", change: { ...TURNS[0].change!, timelineUpdated: true } }];
     }
     if (state === "streaming") {
         assistant.streaming = true;
         assistant.canSupplement = true;
-        assistant.pendingUserText = "检查参考视频的声音，去掉中间黑屏，保留咖啡和蛋糕的结尾";
-        assistant.streamed = "已找到中间的黑屏，正在检查这段声音。";
-        assistant.supplements = [{ text: "不要删除片尾的两秒停顿", status: "accepted" }];
-        assistant.lifecycleNotice = "正在检查媒体";
+        assistant.pendingUserText = "檢查參考影片的聲音，去掉中間黑屏，保留咖啡和蛋糕的結尾";
+        assistant.streamed = "已找到中間的黑屏，正在檢查這段聲音。";
+        assistant.supplements = [{ text: "不要刪除片尾的兩秒停頓", status: "accepted" }];
+        assistant.lifecycleNotice = "正在檢查媒體";
     }
 
     return (
         <div className="flex h-screen min-h-0" style={{ background: "var(--background)", color: "var(--foreground)" }}>
             <div className="flex min-w-0 flex-1 items-center justify-center" style={{ background: "var(--muted)" }}>
-                <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>画布区域（实验室占位）</p>
+                <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>畫布區域（實驗室佔位）</p>
             </div>
             <CanvasAssistantSidebar
                 assistant={assistant}

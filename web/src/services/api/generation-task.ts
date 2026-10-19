@@ -79,7 +79,7 @@ type PreparedGenerationReferences = {
     mask?: Awaited<ReturnType<typeof prepareBackendImageReference>>;
 };
 
-// 生成、取消和任务记录必须共用后端任务生命周期，页面层不能再直连供应商。
+// 生成、取消和任務記錄必須共用後端任務生命週期，頁面層不能再直連供應商。
 export async function runBackendGenerationTask(
     {
         projectId,
@@ -118,8 +118,8 @@ export async function runBackendGenerationTask(
     );
 }
 
-// 分镜等后台生产流程只需要可靠提交任务；任务状态与产物由项目工作区轮询和
-// 后端自动回填负责，不能让页面 mutation 一直等待供应商完成。
+// 分鏡等後臺生產流程只需要可靠提交任務；任務狀態與產物由專案工作區輪詢和
+// 後端自動回填負責，不能讓頁面 mutation 一直等待供應商完成。
 export async function submitBackendGenerationTask(options: BackendGenerationTaskOptions, dependencies: GenerationTaskDependencies = defaultDependencies): Promise<GenerationTask> {
     throwIfAborted(options.signal);
     assertClientPromptLimit(options.mode, options.prompt, options.config, options.metadata);
@@ -142,7 +142,7 @@ type BackendToolGenerationOptions = {
     metadata?: { source: string; nodeId?: string; runId?: string; stage?: string };
 };
 
-// 准备和执行复用完全相同的任务协议，准备阶段不提交模型任务。
+// 準備和執行復用完全相同的任務協議，準備階段不提交模型任務。
 export function prepareBackendToolGenerationTask(options: BackendToolGenerationOptions): CreateTaskInput {
     throwIfAborted(options.signal);
     assertAgentExchangeBudget(options.messages, options.tools, options.config.systemPrompt || "");
@@ -152,13 +152,13 @@ export function prepareBackendToolGenerationTask(options: BackendToolGenerationO
         for (const part of message.content) {
             if (part.type !== "image_url") continue;
             const key = part.image_url.url;
-            if (!resourceIdFromStorageKey(key)) throw new Error("看图素材尚未保存为资源，请让助手重新读取图片后继续。");
+            if (!resourceIdFromStorageKey(key)) throw new Error("看圖素材尚未儲存為資源，請讓助手重新讀取圖片後繼續。");
             imageKeys.add(key);
         }
     }
     const logicalModelId = logicalModelIDForConfig(options.config);
     const requestConfig = resolveModelRequestConfig(options.config, options.config.model);
-    if (!logicalModelId && !requestConfig.channelId && !requestConfig.interfaceType) throw new Error("当前模型未选择可用请求协议");
+    if (!logicalModelId && !requestConfig.channelId && !requestConfig.interfaceType) throw new Error("當前模型未選擇可用請求協議");
     const task: CreateTaskInput = {
         type: "canvas_text",
         operation: "text",
@@ -176,7 +176,7 @@ export function prepareBackendToolGenerationTask(options: BackendToolGenerationO
         },
     };
     if (new Blob([JSON.stringify(task)]).size > 15 * 1024 * 1024) {
-        throw new Error("本次图片或对话内容过多，请减少参考图片，或新建会话后继续。已有作品会保留。");
+        throw new Error("本次圖片或對話內容過多，請減少參考圖片，或新建會話後繼續。已有作品會保留。");
     }
     return task;
 }
@@ -197,7 +197,7 @@ export async function runBackendGenerationTaskBatch(options: BackendGenerationTa
     const count = Math.max(1, Math.min(15, Math.floor(Number(options.count)) || 1));
     throwIfAborted(options.signal);
     assertClientPromptLimit(options.mode, options.prompt, options.config, options.metadata);
-    if (options.retryContextsByBatchIndex && options.retryContextsByBatchIndex.length !== count) throw new Error("生成重试批次任务数量不匹配");
+    if (options.retryContextsByBatchIndex && options.retryContextsByBatchIndex.length !== count) throw new Error("生成重試批次任務數量不匹配");
     const prepared = await prepareGenerationReferences(options);
     throwIfAborted(options.signal);
     return Promise.allSettled(
@@ -236,7 +236,7 @@ function assertBackendRuntimeConfigured(config: AiConfig, mode: BackendGeneratio
     if (resolveGenerationWorkflowExecution(config, mode)) return;
     if (logicalModelIDForConfig(config)) return;
     const requestConfig = resolveModelRequestConfig(config, config.model);
-    if (!requestConfig.channelId && !requestConfig.interfaceType) throw new Error("当前模型未选择可用请求协议，请先在模型设置中选择协议插件");
+    if (!requestConfig.channelId && !requestConfig.interfaceType) throw new Error("當前模型未選擇可用請求協議，請先在模型設定中選擇協議外掛");
 }
 
 function throwIfAborted(signal?: AbortSignal) {
@@ -260,7 +260,7 @@ async function prepareGenerationReferences({
 }: Pick<BackendGenerationTaskOptions, "config" | "mode" | "referenceImages" | "referenceVideos" | "referenceAudios" | "mask">): Promise<PreparedGenerationReferences> {
     const portraitError = mode === "video" ? portraitGenerationError(config, config.model, config.vquality) : "";
     if (portraitError) throw new Error(portraitError);
-    // asset:// 仅视频生成可用；Agent Plan Seedream 与 Seedance 共用 /api/plan/v3，不能按 BaseURL 误判。
+    // asset:// 僅影片生成可用；Agent Plan Seedream 與 Seedance 共用 /api/plan/v3，不能按 BaseURL 誤判。
     const preferArkAssetUrl = mode === "video" && usesArkVideoAssetReference(config);
     const preparedImages = await Promise.all(referenceImages.map((image) => prepareBackendImageReference(image, preferArkAssetUrl)));
     const preparedVideos = await Promise.all(referenceVideos.map(prepareBackendMediaReference));
@@ -269,8 +269,8 @@ async function prepareGenerationReferences({
     return { referenceImages: preparedImages, referenceVideos: preparedVideos, referenceAudios: preparedAudios, mask: preparedMask };
 }
 
-// 与后端 isArkPrivateAssetVideoConfig 对齐：方舟视频渠道允许参考图直接 asset:// 引用，
-// 跳过可信素材上传同步（适合已录入方舟素材 ID 的素材，例如被授权的真人像素材）。
+// 與後端 isArkPrivateAssetVideoConfig 對齊：方舟影片渠道允許參考圖直接 asset:// 引用，
+// 跳過可信素材上傳同步（適合已錄入方舟素材 ID 的素材，例如被授權的真人畫素材）。
 function usesArkVideoAssetReference(config: AiConfig) {
     const interfaceType = resolveModelRequestConfig(config, config.model).interfaceType;
     if (interfaceType === "volcengine-ark-video" || interfaceType === "volcengine-ark-agent-plan-video") return true;
@@ -304,7 +304,7 @@ async function createBackendGenerationTask(options: BackendGenerationTaskOptions
         // Only this admission error guarantees that no task/upstream submission exists.
         if (!(error instanceof ApiError) || error.reason !== "reference_media_requires_url") throw error;
         const groups = ["referenceImages", "referenceVideos", "referenceAudios"] as const;
-        const labels = ["参考图片", "参考视频", "参考音频"];
+        const labels = ["參考圖片", "參考影片", "參考音訊"];
         const references: ReferenceLinkRequest[] = [];
         const transport = resolveModelRequestConfig(options.config, options.config.model).referenceMediaTransport;
         const required = error.details?.requiredReferences;
@@ -322,7 +322,7 @@ async function createBackendGenerationTask(options: BackendGenerationTaskOptions
         assertUserScope(expectedScope);
         if (!links || references.some((reference) => !links[reference.key])) throw error;
         for (const reference of references) {
-            if (!isReferenceHTTPSLink(links[reference.key] || "")) throw new Error(`${reference.label}需要有效的 HTTPS 链接`);
+            if (!isReferenceHTTPSLink(links[reference.key] || "")) throw new Error(`${reference.label}需要有效的 HTTPS 連結`);
         }
         const replace = <T extends { id?: string; name?: string; url?: string }>(items: T[], group: string): T[] =>
             items.map((media, index) => {
@@ -415,13 +415,13 @@ async function prepareBackendMediaReference(media: ReferenceVideo | ReferenceAud
     let blob: Blob | null = null;
     if (media.storageKey) blob = await getMediaBlob(media.storageKey);
     if (!blob && (url.startsWith("blob:") || url.startsWith("data:"))) blob = await (await fetch(url)).blob();
-    if (!blob) throw new Error("参考媒体尚未保存，请重新上传后再生成");
+    if (!blob) throw new Error("參考媒體尚未儲存，請重新上傳後再生成");
     try {
         const kind: "video" | "audio" | "file" = blob.type.startsWith("video/") ? "video" : blob.type.startsWith("audio/") ? "audio" : "file";
         const resource = await uploadResourceFile(blob, kind, { fileName: media.name, width: "width" in media ? media.width : undefined, height: "height" in media ? media.height : undefined, durationMs: media.durationMs });
         return backendMediaReference(media, { storageKey: resourceStorageKey(resource.id), type: resource.mimeType || media.type || blob.type });
     } catch (error) {
-        throw new Error(error instanceof Error ? `参考媒体上传失败：${error.message}` : "参考媒体上传失败");
+        throw new Error(error instanceof Error ? `參考媒體上傳失敗：${error.message}` : "參考媒體上傳失敗");
     }
 }
 
@@ -431,16 +431,16 @@ async function prepareBackendImageReference(image: ReferenceImage, preferArkAsse
     const sourceUrl = image.url || image.dataUrl;
     if (/^https?:\/\//i.test(sourceUrl)) return backendImageReference(image, { url: sourceUrl });
     const blob = image.storageKey ? await getImageBlob(image.storageKey) : sourceUrl ? await (await fetch(sourceUrl)).blob() : null;
-    if (!blob) throw new Error("参考图片尚未保存，请重新上传后再生成");
+    if (!blob) throw new Error("參考圖片尚未儲存，請重新上傳後再生成");
     try {
         const resource = await uploadResourceFile(blob, "image", { fileName: image.name });
         return backendImageReference(image, { storageKey: resourceStorageKey(resource.id), type: resource.mimeType || image.type || blob.type });
     } catch (error) {
-        throw new Error(error instanceof Error ? `参考图片上传失败：${error.message}` : "参考图片上传失败");
+        throw new Error(error instanceof Error ? `參考圖片上傳失敗：${error.message}` : "參考圖片上傳失敗");
     }
 }
 
-// 任务输入只允许后端协议字段，避免把 previewUrl 等页面态 Data URL 带入强校验写路径。
+// 任務輸入只允許後端協議欄位，避免把 previewUrl 等頁面態 Data URL 帶入強校驗寫路徑。
 function backendImageReference(image: ReferenceImage, override: Partial<ReferenceImage>): ReferenceImage {
     return {
         id: image.id,
@@ -519,7 +519,7 @@ function workflowProviderConfig(config: AiConfig, requestConfig: ReturnType<type
         interfaceType: workflow.interfaceType,
         baseUrl: config.runningHub.baseUrl,
         apiKey: runningHubActive ? config.runningHub.apiKey : "",
-        // 工作流是独立 Provider，不能继承普通模型渠道的密钥和自定义头。
+        // 工作流是獨立 Provider，不能繼承普通模型渠道的金鑰和自定義頭。
         secretKey: "",
         headers: [],
         model: workflow.providerModel,
@@ -574,8 +574,8 @@ function logicalCapabilityOptions(config: AiConfig, mode: BackendGenerationMode)
                 ? { audioVoice: config.audioVoice, audioFormat: config.audioFormat, audioSpeed: Number(config.audioSpeed), audioPitch: Number(config.audioPitch), audioVolume: Number(config.audioVolume) }
                 : {};
     const filtered = Object.fromEntries(Object.entries(candidates).filter(([key]) => Boolean(spec?.options?.[key])));
-    // 只把前台模型声明过的参数送进能力匹配。未声明的 quality 不能因为画布选了 4K 档位
-    // 而被硬塞进去，否则会报“不支持参数 生成质量”；插件仍从 config.quality 读取档位。
+    // 只把前臺模型宣告過的引數送進能力匹配。未宣告的 quality 不能因為畫布選了 4K 檔位
+    // 而被硬塞進去，否則會報“不支援引數 生成質量”；外掛仍從 config.quality 讀取檔位。
     return filtered;
 }
 
@@ -588,8 +588,8 @@ function omittedImageQuality(value: string | undefined, request: { model: string
 }
 
 export function parseBackendGenerationResult(task: GenerationTask): BackendGenerationResult {
-    if (!task.resultJson) throw new Error("后端任务没有返回结果");
+    if (!task.resultJson) throw new Error("後端任務沒有返回結果");
     const result = JSON.parse(task.resultJson) as BackendGenerationResult;
-    if (!result || typeof result !== "object") throw new Error("后端任务结果格式错误");
+    if (!result || typeof result !== "object") throw new Error("後端任務結果格式錯誤");
     return result;
 }

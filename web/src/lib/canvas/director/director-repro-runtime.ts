@@ -1,9 +1,9 @@
 /**
- * 复现场景的环境快照投影。
+ * 復現場景的環境快照投影。
  *
- * 只在本地开发复现页面展示，绝不自动发网：本模块不引用任何 API 客户端。
- * 所有字符串都限长并剥掉 URL 的 query/hash 与凭证形态片段；
- * WebGL 不可用时必须稳定降级为 { available: false }，不能抛错。
+ * 只在本地開發復現頁面展示，絕不自動髮網：本模組不引用任何 API 客戶端。
+ * 所有字串都限長並剝掉 URL 的 query/hash 與憑證形態片段；
+ * WebGL 不可用時必須穩定降級為 { available: false }，不能拋錯。
  */
 
 export type DirectorReproRuntime = {
@@ -36,13 +36,13 @@ export type DirectorReproSnapshot = {
 const MAX_TEXT = 160;
 
 /**
- * 安全文本：遮蔽凭证、整段替换 URL、压缩空白并限长。
- * WebGL 的 UNMASKED_RENDERER 在部分驱动上会带较长标识甚至驱动地址，必须统一收敛。
+ * 安全文本：遮蔽憑證、整段替換 URL、壓縮空白並限長。
+ * WebGL 的 UNMASKED_RENDERER 在部分驅動上會帶較長標識甚至驅動地址，必須統一收斂。
  *
- * 顺序有意义：先吃掉 `bearer <token>`（token 与关键字之间只有空白，没有 :=），
- * 否则后面的 key[:=]value 规则只会遮住 "bearer" 本身而把 token 留在原地。
- * URL 一律替换为固定 [URL]：域名与路径本身就可能是凭证载体或内网拓扑信息，
- * 只剥 query/hash 不够。
+ * 順序有意義：先吃掉 `bearer <token>`（token 與關鍵字之間只有空白，沒有 :=），
+ * 否則後面的 key[:=]value 規則只會遮住 "bearer" 本身而把 token 留在原地。
+ * URL 一律替換為固定 [URL]：域名與路徑本身就可能是憑證載體或內網拓撲資訊，
+ * 只剝 query/hash 不夠。
  */
 export function safeReproText(value: unknown, maxLength = MAX_TEXT): string {
     if (typeof value !== "string") return "";
@@ -52,7 +52,7 @@ export function safeReproText(value: unknown, maxLength = MAX_TEXT): string {
     text = text.replace(/\bbearer\s+[^\s,;]+/gi, "Bearer [REDACTED]");
     text = text.replace(/(authorization|cookie|set-cookie|api[_-]?key|secret[_-]?key|password|token)\s*[:=]\s*[^\s,;]+/gi, "$1=[REDACTED]");
     text = text.replace(/https?:\/\/\S+/gi, "[URL]");
-    // 裸 query/hash 片段（不带协议）同样不得保留。
+    // 裸 query/hash 片段（不帶協議）同樣不得保留。
     text = text.replace(/[?#]\S*/g, "");
     text = text.replace(/\s+/g, " ").trim();
     return text.slice(0, maxLength);
@@ -98,8 +98,8 @@ type GlLike = {
 };
 
 /**
- * 从已有上下文投影安全 WebGL 信息。注入 gl 便于测试降级分支。
- * 任何 getParameter/getExtension 抛错都收敛为 context-failed，不外泄异常。
+ * 從已有上下文投影安全 WebGL 資訊。注入 gl 便於測試降級分支。
+ * 任何 getParameter/getExtension 拋錯都收斂為 context-failed，不外洩異常。
  */
 export function projectDirectorWebgl(gl: unknown): DirectorReproWebgl {
     if (!gl || typeof gl !== "object") return { available: false, reason: "unsupported" };
@@ -107,7 +107,7 @@ export function projectDirectorWebgl(gl: unknown): DirectorReproWebgl {
     if (typeof context.getParameter !== "function") return { available: false, reason: "unsupported" };
 
     try {
-        // UNMASKED_* 需要扩展；拿不到就退回未遮蔽的 VENDOR/RENDERER，两者都可能为空。
+        // UNMASKED_* 需要擴充套件；拿不到就退回未遮蔽的 VENDOR/RENDERER，兩者都可能為空。
         let vendor = context.getParameter(context.VENDOR);
         let renderer = context.getParameter(context.RENDERER);
         try {
@@ -118,7 +118,7 @@ export function projectDirectorWebgl(gl: unknown): DirectorReproWebgl {
                 if (typeof info.UNMASKED_RENDERER_WEBGL === "number") renderer = context.getParameter(info.UNMASKED_RENDERER_WEBGL) ?? renderer;
             }
         } catch {
-            // 扩展不可用时保留未遮蔽值，不视为失败。
+            // 擴充套件不可用時保留未遮蔽值，不視為失敗。
         }
 
         const viewportDims = context.getParameter(context.MAX_VIEWPORT_DIMS);
@@ -140,10 +140,10 @@ export function projectDirectorWebgl(gl: unknown): DirectorReproWebgl {
 }
 
 /**
- * 现场探测：创建一次性上下文读取能力，失败稳定降级。
- * 读取完成后 best-effort 归还上下文：浏览器的 WebGL 上下文数量有限，
- * 一次性 canvas 不释放会挤占真实视口的额度。
- * 释放发生在快照取好之后，且异常一律吞掉，绝不影响已读到的结果。
+ * 現場探測：建立一次性上下文讀取能力，失敗穩定降級。
+ * 讀取完成後 best-effort 歸還上下文：瀏覽器的 WebGL 上下文數量有限，
+ * 一次性 canvas 不釋放會擠佔真實視口的額度。
+ * 釋放發生在快照取好之後，且異常一律吞掉，絕不影響已讀到的結果。
  */
 export function probeDirectorWebgl(): DirectorReproWebgl {
     if (typeof document === "undefined") return { available: false, reason: "unsupported" };
@@ -159,7 +159,7 @@ export function probeDirectorWebgl(): DirectorReproWebgl {
     }
 }
 
-/** 归还探测用上下文；扩展不可用或调用抛错都视为无操作。导出以便测试释放路径。 */
+/** 歸還探測用上下文；擴充套件不可用或呼叫拋錯都視為無操作。匯出以便測試釋放路徑。 */
 export function releaseProbeContext(gl: unknown): void {
     try {
         const context = gl as { getExtension?: (name: string) => unknown };
@@ -169,7 +169,7 @@ export function releaseProbeContext(gl: unknown): void {
         const losable = loseContext as { loseContext?: () => void };
         if (typeof losable.loseContext === "function") losable.loseContext();
     } catch {
-        // 释放失败不影响已取到的 snapshot。
+        // 釋放失敗不影響已取到的 snapshot。
     }
 }
 

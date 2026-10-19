@@ -1,14 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-// @ts-expect-error -- Node 原生 TypeScript 测试运行器需要保留扩展名。
+// @ts-expect-error -- Node 原生 TypeScript 測試執行器需要保留副檔名。
 import { parseAssetRecord } from "./asset-record.ts";
 
-test("缺失图片数据的历史素材会被拒绝，而不是补齐可渲染字段", () => {
+test("缺失圖片資料的歷史素材會被拒絕，而不是補齊可渲染欄位", () => {
     assert.throws(() => parseAssetRecord({
         id: "legacy-image",
         kind: "image",
-        title: "历史图片",
+        title: "歷史圖片",
         coverUrl: "https://example.com/image.png",
         tags: [],
         createdAt: "2026-01-01T00:00:00.000Z",

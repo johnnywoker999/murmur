@@ -179,16 +179,16 @@ function runWithBrowserCanvasStorageLock<T>(scope: string, operation: () => Prom
     const lockName = `${CANVAS_STORAGE_LOCK_PREFIX}${scope}`;
     if (locks) return locks.request(lockName, operation);
     if (options.requireCrossRealmLock && typeof window !== "undefined" && typeof document !== "undefined") {
-        throw new Error("当前浏览器不支持跨标签存储锁，已停止画布生成持久化");
+        throw new Error("當前瀏覽器不支援跨標籤儲存鎖，已停止畫布生成持久化");
     }
     return operation();
 }
 
 /**
- * 串行化同一用户作用域的画布持久化，并在一次失败后允许队列继续前进。
+ * 序列化同一使用者作用域的畫布持久化，並在一次失敗後允許佇列繼續前進。
  *
- * `pending` 必须把当前写入的真实结果返回给调用方；只有前一个 tail 的失败被
- * 转换成已处理的 void，才不会让一次旧失败永久毒化后续保存队列。
+ * `pending` 必須把當前寫入的真實結果返回給呼叫方；只有前一個 tail 的失敗被
+ * 轉換成已處理的 void，才不會讓一次舊失敗永久毒化後續儲存佇列。
  */
 export function withCanvasStorePersistenceLock<T>(scope: string, operation: () => Promise<T>, options: CanvasStorageLockOptions = {}): Promise<T> {
     const previous = canvasStorageTails.get(scope) ?? Promise.resolve();
@@ -211,7 +211,7 @@ function clearCanvasSaveTimer(scope: string) {
     canvasSaveTimers.delete(scope);
 }
 
-/** 该作用域最近一次落进浏览器存储的画布内容；没有记录返回 undefined。 */
+/** 該作用域最近一次落進瀏覽器儲存的畫布內容；沒有記錄返回 undefined。 */
 export function canvasDurableSnapshot(scope: string, projectId: string) {
     return observedCanvasPersists.get(scope)?.projects.find((project) => project.id === projectId);
 }
@@ -227,7 +227,7 @@ function canvasDocumentBaseKey(scope: string, projectId: string) {
     return `${scope}\0${projectId}`;
 }
 
-/** 最近一次被服务端确认的画布基线（revision + 文档），与 IndexedDB 存储队列无关。 */
+/** 最近一次被服務端確認的畫布基線（revision + 檔案），與 IndexedDB 儲存佇列無關。 */
 export function recordCanvasDocumentBase(project: CanvasProject, scope = getActiveUserScope()) {
     canvasDocumentBases.set(canvasDocumentBaseKey(scope, project.id), {
         revision: project.revision ?? 0,
@@ -248,13 +248,13 @@ export type CanvasExternalRevisionConflict = {
     localRevision: number;
     remoteRevision: number;
     detectedAt: string;
-    /** 被挡下的外部内容：保留为候选，用户选择「以最新为准」时使用它。 */
+    /** 被擋下的外部內容：保留為候選，使用者選擇「以最新為準」時使用它。 */
     candidate: CanvasProject;
 };
 
 type CanvasExternalRevisionState = {
     conflicts: Map<string, CanvasExternalRevisionConflict>;
-    /** 每次冲突集合变化都自增，供订阅方重新投影。 */
+    /** 每次衝突集合變化都自增，供訂閱方重新投影。 */
     version: number;
 };
 
@@ -279,13 +279,13 @@ function publishCanvasExternalRevision() {
     for (const listener of [...canvasExternalRevisionListeners]) listener();
 }
 
-/** 读某个画布当前是否处于「外部写入被本地编辑挡住」的冲突态。 */
+/** 讀某個畫布當前是否處於「外部寫入被本地編輯擋住」的衝突態。 */
 export function canvasExternalRevisionConflict(scope: string, projectId: string) {
     const key = canvasExternalRevisionKey(scope, projectId);
     const conflict = canvasExternalRevisionState.conflicts.get(key);
     if (!conflict) return undefined;
-    // 本地 revision 已前进说明这次提交被服务端接受，冲突前提消失；
-    // 否则不同入口之间会一直提示同一份早已过时的冲突。
+    // 本地 revision 已前進說明這次提交被服務端接受，衝突前提消失；
+    // 否則不同入口之間會一直提示同一份早已過時的衝突。
     const localRevision = useCanvasStore.getState().projects.find((project) => project.id === projectId)?.revision ?? 0;
     if (localRevision > conflict.remoteRevision) {
         canvasExternalRevisionState.conflicts.delete(key);
@@ -294,7 +294,7 @@ export function canvasExternalRevisionConflict(scope: string, projectId: string)
     return conflict;
 }
 
-/** 冲突解除：本地编辑已被服务端接受，或用户选择以最新内容为准。 */
+/** 衝突解除：本地編輯已被服務端接受，或使用者選擇以最新內容為準。 */
 export function clearCanvasExternalRevisionConflict(scope: string, projectId: string) {
     if (!canvasExternalRevisionState.conflicts.delete(canvasExternalRevisionKey(scope, projectId))) return;
     publishCanvasExternalRevision();
@@ -311,19 +311,19 @@ function markCanvasExternalRevisionConflict(scope: string, conflict: CanvasExter
 type ApplyExternalCanvasRevisionOptions = {
     scope?: string;
     /**
-     * 本地是否有服务端尚未确认的编辑。必须由持有服务端确认基线与 HTTP 提交状态的
-     * 调用方给出；本地存储队列为空并不能证明服务端已经保存。
+     * 本地是否有服務端尚未確認的編輯。必須由持有服務端確認基線與 HTTP 提交狀態的
+     * 呼叫方給出；本地儲存佇列為空並不能證明服務端已經儲存。
      */
     hasUnsyncedEdits: boolean;
     onApplied?: (project: CanvasProject, previous: CanvasProject | undefined) => void;
 };
 
 /**
- * 把一次外部写入（内置助手回合、CLI/MCP 操作）投影到本地存储与编辑器。
+ * 把一次外部寫入（內建助手回合、CLI/MCP 操作）投影到本地儲存與編輯器。
  *
- * 无未确认编辑时安全应用外部内容（保留本机视角与外观偏好），并通过 `onApplied`
- * 把这次替换交给调用方通知编辑器；有未确认编辑时保留本地内容、把外部内容留作
- * 候选并记录冲突，绝不覆盖用户正在编辑的值。
+ * 無未確認編輯時安全應用外部內容（保留本機視角與外觀偏好），並通過 `onApplied`
+ * 把這次替換交給呼叫方通知編輯器；有未確認編輯時保留本地內容、把外部內容留作
+ * 候選並記錄衝突，絕不覆蓋使用者正在編輯的值。
  */
 export function applyExternalCanvasRevision(remote: CanvasProject, options: ApplyExternalCanvasRevisionOptions) {
     const scope = options.scope ?? getActiveUserScope();
@@ -337,9 +337,9 @@ export function applyExternalCanvasRevision(remote: CanvasProject, options: Appl
 }
 
 /**
- * 用户显式选择「以最新内容为准」：用保留的候选覆盖本地文档。
+ * 使用者顯式選擇「以最新內容為準」：用保留的候選覆蓋本地檔案。
  *
- * 这是唯一允许在存在本地编辑时替换文档的路径，且只能由用户动作触发。
+ * 這是唯一允許在存在本地編輯時替換檔案的路徑，且只能由使用者動作觸發。
  */
 export function acceptCanvasExternalRevisionCandidate(
     projectId: string,
@@ -383,7 +383,7 @@ function applyCanvasExternalDecision(
     try {
         onApplied?.(applied, previous);
     } catch (error) {
-        console.error("画布刷新通知失败", { id: applied.id, error });
+        console.error("畫布重新整理通知失敗", { id: applied.id, error });
     }
     return decision;
 }
@@ -698,7 +698,7 @@ const canvasStorage: PersistStorage<CanvasStore> = {
             scope,
             baseProjects,
             baseRevision: queued?.baseRevision ?? observed?.revision ?? 0,
-            // generationEffectKeys 由专用 generation durable commit 管理；普通队列只能携带已确认 stamp。
+            // generationEffectKeys 由專用 generation durable commit 管理；普通佇列只能攜帶已確認 stamp。
             state: ordinaryCanvasPersistenceState(scope, nextState, observed?.projects ?? baseProjects),
             token,
         });
@@ -706,8 +706,8 @@ const canvasStorage: PersistStorage<CanvasStore> = {
         const timer = setTimeout(() => {
             if (canvasSaveTimers.get(scope) === timer) canvasSaveTimers.delete(scope);
             void writeQueuedCanvasPersist(scope, token).catch((error) => {
-                // 自动保存无法把异常返回给原始状态更新调用方，但失败队列仍会保留给下一次写入或显式 flush 重试。
-                console.error("画布本地持久化失败，已保留待写队列", { scope, error });
+                // 自動儲存無法把異常返回給原始狀態更新呼叫方，但失敗佇列仍會保留給下一次寫入或顯式 flush 重試。
+                console.error("畫布本地持久化失敗，已保留待寫佇列", { scope, error });
             });
         }, 400);
         canvasSaveTimers.set(scope, timer);
@@ -739,7 +739,7 @@ export const useCanvasStore = create<CanvasStore>()(
             hydrated: false,
             projects: [],
             folders: [],
-            createProject: (title = "未命名画布", projectId, workspaceProjectId) => {
+            createProject: (title = "未命名畫布", projectId, workspaceProjectId) => {
                 const now = new Date().toISOString();
                 const id = nanoid();
                 const appearanceDefault = readCanvasAppearanceDefault();
@@ -764,9 +764,9 @@ export const useCanvasStore = create<CanvasStore>()(
                 set((state) => ({ projects: [project, ...state.projects] }));
                 return id;
             },
-            createFolder: (name = "未命名文件夹") => {
+            createFolder: (name = "未命名資料夾") => {
                 const now = new Date().toISOString();
-                const folder = { id: nanoid(), name: name.trim() || "未命名文件夹", createdAt: now, updatedAt: now };
+                const folder = { id: nanoid(), name: name.trim() || "未命名資料夾", createdAt: now, updatedAt: now };
                 set((state) => {
                     const folders = [folder, ...state.folders];
                     writeCanvasFolders(folders);
@@ -805,7 +805,7 @@ export const useCanvasStore = create<CanvasStore>()(
                     workspaceProjectId: undefined,
                     projectId: source.projectId,
                     folderId: source.folderId,
-                    title: source.title || "导入画布",
+                    title: source.title || "匯入畫布",
                     canvasTitle: source.canvasTitle,
                     createdAt: source.createdAt || now,
                     updatedAt: now,

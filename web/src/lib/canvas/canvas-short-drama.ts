@@ -27,11 +27,11 @@ export function createShortDramaPipeline(center: Position) {
         content: "",
         status: "idle",
         workflowKind: "styleboard",
-        workflowTitle: "项目画风",
-        workflowDescription: "待选择",
+        workflowTitle: "專案畫風",
+        workflowDescription: "待選擇",
         fontSize: 14,
     });
-    styleNode.title = "项目画风 · 待选择";
+    styleNode.title = "專案畫風 · 待選擇";
     styleNode.width = 360;
     styleNode.height = 220;
 
@@ -39,8 +39,8 @@ export function createShortDramaPipeline(center: Position) {
         content: "",
         status: "idle",
         workflowKind: "story_input",
-        workflowTitle: "故事输入",
-        workflowDescription: "题材、角色、冲突和结局方向",
+        workflowTitle: "故事輸入",
+        workflowDescription: "題材、角色、衝突和結局方向",
         fontSize: 14,
     });
     storyNode.title = "故事梗概";
@@ -50,14 +50,14 @@ export function createShortDramaPipeline(center: Position) {
     const scriptNode = createCanvasNode(CanvasNodeType.Script, { x: center.x + 180, y: center.y }, {
         status: "idle",
         workflowKind: "storyboard",
-        workflowTitle: "分镜脚本",
+        workflowTitle: "分鏡指令碼",
         storyboard: {
             rows: [],
             visibleColumns: ["shotNumber", "durationSeconds", "videoMotionPrompt", "dialogue", "assets"],
             referenceNodeIds: [],
         },
     });
-    scriptNode.title = "分镜脚本 · 待生成";
+    scriptNode.title = "分鏡指令碼 · 待生成";
 
     const connections: CanvasConnection[] = [
         { id: nanoid(), fromNodeId: styleNode.id, toNodeId: scriptNode.id, toHandleId: "storyboard:context" },
@@ -87,7 +87,7 @@ export function deriveShortDramaProgress(nodes: CanvasNodeData[], connections: C
     const finalNode = finalNodes.find((node) => node.metadata?.status === "success" && Boolean(node.metadata.content));
 
     const storyText = (storyNode?.metadata?.content || "").trim();
-    // 手工流水线要求输入真实连到分镜脚本；Agent 协议的风格板和剧本没有这条连线，按领域节点本身判断。
+    // 手工流水線要求輸入真實連到分鏡指令碼；Agent 協議的風格板和劇本沒有這條連線，按領域節點本身判斷。
     const styleDone = Boolean((styleNode?.metadata?.content || styleNode?.metadata?.prompt || "").trim() && (hasAgentPipeline || !scriptNode || isConnectedToStoryboard(styleNode!.id)));
     const storyDone = Boolean(storyText && storyNode && (storyNode === agentScriptNode || !scriptNode || isConnectedToStoryboard(storyNode.id)));
     const storyboardDone = meaningfulRows.length > 0 || shotNodes.length > 0;
@@ -102,11 +102,11 @@ export function deriveShortDramaProgress(nodes: CanvasNodeData[], connections: C
     const firstIncomplete = done.findIndex((value) => !value);
     const firstShotNode = shotNodes[0];
     const definitions: Array<{ id: CanvasShortDramaStepId; label: string; nodeId?: string }> = [
-        { id: "style", label: "选择画风", nodeId: styleNode?.id },
-        { id: "story", label: "输入故事", nodeId: storyNode?.id },
-        { id: "storyboard", label: "生成分镜", nodeId: scriptNode?.id || firstShotNode?.id },
-        { id: "video", label: "生成视频", nodeId: scriptNode?.id || firstShotNode?.id || completedShotVideos[0]?.id },
-        { id: "final", label: "合并成片", nodeId: finalNode?.id || finalNodes[0]?.id || completedShotVideos[0]?.id },
+        { id: "style", label: "選擇畫風", nodeId: styleNode?.id },
+        { id: "story", label: "輸入故事", nodeId: storyNode?.id },
+        { id: "storyboard", label: "生成分鏡", nodeId: scriptNode?.id || firstShotNode?.id },
+        { id: "video", label: "生成影片", nodeId: scriptNode?.id || firstShotNode?.id || completedShotVideos[0]?.id },
+        { id: "final", label: "合併成片", nodeId: finalNode?.id || finalNodes[0]?.id || completedShotVideos[0]?.id },
     ];
     const steps = definitions.map((step, index): CanvasShortDramaStep => ({
         ...step,
@@ -124,7 +124,7 @@ export function readShortDramaGuideDismissed() {
     try {
         return scopedLocalStorage.getItem(SHORT_DRAMA_GUIDE_STORAGE_KEY) === "dismissed";
     } catch (error) {
-        console.warn("读取短剧导引状态失败", error);
+        console.warn("讀取短劇導引狀態失敗", error);
         return false;
     }
 }
@@ -133,7 +133,7 @@ export function persistShortDramaGuideDismissed() {
     try {
         scopedLocalStorage.setItem(SHORT_DRAMA_GUIDE_STORAGE_KEY, "dismissed");
     } catch (error) {
-        console.warn("保存短剧导引状态失败", error);
+        console.warn("儲存短劇導引狀態失敗", error);
     }
 }
 

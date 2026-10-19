@@ -54,7 +54,7 @@ export function WorkflowChapterNavigator({ projectId, units, unitId, stage }: Pr
         <>
             <div className="workflow-chapter-navigator">
                 <button type="button" disabled={currentIndex === 0} onClick={() => goTo(orderedUnits[currentIndex - 1])} aria-label="上一章" title="上一章"><ChevronLeft /></button>
-                <button type="button" className="workflow-chapter-current" onClick={openPicker} aria-haspopup="dialog" aria-label={`定位章节，当前第 ${currentIndex + 1} 章`}>
+                <button type="button" className="workflow-chapter-current" onClick={openPicker} aria-haspopup="dialog" aria-label={`定位章節，當前第 ${currentIndex + 1} 章`}>
                     <span>第 {currentIndex + 1} 章</span><strong>{current.title}</strong><em>{currentIndex + 1}/{orderedUnits.length}</em><ChevronDown />
                 </button>
                 <button type="button" disabled={currentIndex >= orderedUnits.length - 1} onClick={() => goTo(orderedUnits[currentIndex + 1])} aria-label="下一章" title="下一章"><ChevronRight /></button>
@@ -62,19 +62,19 @@ export function WorkflowChapterNavigator({ projectId, units, unitId, stage }: Pr
             <AppModal flush open={open} footer={null} title={null} className="workspace-modal workspace-modal-wide workflow-chapter-modal" onCancel={() => setOpen(false)}>
                 <div className="workflow-chapter-modal-shell">
                     <header className="workflow-chapter-modal-head">
-                        <div className="workflow-chapter-modal-title"><span><BookOpenText /></span><div><strong>定位章节</strong><p>快速搜索并跳转到需要制作的剧情章节</p></div></div>
-                        <div className="workflow-chapter-modal-current"><span>当前</span><strong>第 {currentIndex + 1} 章</strong></div>
+                        <div className="workflow-chapter-modal-title"><span><BookOpenText /></span><div><strong>定位章節</strong><p>快速搜尋並跳轉到需要製作的劇情章節</p></div></div>
+                        <div className="workflow-chapter-modal-current"><span>當前</span><strong>第 {currentIndex + 1} 章</strong></div>
                     </header>
                     <div className="workflow-chapter-modal-search">
-                        <Input autoFocus allowClear size="large" prefix={<Search className="size-4" />} value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder="输入章节序号或标题" />
+                        <Input autoFocus allowClear size="large" prefix={<Search className="size-4" />} value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder="輸入章節序號或標題" />
                         <span>{deferredQuery ? `找到 ${filteredUnits.length.toLocaleString("zh-CN")} 章` : `共 ${orderedUnits.length.toLocaleString("zh-CN")} 章`}</span>
                     </div>
                     <div className="workflow-chapter-list thin-scrollbar">
                         {pagedUnits.length ? <div className="workflow-chapter-grid">{pagedUnits.map((unit) => {
                         const index = orderedUnits.findIndex((item) => item.id === unit.id);
                         const selected = unit.id === current.id;
-                        return <button key={unit.id} type="button" className={`workflow-chapter-item${selected ? " is-active" : ""}`} onClick={() => goTo(unit)}><span className="workflow-chapter-item-index">{String(index + 1).padStart(Math.max(2, String(orderedUnits.length).length), "0")}</span><span className="workflow-chapter-item-copy"><strong title={unit.title}>{unit.title}</strong><small>第 {index + 1} 章 · {(unit.wordCount || 0).toLocaleString("zh-CN")} 字</small></span>{selected ? <em>当前</em> : <ChevronRight />}</button>;
-                        })}</div> : <div className="workflow-chapter-empty"><Search /><strong>没有匹配的章节</strong><span>换一个章节序号或标题试试</span></div>}
+                        return <button key={unit.id} type="button" className={`workflow-chapter-item${selected ? " is-active" : ""}`} onClick={() => goTo(unit)}><span className="workflow-chapter-item-index">{String(index + 1).padStart(Math.max(2, String(orderedUnits.length).length), "0")}</span><span className="workflow-chapter-item-copy"><strong title={unit.title}>{unit.title}</strong><small>第 {index + 1} 章 · {(unit.wordCount || 0).toLocaleString("zh-CN")} 字</small></span>{selected ? <em>當前</em> : <ChevronRight />}</button>;
+                        })}</div> : <div className="workflow-chapter-empty"><Search /><strong>沒有匹配的章節</strong><span>換一個章節序號或標題試試</span></div>}
                     </div>
                     <footer className="workflow-chapter-modal-pagination"><PaginationBar alwaysShow current={safePage} pageSize={pageSize} total={filteredUnits.length} pageSizeOptions={[100, 200, 500]} itemLabel="章" onChange={(nextPage, nextPageSize) => { setPage(nextPage); setPageSize(nextPageSize); }} /></footer>
                 </div>

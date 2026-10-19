@@ -20,8 +20,8 @@ export type CanvasInFlightCommit = {
 };
 
 /**
- * 服务端已确认、本地编辑器投影尚未落盘时的恢复状态。
- * confirmedSnapshot 是服务端已提交真相；base 是投影前的旧确认基线。
+ * 服務端已確認、本地編輯器投影尚未落盤時的恢復狀態。
+ * confirmedSnapshot 是服務端已提交真相；base 是投影前的舊確認基線。
  */
 export type CanvasPendingProjection = {
     identity: string;
@@ -85,7 +85,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 
 function asNonNegativeInteger(value: unknown, label: string): number {
     if (typeof value !== "number" || !Number.isInteger(value) || value < 0) {
-        throw new CanvasJournalError(`画布提交日记 ${label} 无效`);
+        throw new CanvasJournalError(`畫布提交日記 ${label} 無效`);
     }
     return value;
 }
@@ -93,27 +93,27 @@ function asNonNegativeInteger(value: unknown, label: string): number {
 function parseConfirmedSnapshot(value: unknown, canvasId: string): CanvasProject | null {
     if (value == null) return null;
     if (!isPlainObject(value) || typeof value.id !== "string" || value.id !== canvasId) {
-        throw new CanvasJournalError("画布提交日记快照无效");
+        throw new CanvasJournalError("畫布提交日記快照無效");
     }
     return value as unknown as CanvasProject;
 }
 
 function parseInFlight(value: unknown, canvasId: string): CanvasInFlightCommit | null {
     if (value == null) return null;
-    if (!isPlainObject(value)) throw new CanvasJournalError("画布提交日记在途操作无效");
+    if (!isPlainObject(value)) throw new CanvasJournalError("畫布提交日記在途操作無效");
     const operationId = value.operationId;
     if (typeof operationId !== "string" || !operationId) {
-        throw new CanvasJournalError("画布提交日记 operationId 无效");
+        throw new CanvasJournalError("畫布提交日記 operationId 無效");
     }
     const expectedRevision = asNonNegativeInteger(value.expectedRevision, "expectedRevision");
-    if (!isPlainObject(value.payload)) throw new CanvasJournalError("画布提交日记 payload 无效");
+    if (!isPlainObject(value.payload)) throw new CanvasJournalError("畫布提交日記 payload 無效");
     const payload = value.payload;
-    if (payload.canvasId !== canvasId) throw new CanvasJournalError("画布提交日记 payload 作用域不匹配");
+    if (payload.canvasId !== canvasId) throw new CanvasJournalError("畫布提交日記 payload 作用域不匹配");
     const payloadExpected = asNonNegativeInteger(payload.expectedRevision, "payload.expectedRevision");
     if (payloadExpected !== expectedRevision) {
-        throw new CanvasJournalError("画布提交日记 payload revision 不一致");
+        throw new CanvasJournalError("畫布提交日記 payload revision 不一致");
     }
-    if (!isPlainObject(payload.document)) throw new CanvasJournalError("画布提交日记 payload 文档无效");
+    if (!isPlainObject(payload.document)) throw new CanvasJournalError("畫布提交日記 payload 檔案無效");
     return {
         operationId,
         expectedRevision,
@@ -127,21 +127,21 @@ function parseInFlight(value: unknown, canvasId: string): CanvasInFlightCommit |
 
 function parsePendingProjection(value: unknown, canvasId: string): CanvasPendingProjection | null {
     if (value == null) return null;
-    if (!isPlainObject(value)) throw new CanvasJournalError("画布投影恢复状态无效");
+    if (!isPlainObject(value)) throw new CanvasJournalError("畫布投影恢復狀態無效");
     if (typeof value.identity !== "string" || !value.identity) {
-        throw new CanvasJournalError("画布投影 identity 无效");
+        throw new CanvasJournalError("畫布投影 identity 無效");
     }
     const revision = asNonNegativeInteger(value.revision, "pendingProjection.revision");
     const base = parseConfirmedSnapshot(value.base, canvasId);
     const remote = parseConfirmedSnapshot(value.remote, canvasId);
-    if (!base || !remote) throw new CanvasJournalError("画布投影恢复快照无效");
+    if (!base || !remote) throw new CanvasJournalError("畫布投影恢復快照無效");
     return { identity: value.identity, revision, base, remote };
 }
 
 function parseCanvasOperationJournal(raw: unknown, scope: string, canvasId: string): CanvasOperationJournal {
-    if (!isPlainObject(raw)) throw new CanvasJournalError("画布提交日记损坏");
+    if (!isPlainObject(raw)) throw new CanvasJournalError("畫布提交日記損壞");
     if (raw.userScope !== scope || raw.canvasId !== canvasId) {
-        throw new CanvasJournalError("画布提交日记作用域不匹配");
+        throw new CanvasJournalError("畫布提交日記作用域不匹配");
     }
     return {
         userScope: scope,
@@ -169,7 +169,7 @@ async function readJournalUnlocked(canvasId: string, scope: string): Promise<Can
     try {
         raw = await localForageStorageForScope(scope).getItem(journalName(canvasId));
     } catch (error) {
-        throw new CanvasJournalError("画布提交日记读取失败", { cause: error });
+        throw new CanvasJournalError("畫布提交日記讀取失敗", { cause: error });
     }
     if (raw == null || raw === "") {
         const journal = emptyJournal(scope, canvasId);
@@ -180,7 +180,7 @@ async function readJournalUnlocked(canvasId: string, scope: string): Promise<Can
     try {
         parsed = JSON.parse(raw);
     } catch (error) {
-        throw new CanvasJournalError("画布提交日记无法解析", { cause: error });
+        throw new CanvasJournalError("畫布提交日記無法解析", { cause: error });
     }
     const journal = parseCanvasOperationJournal(parsed, scope, canvasId);
     memory.set(key, journal);

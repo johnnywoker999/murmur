@@ -1,13 +1,13 @@
-// 时间线快照撤销（ADR-0002）：有界 200 层 undo/redo 栈。
-// 纯函数式结构，便于 zustand 以 set(createEditorHistory(...)) 直接换新引用。
-// 快照依赖命令层不可变更新：历史中保存的是结构共享的全量对象，不做深拷贝。
+// 時間線快照撤銷（ADR-0002）：有界 200 層 undo/redo 棧。
+// 純函式式結構，便於 zustand 以 set(createEditorHistory(...)) 直接換新引用。
+// 快照依賴命令層不可變更新：歷史中儲存的是結構共享的全量物件，不做深複製。
 
 import type { TimelineProject } from "@/types/timeline";
 
 export const HISTORY_LIMIT = 200;
 
 export type EditorHistory = {
-    /** 栈底为最旧，栈顶（末尾）为最近一次历史。 */
+    /** 棧底為最舊，棧頂（末尾）為最近一次歷史。 */
     undoStack: TimelineProject[];
     redoStack: TimelineProject[];
     current: TimelineProject;
@@ -18,8 +18,8 @@ export function createEditorHistory(initial: TimelineProject): EditorHistory {
 }
 
 /**
- * 提交一次新状态：旧 current 入 undo 栈，清空 redo（新分支），
- * 超过 HISTORY_LIMIT 时丢弃最旧快照。
+ * 提交一次新狀態：舊 current 入 undo 棧，清空 redo（新分支），
+ * 超過 HISTORY_LIMIT 時丟棄最舊快照。
  */
 export function pushEditorHistory(history: EditorHistory, next: TimelineProject): EditorHistory {
     const undoStack = [...history.undoStack, history.current];
@@ -27,7 +27,7 @@ export function pushEditorHistory(history: EditorHistory, next: TimelineProject)
     return { undoStack, redoStack: [], current: next };
 }
 
-/** 无可撤销时返回 null（调用方保持当前状态不变）。 */
+/** 無可撤銷時返回 null（呼叫方保持當前狀態不變）。 */
 export function undoEditorHistory(history: EditorHistory): EditorHistory | null {
     const prev = history.undoStack.at(-1);
     if (prev === undefined) return null;

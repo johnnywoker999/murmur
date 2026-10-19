@@ -1,9 +1,9 @@
 import { http } from "@/services/api/request";
 
-/** 外部编辑器/CLI 接入 MURMUR AI 画布的客户端类型。 */
+/** 外部編輯器/CLI 接入 MURMUR AI 畫布的客戶端型別。 */
 export type AgentClientKind = "codex" | "claude" | "claude-desktop" | "cursor" | "other";
 
-/** 授予外部客户端的画布权限。 */
+/** 授予外部客戶端的畫布許可權。 */
 export type AgentClientMode = "read-only" | "read-write";
 
 export type AgentClient = {
@@ -27,8 +27,8 @@ export type AgentClientList = {
 };
 
 /**
- * 接入指引由后端生成：codex / claude 返回单条 `command`，cursor / other 返回 `json`。
- * 凭证只嵌在这段文本里，接口不再单独返回可展示的明文。
+ * 接入指引由後端生成：codex / claude 返回單條 `command`，cursor / other 返回 `json`。
+ * 憑證只嵌在這段文本里，介面不再單獨返回可展示的明文。
  */
 export type AgentClientSetup = {
     kind: AgentClientKind;

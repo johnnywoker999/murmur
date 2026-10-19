@@ -29,7 +29,7 @@ type DirectorSequencerProps = {
     onRemoveObjectTrack?: (id: string) => void;
     onRemoveActorPath?: (id: string) => void;
     onRemoveCameraPath?: (id: string) => void;
-    /** 将当前机位的白膜参考视频回写到画布。 */
+    /** 將當前機位的白膜參考影片回寫到畫布。 */
     onExportVideo?: () => void;
     exportBusy?: boolean;
     onPlayheadChange: (time: number) => void;
@@ -43,16 +43,16 @@ type DirectorSequencerProps = {
     onToggleObjectChannel?: (objectId: string, channel: "position" | "rotation" | "scale") => void;
     onRecordKeyframe: () => void;
     onAddShot: () => void;
-    /** 删除某条可见轨道上的关键帧；覆盖 transform / camera / bone 三类。 */
+    /** 刪除某條可見軌道上的關鍵幀；覆蓋 transform / camera / bone 三類。 */
     onDeleteKeyframe: (target: DirectorKeyframeDeleteTarget) => void;
-    /** 更新关键帧到下一帧区间的缓动。 */
+    /** 更新關鍵幀到下一幀區間的緩動。 */
     onSetKeyframeEasing: (target: DirectorKeyframeDeleteTarget, easing: DirectorKeyframeEasing) => void;
     onSelectShot: (id: string) => void;
 };
 
 /**
- * 轨道上的一个关键帧标记。
- * 带 target 才可删除；镜头总轨等只读轨道不给 target。
+ * 軌道上的一個關鍵幀標記。
+ * 帶 target 才可刪除；鏡頭總軌等只讀軌道不給 target。
  */
 type TrackKey = { id: string; time: number; color?: string; label?: string; easing?: DirectorKeyframeEasing; target?: DirectorKeyframeDeleteTarget };
 
@@ -83,15 +83,15 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
         ? key[`${channel}Keyed`] === true : key[`${channel}Keyed`] !== false));
     const objectTrackKeys = (object: DirectorObject, channel: "position" | "rotation" | "scale"): TrackKey[] => visibleObjectFrames(object)
         .filter((key) => key[`${channel}Keyed`] !== false && (!object.motionPath || channel === "position" || key[`${channel}Keyed`] === true))
-        .map((key) => ({ id: key.id, time: key.time, color: "#4dd1e9", label: `${object.name} ${{ position: "位置", rotation: "旋转", scale: "缩放" }[channel]}`, easing: key.easing, target: { track: "object-transform", objectId: object.id, keyframeId: key.id, channel } }));
-    const objectOverviewKeys = (object: DirectorObject): TrackKey[] => visibleObjectFrames(object).map((key) => ({ id: key.id, time: key.time, color: "#4dd1e9", label: `${object.name} ${key.positionKeyed !== false ? "位置" : key.rotationKeyed !== false ? "旋转" : "缩放"}`, easing: key.easing, target: { track: "object-transform", objectId: object.id, keyframeId: key.id } }));
+        .map((key) => ({ id: key.id, time: key.time, color: "#4dd1e9", label: `${object.name} ${{ position: "位置", rotation: "旋轉", scale: "縮放" }[channel]}`, easing: key.easing, target: { track: "object-transform", objectId: object.id, keyframeId: key.id, channel } }));
+    const objectOverviewKeys = (object: DirectorObject): TrackKey[] => visibleObjectFrames(object).map((key) => ({ id: key.id, time: key.time, color: "#4dd1e9", label: `${object.name} ${key.positionKeyed !== false ? "位置" : key.rotationKeyed !== false ? "旋轉" : "縮放"}`, easing: key.easing, target: { track: "object-transform", objectId: object.id, keyframeId: key.id } }));
     const activeSelectedKey = selectedKey?.target && directorKeyframeTargetExists(selectedKey.target, camera, objects) ? selectedKey : null;
     const isPreview = presentation === "preview";
-    // 编辑时间轴只使用同一套轨道 UI；高度改变的是可见空间，不改变控件和轨道语义。
+    // 編輯時間軸只使用同一套軌道 UI；高度改變的是可見空間，不改變控制元件和軌道語義。
     const isCompact = !isPreview;
 
-    // 选择只对当前可见轨道有效。切换镜头/摄影机或外部删帧后立即废弃旧 target，
-    // 避免顶部缓动与删除控件继续修改已经不可见的轨道。
+    // 選擇只對當前可見軌道有效。切換鏡頭/攝影機或外部刪幀後立即廢棄舊 target，
+    // 避免頂部緩動與刪除控制元件繼續修改已經不可見的軌道。
     useEffect(() => {
         setSelectedKey((current) => current?.target && !directorKeyframeTargetExists(current.target, camera, objects) ? null : current);
     }, [camera, objects]);
@@ -111,7 +111,7 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
         setPathMenuTarget((current) => current === targetId ? null : targetId);
     };
     const createPathFromMenu = (kind: DirectorCameraPathKind | DirectorCameraDrawPathKind) => {
-        // 新路径完成后按路径数据重新决定二级轨道的默认展开状态。
+        // 新路徑完成後按路徑資料重新決定二級軌道的預設展開狀態。
         setExpanded((current) => {
             const next = { ...current };
             if (pathMenuTarget) delete next[pathMenuTarget];
@@ -141,14 +141,14 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
         window.addEventListener("pointerup", stop, { once: true });
     };
 
-    // 摄影机关键帧只在摄影机行提供删除入口；Camera Cut 是概览轨，保持只读。
-    const cameraKeys: TrackKey[] = camera?.keyframes.filter((key) => !camera.drawnPath?.sampleKeyframeIds.includes(key.id)).map((key) => ({ id: key.id, time: key.time, color: "#78a9ff", label: `${camera.name} 镜头`, easing: key.easing, target: { track: "camera", cameraId: camera.id, keyframeId: key.id } })) || [];
+    // 攝影機關鍵幀只在攝影機行提供刪除入口；Camera Cut 是概覽軌，保持只讀。
+    const cameraKeys: TrackKey[] = camera?.keyframes.filter((key) => !camera.drawnPath?.sampleKeyframeIds.includes(key.id)).map((key) => ({ id: key.id, time: key.time, color: "#78a9ff", label: `${camera.name} 鏡頭`, easing: key.easing, target: { track: "camera", cameraId: camera.id, keyframeId: key.id } })) || [];
     const cameraPositionKeys: TrackKey[] = cameraKeys.filter((key) => camera?.keyframes.some((frame) => frame.id === key.id && frame.positionKeyed !== false))
         .map((key) => ({ ...key, label: `${camera?.name} 位置`, target: { track: "camera", cameraId: camera!.id, keyframeId: key.id, channel: "position" } }));
     const cameraFocusKeys: TrackKey[] = cameraKeys.filter((key) => camera?.keyframes.some((frame) => frame.id === key.id && frame.target))
-        .map((key) => ({ ...key, label: `${camera?.name} 焦点`, target: { track: "camera", cameraId: camera!.id, keyframeId: key.id, channel: "focus" } }));
+        .map((key) => ({ ...key, label: `${camera?.name} 焦點`, target: { track: "camera", cameraId: camera!.id, keyframeId: key.id, channel: "focus" } }));
     const cameraFovKeys: TrackKey[] = cameraKeys.filter((key) => camera?.keyframes.some((frame) => frame.id === key.id && frame.fov !== undefined))
-        .map((key) => ({ ...key, label: `${camera?.name} 视角`, target: { track: "camera", cameraId: camera!.id, keyframeId: key.id, channel: "fov" } }));
+        .map((key) => ({ ...key, label: `${camera?.name} 視角`, target: { track: "camera", cameraId: camera!.id, keyframeId: key.id, channel: "fov" } }));
     const cameraTrackValues = camera ? resolveDirectorCameraTrackValues(camera, playhead) : null;
     const cameraPosition = camera ? resolveDirectorCameraTransform(camera, playhead).position : null;
     const currentTrackTime = snapEnabled ? Math.round(playhead * fps) / fps : playhead;
@@ -180,23 +180,23 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
     if (!visible) {
         return <section className="director-sequencer shrink-0 border-t" style={{ height: "var(--space-8)", minHeight: 0, background: "var(--director-sequencer-surface)", borderColor: "var(--director-sequencer-border)" }}>
             <div className="flex h-full items-center justify-end px-3">
-                <button type="button" className="director-sequencer-tool" title="显示时间轴" aria-label="显示时间轴" onClick={() => onVisibilityChange(true)}><ChevronUp className="size-3.5" /><span>显示时间轴</span></button>
+                <button type="button" className="director-sequencer-tool" title="顯示時間軸" aria-label="顯示時間軸" onClick={() => onVisibilityChange(true)}><ChevronUp className="size-3.5" /><span>顯示時間軸</span></button>
             </div>
         </section>;
     }
 
     return (
         <section ref={rootRef} data-presentation={isCompact ? "compact" : presentation} className={`director-sequencer shrink-0 border-t ${isPreview ? "is-preview" : ""}`} style={isPreview ? { height: "min(150px, 22vh)", minHeight: 118, maxHeight: "25vh", background: "var(--director-sequencer-surface)", borderColor: "var(--director-sequencer-border)" } : { height, minHeight: 130, maxHeight: "60vh", background: "var(--director-sequencer-surface)", borderColor: "var(--director-sequencer-border)" }}>
-            {!isPreview ? <div className="director-sequencer-resizer" onPointerDown={startResize} role="separator" aria-label="调整时间轴高度" /> : null}
+            {!isPreview ? <div className="director-sequencer-resizer" onPointerDown={startResize} role="separator" aria-label="調整時間軸高度" /> : null}
             {isCompact ? <div className="director-sequencer-compact-grid" style={{ display: "grid", gridTemplateColumns: "min(322px, 36vw) minmax(0, 1fr)", gridTemplateRows: "36px minmax(0, 1fr)", height: "100%" }}>
                 <div className="flex min-w-0 items-center gap-1 border-b px-2" style={{ borderColor: "var(--director-sequencer-border)" }}>
-                    <button type="button" className="director-sequencer-transport" onClick={onPlayToggle} aria-label={playing ? "暂停" : "播放"}>{playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}</button>
-                    <button type="button" className={`director-sequencer-icon ${autoKey ? "is-active" : ""}`} aria-label="自动帧" aria-pressed={autoKey} onClick={() => onAutoKeyChange(!autoKey)}><KeyRound className="size-3.5" /></button>
+                    <button type="button" className="director-sequencer-transport" onClick={onPlayToggle} aria-label={playing ? "暫停" : "播放"}>{playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}</button>
+                    <button type="button" className={`director-sequencer-icon ${autoKey ? "is-active" : ""}`} aria-label="自動幀" aria-pressed={autoKey} onClick={() => onAutoKeyChange(!autoKey)}><KeyRound className="size-3.5" /></button>
                     <span className="rounded bg-white/10 px-2 py-1 text-xs tabular-nums text-white/80">{formatTime(playhead)}</span>
                     <span className="rounded bg-white/10 px-2 py-1 text-xs tabular-nums text-white/80">{formatTime(duration)}</span>
                     <span className="text-xs text-white/55">s</span>
-                    {selectedObjectTrack ? <button type="button" aria-label="移除轨道" className="ml-auto whitespace-nowrap text-xs text-white/70 hover:text-white" onClick={removeSelectedTrack}>− 移除轨道</button>
-                        : <button type="button" aria-label="新建轨道" className="ml-auto whitespace-nowrap text-xs text-white/70 hover:text-white disabled:text-white/25" disabled={!selectedObject} onClick={() => selectedObject && onCreateObjectTrack?.(selectedObject.id)}>＋ 新建轨道</button>}
+                    {selectedObjectTrack ? <button type="button" aria-label="移除軌道" className="ml-auto whitespace-nowrap text-xs text-white/70 hover:text-white" onClick={removeSelectedTrack}>− 移除軌道</button>
+                        : <button type="button" aria-label="新建軌道" className="ml-auto whitespace-nowrap text-xs text-white/70 hover:text-white disabled:text-white/25" disabled={!selectedObject} onClick={() => selectedObject && onCreateObjectTrack?.(selectedObject.id)}>＋ 新建軌道</button>}
                 </div>
                 <div className="relative min-w-0 border-b" style={{ borderColor: "var(--director-sequencer-border)" }}>
                     <div className="director-sequencer-ruler h-full" style={{ height: 35 }} onPointerDown={setTimeFromPointer}>
@@ -204,8 +204,8 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
                         <span className="director-sequencer-playhead" style={{ left: `${(playhead / duration) * 100}%` }} />
                     </div>
                     <span className="absolute right-2 top-1 flex items-center gap-2">
-                        <button type="button" className="director-sequencer-icon" aria-label={height > 150 ? "收起时间轴" : "展开时间轴"} title={height > 150 ? "收起时间轴" : "展开时间轴"} onClick={() => onHeightChange(height > 150 ? 130 : 300)}>{height > 150 ? <ChevronDown className="size-3.5" /> : <ChevronUp className="size-3.5" />}</button>
-                        {onExportVideo ? <button type="button" disabled={exportBusy} className="rounded bg-white px-3 py-1 text-xs font-medium disabled:opacity-40" style={{ color: "#171717" }} onClick={onExportVideo}>{exportBusy ? "正在导出" : "导出视频到画布"}</button> : null}
+                        <button type="button" className="director-sequencer-icon" aria-label={height > 150 ? "收起時間軸" : "展開時間軸"} title={height > 150 ? "收起時間軸" : "展開時間軸"} onClick={() => onHeightChange(height > 150 ? 130 : 300)}>{height > 150 ? <ChevronDown className="size-3.5" /> : <ChevronUp className="size-3.5" />}</button>
+                        {onExportVideo ? <button type="button" disabled={exportBusy} className="rounded bg-white px-3 py-1 text-xs font-medium disabled:opacity-40" style={{ color: "#171717" }} onClick={onExportVideo}>{exportBusy ? "正在匯出" : "匯出影片到畫布"}</button> : null}
                     </span>
                 </div>
                 <div className="thin-scrollbar col-span-2 min-h-0 overflow-y-auto" style={{ display: "grid", gridTemplateColumns: "min(322px, 36vw) minmax(0, 1fr)", gridAutoRows: "31px", alignContent: "start" }}>
@@ -217,50 +217,50 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
                         <div className="relative bg-[#0b9db4]/70" onPointerDown={(event) => { if (!(event.target as HTMLElement).closest("button")) setTimeFromPointer(event); }}><TrackKeys duration={duration} keys={objectOverviewKeys(object)} selectedTarget={activeSelectedKey?.target} onSelectKey={selectTrackKey} onDeleteKey={deleteTrackKey} /><span className="director-sequencer-playhead" style={{ left: `${(playhead / duration) * 100}%` }} /></div>
                         {isExpanded && object.keyframes.length ? channels.map((channel) => {
                             const keys = objectTrackKeys(object, channel);
-                            const label = { position: "位置", rotation: "旋转", scale: "缩放" }[channel];
+                            const label = { position: "位置", rotation: "旋轉", scale: "縮放" }[channel];
                             const value = interpolateDirectorTransform(object.transform, object.keyframes, playhead)[channel].map((item) => Number(item.toFixed(2))).join(",");
                             return <div key={channel} className="contents"><CameraTrackLabel dataChannel={channel} label={label} value={value} keys={keys} currentTime={currentTrackTime} onSelect={() => onSelectObject(object.id)} onSeek={onPlayheadChange} onToggle={onToggleObjectChannel ? () => onToggleObjectChannel(object.id, channel) : undefined} /><div data-director-object-channel={channel} className="relative border-t bg-[#17363a]" style={{ borderColor: "var(--director-sequencer-border)" }}><TrackKeys duration={duration} keys={keys} selectedTarget={activeSelectedKey?.target} onSelectKey={selectTrackKey} onDeleteKey={deleteTrackKey} /></div></div>;
                         }) : null}
                     </div>;
                 })}
-                <MainTrackLabel name="主机位" kind="camera" pathExists={Boolean(camera?.drawnPath)} expanded={expanded.camera ?? Boolean(camera?.drawnPath || cameraKeys.length > 1)} hasDetails={cameraKeys.length > 0} menuOpen={pathMenuTarget === "camera"} onToggle={() => setExpanded((current) => ({ ...current, camera: !(current.camera ?? Boolean(camera?.drawnPath || cameraKeys.length > 1)) }))} onSelect={() => { onSelectObject(null); onSelectBone(null); onSelectCameraTrack?.(); }} onRemovePath={() => { setExpanded((current) => { const next = { ...current }; delete next.camera; return next; }); if (camera) onRemoveCameraPath?.(camera.id); }} onTogglePathMenu={(event) => togglePathMenu(event, "camera")} />
+                <MainTrackLabel name="主機位" kind="camera" pathExists={Boolean(camera?.drawnPath)} expanded={expanded.camera ?? Boolean(camera?.drawnPath || cameraKeys.length > 1)} hasDetails={cameraKeys.length > 0} menuOpen={pathMenuTarget === "camera"} onToggle={() => setExpanded((current) => ({ ...current, camera: !(current.camera ?? Boolean(camera?.drawnPath || cameraKeys.length > 1)) }))} onSelect={() => { onSelectObject(null); onSelectBone(null); onSelectCameraTrack?.(); }} onRemovePath={() => { setExpanded((current) => { const next = { ...current }; delete next.camera; return next; }); if (camera) onRemoveCameraPath?.(camera.id); }} onTogglePathMenu={(event) => togglePathMenu(event, "camera")} />
                 <div className="relative min-w-0 bg-[#28646a]/55" onPointerDown={(event) => { if (!(event.target as HTMLElement).closest("button")) setTimeFromPointer(event); }}>
                     <TrackKeys duration={duration} keys={cameraKeys} selectedTarget={activeSelectedKey?.target} onSelectKey={selectTrackKey} onDeleteKey={deleteTrackKey} />
                     <span className="director-sequencer-playhead" style={{ left: `${(playhead / duration) * 100}%` }} />
                 </div>
                 {cameraKeys.length && (expanded.camera ?? Boolean(camera?.drawnPath || cameraKeys.length > 1)) ? <>
                     <CameraTrackLabel label="位置" value={cameraPosition?.map((value) => Number(value.toFixed(2))).join(",") || ""} keys={cameraPositionKeys} currentTime={currentTrackTime} onSelect={onSelectCameraTrack} onSeek={onPlayheadChange} onToggle={() => onToggleCameraTrack?.("position")} /><div className="relative border-t bg-[#18343a]" style={{ borderColor: "var(--director-sequencer-border)" }}><TrackKeys duration={duration} keys={cameraPositionKeys} selectedTarget={activeSelectedKey?.target} onSelectKey={selectTrackKey} onDeleteKey={deleteTrackKey} /></div>
-                    <CameraTrackLabel label="焦点" value={cameraTrackValues?.target.map((value) => Number(value.toFixed(2))).join(",") || ""} keys={cameraFocusKeys} currentTime={currentTrackTime} onSelect={onSelectCameraTrack} onSeek={onPlayheadChange} onToggle={() => onToggleCameraTrack?.("focus")} /><div className="relative border-t bg-[#18343a]" style={{ borderColor: "var(--director-sequencer-border)" }}><TrackKeys duration={duration} keys={cameraFocusKeys} selectedTarget={activeSelectedKey?.target} onSelectKey={selectTrackKey} onDeleteKey={deleteTrackKey} /></div>
-                    <CameraTrackLabel label="视角" value={cameraTrackValues?.fov.toFixed(2).replace(/\.00$/, "") || ""} keys={cameraFovKeys} currentTime={currentTrackTime} onSelect={onSelectCameraTrack} onSeek={onPlayheadChange} onToggle={() => onToggleCameraTrack?.("fov")} /><div className="relative border-t bg-[#18343a]" style={{ borderColor: "var(--director-sequencer-border)" }}><TrackKeys duration={duration} keys={cameraFovKeys} selectedTarget={activeSelectedKey?.target} onSelectKey={selectTrackKey} onDeleteKey={deleteTrackKey} /></div>
+                    <CameraTrackLabel label="焦點" value={cameraTrackValues?.target.map((value) => Number(value.toFixed(2))).join(",") || ""} keys={cameraFocusKeys} currentTime={currentTrackTime} onSelect={onSelectCameraTrack} onSeek={onPlayheadChange} onToggle={() => onToggleCameraTrack?.("focus")} /><div className="relative border-t bg-[#18343a]" style={{ borderColor: "var(--director-sequencer-border)" }}><TrackKeys duration={duration} keys={cameraFocusKeys} selectedTarget={activeSelectedKey?.target} onSelectKey={selectTrackKey} onDeleteKey={deleteTrackKey} /></div>
+                    <CameraTrackLabel label="視角" value={cameraTrackValues?.fov.toFixed(2).replace(/\.00$/, "") || ""} keys={cameraFovKeys} currentTime={currentTrackTime} onSelect={onSelectCameraTrack} onSeek={onPlayheadChange} onToggle={() => onToggleCameraTrack?.("fov")} /><div className="relative border-t bg-[#18343a]" style={{ borderColor: "var(--director-sequencer-border)" }}><TrackKeys duration={duration} keys={cameraFovKeys} selectedTarget={activeSelectedKey?.target} onSelectKey={selectTrackKey} onDeleteKey={deleteTrackKey} /></div>
                 </> : null}
                 </div>
             </div> : isPreview ? <header className="director-sequencer-preview-header" style={{ borderColor: "var(--director-sequencer-border)" }}>
-                <button type="button" className="director-sequencer-transport" onClick={onPlayToggle} aria-label={playing ? "暂停" : "播放"} title={playing ? "暂停" : "播放"}>{playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}</button>
+                <button type="button" className="director-sequencer-transport" onClick={onPlayToggle} aria-label={playing ? "暫停" : "播放"} title={playing ? "暫停" : "播放"}>{playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}</button>
                 <span className="director-sequencer-preview-time" aria-live="off">{formatClockTime(playhead)} / {formatClockTime(duration)}</span>
                 <span className="director-sequencer-preview-actions">
-                    <button type="button" className="director-sequencer-icon" title="新增镜头" aria-label="新增镜头" onClick={onAddShot}><Plus className="size-3.5" /></button>
-                    <input type="range" min="0.75" max="2.5" step="0.25" value={timelineScale} aria-label="时间线缩放" title={`时间线缩放 ${Math.round(timelineScale * 100)}%`} onChange={(event) => setTimelineScale(Number(event.target.value))} />
-                    <button type="button" className="director-sequencer-icon" title="收起时间轴" aria-label="收起时间轴" onClick={() => onVisibilityChange(false)}><ChevronDown className="size-3.5" /></button>
+                    <button type="button" className="director-sequencer-icon" title="新增鏡頭" aria-label="新增鏡頭" onClick={onAddShot}><Plus className="size-3.5" /></button>
+                    <input type="range" min="0.75" max="2.5" step="0.25" value={timelineScale} aria-label="時間線縮放" title={`時間線縮放 ${Math.round(timelineScale * 100)}%`} onChange={(event) => setTimelineScale(Number(event.target.value))} />
+                    <button type="button" className="director-sequencer-icon" title="收起時間軸" aria-label="收起時間軸" onClick={() => onVisibilityChange(false)}><ChevronDown className="size-3.5" /></button>
                 </span>
             </header> : <header className="flex h-10 shrink-0 items-center gap-2 border-b px-3" style={{ borderColor: "var(--director-sequencer-border)" }}>
-                <button type="button" className="director-sequencer-transport" onClick={onPlayToggle} aria-label={playing ? "暂停" : "播放"} title={playing ? "暂停" : "播放"}>{playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}</button>
+                <button type="button" className="director-sequencer-transport" onClick={onPlayToggle} aria-label={playing ? "暫停" : "播放"} title={playing ? "暫停" : "播放"}>{playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}</button>
                 <span className="w-14 text-right text-[var(--fs-caption)] font-medium tabular-nums text-white/75">{formatTime(playhead)}</span>
                 <span className="text-[var(--fs-micro)] text-white/35">/ {formatTime(duration)} · {fps}fps</span>
                 <span className="mx-1 h-4 w-px bg-white/10" />
-                <select className="director-sequencer-shot-select" value={shot.id} aria-label="当前镜头" onChange={(event) => onSelectShot(event.target.value)}>
+                <select className="director-sequencer-shot-select" value={shot.id} aria-label="當前鏡頭" onChange={(event) => onSelectShot(event.target.value)}>
                     {scene.shots.map((item, index) => <option key={item.id} value={item.id}>{index + 1}. {item.name}</option>)}
                 </select>
-                {selectedObjectTrack ? <button type="button" aria-label="移除轨道" className="director-sequencer-tool" onClick={removeSelectedTrack}><span>− 移除轨道</span></button>
-                    : <button type="button" aria-label="新建轨道" className="director-sequencer-tool" disabled={!selectedObject} onClick={() => selectedObject && onCreateObjectTrack?.(selectedObject.id)}><Plus className="size-3.5" /><span>新建轨道</span></button>}
-                <button type="button" className={`director-sequencer-tool ${autoKey ? "is-active" : ""}`} onClick={() => onAutoKeyChange(!autoKey)} aria-pressed={autoKey} title="自动关键帧"><KeyRound className="size-3.5" /><span>自动关键帧</span></button>
-                <button type="button" className={`director-sequencer-tool ${snapEnabled ? "is-active" : ""}`} title="吸附到帧" aria-pressed={snapEnabled} onClick={() => setSnapEnabled((value) => !value)}><Magnet className="size-3.5" /><span>吸附</span></button>
-                <button type="button" className="director-sequencer-tool" title="记录当前关键帧" onClick={onRecordKeyframe}><KeyRound className="size-3.5" /><span>记录</span></button>
+                {selectedObjectTrack ? <button type="button" aria-label="移除軌道" className="director-sequencer-tool" onClick={removeSelectedTrack}><span>− 移除軌道</span></button>
+                    : <button type="button" aria-label="新建軌道" className="director-sequencer-tool" disabled={!selectedObject} onClick={() => selectedObject && onCreateObjectTrack?.(selectedObject.id)}><Plus className="size-3.5" /><span>新建軌道</span></button>}
+                <button type="button" className={`director-sequencer-tool ${autoKey ? "is-active" : ""}`} onClick={() => onAutoKeyChange(!autoKey)} aria-pressed={autoKey} title="自動關鍵幀"><KeyRound className="size-3.5" /><span>自動關鍵幀</span></button>
+                <button type="button" className={`director-sequencer-tool ${snapEnabled ? "is-active" : ""}`} title="吸附到幀" aria-pressed={snapEnabled} onClick={() => setSnapEnabled((value) => !value)}><Magnet className="size-3.5" /><span>吸附</span></button>
+                <button type="button" className="director-sequencer-tool" title="記錄當前關鍵幀" onClick={onRecordKeyframe}><KeyRound className="size-3.5" /><span>記錄</span></button>
                 {activeSelectedKey?.target ? <>
                     <select
                         className="director-sequencer-shot-select"
                         value={activeSelectedKey.easing || "linear"}
-                        aria-label="关键帧缓动"
-                        title="关键帧到下一帧的缓动"
+                        aria-label="關鍵幀緩動"
+                        title="關鍵幀到下一幀的緩動"
                         onChange={(event) => {
                             const easing = event.target.value as DirectorKeyframeEasing;
                             onSetKeyframeEasing(activeSelectedKey.target!, easing);
@@ -268,18 +268,18 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
                         }}
                     >
                         <option value="step">保持</option>
-                        <option value="linear">线性</option>
+                        <option value="linear">線性</option>
                         <option value="smooth">平滑</option>
                     </select>
-                    <button type="button" className="director-sequencer-icon" title="删除所选关键帧" aria-label="删除所选关键帧" onClick={() => deleteTrackKey(activeSelectedKey.target!)}><Trash2 className="size-3.5" /></button>
+                    <button type="button" className="director-sequencer-icon" title="刪除所選關鍵幀" aria-label="刪除所選關鍵幀" onClick={() => deleteTrackKey(activeSelectedKey.target!)}><Trash2 className="size-3.5" /></button>
                 </> : null}
                 <span className="ml-auto flex items-center gap-1">
-                    <button type="button" className="director-sequencer-icon" title="缩小时间轴" aria-label="缩小时间轴" onClick={() => setTimelineScale((value) => Math.max(0.75, value - 0.25))}><ZoomOut className="size-3.5" /></button>
-                    <button type="button" className="director-sequencer-icon" title="放大时间轴" aria-label="放大时间轴" onClick={() => setTimelineScale((value) => Math.min(2.5, value + 0.25))}><ZoomIn className="size-3.5" /></button>
-                    <button type="button" className={`director-sequencer-icon ${showDetails ? "is-active" : ""}`} title="显示子轨道" aria-label="显示子轨道" aria-pressed={showDetails} onClick={() => setShowDetails((value) => !value)}><Rows3 className="size-3.5" /></button>
-                    <button type="button" className="director-sequencer-icon" title="新增镜头" aria-label="新增镜头" onClick={onAddShot}><Plus className="size-3.5" /></button>
-                    <button type="button" className="director-sequencer-icon" title="收起高级轨道" aria-label="收起高级轨道" onClick={() => onHeightChange(130)}><ChevronDown className="size-3.5" /></button>
-                    <button type="button" className="director-sequencer-icon" title="隐藏时间轴" aria-label="隐藏时间轴" onClick={() => onVisibilityChange(false)}><ChevronDown className="size-3.5" /></button>
+                    <button type="button" className="director-sequencer-icon" title="縮小時間軸" aria-label="縮小時間軸" onClick={() => setTimelineScale((value) => Math.max(0.75, value - 0.25))}><ZoomOut className="size-3.5" /></button>
+                    <button type="button" className="director-sequencer-icon" title="放大時間軸" aria-label="放大時間軸" onClick={() => setTimelineScale((value) => Math.min(2.5, value + 0.25))}><ZoomIn className="size-3.5" /></button>
+                    <button type="button" className={`director-sequencer-icon ${showDetails ? "is-active" : ""}`} title="顯示子軌道" aria-label="顯示子軌道" aria-pressed={showDetails} onClick={() => setShowDetails((value) => !value)}><Rows3 className="size-3.5" /></button>
+                    <button type="button" className="director-sequencer-icon" title="新增鏡頭" aria-label="新增鏡頭" onClick={onAddShot}><Plus className="size-3.5" /></button>
+                    <button type="button" className="director-sequencer-icon" title="收起高階軌道" aria-label="收起高階軌道" onClick={() => onHeightChange(130)}><ChevronDown className="size-3.5" /></button>
+                    <button type="button" className="director-sequencer-icon" title="隱藏時間軸" aria-label="隱藏時間軸" onClick={() => onVisibilityChange(false)}><ChevronDown className="size-3.5" /></button>
                 </span>
             </header>}
 
@@ -289,7 +289,7 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
                         {ticks.map((tick) => <span key={tick} className="director-sequencer-tick" style={{ left: `${(tick / duration) * 100}%` }}>{tick}s</span>)}
                         <span className="director-sequencer-playhead" style={{ left: `${(playhead / duration) * 100}%` }} />
                     </div>
-                    <div className="director-sequencer-preview-track" role="slider" aria-label="预演时间线" aria-valuemin={0} aria-valuemax={duration} aria-valuenow={playhead} aria-valuetext={`${formatClockTime(playhead)} / ${formatClockTime(duration)}`} tabIndex={0} onPointerDown={setTimeFromPointer} onKeyDown={(event) => {
+                    <div className="director-sequencer-preview-track" role="slider" aria-label="預演時間線" aria-valuemin={0} aria-valuemax={duration} aria-valuenow={playhead} aria-valuetext={`${formatClockTime(playhead)} / ${formatClockTime(duration)}`} tabIndex={0} onPointerDown={setTimeFromPointer} onKeyDown={(event) => {
                         if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
                         event.preventDefault();
                         const step = snapEnabled ? 1 / fps : 0.1;
@@ -302,7 +302,7 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
             </div> : <div className="director-sequencer-body thin-scrollbar overflow-auto">
                 <div className="director-sequencer-grid" style={{ "--director-sequencer-duration": duration, "--director-sequencer-track-scale": timelineScale } as CSSProperties}>
                     <span className="director-sequencer-global-playhead"><i style={{ left: `${(playhead / duration) * 100}%` }} /></span>
-                    <div className="director-sequencer-label director-sequencer-ruler-label">轨道</div>
+                    <div className="director-sequencer-label director-sequencer-ruler-label">軌道</div>
                     <div className="director-sequencer-ruler" onPointerDown={setTimeFromPointer}>
                         {ticks.map((tick) => <span key={tick} className="director-sequencer-tick" style={{ left: `${(tick / duration) * 100}%` }}>{tick}s</span>)}
                         <span className="director-sequencer-playhead" style={{ left: `${(playhead / duration) * 100}%` }} />
@@ -314,17 +314,17 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
                     {actorObjects.map((object) => {
                         const isExpanded = expanded[object.id] ?? object.id === selectedObjectId;
                         const activeClip = object.motionClips?.find((clip) => clip.id === object.activeMotionClipId);
-                        // 骨骼帧 id 在不同轨道间可能重复，React key 用「骨骼-帧」组合；删除目标仍指向原始帧 id。
+                        // 骨骼幀 id 在不同軌道間可能重複，React key 用「骨骼-幀」組合；刪除目標仍指向原始幀 id。
                         const boneTrackKeys: TrackKey[] = object.boneTracks?.flatMap((track) => track.keyframes.map((key) => ({ id: `bone-${track.bone}-${key.id}`, time: key.time, color: "#f0b36a", label: `${object.name} ${directorBoneLabel(track.bone)}`, easing: key.easing, target: { track: "object-bone" as const, objectId: object.id, bone: track.bone, keyframeId: key.id } }))) || [];
                         const transformKeys: TrackKey[] = object.keyframes.map((key) => ({ id: `transform-${key.id}`, time: key.time, color: "#61d2ad", label: `${object.name} Transform`, easing: key.easing, target: { track: "object-transform" as const, objectId: object.id, keyframeId: key.id } }));
                         return <div key={object.id} className="contents">
                             <SequencerRow label={object.name} icon={isExpanded ? <ChevronDown className="size-3" /> : <ChevronRight className="size-3" />} selected={selectedObjectId === object.id && !selectedBone} onClick={() => { onSelectObject(object.id); onSelectBone(null); setExpanded((current) => ({ ...current, [object.id]: !isExpanded })); }}>
-                                {/* 折叠时这是唯一的关键帧入口，必须可删除。 */}
+                                {/* 摺疊時這是唯一的關鍵幀入口，必須可刪除。 */}
                                 <TrackKeys duration={duration} keys={[...transformKeys, ...boneTrackKeys]} selectedTarget={activeSelectedKey?.target} onSelectKey={selectTrackKey} onDeleteKey={deleteTrackKey} />
                             </SequencerRow>
                             {isExpanded && showDetails ? <>
-                                <SequencerRow label="动作片段" icon="▶" indent selected={selectedObjectId === object.id && !selectedBone} onClick={() => onSelectObject(object.id)}>
-                                    <TrackBar duration={duration} color="#61d2ad" label={activeClip ? `${activeClip.name}${activeClip.loop ? " · 循环" : ""}` : "姿势 / 动作"} start={activeClip?.start || 0} clipDuration={activeClip?.loop ? duration : activeClip?.duration || duration} />
+                                <SequencerRow label="動作片段" icon="▶" indent selected={selectedObjectId === object.id && !selectedBone} onClick={() => onSelectObject(object.id)}>
+                                    <TrackBar duration={duration} color="#61d2ad" label={activeClip ? `${activeClip.name}${activeClip.loop ? " · 迴圈" : ""}` : "姿勢 / 動作"} start={activeClip?.start || 0} clipDuration={activeClip?.loop ? duration : activeClip?.duration || duration} />
                                 </SequencerRow>
                                 <SequencerRow label="Transform" icon="◇" indent selected={selectedObjectId === object.id && !selectedBone} onClick={() => { onSelectObject(object.id); onSelectBone(null); }}>
                                     <TrackKeys duration={duration} keys={transformKeys} selectedTarget={activeSelectedKey?.target} onSelectKey={selectTrackKey} onDeleteKey={deleteTrackKey} />
@@ -342,9 +342,9 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
                     })}
                 </div>
             </div>}
-            {pathMenuOpen && !isPreview ? createPortal(<div ref={pathMenuPortalRef} role="menu" aria-label={pathMenuTarget === "camera" ? "主机位绘制轨迹" : "人物绘制轨迹"} className="fixed w-40 rounded-lg border border-white/10 bg-[#252525] p-2 text-xs text-white shadow-xl" style={{ top: pathMenuPosition.top, left: pathMenuPosition.left, transform: "translateY(-100%)", zIndex: 1000 }}>
-                {([ ["ring", "圆环路径", "◯"], ["line", "直线路径", "—"], ["rectangle", "矩形路径", "□"] ] as const).map(([kind, label, icon]) => <button key={kind} type="button" role="menuitem" className="flex h-7 w-full items-center gap-2 rounded px-2 text-left text-white/75 hover:bg-white/10 hover:text-white" onClick={() => createPathFromMenu(kind)}><span aria-hidden="true" className="w-4 text-center">{icon}</span>{label}</button>)}
-                {([ ["pencil", "铅笔路径", "✎"], ["pen", "钢笔路径", "✒"] ] as const).map(([kind, label, icon]) => <button key={kind} type="button" role="menuitem" className="flex h-7 w-full items-center gap-2 rounded px-2 text-left text-white/75 hover:bg-white/10 hover:text-white" onClick={() => createPathFromMenu(kind)}><span aria-hidden="true" className="w-4 text-center">{icon}</span>{label}</button>)}
+            {pathMenuOpen && !isPreview ? createPortal(<div ref={pathMenuPortalRef} role="menu" aria-label={pathMenuTarget === "camera" ? "主機位繪製軌跡" : "人物繪製軌跡"} className="fixed w-40 rounded-lg border border-white/10 bg-[#252525] p-2 text-xs text-white shadow-xl" style={{ top: pathMenuPosition.top, left: pathMenuPosition.left, transform: "translateY(-100%)", zIndex: 1000 }}>
+                {([ ["ring", "圓環路徑", "◯"], ["line", "直線路徑", "—"], ["rectangle", "矩形路徑", "□"] ] as const).map(([kind, label, icon]) => <button key={kind} type="button" role="menuitem" className="flex h-7 w-full items-center gap-2 rounded px-2 text-left text-white/75 hover:bg-white/10 hover:text-white" onClick={() => createPathFromMenu(kind)}><span aria-hidden="true" className="w-4 text-center">{icon}</span>{label}</button>)}
+                {([ ["pencil", "鉛筆路徑", "✎"], ["pen", "鋼筆路徑", "✒"] ] as const).map(([kind, label, icon]) => <button key={kind} type="button" role="menuitem" className="flex h-7 w-full items-center gap-2 rounded px-2 text-left text-white/75 hover:bg-white/10 hover:text-white" onClick={() => createPathFromMenu(kind)}><span aria-hidden="true" className="w-4 text-center">{icon}</span>{label}</button>)}
             </div>, document.body) : null}
         </section>
     );
@@ -352,10 +352,10 @@ export function DirectorSequencer({ scene, shot, camera, objects, selectedObject
 
 function MainTrackLabel({ name, kind, pathExists, expanded, hasDetails, menuOpen, onToggle, onSelect, onRemovePath, onTogglePathMenu }: { name: string; kind: "actor" | "camera"; pathExists: boolean; expanded: boolean; hasDetails: boolean; menuOpen: boolean; onToggle: () => void; onSelect: () => void; onRemovePath: () => void; onTogglePathMenu: (event: MouseEvent<HTMLButtonElement>) => void }) {
     return <div className={`director-sequencer-main-label is-${kind}`}>
-        <button type="button" className="director-sequencer-main-toggle" aria-label={`${expanded ? "收起" : "展开"}${name}属性`} aria-expanded={expanded} disabled={!hasDetails} onClick={(event) => { onToggle(); releaseDirectorFocusAfterPointer(event); }}>{expanded ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}</button>
+        <button type="button" className="director-sequencer-main-toggle" aria-label={`${expanded ? "收起" : "展開"}${name}屬性`} aria-expanded={expanded} disabled={!hasDetails} onClick={(event) => { onToggle(); releaseDirectorFocusAfterPointer(event); }}>{expanded ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}</button>
         <button type="button" className="director-sequencer-main-name" title={name} onClick={(event) => { onSelect(); releaseDirectorFocusAfterPointer(event); }}>{name}</button>
-        {pathExists ? <button type="button" className="director-sequencer-camera-action" aria-label={`移除${name}轨迹`} onClick={(event) => { onRemovePath(); releaseDirectorFocusAfterPointer(event); }}>− 移除</button> : null}
-        <button type="button" data-director-path-menu-trigger className="director-sequencer-camera-action" aria-label={`绘制${name}轨迹`} aria-haspopup="menu" aria-expanded={menuOpen} onClick={onTogglePathMenu}>◎ 绘制轨迹</button>
+        {pathExists ? <button type="button" className="director-sequencer-camera-action" aria-label={`移除${name}軌跡`} onClick={(event) => { onRemovePath(); releaseDirectorFocusAfterPointer(event); }}>− 移除</button> : null}
+        <button type="button" data-director-path-menu-trigger className="director-sequencer-camera-action" aria-label={`繪製${name}軌跡`} aria-haspopup="menu" aria-expanded={menuOpen} onClick={onTogglePathMenu}>◎ 繪製軌跡</button>
     </div>;
 }
 
@@ -367,18 +367,18 @@ function CameraTrackLabel({ label, value, keys, currentTime, onSelect, onSeek, o
     return <div data-director-object-channel={dataChannel} className="director-sequencer-channel-label grid min-w-0 grid-cols-[minmax(0,1fr)_72px_68px] items-center gap-1 border-t bg-[#18343a] px-2 text-xs text-white/75" style={{ borderColor: "var(--director-sequencer-border)" }}>
         <button type="button" className="min-w-0 truncate text-left focus-visible:outline focus-visible:outline-2" onClick={(event) => { onSelect?.(); releaseDirectorFocusAfterPointer(event); }}>{label}</button>
         <div className="flex items-center justify-center gap-0.5">
-            <button type="button" aria-label="上一关键帧" disabled={previous === undefined} className="size-5 rounded text-white/60 hover:bg-white/10 disabled:opacity-25" onClick={(event) => { if (previous !== undefined) onSeek(previous); releaseDirectorFocusAfterPointer(event); }}>‹</button>
-            {onToggle ? <button type="button" aria-label={keyed ? "当前帧有关键帧" : "当前帧无关键帧"} aria-pressed={keyed} className="grid size-5 place-items-center rounded text-white/80 hover:bg-white/10" onClick={(event) => { onToggle(); releaseDirectorFocusAfterPointer(event); }}><span aria-hidden className={`size-2 rotate-45 rounded-[1px] border ${keyed ? "border-white/80 bg-white/75" : "border-white/50"}`} /></button> : <span aria-hidden className="size-5" />}
-            <button type="button" aria-label="下一关键帧" disabled={next === undefined} className="size-5 rounded text-white/60 hover:bg-white/10 disabled:opacity-25" onClick={(event) => { if (next !== undefined) onSeek(next); releaseDirectorFocusAfterPointer(event); }}>›</button>
+            <button type="button" aria-label="上一關鍵幀" disabled={previous === undefined} className="size-5 rounded text-white/60 hover:bg-white/10 disabled:opacity-25" onClick={(event) => { if (previous !== undefined) onSeek(previous); releaseDirectorFocusAfterPointer(event); }}>‹</button>
+            {onToggle ? <button type="button" aria-label={keyed ? "當前幀有關鍵幀" : "當前幀無關鍵幀"} aria-pressed={keyed} className="grid size-5 place-items-center rounded text-white/80 hover:bg-white/10" onClick={(event) => { onToggle(); releaseDirectorFocusAfterPointer(event); }}><span aria-hidden className={`size-2 rotate-45 rounded-[1px] border ${keyed ? "border-white/80 bg-white/75" : "border-white/50"}`} /></button> : <span aria-hidden className="size-5" />}
+            <button type="button" aria-label="下一關鍵幀" disabled={next === undefined} className="size-5 rounded text-white/60 hover:bg-white/10 disabled:opacity-25" onClick={(event) => { if (next !== undefined) onSeek(next); releaseDirectorFocusAfterPointer(event); }}>›</button>
         </div>
         <span className="truncate text-right tabular-nums text-white/55" title={value}>{value}</span>
     </div>;
 }
 
 /**
- * 轨道行。标签按钮是选择控件，点完必须释放焦点：
- *「点选轨道 -> 按 Delete」与场景列表同源，焦点留在按钮上会让守卫吃掉 Delete。
- * 注意 children 里的 TrackKeys 不走这条规则 —— 关键帧按钮自己拥有那些键。
+ * 軌道行。標籤按鈕是選擇控制元件，點完必須釋放焦點：
+ *「點選軌道 -> 按 Delete」與場景列表同源，焦點留在按鈕上會讓守衛吃掉 Delete。
+ * 注意 children 裡的 TrackKeys 不走這條規則 —— 關鍵幀按鈕自己擁有那些鍵。
  */
 function SequencerRow({ label, icon, selected, indent, children, onClick, className = "", labelContent }: { label: string; icon: ReactNode; selected: boolean; indent?: boolean; children: ReactNode; onClick: () => void; className?: string; labelContent?: ReactNode }) {
     return <div className={`director-sequencer-row ${className} ${selected ? "is-selected" : ""}`}>
@@ -389,18 +389,18 @@ function SequencerRow({ label, icon, selected, indent, children, onClick, classN
 
 function CameraMainTrackLabel({ cameraName, pathExists, pathMenuOpen, pathMenuRef, onSelect, onRemovePath, onTogglePathMenu, compact = false }: { cameraName: string; pathExists: boolean; pathMenuOpen: boolean; pathMenuRef: RefObject<HTMLDivElement | null>; onSelect: () => void; onRemovePath: () => void; onTogglePathMenu: (event: MouseEvent<HTMLButtonElement>) => void; compact?: boolean }) {
     return <div className={`director-sequencer-camera-label ${compact ? "is-compact" : ""}`}>
-        <button type="button" className="director-sequencer-camera-name" title={cameraName} onClick={(event) => { onSelect(); releaseDirectorFocusAfterPointer(event); }}><span className="director-sequencer-row-icon">⌾</span><span className="min-w-0 truncate">主机位</span></button>
-        {pathExists ? <button type="button" aria-label="移除摄影机轨迹" className="director-sequencer-camera-action" onClick={onRemovePath}>− 移除轨迹</button> : null}
-        <div className="relative shrink-0" ref={pathMenuRef}><button type="button" className="director-sequencer-camera-action" aria-label="绘制轨迹" aria-haspopup="menu" aria-expanded={pathMenuOpen} onClick={onTogglePathMenu}>◎ 绘制轨迹</button></div>
+        <button type="button" className="director-sequencer-camera-name" title={cameraName} onClick={(event) => { onSelect(); releaseDirectorFocusAfterPointer(event); }}><span className="director-sequencer-row-icon">⌾</span><span className="min-w-0 truncate">主機位</span></button>
+        {pathExists ? <button type="button" aria-label="移除攝影機軌跡" className="director-sequencer-camera-action" onClick={onRemovePath}>− 移除軌跡</button> : null}
+        <div className="relative shrink-0" ref={pathMenuRef}><button type="button" className="director-sequencer-camera-action" aria-label="繪製軌跡" aria-haspopup="menu" aria-expanded={pathMenuOpen} onClick={onTogglePathMenu}>◎ 繪製軌跡</button></div>
     </div>;
 }
 
 /**
- * 关键帧渲染为真实 button：可 Tab 聚焦、可 Enter/Space/Delete 触发、也可点击。
- * 之前是惰性 span，关键帧一旦记录就无法删除。
+ * 關鍵幀渲染為真實 button：可 Tab 聚焦、可 Enter/Space/Delete 觸發、也可點選。
+ * 之前是惰性 span，關鍵幀一旦記錄就無法刪除。
  *
- * 只有同时具备 onDeleteKey 和 key.target 才可交互；
- * 概览轨（Camera Cut）保持只读 span，避免同一帧出现两个语义相同的删除入口。
+ * 只有同時具備 onDeleteKey 和 key.target 才可互動；
+ * 概覽軌（Camera Cut）保持只讀 span，避免同一幀出現兩個語義相同的刪除入口。
  */
 function TrackKeys({ duration, keys, selectedTarget, onSelectKey, onDeleteKey }: { duration: number; keys: TrackKey[]; selectedTarget?: DirectorKeyframeDeleteTarget; onSelectKey?: (key: TrackKey) => void; onDeleteKey?: (target: DirectorKeyframeDeleteTarget) => void }) {
     return (
@@ -420,9 +420,9 @@ function TrackKeys({ duration, keys, selectedTarget, onSelectKey, onDeleteKey }:
                     type="button"
                     className={`director-sequencer-key is-actionable ${selectedTarget && directorKeyframeTargetId(selectedTarget) === directorKeyframeTargetId(target) ? "is-selected" : ""}`}
                     style={{ left: `clamp(8px, ${(key.time / duration) * 100}%, calc(100% - 8px))`, background: key.color || "#d7dee8" }}
-                    aria-label={`选择 ${key.label ?? "关键帧"} ${key.time.toFixed(2)}s 的关键帧`}
+                    aria-label={`選擇 ${key.label ?? "關鍵幀"} ${key.time.toFixed(2)}s 的關鍵幀`}
                     aria-pressed={Boolean(selectedTarget && directorKeyframeTargetId(selectedTarget) === directorKeyframeTargetId(target))}
-                    title={`${key.time.toFixed(2)}s · 点击定位，按 Delete 删除`}
+                    title={`${key.time.toFixed(2)}s · 點選定位，按 Delete 刪除`}
                     onClick={(event) => {
                         event.stopPropagation();
                         onSelectKey?.(key);

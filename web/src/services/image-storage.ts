@@ -16,12 +16,12 @@ export type UploadedImage = {
     bytes: number;
     mimeType: string;
     /**
-     * true 表示直传失败、文件当前只存在于本机 IndexedDB。
-     * 本地 Go 资源服务不可用时，文件会暂存于本机 IndexedDB；此时 `url`
-     * 是页面级 objectURL，刷新后需要从本地缓存恢复。UI 不得把它说成已写入资源库。
+     * true 表示直傳失敗、檔案當前只存在於本機 IndexedDB。
+     * 本地 Go 資源服務不可用時，檔案會暫存於本機 IndexedDB；此時 `url`
+     * 是頁面級 objectURL，重新整理後需要從本地快取恢復。UI 不得把它說成已寫入資源庫。
      */
     pendingRemoteUpload?: boolean;
-    /** 直传失败原因，仅在 pendingRemoteUpload 为 true 时有值，供 UI 如实告知用户。 */
+    /** 直傳失敗原因，僅在 pendingRemoteUpload 為 true 時有值，供 UI 如實告知使用者。 */
     remoteUploadError?: string;
 };
 
@@ -29,8 +29,8 @@ const store = localForageInstance(IMAGE_FILES_STORE_NAME);
 const objectUrls = new Map<string, string>();
 
 export async function uploadImage(input: string | Blob, onProgress?: (uploadedBytes: number, totalBytes: number) => void, expectedScope?: CapturedUserScope): Promise<UploadedImage> {
-    // 同一个逻辑上传在本地资源服务不可用后会退回 IndexedDB。
-    // 提前生成稳定 key，确保恢复路径仍能定位同一份本地媒体。
+    // 同一個邏輯上傳在本地資源服務不可用後會退回 IndexedDB。
+    // 提前生成穩定 key，確保恢復路徑仍能定位同一份本地媒體。
     const expected = expectedScope ?? captureUserScope();
     const storageKey = `image:${expected.userScope}:${nanoid()}`;
     const localRuntime = isLocalRuntimeMode();
@@ -87,12 +87,12 @@ export async function uploadImage(input: string | Blob, onProgress?: (uploadedBy
             };
         } catch (error) {
             if (isUserScopeAbandonedError(error)) throw error;
-            // 鉴权失效、越权、体积超限这类失败重传也是同样结果，不能退化成"稍后自动同步"。
+            // 鑑權失效、越權、體積超限這類失敗重傳也是同樣結果，不能退化成"稍後自動同步"。
             if (error instanceof ResourceUploadError && error.permanent) throw error;
-            remoteUploadError = error instanceof Error ? error.message : "图片直传失败";
+            remoteUploadError = error instanceof Error ? error.message : "圖片直傳失敗";
         }
         assertUserScope(expected);
-        // 本地服务暂时不可用时退回浏览器本地缓存，确保当前创作不中断。
+        // 本地服務暫時不可用時退回瀏覽器本地快取，確保當前創作不中斷。
         await store.setItem(storageKey, blob);
         const url = previewUrl;
         objectUrls.set(storageKey, url);
@@ -187,7 +187,7 @@ function blobToDataUrl(blob: Blob) {
     return new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(String(reader.result || ""));
-        reader.onerror = () => reject(new Error("读取图片失败"));
+        reader.onerror = () => reject(new Error("讀取圖片失敗"));
         reader.readAsDataURL(blob);
     });
 }
@@ -196,7 +196,7 @@ async function normalizeImageBlob(blob: Blob, sourceName = "") {
     if (blob.type.startsWith("image/")) return blob;
     const bytes = new Uint8Array(await blob.slice(0, 32).arrayBuffer());
     const mimeType = detectImageMimeType(bytes) || imageMimeTypeFromName(sourceName);
-    if (!mimeType) throw new Error("无法识别参考图片格式，请重新上传 PNG、JPEG、WebP 或 GIF 图片");
+    if (!mimeType) throw new Error("無法識別參考圖片格式，請重新上傳 PNG、JPEG、WebP 或 GIF 圖片");
     return blob.slice(0, blob.size, mimeType);
 }
 

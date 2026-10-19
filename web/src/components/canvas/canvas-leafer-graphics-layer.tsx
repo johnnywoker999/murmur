@@ -126,7 +126,7 @@ export function CanvasLeaferGraphicsLayer(props: CanvasLeaferGraphicsLayerProps)
             syncViewport(props.viewport, rect.width, rect.height, overlay, props);
         }
         rasterViewportRef.current = props.viewport;
-        // 新视口先同步到真实 DPR backing store，再撤销交互期的合成变换，避免出现跳帧。
+        // 新視口先同步到真實 DPR backing store，再撤銷互動期的合成變換，避免出現跳幀。
         if (hadPreview) forceSceneRender(overlay);
         resetScenePreview(overlay);
     }, [props.containerRef, props.viewport]);
@@ -264,7 +264,7 @@ function isViewportPreview(container: HTMLDivElement, viewport: ViewportTransfor
 }
 
 function applyScenePreview(viewport: ViewportTransform, rasterViewport: ViewportTransform, ...scenes: LeaferScene[]) {
-    // 将已栅格画面的屏幕坐标映射到实时视口，缩放手势期间不触碰 Leafer 场景树。
+    // 將已柵格畫面的螢幕座標對映到即時視口，縮放手勢期間不觸碰 Leafer 場景樹。
     const { ratio, x, y } = calculateCanvasPreviewTransform(viewport, rasterViewport);
     for (const scene of scenes) {
         scene.host.style.transformOrigin = "0 0";

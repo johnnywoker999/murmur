@@ -682,7 +682,7 @@ function createInlineMentionChip(reference: CanvasResourceReference, token: stri
     chip.dataset.mentionToken = token;
     chip.dataset.mentionReferenceId = reference.id;
     chip.className = `canvas-resource-inline-mention ${reference.kind === "skill" ? "is-skill" : reference.kind === "text" ? "is-node" : ""}`;
-    chip.title = `${canvasResourceDisplayName(reference)} · 双击放大预览`;
+    chip.title = `${canvasResourceDisplayName(reference)} · 雙擊放大預覽`;
     if (reference.kind === "skill") chip.style.setProperty("--canvas-skill-mention-color", skillMentionColor(reference));
 
     const prefix = document.createElement("span");
@@ -693,7 +693,7 @@ function createInlineMentionChip(reference: CanvasResourceReference, token: stri
     prefix.textContent = reference.kind === "skill" ? "✦" : reference.kind === "text" ? "▤" : "@";
     chip.appendChild(prefix);
 
-    // Skill chip 的前缀已经承担图标职责，不再追加 fallback preview，避免出现两个星标。
+    // Skill chip 的字首已經承擔圖示職責，不再追加 fallback preview，避免出現兩個星標。
     if (reference.kind !== "skill" && reference.kind !== "text") chip.appendChild(createInlinePreview(reference));
 
     const label = document.createElement("span");
@@ -721,10 +721,10 @@ function InlineReferencePreview({ reference, onClose }: { reference: CanvasResou
     const url = referencePreviewUrl(reference);
     if (!url) return null;
     return createPortal(
-        <div className="fixed inset-0 z-[var(--z-dialog-popover)] grid place-items-center bg-black/80 p-6" role="dialog" aria-label={`预览${reference.label}`} onClick={onClose}>
+        <div className="fixed inset-0 z-[var(--z-dialog-popover)] grid place-items-center bg-black/80 p-6" role="dialog" aria-label={`預覽${reference.label}`} onClick={onClose}>
             <div className="relative max-h-[92vh] max-w-[92vw]" onClick={(event) => event.stopPropagation()}>
                 <img src={url} alt={reference.label} className="max-h-[88vh] max-w-[88vw] rounded-xl object-contain shadow-2xl" />
-                <button type="button" className="absolute -right-3 -top-3 rounded-full bg-black/75 p-2 text-white shadow-lg" onClick={onClose} aria-label="关闭图片预览">×</button>
+                <button type="button" className="absolute -right-3 -top-3 rounded-full bg-black/75 p-2 text-white shadow-lg" onClick={onClose} aria-label="關閉圖片預覽">×</button>
             </div>
         </div>,
         document.body,
@@ -774,7 +774,7 @@ function syncInlineMentionPreviews(editor: HTMLElement, references: CanvasResour
         const label = chip.querySelector(".canvas-resource-inline-label");
         const displayName = canvasResourceDisplayName(reference);
         if (label && label.textContent !== displayName) label.textContent = displayName;
-        chip.title = `${displayName} · 双击放大预览`;
+        chip.title = `${displayName} · 雙擊放大預覽`;
     });
 }
 
@@ -876,8 +876,8 @@ function MentionMenu({ anchor, connectedReferences, assetReferences, filteredRef
                 <Search aria-hidden />
                 <input
                     value={query}
-                    placeholder="搜索节点、素材或技能"
-                    aria-label="搜索引用素材"
+                    placeholder="搜尋節點、素材或技能"
+                    aria-label="搜尋引用素材"
                     onChange={(event) => onQueryChange(event.target.value)}
                     onPointerDown={(event) => event.stopPropagation()}
                     onMouseDown={(event) => event.stopPropagation()}
@@ -925,7 +925,7 @@ function MentionMenu({ anchor, connectedReferences, assetReferences, filteredRef
                             }}
                         >
                             <ArrowLeft aria-hidden />
-                            <span>个人资产库</span>
+                            <span>個人資產庫</span>
                             <small>{visibleReferences.length}</small>
                         </button>
                         <MentionReferenceList references={visibleReferences} activeReferenceId={activeReferenceId} onSelect={selectReference} />
@@ -934,13 +934,13 @@ function MentionMenu({ anchor, connectedReferences, assetReferences, filteredRef
                     <>
                         {connectedNodes.length ? (
                             <section className="canvas-resource-mention-section">
-                                <h4><span>画布节点</span><small>{connectedNodes.length}</small></h4>
+                                <h4><span>畫布節點</span><small>{connectedNodes.length}</small></h4>
                                 <MentionReferenceList references={connectedNodes} activeReferenceId={activeReferenceId} onSelect={selectReference} />
                             </section>
                         ) : null}
                         {skillReferences.length ? (
                             <section className="canvas-resource-mention-section">
-                                <h4><span>技能库</span><small>{skillReferences.length}</small></h4>
+                                <h4><span>技能庫</span><small>{skillReferences.length}</small></h4>
                                 <MentionReferenceList references={skillReferences} activeReferenceId={activeReferenceId} onSelect={selectReference} />
                             </section>
                         ) : null}
@@ -960,7 +960,7 @@ function MentionMenu({ anchor, connectedReferences, assetReferences, filteredRef
                                         }}
                                     >
                                         <Folder aria-hidden />
-                                        <span>个人资产库</span>
+                                        <span>個人資產庫</span>
                                         <small>{assetReferences.length}</small>
                                         <ChevronRight aria-hidden />
                                     </button>
@@ -975,7 +975,7 @@ function MentionMenu({ anchor, connectedReferences, assetReferences, filteredRef
 }
 
 function MentionReferenceList({ references, activeReferenceId, onSelect }: { references: CanvasResourceReference[]; activeReferenceId?: string; onSelect: (reference: CanvasResourceReference) => void }) {
-    if (!references.length) return <div className="canvas-resource-mention-empty">没有匹配的引用</div>;
+    if (!references.length) return <div className="canvas-resource-mention-empty">沒有匹配的引用</div>;
     return references.map((reference) => (
         <button
             key={reference.id}
@@ -996,7 +996,7 @@ function MentionReferenceList({ references, activeReferenceId, onSelect }: { ref
             <span className="canvas-resource-mention-copy">
                 <span className="canvas-resource-mention-title-row"><strong title={canvasResourceDisplayName(reference)}>{canvasResourceDisplayName(reference)}</strong>{reference.kind === "skill" ? <em>技能</em> : null}</span>
                 {reference.kind === "skill" ? (
-                    <span className="canvas-resource-mention-meta"><span>{reference.skill?.description || reference.text || "工作流技能"}</span><small>{reference.skill?.version ? `v${reference.skill.version}` : ""}{reference.skill?.fileCount ? ` · ${reference.skill.fileCount} 文件` : ""}</small></span>
+                    <span className="canvas-resource-mention-meta"><span>{reference.skill?.description || reference.text || "工作流技能"}</span><small>{reference.skill?.version ? `v${reference.skill.version}` : ""}{reference.skill?.fileCount ? ` · ${reference.skill.fileCount} 檔案` : ""}</small></span>
                 ) : reference.text && reference.text !== reference.title ? <span className="canvas-resource-mention-meta"><span>{reference.text}</span></span> : null}
             </span>
         </button>

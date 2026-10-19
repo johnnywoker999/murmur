@@ -15,10 +15,10 @@ type ChartRow = Record<string, string | number>;
 type ParsedChart = { rows: ChartRow[]; xKey: string; series: string[] };
 
 /**
- * 把一段文本解析成图表数据；解析不出来返回 null，由调用方显示错误态。
+ * 把一段文本解析成圖表資料；解析不出來返回 null，由呼叫方顯示錯誤態。
  *
- * 这个函数**必须不抛**：数据来自模型输出，非法 JSON 是常态而不是异常，
- * 抛出来会连带整个画布白屏。
+ * 這個函式**必須不拋**：資料來自模型輸出，非法 JSON 是常態而不是異常，
+ * 丟擲來會連帶整個畫布白屏。
  */
 export function parseChartSource(text: string): ParsedChart | null {
     const trimmed = text.trim();
@@ -28,7 +28,7 @@ export function parseChartSource(text: string): ParsedChart | null {
 
     const keys = Object.keys(rows[0]);
     if (!keys.length) return null;
-    // 数值列作为系列，其余第一列作为横轴；全是数值时用行号当横轴。
+    // 數值列作為系列，其餘第一列作為橫軸；全是數值時用行號當橫軸。
     const series = keys.filter((key) => rows.every((row) => typeof row[key] === "number"));
     const xKey = keys.find((key) => !series.includes(key)) || "__index";
     if (!series.length) return null;
@@ -58,7 +58,7 @@ function parseCsvRows(text: string): ChartRow[] | null {
     });
 }
 
-/** 把看起来是数字的值转成数字，否则 recharts 会把 "12" 当类别处理。 */
+/** 把看起來是數字的值轉成數字，否則 recharts 會把 "12" 當類別處理。 */
 function normalizeRow(row: Record<string, unknown>): ChartRow {
     return Object.fromEntries(Object.entries(row).map(([key, value]) => {
         if (typeof value === "number") return [key, value];
@@ -71,8 +71,8 @@ function normalizeRow(row: Record<string, unknown>): ChartRow {
 const SERIES_COLORS = ["#f59e0b", "#22c55e", "#06b6d4", "#a855f7", "#ef4444"];
 
 /**
- * 图表节点：把上游文本（JSON 数组或 CSV）渲染成柱状图/折线图。
- * metadata.chartKind 为 "line" 时画折线，缺省柱状。
+ * 圖表節點：把上游文本（JSON 陣列或 CSV）渲染成柱狀圖/折線圖。
+ * metadata.chartKind 為 "line" 時畫折線，預設柱狀。
  */
 export function ChartNodeContent({ node, theme }: ChartNodeContentProps) {
     const upstream = useUpstreamNodes(node.id);
@@ -85,7 +85,7 @@ export function ChartNodeContent({ node, theme }: ChartNodeContentProps) {
         return (
             <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-center" style={{ color: theme.node.muted }}>
                 <ChartColumn className="size-5 opacity-60" />
-                <span style={{ fontSize: "var(--fs-label)" }}>{source.trim() ? "无法解析为图表数据（需要 JSON 数组或 CSV）" : "连接输出 JSON 数组或 CSV 的文本节点"}</span>
+                <span style={{ fontSize: "var(--fs-label)" }}>{source.trim() ? "無法解析為圖表資料（需要 JSON 陣列或 CSV）" : "連線輸出 JSON 陣列或 CSV 的文本節點"}</span>
             </div>
         );
     }

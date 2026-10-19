@@ -35,7 +35,7 @@ export class CanvasProjectionError extends Error {
     }
 }
 
-const CANVAS_PROJECTION_INCOMPLETE = "服务端已保存，本地画布还没写完。请重试这次回写，不要重新生成。";
+const CANVAS_PROJECTION_INCOMPLETE = "服務端已儲存，本地畫布還沒寫完。請重試這次回寫，不要重新生成。";
 
 function incompleteCanvasProjection(id: string, scope: string, identity: string | null | undefined, cause: unknown) {
     const journal = peekCanvasOperationJournal(id, scope);
@@ -69,9 +69,9 @@ function withCanvasProjection<T>(scope: string, id: string, fn: () => Promise<T>
 }
 
 /**
- * 每画布最后一次被服务端确认的文档快照：成功提交的入参，或从服务端读回并被
- * 采纳的内容。它是判断「本地是否有服务端尚未确认的编辑」的唯一权威基线——
- * 浏览器存储队列只说明有没有写进 IndexedDB，不代表服务端已经收到。
+ * 每畫布最後一次被服務端確認的檔案快照：成功提交的入參，或從服務端讀回並被
+ * 採納的內容。它是判斷「本地是否有服務端尚未確認的編輯」的唯一權威基線——
+ * 瀏覽器儲存佇列只說明有沒有寫進 IndexedDB，不代表服務端已經收到。
  */
 const serverConfirmedCanvasSnapshots = new Map<string, CanvasProject>();
 
@@ -119,11 +119,11 @@ function invokeProjectionListener(
     try {
         listener(project, previous);
     } catch (error) {
-        console.error("画布刷新通知失败", { id: project.id, error });
+        console.error("畫布重新整理通知失敗", { id: project.id, error });
     }
 }
 
-/** HTTP 层是否还有该画布未落地的提交（已排队或正在发送）。 */
+/** HTTP 層是否還有該畫布未落地的提交（已排隊或正在傳送）。 */
 function canvasBackendSubmitPending(id: string, scope: string) {
     const key = saveKey(scope, id);
     return backendSaveTails.has(key) || backendSaveTimers.has(key);
@@ -136,7 +136,7 @@ function canvasSubmitBlocked(id: string, scope: string) {
 function throwIfCanvasNotWritable(id: string, expected: CapturedUserScope) {
     const scope = expected.userScope;
     if (canvasDeleting.has(saveKey(scope, id))) {
-        throw new CanvasBackendSubmitPausedError("画布正在删除，未提交");
+        throw new CanvasBackendSubmitPausedError("畫布正在刪除，未提交");
     }
     if (canvasSubmitBlocked(id, scope)) {
         throw new CanvasBackendSubmitPausedError();
@@ -145,13 +145,13 @@ function throwIfCanvasNotWritable(id: string, expected: CapturedUserScope) {
 }
 
 /**
- * 本地是否有服务端尚未确认的编辑。
+ * 本地是否有服務端尚未確認的編輯。
  *
- * 依次检查三个真实状态的证据，任何一项不成立都按「有未确认编辑」处理，
- * 因为这里判错的代价是覆盖用户正在编辑的内容：
+ * 依次檢查三個真實狀態的證據，任何一項不成立都按「有未確認編輯」處理，
+ * 因為這裡判錯的代價是覆蓋使用者正在編輯的內容：
  * 1. HTTP 待提交/正在提交，或上一次提交被拒；
- * 2. 与服务端确认快照的文档内容不同；
- * 3. 没有服务端确认基线时，退回本机已落盘快照；两者都没有则保守判为有编辑。
+ * 2. 與服務端確認快照的檔案內容不同；
+ * 3. 沒有服務端確認基線時，退回本機已落盤快照；兩者都沒有則保守判為有編輯。
  */
 export function hasUnconfirmedCanvasEdits(id: string) {
     return canvasUnconfirmedReason(readCanvasUnconfirmedState(id)) !== undefined;
@@ -274,7 +274,7 @@ async function replayPendingCanvasProjection(id: string, scope: string, expected
 }
 
 /**
- * 桌面本地：已提交真相是服务端 revision。干净缓存采用后端；未确认草稿相对已记录基线保留。
+ * 桌面本地：已提交真相是服務端 revision。乾淨快取採用後端；未確認草稿相對已記錄基線保留。
  */
 export function selectPreferredCanvasProject(local: CanvasProject | null | undefined, backend: CanvasProject, scope = getActiveUserScope()) {
     if (!local) return backend;
@@ -293,9 +293,9 @@ function pauseForExternalCandidate(id: string, remote: CanvasProject, scope: str
 }
 
 /**
- * 编辑器里的未保存编辑与刚投影的外部内容冲突时调用：编辑器保留本地内容，
- * 服务端内容留作候选（顶栏出现「使用最新版本」），并暂停自动提交，
- * 避免下一次自动保存把旧画面写回服务端。
+ * 編輯器裡的未儲存編輯與剛投影的外部內容衝突時呼叫：編輯器保留本地內容，
+ * 服務端內容留作候選（頂欄出現「使用最新版本」），並暫停自動提交，
+ * 避免下一次自動儲存把舊畫面寫回服務端。
  */
 export function holdExternalCanvasRevisionForEditor(project: CanvasProject, scope = getActiveUserScope()) {
     const confirmed = canvasDocumentBase(project.id, scope);
@@ -384,7 +384,7 @@ export function beginLocalCanvasProject(title: string, projectId?: string, initi
     // WebKit storage transaction must never block navigation after the Go
     // repository has durably accepted the project.
     void flushCanvasStorePersistence().catch((error) => {
-        console.error("画布本地缓存写入失败，已保存到桌面数据库", { id, error });
+        console.error("畫布本地快取寫入失敗，已儲存到桌面資料庫", { id, error });
     });
     return { id, saved };
 }
@@ -401,7 +401,7 @@ function syncLocalCanvasProject(id: string, expected: CapturedUserScope): Promis
     const key = saveKey(scope, id);
     const previous = backendSaveTails.get(key) || Promise.resolve();
     const next = previous.catch(() => undefined).then(async () => {
-        if (canvasDeleting.has(key)) throw new CanvasBackendSubmitPausedError("画布正在删除，未提交");
+        if (canvasDeleting.has(key)) throw new CanvasBackendSubmitPausedError("畫布正在刪除，未提交");
         assertDispatchGuard(expected);
         await commitLiveCanvasDocument(id, expected);
     });
@@ -439,7 +439,7 @@ async function applyAcceptedCanvasSave(id: string, submitted: CanvasProject, sav
         return;
     }
     void flushCanvasStorePersistence().catch((error) => {
-        console.error("画布本地缓存写入失败，已保存到桌面数据库", { id, error });
+        console.error("畫布本地快取寫入失敗，已儲存到桌面資料庫", { id, error });
     });
 }
 
@@ -451,7 +451,7 @@ async function putCanvasProjectToBackend(id: string, project: CanvasProject, end
             { project: projectForSave },
             { expectedScope: expected },
         );
-        if (!response.project || response.project.id !== id) throw new Error("画布保存回执无效，修改仍保留在本地，请重试");
+        if (!response.project || response.project.id !== id) throw new Error("畫布儲存回執無效，修改仍保留在本地，請重試");
         return response.project;
     } catch (error) {
         rethrowIfAbandoned(error);
@@ -488,7 +488,7 @@ async function commitLiveCanvasDocumentUnlocked(id: string, expected: CapturedUs
         const live = openLocalCanvasProject(id);
         const current = peekCanvasOperationJournal(id, scope);
         if (sent && live && current?.confirmedSnapshot && sameCanvasDocument(current.confirmedSnapshot, live) && !current.inFlight) return;
-        throw new CanvasBackendSubmitPausedError(canvasDeleting.has(saveKey(scope, id)) ? "画布正在删除，未提交" : "画布有未处理的外部改动，本次未提交");
+        throw new CanvasBackendSubmitPausedError(canvasDeleting.has(saveKey(scope, id)) ? "畫布正在刪除，未提交" : "畫布有未處理的外部改動，本次未提交");
     }
     const project = openLocalCanvasProject(id);
     if (!project) return;
@@ -672,9 +672,9 @@ export async function persistCanvasTimeline(id: string, timeline: NonNullable<Ca
 }
 
 /**
- * 采纳服务端已确认的生成结果。无基线时不静默并集。有已确认快照时按字段三路合并到
- * 当前 live：本地删除与未冲突编辑保留，未改动的服务端字段（含生成媒体）采纳。
- * 这里只更新 store/journal；编辑器节点由 bind 调用方在 isCurrent 时 setNodes(adopted.nodes)，不 notifyCanvasRefresh。
+ * 採納服務端已確認的生成結果。無基線時不靜默並集。有已確認快照時按欄位三路合併到
+ * 當前 live：本地刪除與未衝突編輯保留，未改動的服務端欄位（含生成媒體）採納。
+ * 這裡只更新 store/journal；編輯器節點由 bind 呼叫方在 isCurrent 時 setNodes(adopted.nodes)，不 notifyCanvasRefresh。
  */
 export async function adoptServerConfirmedGenerationPatch(project: CanvasProject, scope?: string, expectedScope?: CapturedUserScope): Promise<CanvasProject | undefined> {
     const expected = resolveDispatchGuard(scope, expectedScope);
@@ -737,7 +737,7 @@ export function scheduleLocalCanvasBackendSync(id: string) {
         if (canvasDeleting.has(key) || !matchesDispatchGuard(expected)) return;
         void syncLocalCanvasProject(id, expected).catch((error) => {
             if (isCanvasSubmitControlError(error)) return;
-            console.error("画布后端持久化失败，等待下次编辑重试", { id, error });
+            console.error("畫布後端持久化失敗，等待下次編輯重試", { id, error });
         });
     }, 500));
 }
@@ -775,7 +775,7 @@ export async function hydrateLocalCanvasProjectsFromBackend() {
         if (summaries.length === 0) return false;
         const projects = (await Promise.all(summaries.map(async (summary) => {
             const detail = await http.get<{ project: CanvasProject }>(`/canvas-projects/${encodeURIComponent(summary.id)}`, { expectedScope: expected });
-            if (!detail.project) throw new Error("项目内容未返回");
+            if (!detail.project) throw new Error("專案內容未返回");
             return detail.project;
         }))).filter((project): project is CanvasProject => Boolean(project));
         if (projects.length === 0) return false;
@@ -809,7 +809,7 @@ export async function hydrateLocalCanvasProjectsFromBackend() {
         return true;
     } catch (error) {
         if (isUserScopeAbandonedError(error) || error instanceof CanvasStaleScopeError) return false;
-        if (matchesDispatchGuard(expected)) failure="项目暂时无法读取，现有数据已保留。请重试或在设置中导出问题记录。";
+        if (matchesDispatchGuard(expected)) failure="專案暫時無法讀取，現有資料已保留。請重試或在設定中匯出問題記錄。";
         return false;
     } finally {
         finishCanvasHydration(attempt,failure);
@@ -820,7 +820,7 @@ export async function hydrateLocalCanvasProjectsFromBackend() {
 export async function readLocalCanvasProjectFromBackend(id: string, expectedScope?: CapturedUserScope): Promise<CanvasProject> {
     const expected = expectedScope ?? captureUserScope();
     const response = await http.get<{ project: CanvasProject }>(`/canvas-projects/${encodeURIComponent(id)}`, { expectedScope: expected });
-    if (!response.project) throw new Error("画布读取失败，请重试");
+    if (!response.project) throw new Error("畫布讀取失敗，請重試");
     return response.project;
 }
 
@@ -855,20 +855,20 @@ export async function openLocalCanvasProjectFromBackend(id: string, expectedScop
 
 function restoreHistoryRequestError(snapshotId: unknown, revision: unknown) {
     const identity = typeof snapshotId === "string" ? snapshotId.trim() : "";
-    if (!identity) throw new Error("历史版本不存在或已过期，请刷新历史列表");
+    if (!identity) throw new Error("歷史版本不存在或已過期，請重新整理歷史列表");
     if (typeof revision !== "number" || !Number.isInteger(revision) || revision < 0) {
-        throw new Error("请先刷新画布版本再恢复");
+        throw new Error("請先重新整理畫布版本再恢復");
     }
     return { snapshotId: identity, revision };
 }
 
 function restoreDidNotApply() {
-    return new Error("恢复没有完成，画布内容没有被替换。");
+    return new Error("恢復沒有完成，畫布內容沒有被替換。");
 }
 
 /**
- * 用户显式恢复历史版本。走服务端 RestoreCanvasHistory CAS；失败必须抛出，
- * 不能退回 openLocalCanvasProjectFromBackend（它会吞错并打开当前稿）。
+ * 使用者顯式恢復歷史版本。走服務端 RestoreCanvasHistory CAS；失敗必須丟擲，
+ * 不能退回 openLocalCanvasProjectFromBackend（它會吞錯並開啟當前稿）。
  */
 export async function restoreLocalCanvasProjectFromHistory(
     id: string,
@@ -877,9 +877,9 @@ export async function restoreLocalCanvasProjectFromHistory(
 ): Promise<CanvasProject> {
     const expected = expectedScope ?? captureUserScope();
     const canvasId = id.trim();
-    if (!canvasId) throw new Error("画布不存在或无权访问");
+    if (!canvasId) throw new Error("畫布不存在或無權訪問");
     const { snapshotId, revision } = restoreHistoryRequestError(historyRestore.snapshotId, historyRestore.revision);
-    assertDispatchGuard(expected, "账号已切换，未恢复画布");
+    assertDispatchGuard(expected, "賬號已切換，未恢復畫布");
     return withCanvasProjection(expected.userScope, canvasId, () => restoreLocalCanvasProjectFromHistoryUnlocked(canvasId, snapshotId, revision, expected));
 }
 
@@ -891,17 +891,17 @@ async function restoreLocalCanvasProjectFromHistoryUnlocked(
 ): Promise<CanvasProject> {
     const scope = expected.userScope;
     if (canvasDeleting.has(saveKey(scope, id))) {
-        throw new CanvasBackendSubmitPausedError("画布正在删除，未提交");
+        throw new CanvasBackendSubmitPausedError("畫布正在刪除，未提交");
     }
-    assertDispatchGuard(expected, "账号已切换，未恢复画布");
+    assertDispatchGuard(expected, "賬號已切換，未恢復畫布");
     let receipt;
     try {
         const response = await restoreCanvasHistory(id, snapshotId, revision, { expectedScope: expected });
         receipt = response?.project;
     } catch (error) {
-        rethrowIfAbandoned(error, "账号已切换，未恢复画布");
+        rethrowIfAbandoned(error, "賬號已切換，未恢復畫布");
         if (isCanvasRevisionConflict(error)) {
-            throw new Error("当前画布已有更新，这次没有恢复。请重新打开版本记录后再试。");
+            throw new Error("當前畫布已有更新，這次沒有恢復。請重新開啟版本記錄後再試。");
         }
         throw error;
     }
@@ -910,12 +910,12 @@ async function restoreLocalCanvasProjectFromHistoryUnlocked(
     if (typeof restoredRevision !== "number" || !Number.isInteger(restoredRevision) || restoredRevision <= revision) {
         throw restoreDidNotApply();
     }
-    assertDispatchGuard(expected, "账号已切换，未恢复画布");
+    assertDispatchGuard(expected, "賬號已切換，未恢復畫布");
     const backendProject = await readLocalCanvasProjectFromBackend(id, expected);
     if (backendProject.id !== id || (backendProject.revision ?? 0) !== restoredRevision) {
-        throw new Error("恢复后没有读到新版本，请重试。");
+        throw new Error("恢復後沒有讀到新版本，請重試。");
     }
-    assertDispatchGuard(expected, "账号已切换，未恢复画布");
+    assertDispatchGuard(expected, "賬號已切換，未恢復畫布");
     await updateCanvasOperationJournal(id, scope, (current) => ({
         ...current,
         confirmedRevision: restoredRevision,
@@ -923,27 +923,27 @@ async function restoreLocalCanvasProjectFromHistoryUnlocked(
         inFlight: null,
         pendingProjection: null,
     }));
-    assertDispatchGuard(expected, "账号已切换，未恢复画布");
+    assertDispatchGuard(expected, "賬號已切換，未恢復畫布");
     recordServerConfirmedCanvas(backendProject, scope);
     clearCanvasExternalRevisionConflict(scope, id);
     resumeCanvasBackendSubmit(id, scope);
     applyLiveCanvasProject(id, backendProject, true);
     await projectionStoreFlush();
-    assertDispatchGuard(expected, "账号已切换，未恢复画布");
+    assertDispatchGuard(expected, "賬號已切換，未恢復畫布");
     const live = openLocalCanvasProject(id);
     if (!live || (live.revision ?? 0) !== restoredRevision) throw restoreDidNotApply();
     return live;
 }
 
 /**
- * 外部写入（内置助手回合、CLI/MCP 操作）后把服务端内容投影到本地编辑器。
+ * 外部寫入（內建助手回合、CLI/MCP 操作）後把服務端內容投影到本地編輯器。
  *
- * 与 `openLocalCanvasProjectFromBackend` 的区别：这里不假设本地一定服从服务端。
- * 有服务端尚未确认的编辑时保留本地内容、把远端留作候选并记录冲突；只有确认
- * 本地没有这类编辑时才应用外部 revision。
+ * 與 `openLocalCanvasProjectFromBackend` 的區別：這裡不假設本地一定服從服務端。
+ * 有服務端尚未確認的編輯時保留本地內容、把遠端留作候選並記錄衝突；只有確認
+ * 本地沒有這類編輯時才應用外部 revision。
  *
- * 「是否有未确认编辑」在 GET 返回之后、应用之前同步重算一次：等待网络期间用户
- * 仍可能继续编辑，用请求发出时的判断会漏掉这些新编辑。
+ * 「是否有未確認編輯」在 GET 返回之後、應用之前同步重算一次：等待網路期間使用者
+ * 仍可能繼續編輯，用請求發出時的判斷會漏掉這些新編輯。
  */
 export async function refreshLocalCanvasProjectIfChanged(id: string, expectedScope?: CapturedUserScope) {
     const expected = expectedScope ?? captureUserScope();
@@ -965,8 +965,8 @@ export async function refreshLocalCanvasProjectIfChanged(id: string, expectedSco
         return withCanvasProjection(scope, id, async () => {
             if (!matchesDispatchGuard(expected)) return undefined;
             const journal = peekCanvasOperationJournal(id, scope);
-            // 读取可能早于本机提交回执；在同一投影锁内对照已确认版本，
-            // 相同或更旧的快照不能把尚未自动保存的编辑标成外部冲突。
+            // 讀取可能早於本機提交回執；在同一投影鎖內對照已確認版本，
+            // 相同或更舊的快照不能把尚未自動儲存的編輯標成外部衝突。
             if (journal?.confirmedSnapshot && typeof remote.revision === "number" && remote.revision <= journal.confirmedRevision) return undefined;
             if (hasUnconfirmedCanvasEdits(id) || canvasSubmitBlocked(id, scope)) {
                 pauseForExternalCandidate(id, remote, scope);
@@ -1010,10 +1010,10 @@ export async function refreshLocalCanvasProjectIfChanged(id: string, expectedSco
 }
 
 /**
- * 用户显式选择以最新内容为准：用冲突时保留的远端候选替换本地文档。
+ * 使用者顯式選擇以最新內容為準：用衝突時保留的遠端候選替換本地檔案。
  *
- * 候选本身就是服务端已确认的内容，因此这里只把它落到本地并更新基线，
- * 不再回写一次服务端（回写只会平白推进 revision，甚至在服务端又变化时被拒）。
+ * 候選本身就是服務端已確認的內容，因此這裡只把它落到本地並更新基線，
+ * 不再回寫一次服務端（回寫只會平白推進 revision，甚至在服務端又變化時被拒）。
  */
 export async function acceptExternalCanvasRevision(id: string) {
     const expected = captureUserScope();
@@ -1044,7 +1044,7 @@ export async function acceptExternalCanvasRevision(id: string) {
     return decision.project;
 }
 
-/** 该画布是否存在被本地编辑挡住的外部改动。 */
+/** 該畫布是否存在被本地編輯擋住的外部改動。 */
 export function pendingExternalCanvasRevision(id: string) {
     return canvasExternalRevisionConflict(getActiveUserScope(), id);
 }
@@ -1074,11 +1074,11 @@ export async function deleteLocalCanvasProjects(ids: readonly string[]) {
     for (const id of selected) canvasDeleting.add(saveKey(scope, id));
     try {
         await Promise.all(selected.map((id) => waitForCanvasBackendIdle(id, scope)));
-        assertDispatchGuard(expected, "账号已切换，未删除画布");
+        assertDispatchGuard(expected, "賬號已切換，未刪除畫布");
         const deleted: string[] = [];
         const failures: unknown[] = [];
         for (const id of selected) {
-            assertDispatchGuard(expected, "账号已切换，未删除画布");
+            assertDispatchGuard(expected, "賬號已切換，未刪除畫布");
             try {
                 await http.delete(`/canvas-projects/${encodeURIComponent(id)}`, { expectedScope: expected });
                 await clearCanvasOperationJournal(id, scope);
@@ -1086,8 +1086,8 @@ export async function deleteLocalCanvasProjects(ids: readonly string[]) {
                 serverConfirmedCanvasSnapshots.delete(saveKey(scope, id));
                 deleted.push(id);
             } catch (error) {
-                rethrowIfAbandoned(error, "账号已切换，未删除画布");
-                console.error("画布后端删除失败", { id, error });
+                rethrowIfAbandoned(error, "賬號已切換，未刪除畫布");
+                console.error("畫布後端刪除失敗", { id, error });
                 failures.push(error);
                 if (matchesDispatchGuard(expected) && !useCanvasStore.getState().openProject(id)) {
                     const snapshot = snapshots.find((item) => item.id === id);
@@ -1095,13 +1095,13 @@ export async function deleteLocalCanvasProjects(ids: readonly string[]) {
                 }
             }
         }
-        assertDispatchGuard(expected, "账号已切换，未删除画布");
+        assertDispatchGuard(expected, "賬號已切換，未刪除畫布");
         if (deleted.length) {
             useCanvasStore.getState().deleteProjects(deleted);
             const removed = snapshots.filter((item) => deleted.includes(item.id));
             if (removed.length) useCanvasHistoryStore.getState().recordDeletedProjects(removed);
             await flushCanvasStorePersistence().catch((error) => {
-                console.error("画布本地缓存写入失败，已从桌面数据库删除", { ids: deleted, error });
+                console.error("畫布本地快取寫入失敗，已從桌面資料庫刪除", { ids: deleted, error });
             });
         }
         if (failures.length) throw failures[0];

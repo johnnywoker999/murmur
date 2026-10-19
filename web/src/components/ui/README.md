@@ -1,47 +1,47 @@
-# Celadon UI 组件层
+# Celadon UI 元件層
 
-`web/src/components/ui/` 下的自研组件层。本文是组件目录内的公开速查与维护约定。
+`web/src/components/ui/` 下的自研元件層。本文是元件目錄內的公開速查與維護約定。
 
-## 分层
+## 分層
 
-| 层          | 目录              | 内容                                                                                         |
+| 層          | 目錄              | 內容                                                                                         |
 | ----------- | ----------------- | -------------------------------------------------------------------------------------------- |
-| base        | `ui/base/`        | 原语 + 基础件：`buttons/`、`badges/`、`kbd/`、`segmented-control/` 等                        |
-| product     | `ui/product/`     | 跨页面模式件：`empty-state/`、`callout/`、`loading-state/`、`section-card/`、`property-row/` |
-| fx          | `ui/fx/`          | 特效件（原 `aceternity/*` 归位至此命名空间，引用随用随迁，不重写）                           |
-| application | `ui/application/` | 产品块（P3 起）：agent-chat、notification-center、app-shell 等                               |
+| base        | `ui/base/`        | 原語 + 基礎件：`buttons/`、`badges/`、`kbd/`、`segmented-control/` 等                        |
+| product     | `ui/product/`     | 跨頁面模式件：`empty-state/`、`callout/`、`loading-state/`、`section-card/`、`property-row/` |
+| fx          | `ui/fx/`          | 特效件（原 `aceternity/*` 歸位至此名稱空間，引用隨用隨遷，不重寫）                           |
+| application | `ui/application/` | 產品塊（P3 起）：agent-chat、notification-center、app-shell 等                               |
 
-> 视觉数值以仓库内的主题变量和组件 token 为权威源，组件不得依赖仓库外的私有样式包。
+> 視覺數值以倉庫內的主題變數和元件 token 為權威源，元件不得依賴倉庫外的私有樣式包。
 
-## 目录与导出
+## 目錄與匯出
 
-- 每"族"一目录（`base/badges/`），族内按文件拆变体；族级 `index.ts` 汇总导出（组件 + `XxxVariants` 类型）；**无全局 barrel**。
-- 导入一律深路径 `@/components/ui/<layer>/<family>`；组件 `PascalCase`、文件 `kebab-case.tsx`、目录 `kebab-case/`。
-- 变体用 cva（`class-variance-authority`）定义并从 `index.ts` 导出类型；`className` 经 `cn` 合并；ref 转发；根元素 `data-slot`。
+- 每"族"一目錄（`base/badges/`），族內按檔案拆變體；族級 `index.ts` 彙總匯出（元件 + `XxxVariants` 型別）；**無全域性 barrel**。
+- 匯入一律深路徑 `@/components/ui/<layer>/<family>`；元件 `PascalCase`、檔案 `kebab-case.tsx`、目錄 `kebab-case/`。
+- 變體用 cva（`class-variance-authority`）定義並從 `index.ts` 匯出型別；`className` 經 `cn` 合併；ref 轉發；根元素 `data-slot`。
 
-## 硬性纪律
+## 硬性紀律
 
-1. 样式只消费三层 token（`var(--*)` 或经 `@theme` 映射的工具类，如 `bg-surface`、`text-caption`、`text-status-success`）；**禁止裸 `text-[Npx]`/`rounded-[Npx]`/十六进制色值**。字号/行高用注册排版工具类或 token 引用。
-2. 明暗自适应由 CSS 变量完成，不读皮肤 ID；持久切换 `aria-pressed` + `data-active`，保留 `:focus-visible`，尊重 `prefers-reduced-motion`。
-3. 图标以 lucide 组件引用传入（`icon={Move}`），尺寸/颜色由宿主组件决定，禁止调用方传 icon className 改尺寸。
-4. 组件头注释注明：用途、消费 token 组、对标/接管对象（AntD 组件或参考系统组件）、明暗差异要点。
+1. 樣式只消費三層 token（`var(--*)` 或經 `@theme` 對映的工具類，如 `bg-surface`、`text-caption`、`text-status-success`）；**禁止裸 `text-[Npx]`/`rounded-[Npx]`/十六進位制色值**。字號/行高用註冊排版工具類或 token 引用。
+2. 明暗自適應由 CSS 變數完成，不讀皮膚 ID；持久切換 `aria-pressed` + `data-active`，保留 `:focus-visible`，尊重 `prefers-reduced-motion`。
+3. 圖示以 lucide 元件引用傳入（`icon={Move}`），尺寸/顏色由宿主元件決定，禁止呼叫方傳 icon className 改尺寸。
+4. 元件頭註釋註明：用途、消費 token 組、對標/接管物件（AntD 元件或參考系統元件）、明暗差異要點。
 
-## 进库门槛
+## 進庫門檻
 
-新组件必须满足其一：① ≥2 处真实重复（PR 附 grep 证据）；② 隔离明确协议/交互契约。纯透传壳不进库。
+新元件必須滿足其一：① ≥2 處真實重複（PR 附 grep 證據）；② 隔離明確協議/互動契約。純透傳殼不進庫。
 
-## 当前族目录
+## 當前族目錄
 
-- `base/kbd/` — Kbd（快捷键提示键帽）
-- `base/badges/` — StatusBadge（状态点徽章；NodeTypeBadge 规划中）
-- `base/buttons/` — IconButton / ToolButton（IconButton 含 ghost/default/outline/solid/danger 变体；ButtonGroup 规划中）
-- `base/segmented-control/` — SegmentedControl（分段单选，thumb 滑动，泛型 + block/size）
-- `base/checkbox/` — Checkbox + CheckboxGroup（原生 input + 自绘 glyph，checked/indeterminate/bare）
-- `base/select/` — Select（RAC 单选壳，value/options/allowClear；多选/搜索 ComboBox 待建）
-- `base/tooltip/` — Tooltip（RAC 浮层，AntD 8 向 placement 映射，title 空不渲染）
-- `base/switch/` — Switch（button role=switch + data-state，checkedChildren 文本轨、loading、Form.Item 注入）
-- `product/empty-state/` — EmptyState（空态占位）
+- `base/kbd/` — Kbd（快捷鍵提示鍵帽）
+- `base/badges/` — StatusBadge（狀態點徽章；NodeTypeBadge 規劃中）
+- `base/buttons/` — IconButton / ToolButton（IconButton 含 ghost/default/outline/solid/danger 變體；ButtonGroup 規劃中）
+- `base/segmented-control/` — SegmentedControl（分段單選，thumb 滑動，泛型 + block/size）
+- `base/checkbox/` — Checkbox + CheckboxGroup（原生 input + 自繪 glyph，checked/indeterminate/bare）
+- `base/select/` — Select（RAC 單選殼，value/options/allowClear；多選/搜尋 ComboBox 待建）
+- `base/tooltip/` — Tooltip（RAC 浮層，AntD 8 向 placement 對映，title 空不渲染）
+- `base/switch/` — Switch（button role=switch + data-state，checkedChildren 文本軌、loading、Form.Item 注入）
+- `product/empty-state/` — EmptyState（空態佔位）
 - `product/callout/` — Callout
-- `product/app-modal/` — AppModal（产品弹窗壳，`flush` 去掉 AntD 默认内边距）
-- `product/app-drawer/` — AppDrawer（产品侧栏壳）
-- `base/buttons/` — IconButton / ToolButton / ButtonGroup（规划中，P0）
+- `product/app-modal/` — AppModal（產品彈窗殼，`flush` 去掉 AntD 預設內邊距）
+- `product/app-drawer/` — AppDrawer（產品側欄殼）
+- `base/buttons/` — IconButton / ToolButton / ButtonGroup（規劃中，P0）

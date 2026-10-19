@@ -8,7 +8,7 @@ import { canvasThemes } from "@/lib/canvas-theme";
 import type { GenerationTask } from "@/services/api/task-center";
 import { useActiveTheme } from "@/stores/canvas/use-canvas-theme-store";
 
-// 顶栏是绝对定位浮层，面板必须按调用方传入的 topInset 避让；专注模式隐藏顶栏时传小间距。
+// 頂欄是絕對定位浮層，面板必須按呼叫方傳入的 topInset 避讓；專注模式隱藏頂欄時傳小間距。
 export function CanvasActiveTaskPanel({ tasks, align = "right", topInset = "var(--canvas-topbar-offset)", onCancelTask }: { tasks: GenerationTask[]; align?: "left" | "right"; topInset?: string; onCancelTask?: (task: GenerationTask) => void }) {
     const theme = canvasThemes[useActiveTheme()];
     const reducedMotion = useReducedMotion();
@@ -47,7 +47,7 @@ export function CanvasActiveTaskPanel({ tasks, align = "right", topInset = "var(
                         layout
                         className="pointer-events-auto overflow-hidden rounded-[var(--panel-radius)] border backdrop-blur-2xl"
                         style={{ background: theme.toolbar.panel, borderColor: theme.toolbar.border, color: theme.node.text, boxShadow: `0 24px 72px ${theme.spatial.shadow}` }}
-                        aria-label="当前画布生成任务"
+                        aria-label="當前畫布生成任務"
                     >
                         <motion.button
                             type="button"
@@ -62,9 +62,9 @@ export function CanvasActiveTaskPanel({ tasks, align = "right", topInset = "var(
                                     <ListTodo className="size-4" />
                                 </span>
                                 <span className="min-w-0">
-                                    <span className="block text-sm font-semibold leading-5">生成任务</span>
+                                    <span className="block text-sm font-semibold leading-5">生成任務</span>
                                     <span className="block truncate text-[var(--fs-label)]" style={{ color: theme.node.muted }} aria-live="polite">
-                                        当前画布 · {tasks.length} 个进行中
+                                        當前畫布 · {tasks.length} 個進行中
                                     </span>
                                 </span>
                             </span>
@@ -128,7 +128,7 @@ function ActiveTaskCard({
     const progress = showsProgress && typeof task.progress === "number" ? Math.max(0, Math.min(100, Math.round(task.progress))) : showsProgress && task.status === "queued" ? 0 : undefined;
     const startedAt = task.startedAt || task.createdAt;
     const elapsedMs = Math.max(0, now - parseTime(startedAt));
-    const durationLabel = `${task.status === "queued" ? "已等待" : "已运行"} ${formatDuration(elapsedMs)}`;
+    const durationLabel = `${task.status === "queued" ? "已等待" : "已執行"} ${formatDuration(elapsedMs)}`;
     const statusTone = task.status === "running" ? theme.accent.primary : theme.node.muted;
     const transition = reducedMotion ? { duration: 0 } : aceternityMotion.spring.panel;
 
@@ -159,13 +159,13 @@ function ActiveTaskCard({
                     <div className="mt-3 h-1.5 overflow-hidden rounded-full" style={{ background: theme.toolbar.itemHover }}>
                         {progress !== undefined ? (
                             <motion.div className="relative h-full rounded-full overflow-hidden" animate={{ width: `${progress}%` }} transition={reducedMotion ? { duration: 0 } : { duration: 0.3, ease: "easeOut" }} style={{ background: statusTone }}>
-                                {/* 进度条 shimmer 扫描动画（对应 #98 决策3）*/}
+                                {/* 進度條 shimmer 掃描動畫（對應 #98 決策3）*/}
                                 {task.status === "running" && !reducedMotion ? (
                                     <span className="absolute inset-0 canvas-task-progress-shimmer" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent)" }} aria-hidden />
                                 ) : null}
                             </motion.div>
                         ) : (
-                            // indeterminate 模式（无具体百分比，从左到右循环扫描）
+                            // indeterminate 模式（無具體百分比，從左到右迴圈掃描）
                             <motion.div
                                 className="h-full rounded-full"
                                 initial={{ width: "20%", x: "-100%" }}
@@ -177,7 +177,7 @@ function ActiveTaskCard({
                     </div>
                 ) : null}
 
-                {/* 进度百分比显示（对应 #98 决策3：列表视图）*/}
+                {/* 進度百分比顯示（對應 #98 決策3：列表檢視）*/}
                 {progress !== undefined && task.status === "running" ? (
                     <div className="mt-1 flex items-center justify-between text-[var(--fs-micro)]" style={{ color: theme.node.muted }}>
                         <span>{durationLabel}</span>
@@ -206,7 +206,7 @@ function ActiveTaskCard({
                         style={{ borderColor: theme.toolbar.border, color: theme.node.muted }}
                     >
                         <div className="flex items-center justify-between gap-2">
-                            <span>当前阶段</span>
+                            <span>當前階段</span>
                             <span className="max-w-[200px] truncate text-right" style={{ color: theme.node.text }}>
                                 {generationTaskStageLabel(task)}
                             </span>
@@ -223,7 +223,7 @@ function ActiveTaskCard({
                                 onMouseDown={(event) => event.stopPropagation()}
                             >
                                 <XCircle className="size-3" />
-                                取消任务
+                                取消任務
                             </button>
                         ) : null}
                     </motion.div>

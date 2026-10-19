@@ -63,7 +63,7 @@
 .product-icon-button:active { transform: scale(.94); }
 .product-icon-button:focus-visible, .canvas-collection-open:focus-visible { outline: 2px solid var(--user-accent); }
 
-/* LibTV 项目库：工具栏与网格保持同一条内容基线，项目卡片优先于大段说明。 */
+/* LibTV 專案庫：工具欄與網格保持同一條內容基線，專案卡片優先於大段說明。 */
 .app-user-workspace .studio-collection-page.lib-tv-project-page > div { width: 100%; max-width: none; margin-inline: 0; padding: 0 40px 40px; }
 .libtv-project-actions, .libtv-project-subbar, .libtv-project-subbar-actions { display: flex; align-items: center; gap: 10px; }
 .libtv-project-back { display: inline-flex; height: 32px; flex-shrink: 0; align-items: center; justify-content: center; gap: 4px; border: 0; border-radius: 8px; padding: 0 12px; background: transparent; color: var(--user-ink); cursor: pointer; font-size: 13px; line-height: 20px; transition: background var(--user-motion); }
@@ -1042,7 +1042,7 @@
 .app-product-workspace button:has(> svg):not(:has(> span)):not(.canvas-video-trim-icon-button):not(.canvas-video-trim-confirm):focus-visible,
 .app-product-overlays button:has(> svg):not(:has(> span)):not(.canvas-video-trim-icon-button):not(.canvas-video-trim-confirm):focus-visible { outline: 2px solid var(--product-focus-ring); outline-offset: 2px; }
 
-/* 列表进入节奏：卡片和图片错开出现，慢网络时仍有内容层次。 */
+/* 列表進入節奏：卡片和圖片錯開出現，慢網路時仍有內容層次。 */
 .app-product-workspace :is(.product-collection-card, .library-card, .task-grid-card, .task-record-row, .skill-library-card, .plugin-card) { animation: product-card-enter var(--product-enter) var(--product-ease) both; }
 .app-product-workspace :is(.product-collection-card, .library-card, .task-grid-card, .task-record-row, .skill-library-card, .plugin-card):nth-child(2) { animation-delay: 45ms; }
 .app-product-workspace :is(.product-collection-card, .library-card, .task-grid-card, .task-record-row, .skill-library-card, .plugin-card):nth-child(3) { animation-delay: 90ms; }
@@ -1062,7 +1062,7 @@
     .app-product-workspace .studio-collection-page > div { width: calc(100% - 32px); }
 }
 
-/* 窄屏时侧栏是浮层，关闭状态不能继续占用主内容的 flex 空间。 */
+/* 窄屏時側欄是浮層，關閉狀態不能繼續佔用主內容的 flex 空間。 */
 @media (max-width: 1023px) {
     .app-user-workspace.app-product-workspace .app-workspace-sidebar:not(.is-mobile-expanded) {
         flex-basis: 0 !important;

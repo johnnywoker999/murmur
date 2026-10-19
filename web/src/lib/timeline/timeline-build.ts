@@ -1,5 +1,5 @@
-// 从画布节点构建时间线数据：视频/音频节点自动入轨，字幕条目转成字幕片段。
-// 构建是单向快照：时间线保存后用户可自由拖拽，重新构建不覆盖已有时间线。
+// 從畫布節點構建時間線資料：影片/音訊節點自動入軌，字幕條目轉成字幕片段。
+// 構建是單向快照：時間線儲存後使用者可自由拖拽，重新構建不覆蓋已有時間線。
 
 import type { CanvasNodeData } from "@/types/canvas";
 import type { SrtEntry, TimelineClip, TimelineProject } from "@/types/timeline";
@@ -12,10 +12,10 @@ function nodeDurationMs(node: CanvasNodeData, fallbackMs = 4_000): number {
 }
 
 /**
- * 从画布节点生成时间线片段。
- * - 视频节点 → 视频轨片段（顺序排布，首尾相接）；
- * - 音频节点 → 音频轨片段（顺序排布）；
- * - 视频节点的字幕条目 → 字幕轨片段（相对该视频片段起点偏移）。
+ * 從畫布節點生成時間線片段。
+ * - 影片節點 → 影片軌片段（順序排布，首尾相接）；
+ * - 音訊節點 → 音訊軌片段（順序排布）；
+ * - 影片節點的字幕條目 → 字幕軌片段（相對該影片片段起點偏移）。
  */
 export function buildTimelineFromNodes(nodes: CanvasNodeData[]): TimelineProject {
     const videoNodes = nodes.filter((node) => node.type === "video" && Boolean(node.metadata?.content || node.metadata?.storageKey));
@@ -32,7 +32,7 @@ export function buildTimelineFromNodes(nodes: CanvasNodeData[]): TimelineProject
             trackId: DEFAULT_VIDEO_TRACK_ID,
             startMs: videoCursorMs,
             durationMs,
-            title: node.title || "视频片段",
+            title: node.title || "影片片段",
             sourceStartMs: 0,
             sourceDurationMs: durationMs,
         });
@@ -68,7 +68,7 @@ export function buildTimelineFromNodes(nodes: CanvasNodeData[]): TimelineProject
             trackId: DEFAULT_AUDIO_TRACK_ID,
             startMs: audioCursorMs,
             durationMs,
-            title: node.title || "音频片段",
+            title: node.title || "音訊片段",
             sourceStartMs: 0,
             sourceDurationMs: durationMs,
             volume: 1,
@@ -87,14 +87,14 @@ export function buildTimelineFromNodes(nodes: CanvasNodeData[]): TimelineProject
     };
 }
 
-/** 判断某个节点是否已经出现在时间线中（按 nodeId 去重）。 */
+/** 判斷某個節點是否已經出現在時間線中（按 nodeId 去重）。 */
 export function isNodeInTimeline(nodeId: string, timeline: TimelineProject | null | undefined): boolean {
     return Boolean(timeline?.clips.some((clip) => clip.nodeId === nodeId));
 }
 
 /**
- * 将节点字幕条目同步回项目时间线：按视频片段起点偏移重建该节点的字幕片段；
- * 条目为空数组时移除该节点全部字幕片段，保证字幕弹窗与时间线互通。
+ * 將節點字幕條目同步回專案時間線：按影片片段起點偏移重建該節點的字幕片段；
+ * 條目為空陣列時移除該節點全部字幕片段，保證字幕彈窗與時間線互通。
  */
 export function syncNodeSubtitlesToTimeline(timeline: TimelineProject, nodeId: string, entries: SrtEntry[]): TimelineProject {
     const videoClip = timeline.clips.find((clip) => clip.nodeId === nodeId && clip.kind === "video");
@@ -131,9 +131,9 @@ export function syncNodeSubtitlesToTimeline(timeline: TimelineProject, nodeId: s
 }
 
 /**
- * 打开时间线弹窗时的兜底同步：以时间线内已有视频片段为锚点，按节点
- * subtitleEntries 重建该节点的字幕片段（删除旧片段、补齐新增条目）。
- * 仅处理已入轨的节点，避免把未入轨节点的字幕凭空加进时间线。
+ * 開啟時間線彈窗時的兜底同步：以時間線內已有影片片段為錨點，按節點
+ * subtitleEntries 重建該節點的字幕片段（刪除舊片段、補齊新增條目）。
+ * 僅處理已入軌的節點，避免把未入軌節點的字幕憑空加進時間線。
  */
 export function syncTimelineSubtitleClips(timeline: TimelineProject, nodes: CanvasNodeData[]): TimelineProject {
     let changed = false;

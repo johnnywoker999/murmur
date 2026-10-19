@@ -24,12 +24,12 @@ const workerGlobal = self as typeof self & {
     import?: (url: string) => Promise<unknown>;
 };
 
-// MediaPipe 会在模块 Worker 中从 importScripts 失败分支转向 self.import。
-// 这里显式标记为运行时 URL，避免 Vite 将 public loader 当作源码模块转换。
+// MediaPipe 會在模組 Worker 中從 importScripts 失敗分支轉向 self.import。
+// 這裡顯式標記為執行時 URL，避免 Vite 將 public loader 當作原始碼模組轉換。
 workerGlobal.importScripts = () => { throw new TypeError("module worker uses dynamic import"); };
 workerGlobal.import = async (url: string) => {
     const response = await fetch(url.replace(/\?import(?:&.*)?$/, ""));
-    if (!response.ok) throw new Error(`MediaPipe loader 加载失败：${response.status}`);
+    if (!response.ok) throw new Error(`MediaPipe loader 載入失敗：${response.status}`);
     const blobUrl = URL.createObjectURL(new Blob([await response.text()], { type: "text/javascript" }));
     try {
         return await import(/* @vite-ignore */ blobUrl);
@@ -75,7 +75,7 @@ self.onmessage = async (event: MessageEvent<DetectFaceRequest>) => {
             }];
         });
     } catch (error) {
-        response.error = error instanceof Error ? error.message : "人脸识别失败";
+        response.error = error instanceof Error ? error.message : "人臉識別失敗";
     } finally {
         image.close();
     }

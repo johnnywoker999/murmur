@@ -20,8 +20,8 @@ export function canvasNodeToAsset(node: CanvasNodeData, options: CanvasNodeAsset
     const storageKey = node.metadata?.storageKey?.trim() || (inferredResourceId ? `resource:${inferredResourceId}` : undefined);
     const isMedia = node.type === CanvasNodeType.Image || node.type === CanvasNodeType.Video || node.type === CanvasNodeType.Audio;
 
-    // 文本素材必须直接携带正文；媒体则允许只有持久 storageKey。后者常见于页面重载后：
-    // blob/object URL 已失效，但资源定位符仍可从后端重新换取可访问地址，不能因此丢掉素材记录。
+    // 文本素材必須直接攜帶正文；媒體則允許只有持久 storageKey。後者常見於頁面過載後：
+    // blob/object URL 已失效，但資源定位符仍可從後端重新換取可訪問地址，不能因此丟掉素材記錄。
     if (node.type === CanvasNodeType.Text && !content) return null;
     if (isMedia && !content && !storageKey) return null;
     if (!isMedia && node.type !== CanvasNodeType.Text) return null;
@@ -190,8 +190,8 @@ export function canvasNodeAssetCategory(node: CanvasNodeData): AssetCategory {
 }
 
 function canvasAssetFallbackTitle(type: CanvasNodeTypeId) {
-    if (type === CanvasNodeType.Image) return "画布图片";
-    if (type === CanvasNodeType.Video) return "画布视频";
-    if (type === CanvasNodeType.Audio) return "画布音频";
-    return "画布文本";
+    if (type === CanvasNodeType.Image) return "畫布圖片";
+    if (type === CanvasNodeType.Video) return "畫布影片";
+    if (type === CanvasNodeType.Audio) return "畫布音訊";
+    return "畫布文本";
 }

@@ -217,7 +217,7 @@ export const CanvasNode = React.memo(function CanvasNode({
             const dy = (event.clientY - resizeRef.current.startY) / scale;
             const minSize = getNodeMinSize(data.type);
             const minWidth = minSize.width;
-            // 分镜脚本的高度由表格内容动态撑开，覆盖注册表里的静态下限。
+            // 分鏡指令碼的高度由表格內容動態撐開，覆蓋登入檔裡的靜態下限。
             const minHeight = scriptMinHeight || minSize.height;
             const startRight = resizeRef.current.startLeft + resizeRef.current.startWidth;
             const startBottom = resizeRef.current.startTop + resizeRef.current.startHeight;
@@ -373,7 +373,7 @@ export const CanvasNode = React.memo(function CanvasNode({
                 data-state={data.metadata?.status || (isActive ? "active" : isRelated ? "related" : "idle")}
                 style={{
                     background: hasImageContent || hasVideoContent || isDirectorNode ? "transparent" : theme.node.fill,
-                    // 固定占位但不绘制描边，避免聚焦切换时边框宽度变化造成白边跳动。
+                    // 固定佔位但不繪製描邊，避免聚焦切換時邊框寬度變化造成白邊跳動。
                     border: isComposerNode || isDirectorNode ? "0" : `1px solid ${isSelected || isFocusRelated || isConnectionTarget ? theme.node.activeStroke : "transparent"}`,
                     boxShadow: isComposerNode || isDirectorNode ? "none" : isSelected || isFocusRelated ? theme.node.hoverShadow : theme.node.shadow,
                     "--connection-tilt-x": `${connectionTilt?.rotateX || 0}deg`,
@@ -424,7 +424,7 @@ export const CanvasNode = React.memo(function CanvasNode({
                         } as React.CSSProperties
                     }
                 >
-                    {/* 仅在执行中或异常时显示状态；成功来源由内部元数据保留，不占用卡片视觉层。 */}
+                    {/* 僅在執行中或異常時顯示狀態；成功來源由內部後設資料保留，不佔用卡片視覺層。 */}
                     {data.metadata?.status && data.metadata.status !== "idle" && data.metadata.status !== "success" && data.type !== CanvasNodeType.Frame ? (
                         <NodeStatusBadge status={data.metadata.status} resultPending={data.metadata.taskStatus === "succeeded" && data.metadata.resourceReloadAvailable === true} />
                     ) : null}
@@ -505,10 +505,10 @@ export const CanvasNode = React.memo(function CanvasNode({
                             style={{ outlineColor: theme.accent.primary }}
                             tabIndex={isSelected ? 0 : -1}
                             onClick={(event) => { event.stopPropagation(); onOpenTextEditor?.(data); }}
-                            aria-label="放大编辑文本"
+                            aria-label="放大編輯文本"
                         >
                             <Maximize2 className="size-3.5" />
-                            放大编辑
+                            放大編輯
                         </button>
                     </div>
                 ) : null}
@@ -516,8 +516,8 @@ export const CanvasNode = React.memo(function CanvasNode({
                 {data.metadata?.versionLabel ? (
                     <button
                         type="button"
-                        // 版本徽标必须能在节点参数面板打开时继续点击；它是版本对比的稳定入口，
-                        // 不能被 resize handle 或面板的 textarea 覆盖。
+                        // 版本徽標必須能在節點引數面板開啟時繼續點選；它是版本對比的穩定入口，
+                        // 不能被 resize handle 或面板的 textarea 覆蓋。
                         className="absolute left-3 top-3 z-[var(--node-z-overlay)] grid size-7 place-items-center rounded-[var(--r-full)] border p-0.5 text-[var(--node-badge-fs)] font-semibold leading-none backdrop-blur-md transition-[transform,background,border-color,box-shadow] hover:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:hover:translate-y-0"
                         style={{
                             background: data.metadata.versionPrimary ? theme.accent.primarySoft : theme.toolbar.panel,
@@ -525,8 +525,8 @@ export const CanvasNode = React.memo(function CanvasNode({
                             color: data.metadata.versionPrimary ? theme.accent.primary : theme.node.text,
                             outlineColor: theme.accent.primary,
                         }}
-                        title={data.metadata.versionLabel + (data.metadata.versionPrimary ? " · 主版本" : "") + "，点击查看版本对比"}
-                        aria-label={data.metadata.versionLabel + (data.metadata.versionPrimary ? "，主版本" : "") + "，查看版本对比"}
+                        title={data.metadata.versionLabel + (data.metadata.versionPrimary ? " · 主版本" : "") + "，點選檢視版本對比"}
+                        aria-label={data.metadata.versionLabel + (data.metadata.versionPrimary ? "，主版本" : "") + "，檢視版本對比"}
                         onMouseDown={(event) => event.stopPropagation()}
                         onClick={(event) => { event.stopPropagation(); onOpenVersions?.(data); }}
                     >
@@ -540,7 +540,7 @@ export const CanvasNode = React.memo(function CanvasNode({
                         {data.metadata?.locked ? <NodeLockBadge theme={theme} /> : null}
                     </div>
                 ) : null}
-                {/* 批次子图操作条：成功子项提供下载/副本/设为主图，失败子项提供重试/删除 */}
+                {/* 批次子圖操作條：成功子項提供下載/副本/設為主圖，失敗子項提供重試/刪除 */}
                 {isBatchChild && !readOnly && (hasImageContent || data.metadata?.status === "error") && (hovered || isSelected) ? (
                     <div
                         className="absolute inset-x-0 bottom-2 z-[var(--node-z-overlay)] flex justify-center"
@@ -548,22 +548,22 @@ export const CanvasNode = React.memo(function CanvasNode({
                         onPointerDown={(event) => event.stopPropagation()}
                     >
                         <div className="flex items-center gap-0.5 rounded-[var(--r-md)] border px-1 py-1 backdrop-blur-xl" style={{ background: `${theme.toolbar.panel}e6`, borderColor: theme.toolbar.border }}>
-                            {hasImageContent ? <BatchChildActionButton theme={theme} label="下载图片" icon={<Download className="size-3.5" />} onClick={() => downloadNode?.(data)} /> : null}
-                            {hasImageContent ? <BatchChildActionButton theme={theme} label="创建副本" icon={<Copy className="size-3.5" />} onClick={() => duplicateNode?.(data)} /> : null}
+                            {hasImageContent ? <BatchChildActionButton theme={theme} label="下載圖片" icon={<Download className="size-3.5" />} onClick={() => downloadNode?.(data)} /> : null}
+                            {hasImageContent ? <BatchChildActionButton theme={theme} label="建立副本" icon={<Copy className="size-3.5" />} onClick={() => duplicateNode?.(data)} /> : null}
                             {hasImageContent ? (
-                                <BatchChildActionButton theme={theme} label={batchPrimary ? "当前主图" : "设为主图"} icon={<Star className={`size-3.5 ${batchPrimary ? "fill-current" : ""}`} style={{ color: theme.accent.primary }} />} onClick={() => onSetBatchPrimary?.(data)} />
+                                <BatchChildActionButton theme={theme} label={batchPrimary ? "當前主圖" : "設為主圖"} icon={<Star className={`size-3.5 ${batchPrimary ? "fill-current" : ""}`} style={{ color: theme.accent.primary }} />} onClick={() => onSetBatchPrimary?.(data)} />
                             ) : null}
-                            {data.metadata?.status === "error" && data.metadata.resourceReloadAvailable ? <BatchChildActionButton theme={theme} label="继续取回" icon={<Download className="size-3.5" />} onClick={() => onReloadResource?.(data)} /> : null}
+                            {data.metadata?.status === "error" && data.metadata.resourceReloadAvailable ? <BatchChildActionButton theme={theme} label="繼續取回" icon={<Download className="size-3.5" />} onClick={() => onReloadResource?.(data)} /> : null}
                             {data.metadata?.status === "error" && !shouldBlockManualRetry({ code: data.metadata.generationErrorCode || data.metadata.taskErrorCode, message: data.metadata.errorDetails }, data.metadata.taskStage) ? <BatchChildActionButton theme={theme} label="重新生成" icon={<RefreshCw className="size-3.5" />} onClick={() => onRetry?.(data)} /> : null}
-                            {data.metadata?.status === "error" && data.metadata.taskId && onOpenTaskDetails ? <BatchChildActionButton theme={theme} label="查看原任务" icon={<ScanSearch className="size-3.5" />} onClick={() => onOpenTaskDetails(data)} /> : null}
-                            {data.metadata?.status === "error" ? <BatchChildActionButton theme={theme} label="删除" icon={<Trash2 className="size-3.5" />} danger onClick={() => deleteNode?.(data)} /> : null}
+                            {data.metadata?.status === "error" && data.metadata.taskId && onOpenTaskDetails ? <BatchChildActionButton theme={theme} label="檢視原任務" icon={<ScanSearch className="size-3.5" />} onClick={() => onOpenTaskDetails(data)} /> : null}
+                            {data.metadata?.status === "error" ? <BatchChildActionButton theme={theme} label="刪除" icon={<Trash2 className="size-3.5" />} danger onClick={() => deleteNode?.(data)} /> : null}
                         </div>
                     </div>
                 ) : null}
-                {/* 批次主图位（折叠根节点封面）常驻下载按钮 */}
+                {/* 批次主圖位（摺疊根節點封面）常駐下載按鈕 */}
                 {isBatchRoot && hasImageContent && !readOnly ? (
                     <div className="absolute bottom-2 right-2 z-[var(--node-z-overlay)]" onMouseDown={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
-                        <BatchChildActionButton theme={theme} label="下载主图" icon={<Download className="size-3.5" />} onClick={() => downloadNode?.(data)} />
+                        <BatchChildActionButton theme={theme} label="下載主圖" icon={<Download className="size-3.5" />} onClick={() => downloadNode?.(data)} />
                     </div>
                 ) : null}
                 {!readOnly && !data.metadata?.locked && (isSelected || hovered) ? <>
@@ -654,12 +654,12 @@ function areCanvasNodePropsEqual(previous: CanvasNodeProps, next: CanvasNodeProp
 }
 
 function NodeLockBadge({ theme }: { theme: CanvasTheme }) {
-    return <span className="pointer-events-none grid size-7 shrink-0 place-items-center rounded-md border backdrop-blur" style={{ background: theme.toolbar.panel, borderColor: theme.toolbar.border, color: theme.node.muted }} title="节点已锁定"><Lock className="size-3.5" /></span>;
+    return <span className="pointer-events-none grid size-7 shrink-0 place-items-center rounded-md border backdrop-blur" style={{ background: theme.toolbar.panel, borderColor: theme.toolbar.border, color: theme.node.muted }} title="節點已鎖定"><Lock className="size-3.5" /></span>;
 }
 
 function BatchToggleBadge({ count, expanded, theme, onToggle }: { count: number; expanded: boolean; theme: CanvasTheme; onToggle: () => void }) {
     return (
-        <button type="button" className="canvas-node-tool-button inline-flex h-7 shrink-0 items-center gap-1 rounded-md border px-2 text-[var(--fs-tiny)] font-semibold backdrop-blur-md" style={{ background: `${theme.toolbar.panel}d9`, borderColor: `${theme.toolbar.border}cc`, color: theme.node.text }} aria-expanded={expanded} aria-label={expanded ? "收起图片组" : "展开图片组"} onClick={(event) => { event.stopPropagation(); onToggle(); }} onMouseDown={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
+        <button type="button" className="canvas-node-tool-button inline-flex h-7 shrink-0 items-center gap-1 rounded-md border px-2 text-[var(--fs-tiny)] font-semibold backdrop-blur-md" style={{ background: `${theme.toolbar.panel}d9`, borderColor: `${theme.toolbar.border}cc`, color: theme.node.text }} aria-expanded={expanded} aria-label={expanded ? "收起圖片組" : "展開圖片組"} onClick={(event) => { event.stopPropagation(); onToggle(); }} onMouseDown={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
             <span className="leading-none" style={{ color: theme.accent.primary }}>{count}</span>
             <ChevronRight className={`size-3 opacity-55 transition-transform ${expanded ? "rotate-90" : ""}`} />
         </button>
@@ -668,9 +668,9 @@ function BatchToggleBadge({ count, expanded, theme, onToggle }: { count: number;
 
 function BatchPrimaryBadge({ visible, selected, theme, onSelect }: { visible: boolean; selected: boolean; theme: CanvasTheme; onSelect: () => void }) {
     return (
-        <button type="button" className={`canvas-node-tool-button inline-flex h-7 shrink-0 items-center gap-1 rounded-md border px-2 text-[var(--fs-tiny)] font-medium backdrop-blur-md transition-opacity ${visible ? "opacity-100" : "pointer-events-none opacity-0"}`} style={{ background: theme.toolbar.panel, borderColor: selected ? theme.accent.primary : theme.toolbar.border, color: selected ? theme.accent.primary : theme.node.text }} aria-label={selected ? "当前主图" : "设置为主图"} aria-pressed={selected} onClick={(event) => { event.stopPropagation(); onSelect(); }} onMouseDown={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
+        <button type="button" className={`canvas-node-tool-button inline-flex h-7 shrink-0 items-center gap-1 rounded-md border px-2 text-[var(--fs-tiny)] font-medium backdrop-blur-md transition-opacity ${visible ? "opacity-100" : "pointer-events-none opacity-0"}`} style={{ background: theme.toolbar.panel, borderColor: selected ? theme.accent.primary : theme.toolbar.border, color: selected ? theme.accent.primary : theme.node.text }} aria-label={selected ? "當前主圖" : "設定為主圖"} aria-pressed={selected} onClick={(event) => { event.stopPropagation(); onSelect(); }} onMouseDown={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
             <Star className={`size-3 ${selected ? "fill-current" : ""}`} style={{ color: theme.accent.primary }} />
-            {selected ? "当前主图" : "主图"}
+            {selected ? "當前主圖" : "主圖"}
         </button>
     );
 }
@@ -725,7 +725,7 @@ function NodeExternalHeader({ node, scale, dimensionLabel, active, editable, edi
         const commitOutsideInput = (event: PointerEvent) => {
             const input = titleInputRef.current;
             if (!input || !(event.target instanceof Node) || input.contains(event.target)) return;
-            // 画布手势可能阻止鼠标默认失焦，主动触发同一条 onBlur 保存路径。
+            // 畫布手勢可能阻止滑鼠預設失焦，主動觸發同一條 onBlur 儲存路徑。
             input.blur();
         };
         window.addEventListener("pointerdown", commitOutsideInput, true);
@@ -751,8 +751,8 @@ function NodeExternalHeader({ node, scale, dimensionLabel, active, editable, edi
                 transformOrigin: "left bottom",
             } as React.CSSProperties}
             onMouseDown={(event) => {
-                // LibTV 的节点标题图标区域同时承担拖拽入口；名称按钮仍保留独立的重命名点击。
-                // 只在非交互子控件上把事件交给画布选择控制器，避免点击标题时误触发移动。
+                // LibTV 的節點標題圖示區域同時承擔拖拽入口；名稱按鈕仍保留獨立的重新命名點選。
+                // 只在非互動子控制元件上把事件交給畫布選擇控制器，避免點選標題時誤觸發移動。
                 if (event.button !== 0) return;
                 if ((event.target as HTMLElement).closest("button, input")) return;
                 onDragStart?.(event);
@@ -766,15 +766,15 @@ function NodeExternalHeader({ node, scale, dimensionLabel, active, editable, edi
             <div className="flex min-w-0 flex-1 items-center gap-1">
                 <button
                     type="button"
-                    // LibTV 标题行只展示节点类型图标；保留无障碍拖动按钮，但不额外绘制抓手，
-                    // 节点主体仍支持拖动，避免标题前出现一组原版没有的竖向点。
+                    // LibTV 標題行只展示節點型別圖示；保留無障礙拖動按鈕，但不額外繪製抓手，
+                    // 節點主體仍支援拖動，避免標題前出現一組原版沒有的豎向點。
                     className="flex size-0 shrink-0 touch-none items-center justify-center overflow-hidden rounded p-0 opacity-0 cursor-grab active:cursor-grabbing disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-1"
-                    aria-label={node.metadata?.locked ? "节点已锁定" : `拖动节点：${node.title}`}
-                    title={node.metadata?.locked ? "节点已锁定，请先解锁" : "拖动此处移动节点；点击名称可重命名"}
+                    aria-label={node.metadata?.locked ? "節點已鎖定" : `拖動節點：${node.title}`}
+                    title={node.metadata?.locked ? "節點已鎖定，請先解鎖" : "拖動此處移動節點；點選名稱可重新命名"}
                     disabled={!onDragStart || Boolean(node.metadata?.locked)}
                     onPointerDown={(event) => {
                         if (event.button !== 0) return;
-                        // HTML / SVG 正文在跨源沙箱中；捕获指针，避免经过 iframe 后丢失 move / up。
+                        // HTML / SVG 正文在跨源沙箱中；捕獲指標，避免經過 iframe 後丟失 move / up。
                         event.preventDefault();
                         event.stopPropagation();
                         event.currentTarget.setPointerCapture(event.pointerId);
@@ -798,10 +798,10 @@ function NodeExternalHeader({ node, scale, dimensionLabel, active, editable, edi
                             if (event.key === "Enter") event.currentTarget.blur();
                             if (event.key === "Escape") onCancel();
                         }}
-                        aria-label="节点名称"
+                        aria-label="節點名稱"
                     />
                 ) : editable ? (
-                    <button type="button" className="group flex min-w-0 flex-1 items-center gap-1 rounded px-0.5 text-left text-xs font-medium outline-none transition-opacity hover:opacity-100 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-1" style={{ opacity: active ? 1 : 0.78, outlineColor: theme.node.muted }} onClick={onEdit} title={node.title} aria-label={`编辑节点名称：${node.title}`}>
+                    <button type="button" className="group flex min-w-0 flex-1 items-center gap-1 rounded px-0.5 text-left text-xs font-medium outline-none transition-opacity hover:opacity-100 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-1" style={{ opacity: active ? 1 : 0.78, outlineColor: theme.node.muted }} onClick={onEdit} title={node.title} aria-label={`編輯節點名稱：${node.title}`}>
                         <span className="canvas-node-title-text min-w-0 truncate">{node.title}</span>
                         <Pencil className="canvas-node-title-edit-icon size-2.5 shrink-0 opacity-55 transition-opacity group-hover:opacity-100" />
                     </button>
@@ -826,7 +826,7 @@ function nodeTypeIcon(type: CanvasNodeTypeId) {
     return FileText;
 }
 
-// 节点状态徽章（对应 #97 决策2：左上角状态指示，loading/success/error）
+// 節點狀態徽章（對應 #97 決策2：左上角狀態指示，loading/success/error）
 function NodeStatusBadge({ status, resultPending }: { status: "loading" | "success" | "error"; resultPending?: boolean }) {
     if (status === "loading") return null;
     if (status === "error") {
@@ -834,14 +834,14 @@ function NodeStatusBadge({ status, resultPending }: { status: "loading" | "succe
             <div
                 className="pointer-events-none absolute left-2 top-2 z-20 flex items-center gap-1 rounded-full px-2 py-0.5 backdrop-blur-sm"
                 style={{ background: "color-mix(in oklch, var(--status-error) 20%, transparent)", color: "var(--status-error)" }}
-                aria-label={resultPending ? "结果待放入画布" : "生成失败"}
+                aria-label={resultPending ? "結果待放入畫布" : "生成失敗"}
             >
                 <AlertCircle className="size-3" strokeWidth={2} />
-                <span className="text-[var(--fs-micro)] font-medium leading-none">{resultPending ? "待放入画布" : "失败"}</span>
+                <span className="text-[var(--fs-micro)] font-medium leading-none">{resultPending ? "待放入畫布" : "失敗"}</span>
             </div>
         );
     }
-    // success：短暂闪现后淡出（由 CSS animation 控制，2s 后消失）
+    // success：短暫閃現後淡出（由 CSS animation 控制，2s 後消失）
     return (
         <div
             className="pointer-events-none absolute left-2 top-2 z-20 flex items-center gap-1 rounded-full px-2 py-0.5 backdrop-blur-sm"
@@ -906,7 +906,7 @@ function ConnectionSideRail({ side, scale, theme, visible = false, onPointerDown
                 resetHandle();
             }}
             onPointerDown={(event) => onPointerDown(event, 0.5)}
-            aria-label={`${side === "left" ? "输入" : "输出"}连接点，单击创建节点或拖动连线`}
+            aria-label={`${side === "left" ? "輸入" : "輸出"}連線點，單擊建立節點或拖動連線`}
         >
             <span
                 ref={handleRef}

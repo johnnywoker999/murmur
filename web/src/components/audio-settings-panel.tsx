@@ -27,7 +27,7 @@ export function AudioSettingsPanel({ config, onConfigChange, theme, showTitle = 
     return (
         <ImageSettingsTheme theme={theme}>
             <div className={className} style={{ color: theme.node.text }} onMouseDown={(event) => event.stopPropagation()}>
-                {showTitle ? <div className="text-lg font-semibold">音频设置</div> : null}
+                {showTitle ? <div className="text-lg font-semibold">音訊設定</div> : null}
                 {profile.showVoice ? (
                     <SettingGroup title="音色" color={theme.node.muted}>
                         <div className="grid grid-cols-3 gap-2.5">
@@ -49,7 +49,7 @@ export function AudioSettingsPanel({ config, onConfigChange, theme, showTitle = 
                     </div>
                 </SettingGroup>
                 {profile.showSpeed ? (
-                    <SettingGroup title="语速" color={theme.node.muted}>
+                    <SettingGroup title="語速" color={theme.node.muted}>
                         <div className="grid grid-cols-4 gap-2.5">
                             {profile.speedOptions.map((value) => (
                                 <OptionPill key={value} selected={speed === value} theme={theme} onClick={() => onConfigChange("audioSpeed", value)}>
@@ -72,9 +72,9 @@ export function AudioSettingsPanel({ config, onConfigChange, theme, showTitle = 
                     </SettingGroup>
                 ) : null}
                 {profile.showPitch ? (
-                    <SettingGroup title="声调" color={theme.node.muted}>
+                    <SettingGroup title="聲調" color={theme.node.muted}>
                         <div className="flex items-center gap-2">
-                            <input aria-label="声调" type="range" min={-12} max={12} step={1} className="min-w-0 flex-1 accent-current" value={pitch} onChange={(event) => onConfigChange("audioPitch", event.target.value)} onMouseDown={(event) => event.stopPropagation()} />
+                            <input aria-label="聲調" type="range" min={-12} max={12} step={1} className="min-w-0 flex-1 accent-current" value={pitch} onChange={(event) => onConfigChange("audioPitch", event.target.value)} onMouseDown={(event) => event.stopPropagation()} />
                             <span className="w-12 text-right text-xs tabular-nums">{audioPitchLabel(pitch)}</span>
                         </div>
                     </SettingGroup>
@@ -88,10 +88,10 @@ export function AudioSettingsPanel({ config, onConfigChange, theme, showTitle = 
                     </SettingGroup>
                 ) : null}
                 {profile.showInstructions ? (
-                    <SettingGroup title="声音指令" color={theme.node.muted}>
+                    <SettingGroup title="聲音指令" color={theme.node.muted}>
                         <textarea
                             value={config.audioInstructions || ""}
-                            placeholder="例如：自然、温暖、适合旁白。"
+                            placeholder="例如：自然、溫暖、適合旁白。"
                             className="thin-scrollbar h-20 w-full resize-none rounded-xl border bg-transparent px-3 py-2 text-sm leading-5 outline-none"
                             style={{ borderColor: theme.node.stroke, color: theme.node.text }}
                             onChange={(event) => onConfigChange("audioInstructions", event.target.value)}

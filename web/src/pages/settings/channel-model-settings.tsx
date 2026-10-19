@@ -31,16 +31,16 @@ export function ChannelModelSettings({ channel, onChange, draft = false }: { cha
     useEffect(() => {
         let active = true;
         void fetchPluginProviderCatalog("user.custom-channel").then((items) => { if (active) setAvailableProtocols(items); })
-            .catch((error) => { if (active) setProtocolError(error instanceof Error ? error.message : "协议目录读取失败"); })
+            .catch((error) => { if (active) setProtocolError(error instanceof Error ? error.message : "協議目錄讀取失敗"); })
             .finally(() => { if (active) setProtocolLoading(false); });
         return () => { active = false; };
     }, []);
 
     if (!channel.models.length) return (
         <div className="mt-4">
-            <div className="text-xs font-medium">模型能力与请求协议</div>
+            <div className="text-xs font-medium">模型能力與請求協議</div>
             <p className="mt-2 text-xs leading-5 text-foreground/58">
-                先在上方「模型列表」输入模型名并按回车，再为模型选择能力与请求协议。
+                先在上方「模型列表」輸入模型名並按回車，再為模型選擇能力與請求協議。
             </p>
         </div>
     );
@@ -65,9 +65,9 @@ export function ChannelModelSettings({ channel, onChange, draft = false }: { cha
         try {
             const detail = await testChannelModelConnection(channel, model, capability, protocol);
             record(channel, model, { success: true, detail });
-            message.success(`模型测试通过：${detail}`);
+            message.success(`模型測試通過：${detail}`);
         } catch (error) {
-            const detail = error instanceof Error ? error.message : "模型测试失败";
+            const detail = error instanceof Error ? error.message : "模型測試失敗";
             record(channel, model, { success: false, detail });
             message.error(detail);
         } finally {
@@ -84,10 +84,10 @@ export function ChannelModelSettings({ channel, onChange, draft = false }: { cha
         <div className="mt-4">
             <div className="mb-2 flex items-center justify-between gap-3">
                 <div>
-                    <div className="text-xs font-medium">模型能力与请求协议</div>
-                    <div className="mt-0.5 text-[var(--fs-tiny)] text-foreground/42">按服务商要求调整参数，也可以生成一次来验证连接。</div>
+                    <div className="text-xs font-medium">模型能力與請求協議</div>
+                    <div className="mt-0.5 text-[var(--fs-tiny)] text-foreground/42">按服務商要求調整引數，也可以生成一次來驗證連線。</div>
                 </div>
-                <span className="text-[var(--fs-tiny)] text-foreground/35">{channel.models.length} 个模型</span>
+                <span className="text-[var(--fs-tiny)] text-foreground/35">{channel.models.length} 個模型</span>
             </div>
             <div className="space-y-2">
                 {channel.models.map((rawModel) => {
@@ -110,7 +110,7 @@ export function ChannelModelSettings({ channel, onChange, draft = false }: { cha
                                         {capabilityLabel(capability)}
                                     </Tag>
                                     <span className="truncate font-mono text-[var(--fs-tiny)] text-foreground/40" title={modelProtocolDefinition(protocol, availableProtocols)?.create}>
-                                        {modelProtocolDefinition(protocol, availableProtocols)?.create || "待配置请求协议"}
+                                        {modelProtocolDefinition(protocol, availableProtocols)?.create || "待配置請求協議"}
                                     </span>
                                 </div>
                             </div>
@@ -124,22 +124,22 @@ export function ChannelModelSettings({ channel, onChange, draft = false }: { cha
             <ModelEditorModal
                 open={Boolean(activeModel)}
                 busy={Boolean(testingModel)}
-                title="编辑模型使用配置"
+                title="編輯模型使用配置"
                 subtitle={activeModel || ""}
                 activeKey={editorTab}
                 onTabChange={setEditorTab}
                 onClose={() => setActiveModel(null)}
                 footer={
                     <div className="model-editor-footer">
-                        <span className="text-xs text-foreground/50">{draft ? "完成后，点击「保存并使用」保存更改" : "更改实时保存到本地工作区"}</span>
+                        <span className="text-xs text-foreground/50">{draft ? "完成後，點選「儲存並使用」儲存更改" : "更改即時儲存到本地工作區"}</span>
                         <div className="model-editor-footer-actions">
-                            <Popconfirm title="生成一次测试结果？" description="会向当前服务商提交真实生成任务，费用由服务商收取。结果可在任务中心查看。" okText="开始生成" cancelText="取消" onConfirm={() => { if (activeModel && activeProtocol) void testModel(activeModel, activeCapability, activeProtocol); }}>
+                            <Popconfirm title="生成一次測試結果？" description="會向當前服務商提交真實生成任務，費用由服務商收取。結果可在任務中心檢視。" okText="開始生成" cancelText="取消" onConfirm={() => { if (activeModel && activeProtocol) void testModel(activeModel, activeCapability, activeProtocol); }}>
                             <Button
                                 icon={<FlaskConical className="size-4" />}
                                 loading={Boolean(testingModel)}
                                 disabled={!activeProtocol || protocolLoading || Boolean(protocolError)}
                             >
-                                生成测试
+                                生成測試
                             </Button>
                             </Popconfirm>
                             <Button disabled={Boolean(testingModel)} onClick={() => setActiveModel(null)}>完成</Button>
@@ -149,14 +149,14 @@ export function ChannelModelSettings({ channel, onChange, draft = false }: { cha
                 items={activeModel ? [
                     {
                         key: "protocol",
-                        label: "基本信息",
+                        label: "基本資訊",
                         children: <div className="space-y-4" inert={Boolean(testingModel)}>
                             {!testingModel && testResult && <Alert type={testResult.success ? "success" : "error"} title={testResult.detail} showIcon />}
                             <section className="space-y-2">
                                 <div className="text-xs font-medium">模型能力</div>
                                 <Segmented<ModelCapabilityChoice>
                                     block
-                                    options={[{ label: "文本", value: "text" }, { label: "图片", value: "image" }, { label: "视频", value: "video" }, { label: "音频", value: "audio" }]}
+                                    options={[{ label: "文本", value: "text" }, { label: "圖片", value: "image" }, { label: "影片", value: "video" }, { label: "音訊", value: "audio" }]}
                                     value={activeCapability}
                                     onChange={(nextCapability) => {
                                         const nextProtocol = availableProtocols.find((item) => item.value === activeProtocol && item.capability === nextCapability && item.enabled !== false)?.value || (nextCapability === "video" ? undefined : defaultProtocolForCapability(nextCapability, availableProtocols));
@@ -170,7 +170,7 @@ export function ChannelModelSettings({ channel, onChange, draft = false }: { cha
                             </section>
                             {channel.scope !== "system" && activeCapability !== "text" && activeProtocol !== "full-video" && <ReferenceMediaTransportFields value={activeModelProfile?.referenceMediaTransport} onChange={(referenceMediaTransport) => updateProfile(activeModel, { referenceMediaTransport })} />}
                             <section className="space-y-2">
-                                <div className="text-xs font-medium">请求协议</div>
+                                <div className="text-xs font-medium">請求協議</div>
                                 <ModelProtocolBrowser
                                     loading={protocolLoading}
                                     error={protocolError}
@@ -187,7 +187,7 @@ export function ChannelModelSettings({ channel, onChange, draft = false }: { cha
                     },
                     {
                         key: "capabilities",
-                        label: "能力与参数",
+                        label: "能力與引數",
                         children: <div inert={Boolean(testingModel)}>
                             {activeCapability === "image" || activeCapability === "video" ? (
                                 <ModelCapabilityEditor
@@ -197,7 +197,7 @@ export function ChannelModelSettings({ channel, onChange, draft = false }: { cha
                                     protocol={activeProtocol}
                                     onChange={(capabilityConfig) => updateProfile(activeModel, { capabilityConfig })}
                                 />
-                            ) : <p className="text-xs text-foreground/50">当前模型类型无需额外配置引用与参数。</p>}
+                            ) : <p className="text-xs text-foreground/50">當前模型型別無需額外配置引用與引數。</p>}
                         </div>,
                     },
                 ] : []}
@@ -207,5 +207,5 @@ export function ChannelModelSettings({ channel, onChange, draft = false }: { cha
 }
 
 function capabilityLabel(value: ModelProfile["capability"]) {
-    return { text: "文本", image: "图片", video: "视频", audio: "音频", "": "待配置" }[value] || "待配置";
+    return { text: "文本", image: "圖片", video: "影片", audio: "音訊", "": "待配置" }[value] || "待配置";
 }

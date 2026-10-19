@@ -35,11 +35,11 @@ export function browserCapabilities(): BrowserCapabilities {
 export function browserChecks(capabilities = browserCapabilities()): EnvironmentCheck[] {
     const check = (id: string, title: string, status: EnvironmentCheck["status"], detail: string, cases = ["ENV-0001"]): EnvironmentCheck => ({ id, title, status, detail, cases });
     return [
-        check("secure-random", "安全随机数", capabilities.secureRandom ? "pass" : "error", capabilities.secureRandom ? "安全随机数可用。创建任务不依赖 randomUUID 的安全上下文限制。" : "缺少安全随机数能力，无法可靠创建任务标识。请更新浏览器或 WebView2 运行时。"),
-        check("structured-clone", "画布数据复制", capabilities.structuredClone ? "pass" : "error", capabilities.structuredClone ? "画布数据复制能力可用。" : "运行时缺少画布所需的数据复制能力，请更新浏览器或 WebView2 运行时。"),
-        check("indexed-db", "浏览器本地缓存", !capabilities.indexedDB || capabilities.storageWritable === false ? "error" : capabilities.storageTimedOut ? "warning" : capabilities.storageWritable === true ? "pass" : "unknown", !capabilities.indexedDB || capabilities.storageWritable === false ? "本地缓存无法写入，请检查隐私设置、存储空间或更新运行时。" : capabilities.storageTimedOut ? "缓存检查超时，尚未确认可写。请关闭占用存储的页面后重新检查。" : capabilities.storageWritable === true ? "已完成独立测试记录的写入、读取和清理。" : "尚未完成本地缓存写入检查。"),
-        check("webgl", "图形加速", capabilities.webGL ? "unknown" : "warning", capabilities.webGL ? "图形接口可用，硬件加速状态需在实际预览中确认。" : "图形接口不可用，部分预览可能变慢。请检查远程桌面、显卡驱动或浏览器硬件加速设置。", ["ENV-0051"]),
-        check("video-codec", "视频播放", capabilities.h264 ? "pass" : "warning", capabilities.h264 ? (capabilities.hevc ? "浏览器声明支持 H.264 和 HEVC；具体素材仍需实际解码。" : "浏览器声明支持 H.264，HEVC 素材可由本地视频工具生成兼容预览。") : "浏览器未声明 H.264 播放能力，请更新运行时并检查系统媒体组件。", ["ENV-0014", "ENV-0029"]),
+        check("secure-random", "安全隨機數", capabilities.secureRandom ? "pass" : "error", capabilities.secureRandom ? "安全隨機數可用。建立任務不依賴 randomUUID 的安全上下文限制。" : "缺少安全隨機數能力，無法可靠建立任務標識。請更新瀏覽器或 WebView2 執行時。"),
+        check("structured-clone", "畫布資料複製", capabilities.structuredClone ? "pass" : "error", capabilities.structuredClone ? "畫布資料複製能力可用。" : "執行時缺少畫布所需的資料複製能力，請更新瀏覽器或 WebView2 執行時。"),
+        check("indexed-db", "瀏覽器本地快取", !capabilities.indexedDB || capabilities.storageWritable === false ? "error" : capabilities.storageTimedOut ? "warning" : capabilities.storageWritable === true ? "pass" : "unknown", !capabilities.indexedDB || capabilities.storageWritable === false ? "本地快取無法寫入，請檢查隱私設定、儲存空間或更新執行時。" : capabilities.storageTimedOut ? "快取檢查超時，尚未確認可寫。請關閉佔用儲存的頁面後重新檢查。" : capabilities.storageWritable === true ? "已完成獨立測試記錄的寫入、讀取和清理。" : "尚未完成本地快取寫入檢查。"),
+        check("webgl", "圖形加速", capabilities.webGL ? "unknown" : "warning", capabilities.webGL ? "圖形介面可用，硬體加速狀態需在實際預覽中確認。" : "圖形介面不可用，部分預覽可能變慢。請檢查遠端桌面、顯示卡驅動或瀏覽器硬體加速設定。", ["ENV-0051"]),
+        check("video-codec", "影片播放", capabilities.h264 ? "pass" : "warning", capabilities.h264 ? (capabilities.hevc ? "瀏覽器宣告支援 H.264 和 HEVC；具體素材仍需實際解碼。" : "瀏覽器宣告支援 H.264，HEVC 素材可由本地影片工具生成相容預覽。") : "瀏覽器未宣告 H.264 播放能力，請更新執行時並檢查系統媒體元件。", ["ENV-0014", "ENV-0029"]),
     ];
 }
 

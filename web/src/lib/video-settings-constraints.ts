@@ -28,18 +28,18 @@ export function videoSettingsConstraints(
             // A card can expand into several views and change the submission mode.
             const ratioHelp = first || last
                 ? model === "minimax-h3-max"
-                    ? "首尾帧生成不能混用角色参考图；H3 Max 多素材参考生成可组合关键帧与角色参考图，使用所选比例。"
-                    : "角色卡带参考图时，不能与指定的首尾帧同时使用。请移除角色卡，或取消首尾帧指定后再生成。"
+                    ? "首尾幀生成不能混用角色參考圖；H3 Max 多素材參考生成可組合關鍵幀與角色參考圖，使用所選比例。"
+                    : "角色卡帶參考圖時，不能與指定的首尾幀同時使用。請移除角色卡，或取消首尾幀指定後再生成。"
                 : isH3Style(model)
-                    ? "角色卡带参考图时，视频比例由参考图决定；所选比例只在没有参考图时生效。"
-                    : "首尾帧生成时，比例随实际参考图；多素材参考生成使用所选比例。";
+                    ? "角色卡帶參考圖時，影片比例由參考圖決定；所選比例只在沒有參考圖時生效。"
+                    : "首尾幀生成時，比例隨實際參考圖；多素材參考生成使用所選比例。";
             return { ratioHelp };
         }
         if (!imageCount) return {};
-        const frame = last && !first ? "尾帧" : "首帧";
+        const frame = last && !first ? "尾幀" : "首幀";
         return {
-            ratioLabel: `随${frame}图片`,
-            ratioHelp: `视频比例由${frame}图片决定。需要其他比例时，请先裁切或扩图，再生成视频。`,
+            ratioLabel: `隨${frame}圖片`,
+            ratioHelp: `影片比例由${frame}圖片決定。需要其他比例時，請先裁切或擴圖，再生成影片。`,
         };
     }
     return seedanceSettingsConstraints(model, imageCount, videoCount, audioCount, metadata?.videoEditOperation, Boolean(first || last));

@@ -1,7 +1,7 @@
-// 编辑器命令协议（ADR-0002）：时间线唯一修改入口。
-// 命令 = 可序列化 { op, payload }，handler 为纯函数（禁止依赖组件实例），
-// 未知 op 或非法 payload 一律抛错（fail-closed），保证可回放、可撤销、可黄金文件测试。
-// 插件可经宿主 API register 自定义 op，与内建命令共用同一注册表与校验纪律。
+// 編輯器命令協議（ADR-0002）：時間線唯一修改入口。
+// 命令 = 可序列化 { op, payload }，handler 為純函式（禁止依賴元件例項），
+// 未知 op 或非法 payload 一律拋錯（fail-closed），保證可回放、可撤銷、可黃金檔案測試。
+// 外掛可經宿主 API register 自定義 op，與內建命令共用同一登入檔與校驗紀律。
 
 import type { SrtEntry, TimelineClip, TimelineProject, TimelineTrack, TimelineTrackKind } from "@/types/timeline";
 
@@ -9,15 +9,15 @@ export type EditCommand = { op: string; payload: unknown };
 export type CommandHandler = (state: TimelineProject, payload: unknown) => TimelineProject;
 
 export type EditorCommandRegistry = {
-    /** 注册命令 handler（宿主与插件共用；同名 op 覆盖，插件的注册顺序即优先级）。 */
+    /** 註冊命令 handler（宿主與外掛共用；同名 op 覆蓋，外掛的註冊順序即優先順序）。 */
     register: (op: string, handler: CommandHandler) => void;
-    /** 应用命令：未知 op 抛错（fail-closed）；返回新状态（不可变更新）。 */
+    /** 應用命令：未知 op 拋錯（fail-closed）；返回新狀態（不可變更新）。 */
     apply: (state: TimelineProject, cmd: EditCommand) => TimelineProject;
     knownOps: () => string[];
 };
 
 // ---------------------------------------------------------------------------
-// 内置命令的 payload 类型；注册表、AI 命令契约和黄金测试必须共享同一组 op。
+// 內建命令的 payload 型別；登入檔、AI 命令契約和黃金測試必須共享同一組 op。
 // ---------------------------------------------------------------------------
 
 export type AddClipPayload = { clip: TimelineClip };
@@ -31,21 +31,21 @@ export type SetClipPropertyPayload = {
 };
 export type AddSubtitlePayload = { clip: TimelineClip };
 export type RemoveSubtitlePayload = { id: string };
-/** 从节点权威 subtitleEntries 重建时间线条字幕 clip（§3.1 快照契约：单向显式同步，替换过期快照）。 */
-/** 新增空轨道（addTrack）。id/order/label 由 handler 按当前状态确定，保证 undo/redo 重放确定性。 */
+/** 從節點權威 subtitleEntries 重建時間線條字幕 clip（§3.1 快照契約：單向顯式同步，替換過期快照）。 */
+/** 新增空軌道（addTrack）。id/order/label 由 handler 按當前狀態確定，保證 undo/redo 重放確定性。 */
 export type AddTrackPayload = { kind: TimelineTrackKind };
 
-/** 移除整条轨道及其全部片段（removeTrack）。守卫：同 kind 至少保留一条轨道（防唯一字幕/视频轨被删光后编辑失锚）。 */
+/** 移除整條軌道及其全部片段（removeTrack）。守衛：同 kind 至少保留一條軌道（防唯一字幕/影片軌被刪光後編輯失錨）。 */
 export type RemoveTrackPayload = { trackId: string };
 
-/** 轨道开关（setTrackFlag）：可见性 / 静音。flag 白名单校验，fail-closed。 */
+/** 軌道開關（setTrackFlag）：可見性 / 靜音。flag 白名單校驗，fail-closed。 */
 export type SetTrackFlagPayload = { trackId: string; flag: "visible" | "muted"; value: boolean };
 export type RebuildSubtitleClipsPayload = {
-    /** 画布节点 id（subtitleEntries 权威源）。 */
+    /** 畫布節點 id（subtitleEntries 權威源）。 */
     nodeId: string;
-    /** 权威字幕条目快照（按此重建，text 进入 clip 快照）。 */
+    /** 權威字幕條目快照（按此重建，text 進入 clip 快照）。 */
     entries: SrtEntry[];
-    /** 目标字幕轨道 id；缺省取第一个字幕轨道。 */
+    /** 目標字幕軌道 id；預設取第一個字幕軌道。 */
     trackId?: string;
 };
 
@@ -65,7 +65,7 @@ export const EDITOR_COMMAND_OPS = [
 ] as const;
 
 // ---------------------------------------------------------------------------
-// 校验辅助
+// 校驗輔助
 // ---------------------------------------------------------------------------
 
 function fail(op: string, message: string): never {
@@ -95,7 +95,7 @@ function findClipOrThrow(op: string, state: TimelineProject, id: string): Timeli
     return clip;
 }
 
-/** 时间线总时长 = 所有片段末端最大值（与 normalizeTimelineProject 同源）。 */
+/** 時間線總時長 = 所有片段末端最大值（與 normalizeTimelineProject 同源）。 */
 function recomputeDurationMs(state: TimelineProject): number {
     return state.clips.reduce((max, clip) => Math.max(max, clip.startMs + clip.durationMs), 0);
 }
@@ -105,7 +105,7 @@ function withClips(state: TimelineProject, clips: TimelineClip[]): TimelineProje
 }
 
 // ---------------------------------------------------------------------------
-// 黄金命令集合 handler
+// 黃金命令集合 handler
 // ---------------------------------------------------------------------------
 
 function handleAddClip(state: TimelineProject, payload: unknown): TimelineProject {
@@ -137,7 +137,7 @@ function handleTrimClip(state: TimelineProject, payload: unknown): TimelineProje
     if (!Number.isFinite(nextDurationMs) || nextDurationMs <= 0) fail("trimClip", "durationMs must be a positive finite number");
     if (!Number.isFinite(nextSourceStartMs) || nextSourceStartMs < 0) fail("trimClip", "sourceStartMs must be a non-negative finite number");
 
-    // 源时长已知时限制裁剪上限（UI 与命令层同一条规则，防止导出越界）。
+    // 源時長已知時限制裁剪上限（UI 與命令層同一條規則，防止匯出越界）。
     const sourceDuration = clip.sourceDurationMs ?? 0;
     if (sourceDuration > 0) {
         if (nextDurationMs > sourceDuration) fail("trimClip", `durationMs ${nextDurationMs} exceeds sourceDurationMs ${sourceDuration}`);
@@ -186,7 +186,7 @@ function handleRemoveClip(state: TimelineProject, payload: unknown): TimelinePro
     return withClips(state, state.clips.filter((c) => c.id !== id));
 }
 
-/** setClipProperty 允许修改的属性白名单；结构字段（id/kind/nodeId/trackId/startMs/durationMs/...）由专门命令负责。 */
+/** setClipProperty 允許修改的屬性白名單；結構欄位（id/kind/nodeId/trackId/startMs/durationMs/...）由專門命令負責。 */
 const CLIP_PROPERTY_WHITELIST = new Set(["title", "text", "volume", "fadeInMs", "fadeOutMs", "subtitleEntryIndex"]);
 
 function handleSetClipProperty(state: TimelineProject, payload: unknown): TimelineProject {
@@ -219,12 +219,12 @@ function handleRemoveSubtitle(state: TimelineProject, payload: unknown): Timelin
     return withClips(state, state.clips.filter((c) => c.id !== id));
 }
 
-/** 轨道种类的基础标签；新增轨道 label = 基础标签 + 同种类现有轨道数 + 1。 */
+/** 軌道種類的基礎標籤；新增軌道 label = 基礎標籤 + 同種類現有軌道數 + 1。 */
 export const TRACK_KIND_BASE_LABELS: Record<TimelineTrackKind, string> = {
-    video: "视频",
-    image: "图片",
+    video: "影片",
+    image: "圖片",
     text: "文本",
-    audio: "音频",
+    audio: "音訊",
     subtitle: "字幕",
 };
 
@@ -233,7 +233,7 @@ function handleAddTrack(state: TimelineProject, payload: unknown): TimelineProje
     if (!(kind in TRACK_KIND_BASE_LABELS)) {
         fail("addTrack", `track kind must be one of "video" | "image" | "text" | "audio" | "subtitle", got "${String(kind)}"`);
     }
-    // id/order/label 都由当前状态确定：同一撤销/重放路径永远得到同一结果（确定性）。
+    // id/order/label 都由當前狀態確定：同一撤銷/重放路徑永遠得到同一結果（確定性）。
     let index = state.tracks.filter((t) => t.kind === kind).length + 1;
     let id = `${kind}-${index}`;
     while (state.tracks.some((t) => t.id === id)) {
@@ -249,10 +249,10 @@ function handleRemoveTrack(state: TimelineProject, payload: unknown): TimelinePr
     const { trackId } = payload as RemoveTrackPayload;
     if (typeof trackId !== "string" || trackId.length === 0) fail("removeTrack", "trackId must be a non-empty string");
     const track = findTrackOrThrow("removeTrack", state, trackId);
-    // 每类轨道至少保留一条：删除最后一条会让吸附目标、字幕重建等编辑操作失锚。
+    // 每類軌道至少保留一條：刪除最後一條會讓吸附目標、字幕重建等編輯操作失錨。
     const lastOfKind = state.tracks.filter((t) => t.kind === track.kind).length <= 1;
     if (lastOfKind) fail("removeTrack", `cannot remove the last "${track.kind}" track`);
-    // 轨道上片段随轨道一并移除（moveClip/trimClip/splitClip 均已按 trackId 归属，无悬挂引用）。
+    // 軌道上片段隨軌道一併移除（moveClip/trimClip/splitClip 均已按 trackId 歸屬，無懸掛引用）。
     return {
         ...state,
         tracks: state.tracks.filter((t) => t.id !== trackId),
@@ -272,7 +272,7 @@ function handleSetTrackFlag(state: TimelineProject, payload: unknown): TimelineP
     };
 }
 
-/** 校验 SrtEntry 数组：形状、区间、重复 index（fail-closed）。 */
+/** 校驗 SrtEntry 陣列：形狀、區間、重複 index（fail-closed）。 */
 function assertSubtitleEntries(op: string, entries: unknown): asserts entries is SrtEntry[] {
     if (!Array.isArray(entries)) fail(op, "entries must be an array of SrtEntry");
     const seen = new Set<number>();
@@ -289,9 +289,9 @@ function assertSubtitleEntries(op: string, entries: unknown): asserts entries is
 }
 
 /**
- * 从节点权威 subtitleEntries 重建字幕 clip（§3.1 快照契约：单向显式同步）。
- * 移除 nodeId 名下全部过期字幕快照，按 entries 重建；id 确定（nodeId:subtitle:index），
- * 重跑即原地替换，不产生漂移。缺省轨道取第一个字幕轨。
+ * 從節點權威 subtitleEntries 重建字幕 clip（§3.1 快照契約：單向顯式同步）。
+ * 移除 nodeId 名下全部過期字幕快照，按 entries 重建；id 確定（nodeId:subtitle:index），
+ * 重跑即原地替換，不產生漂移。預設軌道取第一個字幕軌。
  */
 function handleRebuildSubtitleClips(state: TimelineProject, payload: unknown): TimelineProject {
     const { nodeId, entries, trackId } = payload as RebuildSubtitleClipsPayload;
@@ -318,7 +318,7 @@ function handleRebuildSubtitleClips(state: TimelineProject, payload: unknown): T
 }
 
 // ---------------------------------------------------------------------------
-// 注册表
+// 登入檔
 // ---------------------------------------------------------------------------
 
 const BUILTIN_HANDLERS: ReadonlyArray<readonly [string, CommandHandler]> = [
@@ -336,7 +336,7 @@ const BUILTIN_HANDLERS: ReadonlyArray<readonly [string, CommandHandler]> = [
     ["rebuildSubtitleClips", handleRebuildSubtitleClips],
 ];
 
-/** 创建隔离的命令注册表（测试/黄金文件比对用独立实例）。 */
+/** 建立隔離的命令登入檔（測試/黃金檔案比對用獨立例項）。 */
 export function createEditorCommandRegistry(): EditorCommandRegistry {
     const handlers = new Map<string, CommandHandler>(BUILTIN_HANDLERS);
     return {
@@ -356,7 +356,7 @@ export function createEditorCommandRegistry(): EditorCommandRegistry {
     };
 }
 
-// 宿主核心协议单例：编辑器 store、插件经宿主 API 均注册/消费此实例。
+// 宿主核心協議單例：編輯器 store、外掛經宿主 API 均註冊/消費此例項。
 let sharedRegistry: EditorCommandRegistry | null = null;
 export function getEditorCommandRegistry(): EditorCommandRegistry {
     sharedRegistry ??= createEditorCommandRegistry();

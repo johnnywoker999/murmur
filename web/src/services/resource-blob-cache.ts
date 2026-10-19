@@ -41,7 +41,7 @@ export async function getCachedResourceObjectUrl(storageKey: string) {
     return readCachedObjectUrl(target, expected);
 }
 
-/** 同步读取本会话内存中的 Blob URL，命中时节点首帧即可上屏，不必等 IndexedDB 异步读取。 */
+/** 同步讀取本會話記憶體中的 Blob URL，命中時節點首幀即可上屏，不必等 IndexedDB 非同步讀取。 */
 export function peekCachedResourceObjectUrl(storageKey: string) {
     const resourceId = resourceIdFromStorageKey(storageKey);
     if (!resourceId) return "";
@@ -85,8 +85,8 @@ export async function cacheResourceObjectUrl(storageKey: string, reload = false,
 }
 
 /**
- * 播放器先使用支持 Range 的资源 URL 起播；确认用户实际播放后，再延迟下载完整 Blob。
- * 这样不会让 IndexedDB 缓存阻塞首帧，同时后续打开可直接复用本地 Object URL。
+ * 播放器先使用支援 Range 的資源 URL 起播；確認使用者實際播放後，再延遲下載完整 Blob。
+ * 這樣不會讓 IndexedDB 快取阻塞首幀，同時後續開啟可直接複用本地 Object URL。
  */
 export function scheduleResourceBlobCache(storageKey: string, delayMs = 4_000) {
     const expected = captureUserScope();
@@ -99,8 +99,8 @@ export function scheduleResourceBlobCache(storageKey: string, delayMs = 4_000) {
             return cacheResourceObjectUrl(storageKey);
         })
             .catch((error) => {
-                // 这是播放后的后台缓存优化，不应让播放器失败；但下载/持久化异常必须可观测。
-                console.warn("后台缓存资源 Blob 失败", { storageKey, error });
+                // 這是播放後的後臺快取最佳化，不應讓播放器失敗；但下載/持久化異常必須可觀測。
+                console.warn("後臺快取資源 Blob 失敗", { storageKey, error });
                 return "";
             })
             .finally(() => scheduled.delete(requestKey));
@@ -179,17 +179,17 @@ async function downloadResourceBlob(storageKey: string, target: ResourceCacheMet
 
 function enqueuePersist(target: ResourceCacheMeta, blob: Blob) {
     const task = persistQueue.then(() => persistBlob(target, blob));
-    // IndexedDB 缓存是读性能优化，不得反向判定服务端资源上传失败；但失败必须可观测，
-    // 并把队列恢复为 fulfilled，避免一个坏条目永久阻断后续缓存写入。
+    // IndexedDB 快取是讀效能最佳化，不得反向判定服務端資源上傳失敗；但失敗必須可觀測，
+    // 並把佇列恢復為 fulfilled，避免一個壞條目永久阻斷後續快取寫入。
     const observed = task.catch((error) => {
-        console.warn("媒体缓存持久化失败，当前会话仍可继续读取", { resourceId: target.resourceId, version: target.version, error });
+        console.warn("媒體快取持久化失敗，當前會話仍可繼續讀取", { resourceId: target.resourceId, version: target.version, error });
     });
     persistQueue = observed;
     return observed;
 }
 
 async function persistBlob(target: ResourceCacheMeta, blob: Blob) {
-    // 不尝试写入超过当前缓存预算的单个媒体，避免触发浏览器配额异常和无效的全量淘汰。
+    // 不嘗試寫入超過當前快取預算的單個媒體，避免觸發瀏覽器配額異常和無效的全量淘汰。
     if (blob.size > (await cacheBudget())) return;
     await evictFor(blob.size, target.key);
 
@@ -208,8 +208,8 @@ async function persistBlob(target: ResourceCacheMeta, blob: Blob) {
         invalidateCacheStats();
         return;
     } catch (firstError) {
-        // 第一次失败通常意味着浏览器配额不足；激进淘汰后只允许再尝试一次，
-        // 避免缓存层无限重试拖慢资源读取，也不把缓存失败误报成服务端资源失败。
+        // 第一次失敗通常意味著瀏覽器配額不足；激進淘汰後只允許再嘗試一次，
+        // 避免快取層無限重試拖慢資源讀取，也不把快取失敗誤報成服務端資源失敗。
         await evictFor(blob.size, target.key, true);
         try {
             await write();
@@ -219,7 +219,7 @@ async function persistBlob(target: ResourceCacheMeta, blob: Blob) {
             const cleanupResults = await Promise.allSettled([blobStore.removeItem(target.key), metaStore.removeItem(target.key)]);
             const cleanupError = cleanupResults.find((result): result is PromiseRejectedResult => result.status === "rejected")?.reason;
             if (cleanupError) {
-                console.error("媒体缓存写入失败后的清理也失败", {
+                console.error("媒體快取寫入失敗後的清理也失敗", {
                     resourceId: target.resourceId,
                     version: target.version,
                     firstError,
@@ -249,7 +249,7 @@ async function readPersistedBlob(target: ResourceCacheMeta) {
     try {
         return await blobStore.getItem<Blob>(target.key);
     } catch (error) {
-        console.warn("媒体缓存读取失败，重新下载资源", { resourceId: target.resourceId, error });
+        console.warn("媒體快取讀取失敗，重新下載資源", { resourceId: target.resourceId, error });
         return null;
     }
 }
@@ -257,10 +257,10 @@ async function readPersistedBlob(target: ResourceCacheMeta) {
 function cacheTarget(storageKey: string, userScope: string): ResourceCacheMeta | null {
     const resourceId = resourceIdFromStorageKey(storageKey);
     if (!resourceId) return null;
-    // 本地桌面工作区没有登录用户，guest 只是本地命名空间，不代表
-    // 禁止访问资源。资源文件接口本身仍负责桌面令牌鉴权。
-    // resource ID 是不可变资源的稳定标识，文件接口本身负责鉴权。
-    // 缓存初始化不能先对每个资源读取一遍元数据，否则首屏会重新形成 N+1 请求。
+    // 本地桌面工作區沒有登入使用者，guest 只是本地名稱空間，不代表
+    // 禁止訪問資源。資原始檔介面本身仍負責桌面令牌鑑權。
+    // resource ID 是不可變資源的穩定標識，檔案介面本身負責鑑權。
+    // 快取初始化不能先對每個資源讀取一遍後設資料，否則首屏會重新形成 N+1 請求。
     const version = "file";
     return {
         key: `${userScope}:${resourceId}:${version}`,
@@ -275,8 +275,8 @@ function cacheTarget(storageKey: string, userScope: string): ResourceCacheMeta |
 
 async function touchCacheMeta(target: ResourceCacheMeta) {
     const now = Date.now();
-    // 同一会话内重复访问不落 IndexedDB：淘汰扫描在写入时才需要元数据，
-    // 内存时间戳足够让高频读取跳过跨进程 I/O。
+    // 同一會話內重複訪問不落 IndexedDB：淘汰掃描在寫入時才需要後設資料，
+    // 記憶體時間戳足夠讓高頻讀取跳過跨程式 I/O。
     const lastTouchedAt = metaTouchedAt.get(target.key);
     if (lastTouchedAt && now - lastTouchedAt < TOUCH_INTERVAL_MS) return;
     metaTouchedAt.set(target.key, now);
@@ -288,23 +288,23 @@ async function touchCacheMeta(target: ResourceCacheMeta) {
 
 function touchCacheMetaSafely(target: ResourceCacheMeta) {
     void touchCacheMeta(target).catch((error) => {
-        // 访问时间只服务于缓存淘汰，不影响资源读取；失败可降级，但不能无痕吞掉。
+        // 訪問時間只服務於快取淘汰，不影響資源讀取；失敗可降級，但不能無痕吞掉。
         if (cacheMetaTouchWarnings.has(target.key)) return;
         cacheMetaTouchWarnings.add(target.key);
-        console.warn("更新资源缓存访问时间失败", { storageKey: target.key, error });
+        console.warn("更新資源快取訪問時間失敗", { storageKey: target.key, error });
     });
 }
 
-// 条目数/字节数与存储配额在内存中跟踪，常规写入只做 O(1) 检查，
-// 只有接近预算才执行全量 LRU 扫描，避免每张图持久化都 iterate 全部元数据。
+// 條目數/位元組數與儲存配額在記憶體中跟蹤，常規寫入只做 O(1) 檢查，
+// 只有接近預算才執行全量 LRU 掃描，避免每張圖持久化都 iterate 全部後設資料。
 let cacheStats: { count: number; bytes: number } | null = null;
 let cachedBudget: { value: number; at: number } | null = null;
 
 async function evictFor(incomingBytes: number, protectedKey: string, aggressive = false) {
     const entryCount = await metaStore.length().catch(() => 0);
     const budget = aggressive ? Math.max(MIN_CACHE_BYTES, (await cacheBudget()) / 2) : await cacheBudget();
-    // 常规写入只在统计可信或明显未接近阈值时跳过全表扫描；写入会使内存统计失效，
-    // 因此不会用可能过时的字节数做永久放行。
+    // 常規寫入只在統計可信或明顯未接近閾值時跳過全表掃描；寫入會使記憶體統計失效，
+    // 因此不會用可能過時的位元組數做永久放行。
     if (!aggressive) {
         if (cacheStats && cacheStats.count < MAX_CACHE_ENTRIES && cacheStats.bytes + incomingBytes <= budget) return;
         if (!cacheStats && entryCount < MAX_CACHE_ENTRIES - 10 && incomingBytes < budget / 10) return;
@@ -315,7 +315,7 @@ async function evictFor(incomingBytes: number, protectedKey: string, aggressive 
     });
     let total = metas.reduce((sum, item) => sum + Math.max(0, item.size || 0), 0);
     let count = metas.length;
-    // 当前页面正在使用的 Blob URL 不能在 LRU 清理时撤销，否则已渲染节点会立即变成失效资源。
+    // 當前頁面正在使用的 Blob URL 不能在 LRU 清理時撤銷，否則已渲染節點會立即變成失效資源。
     const candidates = metas.filter((item) => item.key !== protectedKey && !objectUrls.has(item.key) && !sessionBlobs.has(item.key)).sort((a, b) => a.lastAccessedAt - b.lastAccessedAt);
     for (const candidate of candidates) {
         if (total + incomingBytes <= budget && count < MAX_CACHE_ENTRIES) break;
@@ -339,7 +339,7 @@ async function removeCacheEntry(meta: ResourceCacheMeta) {
 }
 
 async function cacheBudget() {
-    // 配额估计是跨进程调用且会话内基本稳定，短暂缓存避免每张图一次 IPC 往返。
+    // 配額估計是跨程式呼叫且會話內基本穩定，短暫快取避免每張圖一次 IPC 往返。
     if (cachedBudget && Date.now() - cachedBudget.at < BUDGET_REFRESH_MS) return cachedBudget.value;
     let value = FALLBACK_CACHE_BYTES;
     if (navigator.storage?.estimate) {

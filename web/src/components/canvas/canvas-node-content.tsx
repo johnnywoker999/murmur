@@ -102,7 +102,7 @@ export function CanvasNodeContent(props: CanvasNodeContentProps) {
 function PluginCanvasNodeContent({ node, theme, renderer, schema }: CanvasNodeContentProps & { renderer: "declarative" | "sandbox"; schema: Record<string, unknown> }) {
     if (renderer === "sandbox") {
         return <div className="flex h-full w-full items-center justify-center p-4 text-center text-xs" style={{ color: theme.node.placeholder }}>
-            插件节点等待隔离运行时
+            外掛節點等待隔離執行時
         </div>;
     }
     const data = node.metadata?.pluginData || {};
@@ -111,12 +111,12 @@ function PluginCanvasNodeContent({ node, theme, renderer, schema }: CanvasNodeCo
         {fields.length ? fields.map((field) => <div key={field} className="flex flex-col gap-1">
             <span className="font-medium opacity-60">{field}</span>
             <span className="whitespace-pre-wrap break-words opacity-90">{formatPluginValue(data[field] ?? (field === "content" ? node.metadata?.content : undefined))}</span>
-        </div>) : <span className="whitespace-pre-wrap break-words">{node.metadata?.content || "插件节点"}</span>}
+        </div>) : <span className="whitespace-pre-wrap break-words">{node.metadata?.content || "外掛節點"}</span>}
     </div>;
 }
 
 function formatPluginValue(value: unknown) {
-    if (value === undefined || value === null || value === "") return "未设置";
+    if (value === undefined || value === null || value === "") return "未設定";
     return typeof value === "string" ? value : JSON.stringify(value);
 }
 
@@ -159,7 +159,7 @@ function DrawingContent({ node, theme, drawingProjectId }: CanvasNodeContentProp
             }
             objectUrl = URL.createObjectURL(preview);
             setPreviewUrl(objectUrl);
-        }).catch((error) => console.warn("读取绘图节点预览失败", error));
+        }).catch((error) => console.warn("讀取繪圖節點預覽失敗", error));
         return () => {
             active = false;
             if (objectUrl) URL.revokeObjectURL(objectUrl);
@@ -169,21 +169,21 @@ function DrawingContent({ node, theme, drawingProjectId }: CanvasNodeContentProp
     return (
         <div className="relative h-full w-full overflow-hidden" style={{ background: theme.node.panel, color: theme.node.text }}>
             {previewUrl ? (
-                <img src={previewUrl} alt="绘图预览" className="absolute inset-0 h-full w-full object-cover" draggable={false} />
+                <img src={previewUrl} alt="繪圖預覽" className="absolute inset-0 h-full w-full object-cover" draggable={false} />
             ) : (
                 <div className="absolute inset-0 grid place-items-center" style={{ background: theme.node.panel, backgroundImage: `radial-gradient(circle, ${theme.node.stroke} 1px, transparent 1px)`, backgroundSize: "18px 18px" }}>
                     <div className="flex flex-col items-center gap-2 rounded-[var(--r-lg)] px-4 py-3" style={{ border: `1px solid ${theme.node.edge}`, background: theme.node.fill, color: theme.node.muted }}>
                         <span className="grid size-10 place-items-center rounded-[var(--r-md)]" style={{ background: theme.toolbar.panel, border: `1px solid ${theme.node.edge}`, color: theme.node.text }}>
                             <Pencil className="size-5" />
                         </span>
-                        <span className="text-[var(--fs-tiny)] font-medium">打开绘图</span>
+                        <span className="text-[var(--fs-tiny)] font-medium">開啟繪圖</span>
                     </div>
                 </div>
             )}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 px-4 pb-3 pt-12" style={{ background: `linear-gradient(to top, ${theme.node.fill}, ${theme.node.fill}e6 55%, transparent)` }}>
                 <div className="min-w-0">
-                    <div className="truncate text-xs font-semibold" title={node.title || "绘图"}>{node.title || "绘图"}</div>
-                    <div className="mt-0.5 text-[var(--fs-tiny)]" style={{ color: theme.node.muted }}>{shapeCount} 个图形 · {pageCount} 个页面</div>
+                    <div className="truncate text-xs font-semibold" title={node.title || "繪圖"}>{node.title || "繪圖"}</div>
+                    <div className="mt-0.5 text-[var(--fs-tiny)]" style={{ color: theme.node.muted }}>{shapeCount} 個圖形 · {pageCount} 個頁面</div>
                 </div>
                 <Pencil className="size-3.5 shrink-0" style={{ color: theme.accent.primary }} />
             </div>
@@ -210,7 +210,7 @@ function LoadingContent({ node, theme, onOpenTaskDetails, onCancelTask }: Pick<C
     const now = useSecondTick(hasTaskIdentity);
     const createdAt = node.metadata?.taskCreatedAt;
     const createdAtMs = createdAt ? new Date(createdAt).getTime() : Number.NaN;
-    const elapsed = Number.isFinite(createdAtMs) ? `已用 ${formatGenerationElapsed(now - createdAtMs)}` : "刚刚开始";
+    const elapsed = Number.isFinite(createdAtMs) ? `已用 ${formatGenerationElapsed(now - createdAtMs)}` : "剛剛開始";
     const progressKey = taskId || node.id;
     const progressRecord = progress !== null ? rememberProgressChange(progressKey, progress, now) : undefined;
     const generationView = generationProgressDisplay({
@@ -229,7 +229,7 @@ function LoadingContent({ node, theme, onOpenTaskDetails, onCancelTask }: Pick<C
     return (
         <div className="flex h-full w-full flex-col items-center justify-center gap-2.5 px-5 text-center" style={{ background: theme.node.fill, color: theme.node.activeStroke }}>
             {submissionUncertain ? <AlertCircle className="size-10" /> : <div className="size-10 animate-spin rounded-full border-2" style={{ borderColor: theme.node.stroke, borderTopColor: theme.node.activeStroke }} />}
-            <span className="text-[var(--fs-tiny)] font-semibold">{delivery?.title || (fetchingResult ? "正在取回结果" : "生成中")}</span>
+            <span className="text-[var(--fs-tiny)] font-semibold">{delivery?.title || (fetchingResult ? "正在取回結果" : "生成中")}</span>
             {hasTaskIdentity ? (
                 <div className="flex w-full max-w-[210px] flex-col items-center gap-1.5">
                     {fetchingResult ? null : (
@@ -244,15 +244,15 @@ function LoadingContent({ node, theme, onOpenTaskDetails, onCancelTask }: Pick<C
                         </div>
                     ) : null}
                     {progressView.bar === "indeterminate" ? (
-                        <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ background: theme.node.stroke }} role="progressbar" aria-label={fetchingResult ? "正在取回结果" : "仍在生成"}>
+                        <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ background: theme.node.stroke }} role="progressbar" aria-label={fetchingResult ? "正在取回結果" : "仍在生成"}>
                             <div className="canvas-node-progress-indeterminate h-full rounded-full" style={{ background: theme.node.activeStroke }} />
                         </div>
                     ) : null}
                     {delivery?.detail ? <div className="max-w-full truncate text-[var(--fs-tiny)] tabular-nums" style={{ color: theme.node.muted }}>{delivery.detail}</div> : null}
                     <div className="mt-0.5 flex items-center gap-1.5">
-                        <button type="button" className="inline-flex h-7 items-center gap-1 rounded-[var(--r-sm)] px-2 text-[var(--fs-tiny)] font-medium transition-colors" style={{ background: theme.toolbar.itemHover, color: theme.node.text }} onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); onOpenTaskDetails?.(node); }}><FileText className="size-3" />详情</button>
+                        <button type="button" className="inline-flex h-7 items-center gap-1 rounded-[var(--r-sm)] px-2 text-[var(--fs-tiny)] font-medium transition-colors" style={{ background: theme.toolbar.itemHover, color: theme.node.text }} onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); onOpenTaskDetails?.(node); }}><FileText className="size-3" />詳情</button>
                         {onCancelTask && (displayTask.status === "queued" || displayTask.status === "running" || displayTask.status === "succeeded") ? (
-                            <button type="button" className="inline-flex h-7 items-center gap-1 rounded-[var(--r-sm)] px-2 text-[var(--fs-tiny)] font-medium transition-colors" style={{ background: theme.toolbar.itemHover, color: theme.node.muted }} onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); onCancelTask(node); }} aria-label={displayTask.status === "succeeded" ? "停止取回结果" : "取消生成任务"}>
+                            <button type="button" className="inline-flex h-7 items-center gap-1 rounded-[var(--r-sm)] px-2 text-[var(--fs-tiny)] font-medium transition-colors" style={{ background: theme.toolbar.itemHover, color: theme.node.muted }} onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); onCancelTask(node); }} aria-label={displayTask.status === "succeeded" ? "停止取回結果" : "取消生成任務"}>
                                 <Square className="size-3" />{displayTask.status === "succeeded" ? "停止取回" : "取消"}
                             </button>
                         ) : null}
@@ -273,8 +273,8 @@ function useSecondTick(active: boolean) {
     return Date.now();
 }
 
-// 上游百分比最后一次变化的时间，按任务记在内存里。节点滚出视口再回来
-// 重新挂载时不会把「久未变化」清零；上限防止长会话里无限增长。
+// 上游百分比最後一次變化的時間，按任務記在記憶體裡。節點滾出視口再回來
+// 重新掛載時不會把「久未變化」清零；上限防止長會話裡無限增長。
 const progressChangeByTask = new Map<string, GenerationProgressRecord>();
 const PROGRESS_CHANGE_LIMIT = 200;
 
@@ -325,7 +325,7 @@ function ErrorContent({ node, theme, onRetry, onReloadResource, onOpenTaskDetail
                     context={{ taskId: node.metadata?.taskId, model: node.metadata?.model, createdAt: node.metadata?.taskCreatedAt, stage: node.metadata?.taskStage, providerRequestId: node.metadata?.taskProviderRequestId, failureDiagnostics: node.metadata?.taskFailureDiagnostics, errorSummary: node.metadata?.generationErrorSummary, completedAt: node.metadata?.taskCompletedAt, updatedAt: node.metadata?.taskUpdatedAt }}
                     onOpenDetails={node.metadata?.taskId && onOpenTaskDetails ? () => onOpenTaskDetails(node) : undefined}
                     onRetry={!localDepthAction && (submissionUncertain || explanation.uncertain || explanation.category === "download_failed") ? undefined : onRetry ? () => onRetry(node) : undefined}
-                    retryLabel={explanation.category === "result_target_unavailable" ? "生成历史" : localDepthAction && node.metadata?.taskStatus === "succeeded" ? "恢复结果" : node.metadata?.isBatchRoot ? "重新生成失败项" : "重新生成"}
+                    retryLabel={explanation.category === "result_target_unavailable" ? "生成歷史" : localDepthAction && node.metadata?.taskStatus === "succeeded" ? "恢復結果" : node.metadata?.isBatchRoot ? "重新生成失敗項" : "重新生成"}
                 />
             </div>
             {node.metadata?.resourceReloadAvailable ? (
@@ -337,7 +337,7 @@ function ErrorContent({ node, theme, onRetry, onReloadResource, onOpenTaskDetail
                     onMouseDown={(event) => event.stopPropagation()}
                 >
                     <Download className="size-3.5" />
-                    继续取回
+                    繼續取回
                 </button>
             ) : null}
         </div>
@@ -345,7 +345,7 @@ function ErrorContent({ node, theme, onRetry, onReloadResource, onOpenTaskDetail
 }
 
 function UnknownNodeContent({ theme }: Pick<CanvasNodeContentProps, "theme">) {
-    return <div className="flex h-full w-full items-center justify-center text-sm" style={{ color: theme.node.placeholder }}>未知节点</div>;
+    return <div className="flex h-full w-full items-center justify-center text-sm" style={{ color: theme.node.placeholder }}>未知節點</div>;
 }
 
 function TextContent({ node, theme, isEditingContent, textareaRef, mentionReferences, onContentChange, onStopEditing }: CanvasNodeContentProps) {
@@ -430,23 +430,23 @@ function SkillContent({ node, theme }: CanvasNodeContentProps) {
                 <div className="line-clamp-4 whitespace-pre-wrap break-words">{template || "未配置技能模板"}</div>
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
-                {tags.length ? tags.map((tag) => <span key={tag} className="rounded-[var(--r-sm)] bg-black/5 px-1.5 py-0.5 text-[var(--fs-tiny)] dark:bg-white/6" style={{ color: theme.node.muted }}>{tag}</span>) : <span className="text-[var(--fs-label)]" style={{ color: theme.node.muted }}>连接到图片、视频、音频或文本节点后生效</span>}
+                {tags.length ? tags.map((tag) => <span key={tag} className="rounded-[var(--r-sm)] bg-black/5 px-1.5 py-0.5 text-[var(--fs-tiny)] dark:bg-white/6" style={{ color: theme.node.muted }}>{tag}</span>) : <span className="text-[var(--fs-label)]" style={{ color: theme.node.muted }}>連線到圖片、影片、音訊或文本節點後生效</span>}
             </div>
         </div>
     );
 }
 
 function skillCategoryLabel(category?: string) {
-    if (category === "writing") return "剧情";
-    if (category === "storyboard") return "分镜";
-    if (category === "image") return "生图";
-    if (category === "video") return "视频";
+    if (category === "writing") return "劇情";
+    if (category === "storyboard") return "分鏡";
+    if (category === "image") return "生圖";
+    if (category === "video") return "影片";
     return "通用";
 }
 
 function skillOutputModeLabel(mode?: string) {
     if (mode === "json") return "JSON";
-    if (mode === "image_prompt") return "生图提示词";
+    if (mode === "image_prompt") return "生圖提示詞";
     if (mode === "workflow") return "工作流";
     return "文本";
 }
@@ -472,7 +472,7 @@ function EmptyImageContent({ node, theme, isBatchRoot, batchCount, batchPreviewN
             {isCharacterReference ? (
                 <div className="max-w-[80%] text-center">
                     <div className="truncate text-xs font-medium" title={node.metadata?.characterName || node.title} style={{ color: theme.node.muted }}>{node.metadata?.characterName || node.title}</div>
-                    <div className="mt-1 text-[var(--fs-tiny)] tracking-[0.12em] opacity-50">多视角参考 · 待生成</div>
+                    <div className="mt-1 text-[var(--fs-tiny)] tracking-[0.12em] opacity-50">多視角參考 · 待生成</div>
                 </div>
             ) : null}
         </div>
@@ -540,12 +540,12 @@ function VideoNodeContent({ node, theme, mediaActive = false, onMediaPlayRequest
             <div className={`absolute inset-0 ${presentation.showPoster ? "opacity-100" : "opacity-0"}`}>
                 <InactiveVideoPreview node={node} theme={theme} onPlay={() => onMediaPlayRequest?.(node.id)} hoverEnabled={!mediaActive} showPlayButton={!mediaActive} />
             </div>
-            {presentation.showLoading ? <div role="status" className="pointer-events-none absolute inset-0 z-[var(--node-z-overlay)] flex flex-col items-center justify-center gap-2 bg-black/15 text-white/75"><LoaderCircle className="size-5 animate-spin" /><span className="text-xs">{loading ? "正在准备视频预览" : "正在加载视频"}</span></div> : null}
-            {error ? <div role="status" className="absolute inset-0 z-[var(--node-z-overlay)] flex flex-col items-center justify-center gap-3 bg-black/80 px-4 text-center text-xs text-white/80"><span>{error}</span><button type="button" data-canvas-no-zoom className="rounded border px-3 py-1" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); retry(); }}>重新加载</button></div> : null}
-            {playbackError ? <div role="status" className="absolute inset-0 z-[var(--node-z-overlay)] grid place-items-center bg-black/80 px-4 text-center text-xs text-white/80">视频已导入，当前无法播放预览。原文件仍可下载和使用。</div> : null}
+            {presentation.showLoading ? <div role="status" className="pointer-events-none absolute inset-0 z-[var(--node-z-overlay)] flex flex-col items-center justify-center gap-2 bg-black/15 text-white/75"><LoaderCircle className="size-5 animate-spin" /><span className="text-xs">{loading ? "正在準備影片預覽" : "正在載入影片"}</span></div> : null}
+            {error ? <div role="status" className="absolute inset-0 z-[var(--node-z-overlay)] flex flex-col items-center justify-center gap-3 bg-black/80 px-4 text-center text-xs text-white/80"><span>{error}</span><button type="button" data-canvas-no-zoom className="rounded border px-3 py-1" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); retry(); }}>重新載入</button></div> : null}
+            {playbackError ? <div role="status" className="absolute inset-0 z-[var(--node-z-overlay)] grid place-items-center bg-black/80 px-4 text-center text-xs text-white/80">影片已匯入，當前無法播放預覽。原檔案仍可下載和使用。</div> : null}
             {mediaActive && url ? (
                 <div className={`absolute ${presentation.showVideo ? "opacity-100" : "pointer-events-none opacity-0"}`} style={{ width: fitWidth, height: Math.round(fitHeight) }}>
-                    <VideoPlayer key={retryEpoch} src={url} mimeType={compatible ? "video/mp4" : node.metadata?.mimeType} title={node.title || "视频"} hasAudio={inferVideoHasAudio(node.metadata)} autoPlay preload="metadata" brandColor={theme.accent.primary} className="h-full w-full rounded-[var(--node-radius)] bg-black" dataCanvasNoZoom compactControls onFirstFramePresented={() => setFirstFramePresented(true)} onError={() => { if (!requestCompatible()) setPlaybackError(true); }} onPlay={() => scheduleResourceBlobCache(node.metadata?.storageKey || "")} />
+                    <VideoPlayer key={retryEpoch} src={url} mimeType={compatible ? "video/mp4" : node.metadata?.mimeType} title={node.title || "影片"} hasAudio={inferVideoHasAudio(node.metadata)} autoPlay preload="metadata" brandColor={theme.accent.primary} className="h-full w-full rounded-[var(--node-radius)] bg-black" dataCanvasNoZoom compactControls onFirstFramePresented={() => setFirstFramePresented(true)} onError={() => { if (!requestCompatible()) setPlaybackError(true); }} onPlay={() => scheduleResourceBlobCache(node.metadata?.storageKey || "")} />
                     {activeEntry && activeEntry.text.trim() ? <CanvasSubtitleOverlay text={activeEntry.text} highlight={activeHighlight} style={subtitleStyle} /> : null}
                 </div>
             ) : null}
@@ -568,25 +568,25 @@ function VideoRetakeNodeContent({ node, theme, mediaActive = false, onMediaPlayR
             <div className="relative min-h-0 flex-[0.78] overflow-hidden">
                 <VideoNodeContent {...({ node: playbackNode, theme, mediaActive, onMediaPlayRequest } as CanvasNodeContentProps)} />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[var(--node-z-overlay)] space-y-1 bg-gradient-to-t from-black/85 to-transparent px-3 pb-2 pt-8 text-[var(--fs-tiny)]">
-                    <div className="flex items-center justify-between"><span>回放进度</span><span>{Math.round(progress)}s</span></div>
-                    <input aria-label="回放进度" className="pointer-events-auto h-1 w-full accent-white" type="range" min={0} max={Math.max(1, Math.round((node.metadata?.durationMs || 1000) / 1000))} value={Math.min(progress, Math.max(1, Math.round((node.metadata?.durationMs || 1000) / 1000)))} onChange={(event) => setProgress(Number(event.target.value))} />
+                    <div className="flex items-center justify-between"><span>回放進度</span><span>{Math.round(progress)}s</span></div>
+                    <input aria-label="回放進度" className="pointer-events-auto h-1 w-full accent-white" type="range" min={0} max={Math.max(1, Math.round((node.metadata?.durationMs || 1000) / 1000))} value={Math.min(progress, Math.max(1, Math.round((node.metadata?.durationMs || 1000) / 1000)))} onChange={(event) => setProgress(Number(event.target.value))} />
                 </div>
             </div>
             <div className="min-h-0 flex-1 space-y-2 overflow-auto border-t border-white/10 bg-[#171717] px-3 py-2 text-[var(--fs-tiny)]" onPointerDown={(event) => event.stopPropagation()} onWheel={(event) => event.stopPropagation()}>
-                <div className="flex items-center justify-between"><span className="font-medium">{count}/5 个片段</span><span className="opacity-60">片段重拍</span></div>
+                <div className="flex items-center justify-between"><span className="font-medium">{count}/5 個片段</span><span className="opacity-60">片段重拍</span></div>
                 <div className="flex items-center gap-1">
-                    {(["reference", "mark", "character"] as const).map((mode) => <button key={mode} type="button" className={`rounded px-2 py-1 ${referenceMode === mode ? "bg-white/16 text-white" : "text-white/65 hover:bg-white/8"}`} onClick={() => updateMetadata?.(node.id, { videoRetakeReferenceMode: mode })}>{mode === "reference" ? "参考" : mode === "mark" ? "标记" : "角色库"}</button>)}
+                    {(["reference", "mark", "character"] as const).map((mode) => <button key={mode} type="button" className={`rounded px-2 py-1 ${referenceMode === mode ? "bg-white/16 text-white" : "text-white/65 hover:bg-white/8"}`} onClick={() => updateMetadata?.(node.id, { videoRetakeReferenceMode: mode })}>{mode === "reference" ? "參考" : mode === "mark" ? "標記" : "角色庫"}</button>)}
                 </div>
                 <div className="flex flex-wrap items-center gap-1.5">
                     {segments.length ? segments.slice(0, 5).map((segment, index) => <button key={`${segment.startMs}-${segment.endMs}`} type="button" className="rounded bg-white/10 px-1.5 py-0.5 text-white/85" onClick={() => setProgress(Math.round(segment.startMs / 1000))}>{index + 1} {((segment.endMs - segment.startMs) / 1000).toFixed(1)}s</button>) : <span className="rounded bg-white/10 px-1.5 py-0.5 text-white/70">1 {((node.metadata?.durationMs || 0) / 1000).toFixed(1)}s</span>}
                 </div>
-                <textarea aria-label="片段重拍提示词" className="min-h-10 w-full resize-none rounded border border-white/10 bg-black/20 px-2 py-1.5 text-[var(--fs-tiny)] text-white outline-none placeholder:text-white/40 focus:border-white/30" placeholder="留空＝原样重跑一次；也可以写要改什么，例如：把黄色台灯换成白色台灯" value={node.metadata?.prompt || ""} onChange={(event) => updateMetadata?.(node.id, { prompt: event.target.value })} />
-                <div className="flex items-center gap-1.5"><button type="button" className="rounded bg-white/10 px-2 py-1" onClick={() => undefined}>2.5</button><button type="button" className="rounded bg-white/10 px-2 py-1" onClick={() => undefined}>720P · 1个 ·</button><span className="ml-auto text-white/55">1380</span></div>
-                <button type="button" className="text-white/70" onClick={() => undefined}>高级设置</button>
+                <textarea aria-label="片段重拍提示詞" className="min-h-10 w-full resize-none rounded border border-white/10 bg-black/20 px-2 py-1.5 text-[var(--fs-tiny)] text-white outline-none placeholder:text-white/40 focus:border-white/30" placeholder="留空＝原樣重跑一次；也可以寫要改什麼，例如：把黃色檯燈換成白色檯燈" value={node.metadata?.prompt || ""} onChange={(event) => updateMetadata?.(node.id, { prompt: event.target.value })} />
+                <div className="flex items-center gap-1.5"><button type="button" className="rounded bg-white/10 px-2 py-1" onClick={() => undefined}>2.5</button><button type="button" className="rounded bg-white/10 px-2 py-1" onClick={() => undefined}>720P · 1個 ·</button><span className="ml-auto text-white/55">1380</span></div>
+                <button type="button" className="text-white/70" onClick={() => undefined}>進階設定</button>
                 <div className="space-y-1 border-t border-white/10 pt-1.5">
-                    <ToggleLine label="联网搜索" value={webSearch} onChange={(value) => updateMetadata?.(node.id, { videoRetakeWebSearch: value })} />
-                    <ToggleLine label="自动校验素材" value={autoValidate} onChange={(value) => updateMetadata?.(node.id, { videoRetakeAutoValidate: value })} />
-                    <ToggleLine label="智能引用 AutoLink" value={autoLink} onChange={(value) => updateMetadata?.(node.id, { videoRetakeAutoLink: value })} />
+                    <ToggleLine label="聯網搜尋" value={webSearch} onChange={(value) => updateMetadata?.(node.id, { videoRetakeWebSearch: value })} />
+                    <ToggleLine label="自動校驗素材" value={autoValidate} onChange={(value) => updateMetadata?.(node.id, { videoRetakeAutoValidate: value })} />
+                    <ToggleLine label="智慧引用 AutoLink" value={autoLink} onChange={(value) => updateMetadata?.(node.id, { videoRetakeAutoLink: value })} />
                 </div>
             </div>
         </div>
@@ -649,18 +649,18 @@ export function InactiveVideoPreview({ node, theme, onPlay, hoverEnabled = true,
 
     if (previewUrl) {
         return <div ref={previewRef} className="group/video-preview relative size-full overflow-hidden rounded-[var(--node-radius)] bg-black">
-            <CachedResourceImage storageKey={derivedPreviewUrl === previewUrl ? undefined : node.metadata?.videoPreview?.storageKey} src={previewUrl} alt={`${node.title || "视频"} 静态预览`} loading="lazy" decoding="async" draggable={false} className="pointer-events-none size-full select-none object-contain" fallback={<InactiveMediaCard icon={<Video className="size-7" />} title={node.title || "视频"} hint="首帧暂不可用，点击播放视频" theme={theme} />} loadingFallback={<InactiveMediaCard icon={<Video className="size-7" />} title={node.title || "视频"} hint="正在读取首帧" theme={theme} />} />
-            {showPlayButton ? <VideoPreviewPlayButton title={node.title || "视频"} onPlay={onPlay} /> : null}
+            <CachedResourceImage storageKey={derivedPreviewUrl === previewUrl ? undefined : node.metadata?.videoPreview?.storageKey} src={previewUrl} alt={`${node.title || "影片"} 靜態預覽`} loading="lazy" decoding="async" draggable={false} className="pointer-events-none size-full select-none object-contain" fallback={<InactiveMediaCard icon={<Video className="size-7" />} title={node.title || "影片"} hint="首幀暫不可用，點選播放影片" theme={theme} />} loadingFallback={<InactiveMediaCard icon={<Video className="size-7" />} title={node.title || "影片"} hint="正在讀取首幀" theme={theme} />} />
+            {showPlayButton ? <VideoPreviewPlayButton title={node.title || "影片"} onPlay={onPlay} /> : null}
         </div>;
     }
     return <div ref={previewRef} className="group/video-preview relative size-full">
-        <InactiveMediaCard icon={<Video className="size-7" />} title={node.title || "视频"} hint={hydrating ? "正在生成首帧" : nearViewport ? "点击播放视频" : "进入视口后加载首帧"} theme={theme} />
-        {showPlayButton ? <VideoPreviewPlayButton title={node.title || "视频"} onPlay={onPlay} /> : null}
+        <InactiveMediaCard icon={<Video className="size-7" />} title={node.title || "影片"} hint={hydrating ? "正在生成首幀" : nearViewport ? "點選播放影片" : "進入視口後載入首幀"} theme={theme} />
+        {showPlayButton ? <VideoPreviewPlayButton title={node.title || "影片"} onPlay={onPlay} /> : null}
     </div>;
 }
 
 function VideoPreviewPlayButton({ title, onPlay }: { title: string; onPlay: () => void }) {
-    return <button type="button" className="absolute left-1/2 top-1/2 z-[var(--node-z-overlay)] grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-black/62 text-white shadow-lg backdrop-blur transition-[transform,background-color,opacity] hover:scale-105 hover:bg-black/78 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" aria-label={`播放 ${title}`} title="播放视频" onPointerDown={(event) => event.stopPropagation()} onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); onPlay(); }}><Play className="ml-0.5 size-5 fill-current" /></button>;
+    return <button type="button" className="absolute left-1/2 top-1/2 z-[var(--node-z-overlay)] grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-black/62 text-white shadow-lg backdrop-blur transition-[transform,background-color,opacity] hover:scale-105 hover:bg-black/78 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" aria-label={`播放 ${title}`} title="播放影片" onPointerDown={(event) => event.stopPropagation()} onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); onPlay(); }}><Play className="ml-0.5 size-5 fill-current" /></button>;
 }
 
 function useVideoPlaybackUrl(node: CanvasNodeData, active: boolean) {
@@ -700,17 +700,17 @@ function ImageContent({ node, theme, scale = 1, isBatchRoot, batchCount, batchPr
     const compactStatus = node.width * scale < 140 || node.height * scale < 80;
 
     /**
-     * 让节点跟随图片真实比例。
+     * 讓節點跟隨圖片真實比例。
      *
-     * 上传接口的 width/height 是可选的（services/api/resources.ts），拿不到时节点会落到
-     * 默认的横向比例，竖图就被放进一个宽盒子、两侧留黑。这里在图片解码后量真实尺寸并校正。
+     * 上傳介面的 width/height 是可選的（services/api/resources.ts），拿不到時節點會落到
+     * 預設的橫向比例，豎圖就被放進一個寬盒子、兩側留黑。這裡在圖片解碼後量真實尺寸並校正。
      *
-     * 判据是「用户有没有手动定过尺寸」，**不是**「有没有量过尺寸」——后者会让所有已经
-     * 存过 naturalWidth 的旧节点永远得不到修正（第一版就是这么写的，所以没生效）。
-     * 手动拉过（manualSize）或自由比例（freeResize）的节点只补记尺寸、不动宽高。
+     * 判據是「使用者有沒有手動定過尺寸」，**不是**「有沒有量過尺寸」——後者會讓所有已經
+     * 存過 naturalWidth 的舊節點永遠得不到修正（第一版就是這麼寫的，所以沒生效）。
+     * 手動拉過（manualSize）或自由比例（freeResize）的節點只補記尺寸、不動寬高。
      */
     const fitToImage = (element: HTMLImageElement) => {
-        // LibTV 已提供原图尺寸和节点尺寸；960px 缩略图不能反向覆盖这些数据。
+        // LibTV 已提供原圖尺寸和節點尺寸；960px 縮圖不能反向覆蓋這些資料。
         if (importedFromLibTV) return;
         const naturalWidth = element.naturalWidth;
         const naturalHeight = element.naturalHeight;
@@ -738,16 +738,16 @@ function ImageContent({ node, theme, scale = 1, isBatchRoot, batchCount, batchPr
         <BatchFrame batchPreviewNodes={batchPreviewNodes} batchCount={isBatchRoot ? batchCount : 0} batchExpanded={batchExpanded} batchOpening={batchOpening} batchRecovering={batchRecovering} theme={theme} onToggleBatch={onToggleBatch}>
             <div ref={imageContainerRef} className="h-full w-full overflow-hidden rounded-[var(--node-radius)]">
                 {error ? (
-                    <div role="status" aria-label="图片加载失败" className="flex size-full items-center justify-center text-center text-xs" style={{ background: theme.node.fill, color: theme.node.text }}>
+                    <div role="status" aria-label="圖片載入失敗" className="flex size-full items-center justify-center text-center text-xs" style={{ background: theme.node.fill, color: theme.node.text }}>
                         <div className="flex flex-col items-center gap-2" style={{ transform: "scale(var(--canvas-live-inverse-scale, 1))", transformOrigin: "center" }}>
-                            {!compactStatus ? <span>图片加载失败</span> : null}
-                            <button type="button" data-canvas-no-zoom aria-label="重新加载图片" title="重新加载图片" className={`inline-flex items-center justify-center gap-1.5 rounded border focus-visible:outline focus-visible:outline-2 ${compactStatus ? "size-7" : "px-3 py-1"}`} style={{ borderColor: theme.node.stroke, color: theme.node.text }} onPointerDown={(event) => event.stopPropagation()} onMouseDown={(event) => event.stopPropagation()} onDoubleClick={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); retry(); }}>
+                            {!compactStatus ? <span>圖片載入失敗</span> : null}
+                            <button type="button" data-canvas-no-zoom aria-label="重新載入圖片" title="重新載入圖片" className={`inline-flex items-center justify-center gap-1.5 rounded border focus-visible:outline focus-visible:outline-2 ${compactStatus ? "size-7" : "px-3 py-1"}`} style={{ borderColor: theme.node.stroke, color: theme.node.text }} onPointerDown={(event) => event.stopPropagation()} onMouseDown={(event) => event.stopPropagation()} onDoubleClick={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); retry(); }}>
                                 <RefreshCw className="size-4 shrink-0" aria-hidden />
-                                {!compactStatus ? "重新加载" : null}
+                                {!compactStatus ? "重新載入" : null}
                             </button>
                         </div>
                     </div>
-                ) : url ? <img src={url} alt={node.title} loading="lazy" decoding="async" draggable={false} onDragStart={(event) => event.preventDefault()} onError={fail} onLoad={(event) => fitToImage(event.currentTarget)} className={`pointer-events-none block h-full w-full select-none ${node.metadata?.freeResize ? "object-fill" : "object-contain"}`} /> : <div role="status" aria-label="正在加载图片" className="grid size-full place-items-center" style={{ background: theme.node.fill, color: theme.node.muted }}><span style={{ transform: "scale(var(--canvas-live-inverse-scale, 1))" }}>{loading ? <LoaderCircle className="size-5 animate-spin" /> : <ImageIcon className="size-5" />}</span></div>}
+                ) : url ? <img src={url} alt={node.title} loading="lazy" decoding="async" draggable={false} onDragStart={(event) => event.preventDefault()} onError={fail} onLoad={(event) => fitToImage(event.currentTarget)} className={`pointer-events-none block h-full w-full select-none ${node.metadata?.freeResize ? "object-fill" : "object-contain"}`} /> : <div role="status" aria-label="正在載入圖片" className="grid size-full place-items-center" style={{ background: theme.node.fill, color: theme.node.muted }}><span style={{ transform: "scale(var(--canvas-live-inverse-scale, 1))" }}>{loading ? <LoaderCircle className="size-5 animate-spin" /> : <ImageIcon className="size-5" />}</span></div>}
             </div>
         </BatchFrame>
     );
@@ -768,8 +768,8 @@ function useNodeResourceUrl(node: CanvasNodeData, eager: boolean) {
             || (node.type === CanvasNodeType.Image && node.metadata?.importSource?.provider === "libtv" ? buildLibTVImagePreviewUrl(content) : content);
     const resourceId = resourceIdFromStorageKey(storageKey);
     const isRemoteResource = Boolean(resourceId);
-    // 远程资源接口受登录/桌面令牌保护，原生 `<img>` 无法附带该令牌。
-    // 重登后只能先通过 cacheResourceObjectUrl() 走鉴权下载，再挂载 Blob URL。
+    // 遠端資源介面受登入/桌面令牌保護，原生 `<img>` 無法附帶該令牌。
+    // 重登後只能先通過 cacheResourceObjectUrl() 走鑑權下載，再掛載 Blob URL。
     const synchronousUrl = eager && isRemoteResource && node.type === CanvasNodeType.Image ? peekCachedResourceObjectUrl(storageKey) : "";
     // Inline data URLs are already local, but decoding thousands of them is
     // still expensive. Images must wait for the same viewport gate as remote
@@ -789,7 +789,7 @@ function useNodeResourceUrl(node: CanvasNodeData, eager: boolean) {
         recordDiagnosticEvent({
             level: code === "CANVAS_IMAGE_RELOAD" ? "info" : "error",
             category: "runtime", code,
-            message: `${code === "CANVAS_IMAGE_DECODE_FAILED" ? "画布图片解码失败" : code === "CANVAS_IMAGE_READ_FAILED" ? "画布图片读取失败" : "重新读取画布图片"} node=${safeNodeId}`,
+            message: `${code === "CANVAS_IMAGE_DECODE_FAILED" ? "畫布圖片解碼失敗" : code === "CANVAS_IMAGE_READ_FAILED" ? "畫布圖片讀取失敗" : "重新讀取畫布圖片"} node=${safeNodeId}`,
             taskId: node.metadata?.taskId,
             route: resourceId && /^[A-Za-z0-9_-]{1,96}$/.test(resourceId) ? `/resources/${resourceId}/file` : undefined,
         });
@@ -834,7 +834,7 @@ function useNodeResourceUrl(node: CanvasNodeData, eager: boolean) {
         }
         setUrl("");
         setLoading(eager);
-        // 只有进入视口或被激活的节点才下载远程媒体；缓存层会复用已有 Blob URL 和 in-flight 请求。
+        // 只有進入視口或被啟用的節點才下載遠端媒體；快取層會複用已有 Blob URL 和 in-flight 請求。
         const resolve = eager ? cacheResourceObjectUrl(storageKey, reload) : getCachedResourceObjectUrl(storageKey);
         void resolve.then((cached) => {
             if (!cancelled && cached) setUrl(cached);
@@ -884,7 +884,7 @@ function BatchPreviewImage({ node }: { node: CanvasNodeData }) {
     const ref = useRef<HTMLDivElement>(null);
     const nearViewport = useNearViewport(ref);
     const { url } = useNodeResourceUrl(node, nearViewport);
-    return <div ref={ref} className="h-full w-full overflow-hidden rounded-[inherit]">{url ? <img src={url} alt={`子图预览：${node.title}`} className="h-full w-full object-contain" draggable={false} /> : null}</div>;
+    return <div ref={ref} className="h-full w-full overflow-hidden rounded-[inherit]">{url ? <img src={url} alt={`子圖預覽：${node.title}`} className="h-full w-full object-contain" draggable={false} /> : null}</div>;
 }
 
 function BatchFrame({ batchCount, batchPreviewNodes, batchExpanded, batchOpening, batchRecovering, theme, onToggleBatch, children }: { batchCount: number; batchPreviewNodes?: CanvasNodeData[]; batchExpanded: boolean; batchOpening: boolean; batchRecovering: boolean; theme: CanvasTheme; onToggleBatch?: () => void; children: ReactNode }) {

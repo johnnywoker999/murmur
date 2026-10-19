@@ -49,7 +49,7 @@ export function buildShotAssetReferenceContext(detail: ProjectDetail, shotId: st
                 audioIndexByResourceId.set(sampleResourceId, audioIndex);
                 referenceAudios.push({
                     id: `project-character-voice:${asset.id}`,
-                    name: `${asset.title}-声音样本`,
+                    name: `${asset.title}-聲音樣本`,
                     type: "audio/*",
                     url: resourceFileUrl(sampleResourceId),
                     storageKey: resourceStorageKey(sampleResourceId),
@@ -87,7 +87,7 @@ export function buildShotAssetReferenceContext(detail: ProjectDetail, shotId: st
 }
 
 export function resolveShotAssetMentionPrompt(prompt: string, context: ShotAssetReferenceContext, options: { dialogue?: string } = {}) {
-    const imageLabelByAssetId = new Map(context.mentionReferences.map((reference, index) => [reference.assetId, `图片${index + 1}`]));
+    const imageLabelByAssetId = new Map(context.mentionReferences.map((reference, index) => [reference.assetId, `圖片${index + 1}`]));
     const unresolved = new Set<string>();
     const resolved = prompt.replace(/@\[asset:([^\]]+)\]/g, (token, assetId: string) => {
         const label = imageLabelByAssetId.get(assetId);
@@ -97,10 +97,10 @@ export function resolveShotAssetMentionPrompt(prompt: string, context: ShotAsset
         }
         return label;
     });
-    if (unresolved.size) throw new Error(`提示词中的 ${Array.from(unresolved).join("、")} 未绑定到当前镜头，请重新选择资产或删除引用`);
+    if (unresolved.size) throw new Error(`提示詞中的 ${Array.from(unresolved).join("、")} 未繫結到當前鏡頭，請重新選擇資產或刪除引用`);
     const dialogueContext = withShotDialogue(context.assetReferences, options.dialogue);
     const assetBlock = compileShotAssetReferencePrompt(dialogueContext.references);
-    const dialogueBlock = dialogueContext.unassignedDialogue ? `【镜头台词】\n\n${dialogueContext.unassignedDialogue}` : "";
+    const dialogueBlock = dialogueContext.unassignedDialogue ? `【鏡頭臺詞】\n\n${dialogueContext.unassignedDialogue}` : "";
     return [resolved.trim(), assetBlock, dialogueBlock].filter(Boolean).join("\n\n");
 }
 
@@ -115,21 +115,21 @@ export function ensureShotAssetMentionPrompt(prompt: string, references: Array<P
         : "";
     const characters = missing.filter((reference) => reference.kind === "character");
     const otherAssets = missing.filter((reference) => reference.kind !== "character");
-    return [value, block("【角色参考】", characters), block("【场景与道具参考】", otherAssets)].filter(Boolean).join("\n\n");
+    return [value, block("【角色參考】", characters), block("【場景與道具參考】", otherAssets)].filter(Boolean).join("\n\n");
 }
 
 export function compileShotAssetReferencePrompt(references: ShotPromptAssetReference[]) {
     if (!references.length) return "";
     const lines = references.flatMap((reference) => {
-        const visualLabel = reference.category === "character" ? "人物参考" : `${projectAssetCategoryLabel(reference.category)}参考`;
-        const media = [`${visualLabel}：图片${reference.imageIndex}`, reference.audioIndex ? `声音参考：音频${reference.audioIndex}` : ""].filter(Boolean).join("；");
+        const visualLabel = reference.category === "character" ? "人物參考" : `${projectAssetCategoryLabel(reference.category)}參考`;
+        const media = [`${visualLabel}：圖片${reference.imageIndex}`, reference.audioIndex ? `聲音參考：音訊${reference.audioIndex}` : ""].filter(Boolean).join("；");
         return [
             `- ${reference.title}：${media}`,
-            reference.voiceDescription ? `  声音画像：${reference.voiceDescription}` : "",
-            reference.dialogue ? `  镜头台词：${reference.dialogue}` : "",
+            reference.voiceDescription ? `  聲音畫像：${reference.voiceDescription}` : "",
+            reference.dialogue ? `  鏡頭臺詞：${reference.dialogue}` : "",
         ].filter(Boolean);
     });
-    return ["【资产参考】", "", ...lines].join("\n");
+    return ["【資產參考】", "", ...lines].join("\n");
 }
 
 function projectAssetReferenceImage(asset: ProjectAsset, reference?: ShotAssetReference): ReferenceImage | undefined {

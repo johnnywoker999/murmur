@@ -42,7 +42,7 @@ const SHIKI_LANGS = [
     "text",
 ] as const;
 
-/** 用户常见语言写法 → shiki 语言名；未知语言回退纯文本（无高亮但外壳不变）。 */
+/** 使用者常見語言寫法 → shiki 語言名；未知語言回退純文本（無高亮但外殼不變）。 */
 const LANGUAGE_ALIASES: Record<string, string> = {
     sh: "shellscript",
     shell: "shellscript",
@@ -103,9 +103,9 @@ function detectLanguage(children: ReactNode, ownClassName?: string): string {
 }
 
 /**
- * 自研代码块：语言标签 + 复制按钮 + 统一圆角/边框/底色；
- * 消息结束后用 shiki 对代码上色（懒加载，github-light/dark 双主题 CSS 变量，
- * 由 .dark 类切换），流式期间保持单色避免逐帧闪烁。
+ * 自研程式碼塊：語言標籤 + 複製按鈕 + 統一圓角/邊框/底色；
+ * 訊息結束後用 shiki 對程式碼上色（懶載入，github-light/dark 雙主題 CSS 變數，
+ * 由 .dark 類切換），流式期間保持單色避免逐幀閃爍。
  */
 export function AiMessageCodeBlock({ children, className, isStreaming = false, ...props }: AiMessageCodeBlockProps) {
     const [copied, setCopied] = useState(false);
@@ -154,9 +154,9 @@ export function AiMessageCodeBlock({ children, className, isStreaming = false, .
         <div className="ai-message-codeblock">
             <div className="ai-message-codeblock-header">
                 <span className="ai-message-codeblock-lang">{language || "code"}</span>
-                <button type="button" className="ai-message-codeblock-copy" aria-label={copied ? "已复制" : "复制代码"} onClick={handleCopy}>
+                <button type="button" className="ai-message-codeblock-copy" aria-label={copied ? "已複製" : "複製程式碼"} onClick={handleCopy}>
                     {copied ? <Check /> : <Copy />}
-                    <span>{copied ? "已复制" : "复制"}</span>
+                    <span>{copied ? "已複製" : "複製"}</span>
                 </button>
             </div>
             {highlightHtml ? (

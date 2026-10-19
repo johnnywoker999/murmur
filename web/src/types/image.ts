@@ -11,12 +11,12 @@ export type ReferenceImage = {
     bytes?: number;
     width?: number;
     height?: number;
-    // 绑定素材录入的火山方舟素材 ID。方舟视频渠道生成时会优先改写为
-    // asset:// 引用，跳过上传同步；其他渠道与本地回退路径忽略此字段。
+    // 繫結素材錄入的火山方舟素材 ID。方舟影片渠道生成時會優先改寫為
+    // asset:// 引用，跳過上傳同步；其他渠道與本地回退路徑忽略此欄位。
     arkAssetId?: string;
-    // 参考图的来源：需要在真正生成时才落地成资源的那几类。
-    // 判别字段是 kind——新增一类时，canvas-node-generation 里的分派也要跟着加分支，
-    // 漏了会静默按普通图片处理（dataUrl 为空 → 参考图丢失）。
+    // 參考圖的來源：需要在真正生成時才落地成資源的那幾類。
+    // 判別欄位是 kind——新增一類時，canvas-node-generation 裡的分派也要跟著加分支，
+    // 漏了會靜默按普通圖片處理（dataUrl 為空 → 參考圖丟失）。
     source?:
         | {
             kind: "drawing";
@@ -26,7 +26,7 @@ export type ReferenceImage = {
         }
         | {
             kind: "colorgrade";
-            /** 上游源图地址 */
+            /** 上游源圖地址 */
             url: string;
             grade: CanvasColorGrade;
         };

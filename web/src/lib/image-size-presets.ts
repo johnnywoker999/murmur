@@ -18,10 +18,10 @@ const standardSizes: Record<string, string[]> = {
 
 export function imagePresetForRatio(tier: ImageResolutionTier, input: string): ImageResolutionOption {
     const match = input.trim().match(/^(\d{1,5})\s*[:：]\s*(\d{1,5})$/);
-    if (!match) throw new Error("请输入宽高比，例如 16:9");
+    if (!match) throw new Error("請輸入寬高比，例如 16:9");
     let w = Number(match[1]),
         h = Number(match[2]);
-    if (!w || !h || Math.max(w, h) / Math.min(w, h) > 3) throw new Error("宽高比必须为正数，且不超过 3:1");
+    if (!w || !h || Math.max(w, h) / Math.min(w, h) > 3) throw new Error("寬高比必須為正數，且不超過 3:1");
     let a = w,
         b = h;
     while (b) [a, b] = [b, a % b];
@@ -33,7 +33,7 @@ export function imagePresetForRatio(tier: ImageResolutionTier, input: string): I
             return width * h === height * w;
         }) || `${w}:${h}`;
     const index = IMAGE_RESOLUTIONS.indexOf(tier);
-    if (index < 0) throw new Error("分辨率仅支持 1K、2K、4K");
+    if (index < 0) throw new Error("解析度僅支援 1K、2K、4K");
     const standard = standardSizes[ratio]?.[index];
     const pixels = [1_048_576, 4_194_304, 8_294_400][index];
     let width = Math.round(Math.sqrt((pixels * w) / h) / 16) * 16;
@@ -61,7 +61,7 @@ export function imageResolutionUsesQuality(profile: ImageCapabilityConfig) {
 }
 
 export function imageTierAvailable(profile: ImageCapabilityConfig, tier: ImageResolutionTier) {
-    // 质量参数能映射档位时按上游质量裁剪；管理员尺寸预设存在时再取交集，避免默认 low/medium/high 把未启用的 1K 显示出来。
+    // 質量引數能對映檔位時按上游質量裁剪；管理員尺寸預設存在時再取交集，避免預設 low/medium/high 把未啟用的 1K 顯示出來。
     if (profile.size.parameter !== "aspect_ratio") return profile.size.parameter !== "none";
     const configuredTiers = new Set(profile.size.presets?.map((preset) => preset.tier));
     if (imageResolutionUsesQuality(profile)) {
@@ -69,8 +69,8 @@ export function imageTierAvailable(profile: ImageCapabilityConfig, tier: ImageRe
         return configuredTiers.size ? configuredTiers.has(tier) : true;
     }
     if (configuredTiers.size) return configuredTiers.has(tier);
-    // 无质量映射且无预设时,后端 filterImageSizePresets 会返回全部预设或空;
-    // 前端不应硬编码 1k 兜底,避免产生后端不认可的幻影选项。
+    // 無質量對映且無預設時,後端 filterImageSizePresets 會返回全部預設或空;
+    // 前端不應硬編碼 1k 兜底,避免產生後端不認可的幻影選項。
     return false;
 }
 

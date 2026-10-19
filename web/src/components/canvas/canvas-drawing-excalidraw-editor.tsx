@@ -14,7 +14,7 @@ export const CanvasDrawingExcalidrawEditor = forwardRef<CanvasDrawingEditorHandl
     useImperativeHandle(ref, () => ({
         createSave: async () => {
             const api = apiRef.current;
-            if (!api) throw new Error("Excalidraw 编辑器尚未准备完成");
+            if (!api) throw new Error("Excalidraw 編輯器尚未準備完成");
             const elements = api.getSceneElementsIncludingDeleted();
             const appState = api.getAppState();
             const files = api.getFiles();

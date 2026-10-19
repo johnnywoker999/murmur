@@ -15,7 +15,7 @@ export function waitForCanvasPreparation<T>(read: () => Promise<T>, signal: Abor
         if (signal.aborted) return abort();
         signal.addEventListener("abort", abort, { once: true });
         timer = setTimeout(() => {
-            const error = new Error("准备生成素材超时，尚未提交生成任务。请检查参考素材后重试。");
+            const error = new Error("準備生成素材超時，尚未提交生成任務。請檢查參考素材後重試。");
             error.name = "CanvasPreparationTimeoutError";
             finish(() => reject(error));
         }, timeoutMs);

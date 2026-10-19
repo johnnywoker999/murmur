@@ -5,29 +5,29 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * ToolButton — 工具激活态按钮（持久切换，可展开面板）。
+ * ToolButton — 工具啟用態按鈕（持久切換，可展開面板）。
  *
- * 用途：工具类按钮——画布工具 Dock、面板工具组：被按下时保持高亮（aria-pressed），
- *   或展开浮层面板（expands → aria-expanded）。active 持久态与 hover/按压态区分
- *   明显，配合画布 ToolDefinition（active/expands/disabled 谓词）渲染。
- * token：active 态 bg-surface-active + text-foreground，常态 bg-transparent +
- *   text-muted-foreground，hover bg-surface-hover；焦点环 ring-ring；
- *   danger 态激活文字用 text-status-error。间距由 size 档位控制。
- * 图标契约：`icon` 传 ReactNode（内联 JSX 或组件元素），与画布 tool-registry 的
- *   ToolDefinition.icon 字段一致（icons 是内联 JSX 如 <Undo2 />）；尺寸由本组件
- *   [&_svg] 规则统一控制。禁传 icon className 改尺寸。
- * 对标：接管画布工具 Dock 中按钮渲染（aria-pressed 语义）；AntD Tooltip+Button
- *   组合的工具按钮场景。参考 BoardUI tool 切换语义。
- * 明暗：全部颜色走 token；active 用按压底语义 token，明暗自动适配。
+ * 用途：工具類按鈕——畫布工具 Dock、面板工具組：被按下時保持高亮（aria-pressed），
+ *   或展開浮層面板（expands → aria-expanded）。active 持久態與 hover/按壓態區分
+ *   明顯，配合畫布 ToolDefinition（active/expands/disabled 謂詞）渲染。
+ * token：active 態 bg-surface-active + text-foreground，常態 bg-transparent +
+ *   text-muted-foreground，hover bg-surface-hover；焦點環 ring-ring；
+ *   danger 態啟用文字用 text-status-error。間距由 size 檔位控制。
+ * 圖示契約：`icon` 傳 ReactNode（內聯 JSX 或元件元素），與畫布 tool-registry 的
+ *   ToolDefinition.icon 欄位一致（icons 是內聯 JSX 如 <Undo2 />）；尺寸由本元件
+ *   [&_svg] 規則統一控制。禁傳 icon className 改尺寸。
+ * 對標：接管畫布工具 Dock 中按鈕渲染（aria-pressed 語義）；AntD Tooltip+Button
+ *   組合的工具按鈕場景。參考 BoardUI tool 切換語義。
+ * 明暗：全部顏色走 token；active 用按壓底語義 token，明暗自動適配。
  */
 export const toolButtonVariants = cva(
     ["inline-flex select-none items-center justify-center gap-1.5 rounded-md", "font-medium transition-colors", "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", "disabled:pointer-events-none disabled:opacity-45"],
     {
         variants: {
             variant: {
-                // 工具条/面板内常规（常态透明，激活常驻底）
+                // 工具條/面板內常規（常態透明，啟用常駐底）
                 ghost: "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
-                // 常驻浅底（面板内分组工具）
+                // 常駐淺底（面板內分組工具）
                 default: "bg-surface-secondary text-muted-foreground hover:bg-surface-hover hover:text-foreground",
             },
             size: {
@@ -63,14 +63,14 @@ export const toolButtonVariants = cva(
 
 export type ToolButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
     VariantProps<typeof toolButtonVariants> & {
-        /** 图标内容：ReactNode（内联 JSX，与 tool-registry ToolDefinition.icon 对齐） */
+        /** 圖示內容：ReactNode（內聯 JSX，與 tool-registry ToolDefinition.icon 對齊） */
         icon?: ReactNode;
-        /** 持久激活态（映射 aria-pressed=true） */
+        /** 持久啟用態（對映 aria-pressed=true） */
         active?: boolean;
-        /** 面板展开型工具：active 走 aria-expanded 语义而非 pressed */
+        /** 面板展開型工具：active 走 aria-expanded 語義而非 pressed */
         expands?: boolean;
         loading?: boolean;
-        /** 显式文本标签（提供时按带标签布局渲染） */
+        /** 顯式文本標籤（提供時按帶標籤佈局渲染） */
         label?: ReactNode;
     };
 

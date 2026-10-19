@@ -6,15 +6,15 @@ import { IconButton } from "@/components/ui/base/buttons";
 import { cn } from "@/lib/utils";
 
 /**
- * Callout — 语义提示横幅（图标 + 标题 + 正文 + 可选操作）。
+ * Callout — 語義提示橫幅（圖示 + 標題 + 正文 + 可選操作）。
  *
- * 用途：页面/面板内的轻量提示（信息/成功/告警/错误），可带操作按钮；替代 AntD
- *   Alert 的静态展示场景与页面私有提示块。
- * token：底 bg-surface-secondary、边框 var(--workspace-border)/border-border、
- *   标题 text-foreground、正文 text-muted-foreground、tone 图标色
+ * 用途：頁面/面板內的輕量提示（資訊/成功/告警/錯誤），可帶操作按鈕；替代 AntD
+ *   Alert 的靜態展示場景與頁面私有提示塊。
+ * token：底 bg-surface-secondary、邊框 var(--workspace-border)/border-border、
+ *   標題 text-foreground、正文 text-muted-foreground、tone 圖示色
  *   text-status-{success|warning|error}（info/default 用 text-muted-foreground）。
- * 对标：AntD Alert；dbx ErrorBanner（错误横幅场景）；形态参考 shadcn alert。
- * 明暗：全部颜色走 token，明暗双主题自动适配。
+ * 對標：AntD Alert；dbx ErrorBanner（錯誤橫幅場景）；形態參考 shadcn alert。
+ * 明暗：全部顏色走 token，明暗雙主題自動適配。
  */
 export type CalloutTone = "info" | "success" | "warning" | "error";
 
@@ -26,19 +26,19 @@ const calloutIconByTone: Record<CalloutTone, LucideIcon> = {
 };
 
 export interface CalloutProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
-    /** 语义 tone：default 等同 info（中性） */
+    /** 語義 tone：default 等同 info（中性） */
     tone?: CalloutTone | "default";
     title?: ReactNode;
-    /** 自定义图标组件引用；默认按 tone 取 Info/CheckCircle2/AlertTriangle/XCircle */
+    /** 自定義圖示元件引用；預設按 tone 取 Info/CheckCircle2/AlertTriangle/XCircle */
     icon?: LucideIcon;
     action?: ReactNode;
-    /** 显示右上角关闭按钮（closable）；点击后由调用方移除自身 */
+    /** 顯示右上角關閉按鈕（closable）；點選後由呼叫方移除自身 */
     onClose?: () => void;
-    /** 关闭按钮的无障碍标签 */
+    /** 關閉按鈕的無障礙標籤 */
     closeLabel?: string;
 }
 
-export function Callout({ tone = "default", title, icon, action, onClose, closeLabel = "关闭", className, children, ...props }: CalloutProps) {
+export function Callout({ tone = "default", title, icon, action, onClose, closeLabel = "關閉", className, children, ...props }: CalloutProps) {
     const resolved = tone === "default" ? "info" : tone;
     const Icon = icon ?? calloutIconByTone[resolved];
     return (

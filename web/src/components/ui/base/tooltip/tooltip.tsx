@@ -4,15 +4,15 @@ import { Tooltip as RACTooltip, TooltipTrigger, type Placement } from "react-ari
 import { cn } from "@/lib/utils";
 
 /**
- * Tooltip — 气泡提示（自研，react-aria-components overlay）。
+ * Tooltip — 氣泡提示（自研，react-aria-components overlay）。
  *
- * - API 对齐 AntD Tooltip（title/placement/children），title 为空时不渲染浮层。
- * - 浮层定位、进出场、焦点管理由 RAC 承担（ADR-0008：复杂浮层以 RAC 为无障碍地基）。
- * - 样式只吃语义 token：bg-surface-strong（light #fff / dark #2a2a2a）+ text-foreground +
- *   border-border hairline，无裸色；motion 走 RAC 动画类 + motion-reduce 关停。
- * - trigger 包一层 inline-flex span：保证 RAC ref 定位可用（children 可为任意组件）。
- * - placement 映射 AntD → RAC（topLeft→top left …）。
- * 对标：AntD Tooltip；boardui base/tooltip。
+ * - API 對齊 AntD Tooltip（title/placement/children），title 為空時不渲染浮層。
+ * - 浮層定位、進出場、焦點管理由 RAC 承擔（ADR-0008：複雜浮層以 RAC 為無障礙地基）。
+ * - 樣式只吃語義 token：bg-surface-strong（light #fff / dark #2a2a2a）+ text-foreground +
+ *   border-border hairline，無裸色；motion 走 RAC 動畫類 + motion-reduce 關停。
+ * - trigger 包一層 inline-flex span：保證 RAC ref 定位可用（children 可為任意元件）。
+ * - placement 對映 AntD → RAC（topLeft→top left …）。
+ * 對標：AntD Tooltip；boardui base/tooltip。
  */
 
 export type TooltipPlacement = "top" | "topLeft" | "topRight" | "bottom" | "bottomLeft" | "bottomRight" | "left" | "right";
@@ -31,7 +31,7 @@ const PLACEMENT_MAP: Record<TooltipPlacement, Placement> = {
 export interface TooltipProps {
     title?: ReactNode;
     placement?: TooltipPlacement;
-    /** 悬停延迟 ms（默认 350，贴近 AntD mouseEnterDelay） */
+    /** 懸停延遲 ms（預設 350，貼近 AntD mouseEnterDelay） */
     delay?: number;
     className?: string;
     children: ReactNode;

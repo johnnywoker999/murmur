@@ -38,7 +38,7 @@ export async function createAgnesVideoTask(
 ): Promise<VideoGenerationTask> {
     const modelName = modelOptionName(model).trim();
     const normalizedPrompt = prompt.trim();
-    if (!normalizedPrompt) throw new Error("请输入 Agnes 视频提示词");
+    if (!normalizedPrompt) throw new Error("請輸入 Agnes 影片提示詞");
 
     const [imageUrls, videoUrls, audioUrls] = await Promise.all([
         Promise.all(references.map((item) => resolveAgnesMediaUrl(item.url || item.dataUrl, item.storageKey))),
@@ -52,29 +52,29 @@ export async function createAgnesVideoTask(
 
     try {
         const raw = await deps.transport.post<ApiEnvelope<AgnesTaskResponse>>(deps.transport.apiUrl("/videos"), payload, options);
-        const created = deps.response.unwrapEnvelope(raw, "Agnes 接口没有返回视频任务");
+        const created = deps.response.unwrapEnvelope(raw, "Agnes 介面沒有返回影片任務");
         const id = String(created.video_id || created.task_id || created.id || "").trim();
-        if (!id) throw new Error("Agnes 创建响应没有 video_id");
+        if (!id) throw new Error("Agnes 建立響應沒有 video_id");
         return { id, provider: "agnes", model };
     } catch (error) {
-        throw new Error(deps.response.readAxiosError(error, "Agnes 视频任务创建失败"));
+        throw new Error(deps.response.readAxiosError(error, "Agnes 影片任務建立失敗"));
     }
 }
 
 export async function pollAgnesVideoTask(deps: VideoProviderDeps, config: ResolvedAiConfig, task: VideoGenerationTask, options?: RequestOptions): Promise<VideoGenerationTaskState> {
     try {
         const raw = await deps.transport.get<ApiEnvelope<AgnesTaskResponse>>(agnesPollUrl(config, task.id, modelOptionName(task.model)), options);
-        const state = deps.response.unwrapEnvelope(raw, "Agnes 接口没有返回任务状态");
+        const state = deps.response.unwrapEnvelope(raw, "Agnes 介面沒有返回任務狀態");
         const status = String(state.status || "").trim().toLowerCase();
         if (status === "completed" || status === "succeeded" || status === "success" || status === "done") {
             const url = String(state.metadata?.url || state.url || "").trim();
-            if (!url) return { status: "failed", error: "Agnes 任务已完成但没有返回视频 URL" };
+            if (!url) return { status: "failed", error: "Agnes 任務已完成但沒有返回影片 URL" };
             return { status: "completed", result: await deps.response.videoResultFromUrl(url, options) };
         }
         if (status === "failed" || status === "cancelled" || status === "canceled") return { status: "failed", error: agnesFailureMessage(state) };
         return { status: "pending" };
     } catch (error) {
-        throw new Error(deps.response.readAxiosError(error, "Agnes 视频任务查询失败"));
+        throw new Error(deps.response.readAxiosError(error, "Agnes 影片任務查詢失敗"));
     }
 }
 
@@ -86,7 +86,7 @@ export function agnesPollUrl(config: ResolvedAiConfig, videoId: string, modelNam
     try {
         base = new URL(config.baseUrl);
     } catch {
-        throw new Error("Agnes Base URL 无效，请填写完整的 HTTP(S) 地址");
+        throw new Error("Agnes Base URL 無效，請填寫完整的 HTTP(S) 地址");
     }
     base.pathname = "/agnesapi";
     base.search = query;
@@ -95,17 +95,17 @@ export function agnesPollUrl(config: ResolvedAiConfig, videoId: string, modelNam
 }
 
 function buildAgnesV25Payload(config: ResolvedAiConfig, model: string, prompt: string, images: string[], imageRoles: VideoImageRole[], videos: string[], audios: string[]) {
-    if (!AGNES_V25_MODELS.has(model)) throw new Error(`Agnes 视频协议不支持模型 ${model}`);
+    if (!AGNES_V25_MODELS.has(model)) throw new Error(`Agnes 影片協議不支援模型 ${model}`);
     const seconds = agnesSeconds(config.videoSeconds);
     const size = agnesResolution(config.vquality);
     if (model === "agnes-video-2.5-flash") {
-        if (size !== "720P") throw new Error("Agnes Video 2.5 Flash 仅支持 720P");
-        if (images.length > 5) throw new Error("Agnes Video 2.5 Flash 最多支持 5 张参考图");
-        if (videos.length) throw new Error("Agnes Video 2.5 Flash 不支持参考视频");
+        if (size !== "720P") throw new Error("Agnes Video 2.5 Flash 僅支援 720P");
+        if (images.length > 5) throw new Error("Agnes Video 2.5 Flash 最多支援 5 張參考圖");
+        if (videos.length) throw new Error("Agnes Video 2.5 Flash 不支援參考影片");
     }
     const hasReferenceImages = imageRoles.includes("reference_image");
     const hasFrameImages = imageRoles.includes("first_frame") || imageRoles.includes("last_frame");
-    if (hasFrameImages && (hasReferenceImages || videos.length || audios.length)) throw new Error("Agnes Video 2.5 不能同时混用首尾帧和角色、视频或音频参考素材");
+    if (hasFrameImages && (hasReferenceImages || videos.length || audios.length)) throw new Error("Agnes Video 2.5 不能同時混用首尾幀和角色、影片或音訊參考素材");
     const mode = videos.length || audios.length || hasReferenceImages ? "reference" : images.length ? "keyframe" : "text";
     const payload: Record<string, unknown> = {
         model,
@@ -130,8 +130,8 @@ function buildAgnesV25Payload(config: ResolvedAiConfig, model: string, prompt: s
 }
 
 function buildAgnesV20Payload(config: ResolvedAiConfig, model: string, prompt: string, images: string[], imageRoles: VideoImageRole[], videos: string[], audios: string[], options?: RequestOptions) {
-    if (videos.length || audios.length) throw new Error("Agnes Video V2.0 不支持参考视频或音频");
-    if (options?.videoEditOperation === "reference_to_video" || imageRoles.includes("reference_image")) throw new Error("Agnes Video V2.0 不支持角色或风格参考图模式，请改用 Agnes Video 2.5");
+    if (videos.length || audios.length) throw new Error("Agnes Video V2.0 不支援參考影片或音訊");
+    if (options?.videoEditOperation === "reference_to_video" || imageRoles.includes("reference_image")) throw new Error("Agnes Video V2.0 不支援角色或風格參考圖模式，請改用 Agnes Video 2.5");
     const seconds = Math.max(1, Math.floor(Number(config.videoSeconds) || 5));
     const frameRate = 24;
     const targetFrames = seconds * frameRate;
@@ -154,7 +154,7 @@ function imageForRole(images: string[], roles: VideoImageRole[], role: VideoImag
 
 function agnesSeconds(value: string) {
     const seconds = Math.floor(Number(value) || 5);
-    if (seconds < 4 || seconds > 12) throw new Error("Agnes Video 2.5 时长必须在 4–12 秒之间");
+    if (seconds < 4 || seconds > 12) throw new Error("Agnes Video 2.5 時長必須在 4–12 秒之間");
     return String(seconds);
 }
 
@@ -163,7 +163,7 @@ function agnesResolution(value: string) {
     if (normalized === "auto" || normalized === "720" || normalized === "720p") return "720P";
     if (normalized === "960" || normalized === "960p") return "960P";
     if (normalized === "2k" || normalized === "1440" || normalized === "1440p") return "2K";
-    throw new Error("Agnes Video 2.5 分辨率必须是 720P、960P 或 2K");
+    throw new Error("Agnes Video 2.5 解析度必須是 720P、960P 或 2K");
 }
 
 function agnesAspectRatio(value: string) {
@@ -180,15 +180,15 @@ function agnesAspectRatio(value: string) {
         });
         if (matched) return matched;
     }
-    throw new Error("Agnes Video 2.5 画幅必须是 21:9、16:9、4:3、1:1、3:4 或 9:16");
+    throw new Error("Agnes Video 2.5 畫幅必須是 21:9、16:9、4:3、1:1、3:4 或 9:16");
 }
 
 async function resolveAgnesMediaUrl(value: string | undefined, storageKey?: string) {
     if (storageKey?.startsWith("resource:")) return getResourceOSSUrl(storageKey);
     if (/^https?:\/\//i.test(value || "")) return String(value);
-    throw new Error("Agnes 参考素材需要公网 URL；本地素材不能直接发送到该渠道，请改用支持本地素材的渠道或提供公网素材地址");
+    throw new Error("Agnes 參考素材需要公網 URL；本地素材不能直接傳送到該渠道，請改用支援本地素材的渠道或提供公網素材地址");
 }
 
 function agnesFailureMessage(state: AgnesTaskResponse) {
-    return String(state.error?.message || state.error?.detail || state.error?.code || state.message || state.detail || "Agnes 视频生成失败");
+    return String(state.error?.message || state.error?.detail || state.error?.code || state.message || state.detail || "Agnes 影片生成失敗");
 }

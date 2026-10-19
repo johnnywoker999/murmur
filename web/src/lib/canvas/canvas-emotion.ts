@@ -51,7 +51,7 @@ export type CanvasEmotionEditPlan = {
 export function resolveEmotionEditPlan(maskSupported: boolean): CanvasEmotionEditPlan {
     return maskSupported
         ? { mode: "provider-mask", includeMask: true }
-        : { mode: "local-composite", includeMask: false, notice: "当前渠道不支持蒙版，使用脸部裁切与本地羽化融合" };
+        : { mode: "local-composite", includeMask: false, notice: "當前渠道不支援蒙版，使用臉部裁切與本地羽化融合" };
 }
 
 export function emotionProviderMask<T>(plan: CanvasEmotionEditPlan, mask: T) {
@@ -92,19 +92,19 @@ type BlendshapeName =
 export type CanvasEmotionBlendshapes = Partial<Record<BlendshapeName, number>>;
 
 const labels = [
-    ["欣喜若狂", "兴高采烈", "惊喜", "震惊", "惊恐"],
-    ["开怀", "期待", "专注", "警觉", "紧张"],
-    ["温柔", "浅然莞尔", "中性克制", "隐忍", "疏离"],
-    ["安心", "释然", "疲惫", "失落", "悲伤"],
-    ["满足", "平静", "冷淡", "隐忍心伤", "绝望"],
+    ["欣喜若狂", "興高采烈", "驚喜", "震驚", "驚恐"],
+    ["開懷", "期待", "專注", "警覺", "緊張"],
+    ["溫柔", "淺然莞爾", "中性剋制", "隱忍", "疏離"],
+    ["安心", "釋然", "疲憊", "失落", "悲傷"],
+    ["滿足", "平靜", "冷淡", "隱忍心傷", "絕望"],
 ] as const;
 
 const prompts = [
-    ["自然、明亮的露齿笑，嘴角对称上扬，脸颊自然抬起，眼角有轻微笑纹", "明显喜悦，笑意饱满", "意外惊喜，眼睛睁大并自然张嘴", "明显震惊，眉毛抬起，嘴部微张", "强烈惊恐，双眼睁大，面部紧绷"],
-    ["自然开怀，眼角带笑", "期待而兴奋，表情明亮", "高度专注，目光坚定", "保持警觉，眉眼略微收紧", "紧张不安，嘴唇轻抿"],
-    ["温柔亲近，轻微微笑", "克制而自然的浅笑", "完全中性、克制、放松", "压住情绪，表情略显僵硬", "疏离冷静，减少面部情绪"],
-    ["安心放松，柔和闭合嘴角", "如释重负，眉眼放松", "明显疲惫，眼睑下垂", "情绪低落，嘴角轻微下垂", "悲伤，内眉抬起，嘴角下垂"],
-    ["安静满足，轻微闭口笑", "平静松弛，呼吸感自然", "冷淡克制，目光平直", "强忍心伤，嘴唇压紧，眼神黯淡", "深度绝望，眉眼下沉，面部失去张力"],
+    ["自然、明亮的露齒笑，嘴角對稱上揚，臉頰自然抬起，眼角有輕微笑紋", "明顯喜悅，笑意飽滿", "意外驚喜，眼睛睜大並自然張嘴", "明顯震驚，眉毛抬起，嘴部微張", "強烈驚恐，雙眼睜大，面部緊繃"],
+    ["自然開懷，眼角帶笑", "期待而興奮，表情明亮", "高度專注，目光堅定", "保持警覺，眉眼略微收緊", "緊張不安，嘴唇輕抿"],
+    ["溫柔親近，輕微微笑", "剋制而自然的淺笑", "完全中性、剋制、放鬆", "壓住情緒，表情略顯僵硬", "疏離冷靜，減少面部情緒"],
+    ["安心放鬆，柔和閉合嘴角", "如釋重負，眉眼放鬆", "明顯疲憊，眼瞼下垂", "情緒低落，嘴角輕微下垂", "悲傷，內眉抬起，嘴角下垂"],
+    ["安靜滿足，輕微閉口笑", "平靜鬆弛，呼吸感自然", "冷淡剋制，目光平直", "強忍心傷，嘴唇壓緊，眼神黯淡", "深度絕望，眉眼下沉，面部失去張力"],
 ] as const;
 
 export const canvasEmotionPresets: CanvasEmotionPreset[] = labels.flatMap((row, rowIndex) =>
@@ -181,23 +181,23 @@ export function buildEmotionPrompt(params: CanvasEmotionParams, editRegion: Canv
     const preset = canvasEmotionPresets.find((item) => item.id === params.presetId) || findEmotionPreset(params.intimacy, params.arousal);
     const targetRegion = describeEmotionTarget(params.faceBox, editRegion);
     return [
-        `仅修改第一张输入图中“${params.characterName}”脸部的表情，其他像素保持源图一致。`,
-        `目标情绪：${preset.label}；表情要求：${preset.prompt}。情绪强度通过眉眼、嘴角和脸颊的肌肉张力表达，不要通过夸大嘴巴或重绘整张脸表达。`,
-        "第一张输入图是唯一编辑目标，第二张输入图仅用于核对同一人物身份，不得复制第二张图的构图、背景或光线。",
+        `僅修改第一張輸入圖中“${params.characterName}”臉部的表情，其他畫素保持源圖一致。`,
+        `目標情緒：${preset.label}；表情要求：${preset.prompt}。情緒強度通過眉眼、嘴角和臉頰的肌肉張力表達，不要通過誇大嘴巴或重繪整張臉表達。`,
+        "第一張輸入圖是唯一編輯目標，第二張輸入圖僅用於核對同一人物身份，不得複製第二張圖的構圖、背景或光線。",
         targetRegion,
-        "如果第一张输入图中出现其他人脸，其他人脸全部视为不可编辑背景；只允许修改目标人脸框及其邻近表情区域。",
-        "只改变眉眼开合、眼角、嘴角、脸颊和口腔内部的表情细节；保持眼睛大小与方向、嘴裂宽度、牙齿数量大小排列、嘴唇厚度、下巴轮廓和脸型自然且与原图一致。",
-        "输入图已裁切到目标人物头部区域；只重绘目标人脸及其表情相关细节，不要生成或修改裁切图中的其他内容。",
-        "严格保持人物身份、五官比例、肤色、发型、发丝、耳朵、配饰、服装、姿势、头部朝向、镜头、景深、光线、背景及画面其他人物不变；不要重绘眼镜、帽子或遮挡物。",
-        "禁止夸张卡通笑、嘴巴过大或拉宽、牙齿像整齐白墙、露出不自然牙龈、眼睛变形或眯成线、脸颊鼓包、塑料磨皮、重复五官，以及任何身份漂移。",
+        "如果第一張輸入圖中出現其他人臉，其他人臉全部視為不可編輯背景；只允許修改目標人臉框及其鄰近表情區域。",
+        "只改變眉眼開合、眼角、嘴角、臉頰和口腔內部的表情細節；保持眼睛大小與方向、嘴裂寬度、牙齒數量大小排列、嘴唇厚度、下巴輪廓和臉型自然且與原圖一致。",
+        "輸入圖已裁切到目標人物頭部區域；只重繪目標人臉及其表情相關細節，不要生成或修改裁切圖中的其他內容。",
+        "嚴格保持人物身份、五官比例、膚色、髮型、髮絲、耳朵、配飾、服裝、姿勢、頭部朝向、鏡頭、景深、光線、背景及畫面其他人物不變；不要重繪眼鏡、帽子或遮擋物。",
+        "禁止誇張卡通笑、嘴巴過大或拉寬、牙齒像整齊白牆、露出不自然牙齦、眼睛變形或眯成線、臉頰鼓包、塑膠磨皮、重複五官，以及任何身份漂移。",
     ].join("\n");
 }
 
 export function normalizeEmotionPromptForProvider(prompt: string) {
     return prompt
-        .replaceAll("实际可编辑范围以该人脸周围的透明椭圆蒙版为最终边界。", "最终仅将该人脸周围的椭圆区域融合回原图。")
-        .replaceAll("只允许修改目标框及其透明蒙版对应的这一张脸。", "只允许修改目标人脸框及其邻近表情区域。")
-        .replaceAll("输入图已裁切到目标人物头部区域；透明蒙版内允许编辑，白色蒙版区域必须保持不变，蒙版外绝对不要生成或修改任何内容。", "输入图已裁切到目标人物头部区域；只重绘目标人脸及其表情相关细节，不要生成或修改裁切图中的其他内容。");
+        .replaceAll("實際可編輯範圍以該人臉周圍的透明橢圓蒙版為最終邊界。", "最終僅將該人臉周圍的橢圓區域融合回原圖。")
+        .replaceAll("只允許修改目標框及其透明蒙版對應的這一張臉。", "只允許修改目標人臉框及其鄰近表情區域。")
+        .replaceAll("輸入圖已裁切到目標人物頭部區域；透明蒙版內允許編輯，白色蒙版區域必須保持不變，蒙版外絕對不要生成或修改任何內容。", "輸入圖已裁切到目標人物頭部區域；只重繪目標人臉及其表情相關細節，不要生成或修改裁切圖中的其他內容。");
 }
 
 function describeEmotionTarget(box: CanvasFaceBox, region: CanvasEmotionEditRegion) {
@@ -207,7 +207,7 @@ function describeEmotionTarget(box: CanvasFaceBox, region: CanvasEmotionEditRegi
     const height = Math.max(1, Math.min(region.height - y, Math.round(box.height)));
     const centerX = Math.round(((x + width / 2) / Math.max(1, region.width)) * 100);
     const centerY = Math.round(((y + height / 2) / Math.max(1, region.height)) * 100);
-    return `目标人脸框（相对于第一张裁切输入图）：x=${x}px，y=${y}px，width=${width}px，height=${height}px；人脸中心约位于裁切图的 ${centerX}% 横向、${centerY}% 纵向。最终仅将该人脸周围的椭圆区域融合回原图。`;
+    return `目標人臉框（相對於第一張裁切輸入圖）：x=${x}px，y=${y}px，width=${width}px，height=${height}px；人臉中心約位於裁切圖的 ${centerX}% 橫向、${centerY}% 縱向。最終僅將該人臉周圍的橢圓區域融合回原圖。`;
 }
 
 export async function buildEmotionImageArtifacts(dataUrl: string, box: CanvasFaceBox, imageWidth: number, imageHeight: number): Promise<CanvasEmotionImageArtifacts> {
@@ -237,7 +237,7 @@ export function emotionGenerationSize(region: CanvasEmotionEditRegion) {
     return "1024x1024";
 }
 
-// 模型只负责局部重绘；最终结果始终以源图为底，仅在羽化人脸蒙版内混合生成像素。
+// 模型只負責區域性重繪；最終結果始終以源圖為底，僅在羽化人臉蒙版內混合生成畫素。
 export async function compositeEmotionImage(sourceDataUrl: string, generatedDataUrl: string, region: CanvasEmotionEditRegion, faceBox: CanvasFaceBox) {
     const [source, generated] = await Promise.all([loadImageBitmap(sourceDataUrl), loadImageBitmap(generatedDataUrl)]);
     try {
@@ -247,14 +247,14 @@ export async function compositeEmotionImage(sourceDataUrl: string, generatedData
         canvas.width = source.width;
         canvas.height = source.height;
         const context = canvas.getContext("2d", { willReadFrequently: true });
-        if (!context) throw new Error("浏览器无法合成表情编辑结果");
+        if (!context) throw new Error("瀏覽器無法合成表情編輯結果");
         context.drawImage(source, 0, 0);
 
         const generatedCanvas = document.createElement("canvas");
         generatedCanvas.width = normalizedRegion.width;
         generatedCanvas.height = normalizedRegion.height;
         const generatedContext = generatedCanvas.getContext("2d", { willReadFrequently: true });
-        if (!generatedContext) throw new Error("浏览器无法读取表情生成结果");
+        if (!generatedContext) throw new Error("瀏覽器無法讀取表情生成結果");
         generatedContext.imageSmoothingEnabled = true;
         generatedContext.imageSmoothingQuality = "high";
         generatedContext.drawImage(generated, 0, 0, generated.width, generated.height, 0, 0, normalizedRegion.width, normalizedRegion.height);
@@ -308,7 +308,7 @@ function drawSourceCrop(image: ImageBitmap, region: CanvasEmotionEditRegion) {
     canvas.width = region.width;
     canvas.height = region.height;
     const context = canvas.getContext("2d");
-    if (!context) throw new Error("浏览器无法裁切头部编辑区域");
+    if (!context) throw new Error("瀏覽器無法裁切頭部編輯區域");
     context.drawImage(image, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
     return canvas.toDataURL("image/png");
 }
@@ -318,7 +318,7 @@ function drawFaceMask(box: CanvasFaceBox, region: CanvasEmotionEditRegion) {
     canvas.width = region.width;
     canvas.height = region.height;
     const context = canvas.getContext("2d");
-    if (!context) throw new Error("浏览器无法创建人脸编辑蒙版");
+    if (!context) throw new Error("瀏覽器無法建立人臉編輯蒙版");
     context.fillStyle = "#fff";
     context.fillRect(0, 0, region.width, region.height);
     const ellipse = emotionEditEllipse(box, region);
@@ -348,7 +348,7 @@ function emotionEditEllipse(box: CanvasFaceBox, region: CanvasEmotionEditRegion)
 }
 
 function sampleEdgeColorGains(source: Uint8ClampedArray, generated: Uint8ClampedArray, width: number, height: number, ellipse: EmotionEditEllipse): [number, number, number] {
-    // 仅采样羽化边缘，按 RGB 分通道校正可同时收敛亮度与冷暖色偏，中心表情仍以模型结果为主。
+    // 僅取樣羽化邊緣，按 RGB 分通道校正可同時收斂亮度與冷暖色偏，中心表情仍以模型結果為主。
     const sourceSum = [0, 0, 0];
     const generatedSum = [0, 0, 0];
     let count = 0;
@@ -410,7 +410,7 @@ function drawFaceCrop(image: ImageBitmap, box: CanvasFaceBox, imageWidth: number
     canvas.width = 384;
     canvas.height = 384;
     const context = canvas.getContext("2d");
-    if (!context) throw new Error("浏览器无法创建人物参考图");
+    if (!context) throw new Error("瀏覽器無法建立人物參考圖");
     context.fillStyle = "#111";
     context.fillRect(0, 0, canvas.width, canvas.height);
     const scale = Math.min(canvas.width / sw, canvas.height / sh);
@@ -422,7 +422,7 @@ function drawFaceCrop(image: ImageBitmap, box: CanvasFaceBox, imageWidth: number
 
 async function loadImageBitmap(dataUrl: string) {
     const response = await fetch(dataUrl);
-    if (!response.ok) throw new Error("无法读取源图片，请重新上传后再试");
+    if (!response.ok) throw new Error("無法讀取源圖片，請重新上傳後再試");
     return createImageBitmap(await response.blob());
 }
 

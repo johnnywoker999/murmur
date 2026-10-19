@@ -104,7 +104,7 @@
     .app-product-workspace .creation-home .creation-submit.ant-btn:not(:disabled):hover .creation-submit-action::after { animation: none; }
 }
 
-/* 参数弹窗挂在 body overlays，必须直接用用户表面 token；描边由 Ant inner 的 1px border 造成。 */
+/* 引數彈窗掛在 body overlays，必須直接用使用者表面 token；描邊由 Ant inner 的 1px border 造成。 */
 .app-user-overlays .creation-control-popover,
 .app-product-overlays .creation-control-popover {
     --popover: var(--user-surface-raised);

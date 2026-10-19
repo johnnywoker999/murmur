@@ -4,9 +4,9 @@ import { channelHasGenerationCredential, defaultConfig, encodeChannelModel, isBu
 import type { ModelProtocol } from "@/lib/model-protocols";
 
 export async function testChannelModelConnection(channel: ModelChannel, model: string, capability: ModelCapability, protocol: ModelProtocol, runTask = runBackendGenerationTask) {
-    if (!channel.baseUrl.trim()) throw new Error("请先填写 Base URL");
+    if (!channel.baseUrl.trim()) throw new Error("請先填寫 Base URL");
     if (!channelHasGenerationCredential(channel, model)) {
-        throw new Error(isBuiltinBeefAPIChannel(channel) ? "请先连接 MURMUR AI" : "请先填写 API Key");
+        throw new Error(isBuiltinBeefAPIChannel(channel) ? "請先連線 MURMUR AI" : "請先填寫 API Key");
     }
     const selectedModel = encodeChannelModel(channel.id, model);
     const modelProfile = channel.modelProfiles?.find((item) => item.model === model);
@@ -64,9 +64,9 @@ export async function testChannelModelConnection(channel: ModelChannel, model: s
 export function modelConnectionResultDetail(result: BackendGenerationResult, capability: ModelCapability) {
     const media = capability === "image" ? result.images?.[0] : capability === "video" ? result.video : result.audio;
     if (capability === "text" ? !result.text?.trim() : !(media?.storageKey || media?.dataUrl || media?.url)) {
-        throw new Error("任务已结束，但没有返回可用结果。请在任务中心查看详情。");
+        throw new Error("任務已結束，但沒有返回可用結果。請在任務中心檢視詳情。");
     }
-    return capability === "text" ? "已收到文本响应" : `已完成${{ image: "图片", video: "视频", audio: "音频" }[capability]}生成，可在任务中心查看结果`;
+    return capability === "text" ? "已收到文本響應" : `已完成${{ image: "圖片", video: "影片", audio: "音訊" }[capability]}生成，可在任務中心檢視結果`;
 }
 
 function resolutionRank(value: string) {

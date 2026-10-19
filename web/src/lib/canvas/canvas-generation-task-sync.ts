@@ -118,8 +118,8 @@ function workflowMetadataForResultNode(): Partial<CanvasNodeMetadata> {
     };
 }
 
-// 原地重生会换 storageKey 但继承旧 assetId，形成「旧素材 + 新资源」配对，云端校验会永久拒绝。
-// 新媒体结果必须清掉旧绑定，交给入库/修复路径按新资源重绑。
+// 原地重生會換 storageKey 但繼承舊 assetId，形成「舊素材 + 新資源」配對，雲端校驗會永久拒絕。
+// 新媒體結果必須清掉舊繫結，交給入庫/修復路徑按新資源重綁。
 export function applyGeneratedMediaResultMetadata(node: CanvasNodeData, media: CanvasNodeMetadata, extra: Partial<CanvasNodeMetadata> = {}): CanvasNodeMetadata {
     return mediaResultMetadata("generated", {
         ...node.metadata,
@@ -159,16 +159,16 @@ export async function buildGenerationTaskNodeResult(node: CanvasNodeData, task: 
         const image = result.images?.[node.metadata?.taskOutputIndex ?? 0];
         const imageSource = image?.dataUrl || image?.url || "";
         const reuseImageKey = reuseGeneratedMediaStorageKey(image?.storageKey, imageSource);
-        if (!imageSource && !reuseImageKey) throw new Error("后端任务没有返回图片");
-        if (node.metadata?.emotionEdit && !image?.dataUrl) throw new Error("后端任务没有返回图片");
+        if (!imageSource && !reuseImageKey) throw new Error("後端任務沒有返回圖片");
+        if (node.metadata?.emotionEdit && !image?.dataUrl) throw new Error("後端任務沒有返回圖片");
         let resultDataUrl = image?.dataUrl || imageSource;
         const emotionEdit = node.metadata?.emotionEdit;
         if (emotionEdit) {
-            if (!emotionEdit.editRegion) throw new Error("情绪编辑任务缺少局部合成区域，已拒绝使用整图重绘结果");
+            if (!emotionEdit.editRegion) throw new Error("情緒編輯任務缺少區域性合成區域，已拒絕使用整圖重繪結果");
             const sourceNode = nodes.find((item) => item.id === emotionEdit.sourceNodeId);
-            if (!sourceNode?.metadata?.content) throw new Error("情绪编辑源图片已删除，无法恢复局部合成结果");
+            if (!sourceNode?.metadata?.content) throw new Error("情緒編輯源圖片已刪除，無法恢復區域性合成結果");
             const sourceDataUrl = await resolveImageUrl(sourceNode.metadata.storageKey, sourceNode.metadata.content);
-            if (!sourceDataUrl) throw new Error("无法读取情绪编辑源图片，未使用整图重绘结果");
+            if (!sourceDataUrl) throw new Error("無法讀取情緒編輯源圖片，未使用整圖重繪結果");
             resultDataUrl = await compositeEmotionImage(sourceDataUrl, resultDataUrl, emotionEdit.editRegion, emotionEdit.faceBox);
         }
         const uploaded =
@@ -197,7 +197,7 @@ export async function buildGenerationTaskNodeResult(node: CanvasNodeData, task: 
     if (mode === "video") {
         const videoSource = result.video?.dataUrl || result.video?.url || "";
         const reuseVideoKey = reuseGeneratedMediaStorageKey(result.video?.storageKey, videoSource);
-        if (!videoSource && !reuseVideoKey) throw new Error("后端任务没有返回视频");
+        if (!videoSource && !reuseVideoKey) throw new Error("後端任務沒有返回影片");
         const video = reuseVideoKey
             ? {
                   url: await mediaIO.resolveMediaUrl(reuseVideoKey, videoSource),
@@ -228,14 +228,14 @@ export async function buildGenerationTaskNodeResult(node: CanvasNodeData, task: 
     if (mode === "audio") {
         const audioSource = result.audio?.dataUrl || result.audio?.url || "";
         const reuseAudioKey = reuseGeneratedMediaStorageKey(result.audio?.storageKey, audioSource);
-        if (!audioSource && !reuseAudioKey) throw new Error("后端任务没有返回音频");
+        if (!audioSource && !reuseAudioKey) throw new Error("後端任務沒有返回音訊");
         const audio = reuseAudioKey
             ? { url: await mediaIO.resolveMediaUrl(reuseAudioKey, audioSource), storageKey: reuseAudioKey, durationMs: result.audio?.durationMs, bytes: result.audio?.bytes || 0, mimeType: result.audio?.mimeType || "audio/mpeg" }
             : await mediaIO.storeGeneratedAudio(await mediaIO.fetchBlob(audioSource), result.audio?.format || "mp3");
         return { ...node, type: CanvasNodeType.Audio, metadata: applyGeneratedMediaResultMetadata(node, audioMetadata(audio), { prompt, ...completedTaskMetadata(task) }) };
     }
 
-    if (!result.text) throw new Error("后端任务没有返回文本");
+    if (!result.text) throw new Error("後端任務沒有返回文本");
     return {
         ...node,
         type: CanvasNodeType.Text,
@@ -278,7 +278,7 @@ export async function applyMaterializedGenerationTaskResultToNodes(nodes: Canvas
         return { nodes, updated: true, nodeId: node.id, node };
     }
     const asset = useAssetStore.getState().assets.find((candidate) => candidate.id === output.materializedAssetId);
-    if (!asset) throw new Error("生成任务输出素材不存在");
+    if (!asset) throw new Error("生成任務輸出素材不存在");
     const result = parseBackendGenerationResult(task);
     if (asset.kind === "image") {
         const images = [...(result.images || [])];
@@ -296,7 +296,7 @@ export async function applyMaterializedGenerationTaskResultToNodes(nodes: Canvas
     } else if (asset.kind === "audio") {
         result.audio = { dataUrl: asset.data.url, ...asset.data };
     } else {
-        throw new Error("生成任务输出素材类型不支持画布节点");
+        throw new Error("生成任務輸出素材型別不支援畫布節點");
     }
     const indexedNode = { ...node, metadata: { ...node.metadata, taskOutputIndex: output.outputIndex } };
     const updatedNode = await buildGenerationTaskNodeResult(indexedNode, { ...task, resultJson: JSON.stringify(result) }, nodes);
@@ -325,7 +325,7 @@ function applySuccessfulVersionSelection(nodes: CanvasNodeData[], updatedNode: C
 
 export async function syncGenerationTaskToCanvasStore(task: GenerationTask) {
     if (task.status !== "succeeded" || !task.projectId) return false;
-    // 短剧任务使用业务项目 ID，不能拿它请求同名的画布项目。
+    // 短劇任務使用業務專案 ID，不能拿它請求同名的畫布專案。
     const domainProjectId = task.clientContext?.domainProjectId || generationTaskInput(task)?.metadata?.domainProjectId;
     if (domainProjectId === task.projectId || !generationTaskNodeId(task)) return false;
     const { loadCanvasProjectForEditing } = await import("@/services/local-workspace-sync");

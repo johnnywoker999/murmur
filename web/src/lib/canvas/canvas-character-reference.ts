@@ -108,14 +108,14 @@ function findJsonValueEnd(source: string, start: number) {
     return -1;
 }
 
-// 角色卡数组的最小特征：至少有一个元素带 name 字段。用于把真正的角色数组和模型正文里的
-// 旁枝数组（角色名列表、aliases 片段等）区分开，避免提取阶段命中错误片段。
+// 角色卡陣列的最小特徵：至少有一個元素帶 name 欄位。用於把真正的角色陣列和模型正文裡的
+// 旁枝陣列（角色名列表、aliases 片段等）區分開，避擴音取階段命中錯誤片段。
 function isCharacterCardArray(value: unknown): value is unknown[] {
     if (!Array.isArray(value) || !value.length) return false;
     return value.some((item) => Boolean(item) && typeof item === "object" && typeof (item as Record<string, unknown>).name === "string");
 }
 
-// 模型偶尔把角色数组再包一层，或把 characters 写成以角色名为键的对象，这里统一摊平成候选列表。
+// 模型偶爾把角色陣列再包一層，或把 characters 寫成以角色名為鍵的物件，這裡統一攤平成候選列表。
 function flattenCharacterCandidates(value: unknown): unknown[] | undefined {
     if (Array.isArray(value)) {
         const result: unknown[] = [];
@@ -139,26 +139,26 @@ export function extractCharacterBreakdownJson(raw: string, allowEmptyCharacters 
         if (end < start) continue;
         try {
             const parsed: unknown = JSON.parse(raw.slice(start, end + 1));
-            // 顶层角色数组是常见的契约偏离，先判数组再判对象，两者都视为合法载荷。
+            // 頂層角色陣列是常見的契約偏離，先判陣列再判物件，兩者都視為合法載荷。
             if (isCharacterCardArray(parsed)) return parsed;
-            // 模型的推理文字可能包含 aliases: [] 等合法 JSON 片段；角色契约只接受带 characters 字段的对象。
+            // 模型的推理文字可能包含 aliases: [] 等合法 JSON 片段；角色契約只接受帶 characters 欄位的物件。
             const candidates = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? flattenCharacterCandidates((parsed as { characters?: unknown }).characters) : undefined;
             if (Array.isArray(candidates) && candidates.length) return parsed;
-            // 章节资产允许无人场景；仍交由章节解析器校验三个必填数组。
+            // 章節資產允許無人場景；仍交由章節解析器校驗三個必填陣列。
             if (allowEmptyCharacters && parsed && typeof parsed === "object" && !Array.isArray(parsed)
                 && Array.isArray((parsed as { characters?: unknown }).characters)) return parsed;
         } catch {
             // Ignore unrelated braces in model prose and continue to the next complete JSON value.
         }
     }
-    throw new Error("角色拆解没有返回符合契约的 JSON");
+    throw new Error("角色拆解沒有返回符合契約的 JSON");
 }
 
 export function parseCharacterBreakdown(raw: string): CharacterBreakdown[] {
     const unfenced = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
     const parsed = extractCharacterBreakdownJson(unfenced);
     const candidates = Array.isArray(parsed) ? flattenCharacterCandidates(parsed) : flattenCharacterCandidates((parsed as { characters?: unknown }).characters);
-    if (!Array.isArray(candidates)) throw new Error("角色拆解结果缺少 characters 数组");
+    if (!Array.isArray(candidates)) throw new Error("角色拆解結果缺少 characters 陣列");
 
     const seen = new Set<string>();
     const characters: CharacterBreakdown[] = [];
@@ -177,8 +177,8 @@ export function parseCharacterBreakdown(raw: string): CharacterBreakdown[] {
         const voiceLanguage = String(value.voiceLanguage || "").trim();
         const voiceAge = String(value.voiceAge || "").trim();
         const voiceTimbre = String(value.voiceTimbre || "").trim();
-        // AI 提取属于角色写入路径：只有名称不足以建立角色卡，避免空设定进入项目后再由用户猜测补全。
-        if (!role || descriptiveFields.length < 3 || !voiceLanguage || !voiceAge || !voiceTimbre) throw new Error(`角色“${name}”缺少剧情定位、稳定设定或声音画像，请重新提取`);
+        // AI 提取屬於角色寫入路徑：只有名稱不足以建立角色卡，避免空設定進入專案後再由使用者猜測補全。
+        if (!role || descriptiveFields.length < 3 || !voiceLanguage || !voiceAge || !voiceTimbre) throw new Error(`角色“${name}”缺少劇情定位、穩定設定或聲音畫像，請重新提取`);
         identityKeys.forEach((identityKey) => seen.add(identityKey));
         characters.push({
             name,
@@ -196,6 +196,6 @@ export function parseCharacterBreakdown(raw: string): CharacterBreakdown[] {
             voiceTimbre,
         });
     });
-    if (!characters.length) throw new Error("没有从章节正文中识别到可用角色");
+    if (!characters.length) throw new Error("沒有從章節正文中識別到可用角色");
     return characters;
 }

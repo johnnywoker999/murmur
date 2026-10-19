@@ -1,7 +1,7 @@
-// 渲染链路：store.project（当前命令状态）→ 轨道/片段绝对定位 → 拖拽手势
-// （moveClip / trimClip）经 previewGesture 逐帧预览、commitGesture 一次性入历史。
-// 手势数学与渲染同源（同一 pxPerMs），保证拖拽所见即所得。
-// 撤销、重做和保存由编辑器宿主统一处理，本面板只负责时间线交互和可视状态。
+// 渲染鏈路：store.project（當前命令狀態）→ 軌道/片段絕對定位 → 拖拽手勢
+// （moveClip / trimClip）經 previewGesture 逐幀預覽、commitGesture 一次性入歷史。
+// 手勢數學與渲染同源（同一 pxPerMs），保證拖拽所見即所得。
+// 撤銷、重做和儲存由編輯器宿主統一處理，本面板只負責時間線互動和可視狀態。
 
 import { useEffect, useRef, useState } from "react";
 import { Eye, EyeOff, Film, Magnet, Maximize, MousePointer2, Music2, Plus, Scissors, Slice, Subtitles, Trash2, Volume2, VolumeX, X, ZoomIn, ZoomOut } from "lucide-react";
@@ -24,24 +24,24 @@ import type { TimelineClip, TimelineProject, TimelineTrack, TimelineTrackKind } 
 const MIN_VISUAL_END_MS = 1_000;
 const SNAP_MS = 10;
 const TRIM_HANDLE_PX = 8;
-// 轨道标签列宽度（w-48）：轨道徽标 + 轨道名 + 可见/静音/移除按钮。
-// 时间线内容宽度必须补上该列，否则片段区 flex-1 只到
-// trackWidth - 192，末端片段被 overflow-hidden 裁掉且无法滚动到达。
+// 軌道標籤列寬度（w-48）：軌道徽標 + 軌道名 + 可見/靜音/移除按鈕。
+// 時間線內容寬度必須補上該列，否則片段區 flex-1 只到
+// trackWidth - 192，末端片段被 overflow-hidden 裁掉且無法滾動到達。
 const LABEL_COLUMN_PX = 192;
-// 剃刀/播放头分割两侧的最小保留时长（毫秒），避免切出空片段。
+// 剃刀/播放頭分割兩側的最小保留時長（毫秒），避免切出空片段。
 const MIN_SPLIT_MS = 100;
 
-// 不可移除轨道的原因文案（title 悬停与点击提示共用，单一来源）。
-const trackRemoveBlockedReason = (kind: TimelineTrack["kind"]) => `${TRACK_KIND_BASE_LABELS[kind]}轨道至少保留一条，无法移除`;
+// 不可移除軌道的原因文案（title 懸停與點選提示共用，單一來源）。
+const trackRemoveBlockedReason = (kind: TimelineTrack["kind"]) => `${TRACK_KIND_BASE_LABELS[kind]}軌道至少保留一條，無法移除`;
 
-// 工具条按钮颜色角色（唯一来源，各按钮内不得重复字面量颜色）：
-// 常态 = 次级前景 + hover 弱背景；选中/按下 = 反白块 + 强前景（中性，无 accent 蓝图标）。
+// 工具條按鈕顏色角色（唯一來源，各按鈕內不得重複字面量顏色）：
+// 常態 = 次級前景 + hover 弱背景；選中/按下 = 反白塊 + 強前景（中性，無 accent 藍圖示）。
 const TOOL_FG_IDLE = "text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)]";
 const TOOL_FG_ACTIVE = "bg-[var(--director-dock-active-surface)] text-[var(--director-dock-fg-strong)]";
 
 type GestureMode = "move" | "trim-start" | "trim-end" | null;
 
-// 工具模式只影响指针手势解释；时间线数据修改仍必须通过命令分发。
+// 工具模式隻影響指標手勢解釋；時間線資料修改仍必須通過命令分發。
 type TimelineTool = "select" | "razor";
 
 type GestureState = {
@@ -62,11 +62,11 @@ export function EditorTimelinePanel() {
     const [viewportWidth, setViewportWidth] = useState(0);
     const [zoomLevel, setZoomLevel] = useState(1);
     const [activeTool, setActiveTool] = useState<TimelineTool>("select");
-    // 播放头与监视器共享同一 transport（store）：拖动标尺即时驱动监视器 seek，播放时监视器回写推进。
+    // 播放頭與監視器共享同一 transport（store）：拖動標尺即時驅動監視器 seek，播放時監視器回寫推進。
     const playheadMs = transportMs;
     const [snapEnabled, setSnapEnabled] = useState(true);
     const [addMenuOpen, setAddMenuOpen] = useState(false);
-    // 点击不可移除轨道 X 时的原因提示（2.2s 后自动消失）。
+    // 點選不可移除軌道 X 時的原因提示（2.2s 後自動消失）。
     const [removeBlockedHint, setRemoveBlockedHint] = useState<{ id: number; text: string } | null>(null);
 
     useEffect(() => {
@@ -87,15 +87,15 @@ export function EditorTimelinePanel() {
         return () => window.clearTimeout(timer);
     }, [removeBlockedHint]);
 
-    if (!project) return <div className="flex h-full items-center justify-center text-sm text-[var(--director-dock-fg)]">时间线未加载</div>;
+    if (!project) return <div className="flex h-full items-center justify-center text-sm text-[var(--director-dock-fg)]">時間線未載入</div>;
 
     const visualEndMs = Math.max(MIN_VISUAL_END_MS, getTimelineVisualEndMs(project.clips));
-    // 像素/毫秒由缩放级别独立决定（不随时长漂移）：拖动片段时轨道随内容等比扩展，
-    // 手势映射与渲染同源，末片段向右拖不再被旧实现（trackWidth 随时长阶梯跳变）钉住。
+    // 畫素/毫秒由縮放級別獨立決定（不隨時長漂移）：拖動片段時軌道隨內容等比擴充套件，
+    // 手勢對映與渲染同源，末片段向右拖不再被舊實現（trackWidth 隨時長階梯跳變）釘住。
     const pxPerMs = getTimelinePxPerMs(zoomLevel);
     const trackWidth = Math.max(viewportWidth, Math.ceil(visualEndMs * pxPerMs));
-    // 内容宽度 = 逻辑轨道宽度 + 标签列；标签列 sticky 固定后，滚动到最右端时
-    // 末端片段仍完整可见（flex-1 片段区 = 内容宽度 - 标签列 ≥ 轨道宽度）。
+    // 內容寬度 = 邏輯軌道寬度 + 標籤列；標籤列 sticky 固定後，滾動到最右端時
+    // 末端片段仍完整可見（flex-1 片段區 = 內容寬度 - 標籤列 ≥ 軌道寬度）。
     const contentWidth = Math.max(viewportWidth, trackWidth + LABEL_COLUMN_PX);
 
     const visualTracks = getVisualTracks(project.tracks);
@@ -132,7 +132,7 @@ export function EditorTimelinePanel() {
     };
     const handleRemoveTrack = (trackId: string) => {
         dispatch({ op: "removeTrack", payload: { trackId } });
-        // 选中片段若落在被删轨道上，需同步清空，否则留下悬挂选中态。
+        // 選中片段若落在被刪軌道上，需同步清空，否則留下懸掛選中態。
         if (selectedClipId) {
             const clip = project.clips.find((c) => c.id === selectedClipId);
             if (clip && clip.trackId === trackId) selectClip(null);
@@ -148,15 +148,15 @@ export function EditorTimelinePanel() {
 
     return (
         <div className="relative flex h-full min-h-0 flex-col bg-[var(--director-sequencer-surface)]">
-            {/* 工具条：左侧编辑工具，右侧缩放/时码（撤销/重做在宿主顶栏） */}
+            {/* 工具條：左側編輯工具，右側縮放/時碼（撤銷/重做在宿主頂欄） */}
             <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[var(--director-sequencer-border)] bg-[var(--director-sequencer-surface-raised)] px-3">
-                {/* 工具模式：选择 / 剃刀 */}
+                {/* 工具模式：選擇 / 剃刀 */}
                 <div className="flex items-center gap-0.5 rounded-md bg-[var(--director-control-hover)] p-0.5">
                     <button
                         type="button"
-                        aria-label="选择工具"
+                        aria-label="選擇工具"
                         aria-pressed={activeTool === "select"}
-                        title="选择工具"
+                        title="選擇工具"
                         onClick={() => setActiveTool("select")}
                         className={`grid size-6 place-items-center rounded-[6px] transition-colors ${
                             activeTool === "select" ? TOOL_FG_ACTIVE : TOOL_FG_IDLE
@@ -168,7 +168,7 @@ export function EditorTimelinePanel() {
                         type="button"
                         aria-label="剃刀工具"
                         aria-pressed={activeTool === "razor"}
-                        title="剃刀工具：点击片段在光标处分割"
+                        title="剃刀工具：點選片段在遊標處分割"
                         onClick={() => setActiveTool((tool) => (tool === "razor" ? "select" : "razor"))}
                         className={`grid size-6 place-items-center rounded-[6px] transition-colors ${
                             activeTool === "razor" ? TOOL_FG_ACTIVE : TOOL_FG_IDLE
@@ -178,35 +178,35 @@ export function EditorTimelinePanel() {
                     </button>
                 </div>
                 <div className="mx-1 h-5 w-px bg-[var(--director-sequencer-border)]" />
-                {/* 在播放头分割当前片段 */}
+                {/* 在播放頭分割當前片段 */}
                 <button
                     type="button"
-                    aria-label="在播放头分割"
+                    aria-label="在播放頭分割"
                     disabled={!clipAtPlayhead}
-                    title="在播放头分割片段"
+                    title="在播放頭分割片段"
                     onClick={handleSplitAtPlayhead}
                     className={`grid size-7 place-items-center rounded-md ${TOOL_FG_IDLE} disabled:cursor-not-allowed disabled:opacity-40`}
                 >
                     <Scissors className="size-4" />
                 </button>
-                {/* 删除选中片段 */}
+                {/* 刪除選中片段 */}
                 <button
                     type="button"
-                    aria-label="删除选中片段"
+                    aria-label="刪除選中片段"
                     disabled={!selectedClip}
-                    title="删除选中片段"
+                    title="刪除選中片段"
                     onClick={handleDeleteSelected}
                     className={`grid size-7 place-items-center rounded-md ${TOOL_FG_IDLE} disabled:cursor-not-allowed disabled:opacity-40`}
                 >
                     <Trash2 className="size-4" />
                 </button>
                 <div className="mx-1 h-5 w-px bg-[var(--director-sequencer-border)]" />
-                {/* 吸附开关 */}
+                {/* 吸附開關 */}
                 <button
                     type="button"
                     aria-label="吸附"
                     aria-pressed={snapEnabled}
-                    title="吸附（拖动与时间刻度对齐）"
+                    title="吸附（拖動與時間刻度對齊）"
                     onClick={() => setSnapEnabled((v) => !v)}
                     className={`grid size-7 place-items-center rounded-md transition-colors ${
                         snapEnabled ? TOOL_FG_ACTIVE : TOOL_FG_IDLE
@@ -214,13 +214,13 @@ export function EditorTimelinePanel() {
                 >
                     <Magnet className="size-4" />
                 </button>
-                {/* 新增轨道 */}
+                {/* 新增軌道 */}
                 <div className="relative">
                     <button
                         type="button"
-                        aria-label="新增轨道"
+                        aria-label="新增軌道"
                         aria-expanded={addMenuOpen}
-                        title="新增轨道"
+                        title="新增軌道"
                         onClick={() => setAddMenuOpen((v) => !v)}
                         className={`grid size-7 place-items-center rounded-md ${TOOL_FG_IDLE}`}
                     >
@@ -236,7 +236,7 @@ export function EditorTimelinePanel() {
                                     className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs ${TOOL_FG_IDLE}`}
                                 >
                                     <Film className="size-3.5" />
-                                    视频轨道
+                                    影片軌道
                                 </button>
                                 <button
                                     type="button"
@@ -244,7 +244,7 @@ export function EditorTimelinePanel() {
                                     className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs ${TOOL_FG_IDLE}`}
                                 >
                                     <Music2 className="size-3.5" />
-                                    音频轨道
+                                    音訊軌道
                                 </button>
                                 <button
                                     type="button"
@@ -252,22 +252,22 @@ export function EditorTimelinePanel() {
                                     className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs ${TOOL_FG_IDLE}`}
                                 >
                                     <Subtitles className="size-3.5" />
-                                    字幕轨道
+                                    字幕軌道
                                 </button>
                             </div>
                         </>
                     )}
                 </div>
                 <div className="flex-1" />
-                {/* 播放头时码 */}
+                {/* 播放頭時碼 */}
                 <span className="w-16 text-right text-xs tabular-nums text-[var(--director-dock-fg)]">{formatTimelineTime(playheadMs)}</span>
                 <span className="text-xs tabular-nums text-[var(--director-dock-fg)]">片段 {project.clips.length}</span>
                 <div className="mx-1 h-5 w-px bg-[var(--director-sequencer-border)]" />
-                {/* 适应宽度 */}
+                {/* 適應寬度 */}
                 <button
                     type="button"
-                    aria-label="适应宽度"
-                    title="适应宽度"
+                    aria-label="適應寬度"
+                    title="適應寬度"
                     onClick={handleFitWidth}
                     className={`grid size-7 place-items-center rounded-md ${TOOL_FG_IDLE}`}
                 >
@@ -275,8 +275,8 @@ export function EditorTimelinePanel() {
                 </button>
                 <button
                     type="button"
-                    aria-label="缩小时间线"
-                    title="缩小时间线"
+                    aria-label="縮小時間線"
+                    title="縮小時間線"
                     onClick={() => setZoomLevel((z) => zoomOut(z))}
                     className={`grid size-7 place-items-center rounded-md ${TOOL_FG_IDLE}`}
                 >
@@ -285,8 +285,8 @@ export function EditorTimelinePanel() {
                 <span className="w-10 text-center text-xs tabular-nums text-[var(--director-dock-fg)]">{Math.round(zoomLevel * 100)}%</span>
                 <button
                     type="button"
-                    aria-label="放大时间线"
-                    title="放大时间线"
+                    aria-label="放大時間線"
+                    title="放大時間線"
                     onClick={() => setZoomLevel((z) => zoomIn(z))}
                     className={`grid size-7 place-items-center rounded-md ${TOOL_FG_IDLE}`}
                 >
@@ -294,12 +294,12 @@ export function EditorTimelinePanel() {
                 </button>
             </div>
 
-            {/* 时间线主体 */}
+            {/* 時間線主體 */}
             <div ref={containerRef} className="director-scroll min-h-0 flex-1 overflow-auto bg-[var(--director-sequencer-surface)]" data-canvas-no-zoom>
                 {project.clips.length === 0 ? (
                     <div className="flex h-full flex-col items-center justify-center gap-2 text-[var(--director-dock-fg)]">
                         <Scissors className="size-8" />
-                        <p className="text-sm">从素材库加入素材后即可开始剪辑</p>
+                        <p className="text-sm">從素材庫加入素材後即可開始剪輯</p>
                     </div>
                 ) : (
                     <div className="relative min-w-full" style={{ width: contentWidth }}>
@@ -311,9 +311,9 @@ export function EditorTimelinePanel() {
                             onScrub={handleScrub}
                         />
                         {[
-                            { label: "视觉轨道", tracks: visualTracks },
-                            { label: "音频轨道", tracks: audioTracks },
-                            { label: "字幕轨道", tracks: subtitleTracks },
+                            { label: "視覺軌道", tracks: visualTracks },
+                            { label: "音訊軌道", tracks: audioTracks },
+                            { label: "字幕軌道", tracks: subtitleTracks },
                         ]
                             .filter((group) => group.tracks.length > 0)
                             .map((group) => (
@@ -345,7 +345,7 @@ export function EditorTimelinePanel() {
                                 </div>
                             ))}
 
-                        {/* 播放头：贯穿标尺与全部轨道，与标尺拖动同源（视觉/音频/字幕均覆盖） */}
+                        {/* 播放頭：貫穿標尺與全部軌道，與標尺拖動同源（視覺/音訊/字幕均覆蓋） */}
                         <div
                             aria-hidden
                             className="pointer-events-none absolute inset-y-0 z-[14] w-px bg-[var(--director-danger)]"
@@ -356,7 +356,7 @@ export function EditorTimelinePanel() {
                     </div>
                 )}
 
-            {/* 点击不可移除轨道 X 时的原因提示（短暂居中浮现，不拦截交互） */}
+            {/* 點選不可移除軌道 X 時的原因提示（短暫居中浮現，不攔截互動） */}
             {removeBlockedHint && (
                 <div
                     key={removeBlockedHint.id}
@@ -398,15 +398,15 @@ function TimelineRuler({
     };
     return (
         <div className="sticky top-0 z-10 flex h-6 shrink-0 w-full items-end border-b border-[var(--director-sequencer-border)] bg-[var(--director-sequencer-surface-raised)]">
-            {/* 左侧空白列与轨道标签列同宽，保证 0ms 刻度和片段绘制区域使用同一坐标原点。 */}
+            {/* 左側空白列與軌道標籤列同寬，保證 0ms 刻度和片段繪製區域使用同一座標原點。 */}
             <div className="sticky left-0 z-10 w-48 shrink-0 self-stretch border-r border-[var(--director-sequencer-border)] bg-[var(--director-sequencer-surface-raised)]">
-                {/* 当前播放头时码，跟随拖动实时刷新 */}
+                {/* 當前播放頭時碼，跟隨拖動即時重新整理 */}
                 <span className="absolute bottom-1 right-2 text-[10px] tabular-nums text-[var(--director-danger)]">{formatTimelineTime(playheadMs)}</span>
             </div>
             <div
                 ref={areaRef}
                 role="slider"
-                aria-label="播放头"
+                aria-label="播放頭"
                 aria-valuemin={0}
                 aria-valuemax={Math.round(endMs)}
                 aria-valuenow={Math.round(playheadMs)}
@@ -489,12 +489,12 @@ function TrackRow({
                     >
                         {track.label}
                     </div>
-                    <div className="text-[10px] text-[var(--director-dock-fg)]">{clips.length} 个片段</div>
+                    <div className="text-[10px] text-[var(--director-dock-fg)]">{clips.length} 個片段</div>
                 </div>
                 <button
                     type="button"
-                    aria-label={track.visible === false ? "显示轨道" : "隐藏轨道"}
-                    title={track.visible === false ? "显示轨道" : "隐藏轨道"}
+                    aria-label={track.visible === false ? "顯示軌道" : "隱藏軌道"}
+                    title={track.visible === false ? "顯示軌道" : "隱藏軌道"}
                     aria-pressed={track.visible === false}
                     onClick={() => onToggleTrackFlag(track.id, "visible", track.visible === false)}
                     className={`grid size-6 shrink-0 place-items-center rounded-md transition-colors ${
@@ -507,8 +507,8 @@ function TrackRow({
                 </button>
                 <button
                     type="button"
-                    aria-label={track.muted ? "取消静音" : "静音轨道"}
-                    title={track.muted ? "取消静音" : "静音轨道"}
+                    aria-label={track.muted ? "取消靜音" : "靜音軌道"}
+                    title={track.muted ? "取消靜音" : "靜音軌道"}
                     aria-pressed={track.muted === true}
                     onClick={() => onToggleTrackFlag(track.id, "muted", !track.muted)}
                     className={`grid size-6 shrink-0 place-items-center rounded-md transition-colors ${
@@ -521,8 +521,8 @@ function TrackRow({
                 </button>
                 <button
                     type="button"
-                    aria-label={`移除轨道 ${track.label}`}
-                    title={removable ? "移除轨道" : trackRemoveBlockedReason(track.kind)}
+                    aria-label={`移除軌道 ${track.label}`}
+                    title={removable ? "移除軌道" : trackRemoveBlockedReason(track.kind)}
                     onClick={() => (removable ? onRemoveTrack(track.id) : onRemoveBlocked(track.kind))}
                     className={`grid size-6 shrink-0 place-items-center rounded-md transition-opacity ${
                         removable
@@ -629,7 +629,7 @@ function ClipItem({
 
         if (g.mode === "move") {
             const candidateMs = Math.max(0, g.originStartMs + deltaMs);
-            // 移动吸附：候选左边缘吸附到其他片段边缘/播放头；右边缘吸附则通过“目标边缘-自身时长”换算回起始点，取偏移更小者
+            // 移動吸附：候選左邊緣吸附到其他片段邊緣/播放頭；右邊緣吸附則通過“目標邊緣-自身時長”換算回起始點，取偏移更小者
             const leftSnap = computeSnap({
                 candidateMs,
                 playheadMs,
@@ -648,9 +648,9 @@ function ClipItem({
                 thresholdPx: 8,
                 enabled: snapEnabled,
             });
-            // computeSnap 未命中时返回 { snappedMs: candidateMs, targets: [] }：
-            // 只有 targets 非空才算“命中”。若某侧未命中而其距离为 0（候选值不变），
-            // 直接与另一侧命中距离比较会把真正命中的一侧丢弃（0 永远最小）。
+            // computeSnap 未命中時返回 { snappedMs: candidateMs, targets: [] }：
+            // 只有 targets 非空才算“命中”。若某側未命中而其距離為 0（候選值不變），
+            // 直接與另一側命中距離比較會把真正命中的一側丟棄（0 永遠最小）。
             const leftHit = leftSnap.targets.length > 0;
             const rightHit = rightSnap.targets.length > 0;
             let snappedMs = candidateMs;
@@ -682,7 +682,7 @@ function ClipItem({
             if (sourceDuration > 0) newDurationMs = Math.min(newDurationMs, sourceDuration - g.originSourceStartMs);
             onGesture({ op: "trimClip", payload: { id: clip.id, durationMs: newDurationMs } });
         } else {
-            // trim-start：右端保持不动，起始点前移，源起点同步前移
+            // trim-start：右端保持不動，起始點前移，源起點同步前移
             const sourceDuration = clip.sourceDurationMs ?? 0;
             const rightEdge = g.originStartMs + g.originDurationMs;
             const candidateMs = Math.max(0, Math.min(g.originStartMs + deltaMs, rightEdge - SNAP_MS));
@@ -712,7 +712,7 @@ function ClipItem({
         try {
             e.currentTarget.releasePointerCapture(e.pointerId);
         } catch {
-            // pointer capture 可能已被隐式释放
+            // pointer capture 可能已被隱式釋放
         }
         onCommit();
     };
@@ -746,7 +746,7 @@ function ClipItem({
             style={{ left, width, touchAction: "none" }}
             title={`${label} · ${formatTimelineTime(clip.startMs)} +${formatTimelineTime(clip.durationMs)}`}
             onPointerDown={(e) => {
-                // 剃刀模式（字幕除外）：单击即在光标处分割；否则开始移动手势
+                // 剃刀模式（字幕除外）：單擊即在遊標處分割；否則開始移動手勢
                 if (razorActive && !isSubtitle) {
                     razorSplitAt(e);
                     return;
@@ -768,7 +768,7 @@ function ClipItem({
             <div className="pointer-events-none flex h-full items-center gap-1 px-2">
                 <span className="truncate">{label}</span>
             </div>
-            {/* 播放头经过片段时的对齐标线（razor/对齐视觉辅助） */}
+            {/* 播放頭經過片段時的對齊標線（razor/對齊視覺輔助） */}
             {playheadInside && (
                 <div
                     aria-hidden

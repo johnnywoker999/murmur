@@ -75,7 +75,7 @@ export function parseCanvasStorageDocument(value: string | null, fallback: Canva
         storageRevision?: unknown;
         tombstones?: unknown;
     };
-    if (!Array.isArray(parsed.state?.projects)) throw new Error("画布持久状态无效");
+    if (!Array.isArray(parsed.state?.projects)) throw new Error("畫布持久狀態無效");
     return {
         state: { projects: normalizeProjectAssetCategories(parsed.state.projects as CanvasProject[]) },
         version: typeof parsed.version === "number" ? parsed.version : 0,
@@ -105,11 +105,11 @@ function normalizeProjectAssetCategories(projects: CanvasProject[]) {
 }
 
 /**
- * 补齐画布文档的图结构数组。
+ * 補齊畫布檔案的圖結構陣列。
  *
- * 外部写入（内置助手、CLI/MCP 操作层）只写它需要的字段，产出的文档常常没有
- * chatSessions，会话也可能没有 messages；本地合并按「缺失即空集合」处理，
- * 否则一次外部改动就会让本地持久化整批失败。
+ * 外部寫入（內建助手、CLI/MCP 操作層）只寫它需要的欄位，產出的檔案常常沒有
+ * chatSessions，會話也可能沒有 messages；本地合併按「缺失即空集合」處理，
+ * 否則一次外部改動就會讓本地持久化整批失敗。
  */
 function normalizeProjectGraphArrays(project: CanvasProject): CanvasProject {
     const nodes = Array.isArray(project.nodes) ? project.nodes : [];
@@ -215,8 +215,8 @@ function mergeEntities<T extends { id: string }>(input: {
     conflict: (id: string) => CanvasStorageConflict;
     conflicts: CanvasStorageConflict[];
 }) {
-    // 外部写入（内置助手、CLI/MCP）产生的画布文档可能完全没有这些数组字段。
-    // 缺失等价于空集合，不能让它把整次本地持久化打挂。
+    // 外部寫入（內建助手、CLI/MCP）產生的畫布檔案可能完全沒有這些陣列欄位。
+    // 缺失等價於空集合，不能讓它把整次本地持久化打掛。
     const base = input.base ?? [];
     const local = input.local ?? [];
     const durable = input.durable ?? [];
@@ -323,7 +323,7 @@ function mergeSessions(input: {
                 ...input,
                 sessionId: local.id,
                 base: base?.messages || [],
-                // 会话可能由外部写入创建，没有 messages 字段；缺失等价于空列表。
+                // 會話可能由外部寫入建立，沒有 messages 欄位；缺失等價於空列表。
                 local: local.messages || [],
                 durable: durable.messages || [],
             });

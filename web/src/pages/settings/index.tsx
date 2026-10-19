@@ -60,10 +60,10 @@ export default function SettingsPage() {
         }
         if (!effectiveConfig.channels.some(isChannelReady)) {
             selectSection("channels");
-            message.error(customChannelsEnabled ? (shouldPromptContinue ? "请先完成至少一个渠道的 Base URL、API Key 和模型配置" : "当前没有可用渠道，请先完成连接信息和模型配置") : "当前没有可用的系统模型，请联系管理员配置系统渠道");
+            message.error(customChannelsEnabled ? (shouldPromptContinue ? "請先完成至少一個渠道的 Base URL、API Key 和模型配置" : "當前沒有可用渠道，請先完成連線資訊和模型配置") : "當前沒有可用的系統模型，請聯絡管理員配置系統渠道");
             return;
         }
-        message.success("配置已保存，正在返回创作页面");
+        message.success("配置已儲存，正在返回創作頁面");
         navigate(-1);
     };
 
@@ -74,7 +74,7 @@ export default function SettingsPage() {
                 <div className="settings-section model-default-section">
                     <div className="settings-pane-header">
                         <div className="min-w-0">
-                            <h2>默认模型</h2>
+                            <h2>預設模型</h2>
                         </div>
                     </div>
                     <ModelDefaultGrid config={effectiveConfig} onChange={(key, model) => updateConfig(key, model)} />
@@ -83,12 +83,12 @@ export default function SettingsPage() {
         ),
         storage: (
             <SettingsPane>
-                <PageHeader title="存储设置" />
+                <PageHeader title="儲存設定" />
                 <div className="storage-settings-sections">
                     <StorageSettingsPane />
                     <ReferenceStoragePane />
-                    <section className="settings-section storage-settings-block space-y-4" aria-label="深度捕捉组件">
-                        <div className="settings-pane-header"><h2>深度捕捉组件</h2></div>
+                    <section className="settings-section storage-settings-block space-y-4" aria-label="深度捕捉元件">
+                        <div className="settings-pane-header"><h2>深度捕捉元件</h2></div>
                         <DepthComponentsPanel />
                     </section>
                 </div>
@@ -98,8 +98,8 @@ export default function SettingsPage() {
             <SettingsPane>
                 <div className="settings-pane-header">
                     <div className="min-w-0">
-                        <h2>模型选择</h2>
-                        <p>按领域选择默认模型；模型能力与请求协议在渠道“模型与能力”中配置。</p>
+                        <h2>模型選擇</h2>
+                        <p>按領域選擇預設模型；模型能力與請求協議在渠道“模型與能力”中配置。</p>
                     </div>
                 </div>
                 <div className="settings-section">
@@ -114,8 +114,8 @@ export default function SettingsPage() {
                 {shouldPromptContinue ? <div className="settings-topbar shrink-0">
                     <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
                         {shouldPromptContinue ? <>
-                        <Button icon={<ArrowLeft className="size-4" />} onClick={() => navigate(-1)}>返回创作</Button>
-                        <Button type="primary" onClick={finishConfig}>保存并返回</Button>
+                        <Button icon={<ArrowLeft className="size-4" />} onClick={() => navigate(-1)}>返回創作</Button>
+                        <Button type="primary" onClick={finishConfig}>儲存並返回</Button>
                         </> : null}
                     </div>
                 </div> : null}

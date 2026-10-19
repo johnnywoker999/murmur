@@ -1,5 +1,5 @@
-// 读取选中片段（store.selectedClipId），属性编辑经 setClipProperty 命令入队
-// 并进入统一撤销历史；检查器不直接修改 project，避免绕过命令校验和持久化。
+// 讀取選中片段（store.selectedClipId），屬性編輯經 setClipProperty 命令入隊
+// 並進入統一撤銷歷史；檢查器不直接修改 project，避免繞過命令校驗和持久化。
 
 import { useEffect, useState } from "react";
 
@@ -15,8 +15,8 @@ export function EditorInspector() {
         return (
             <div className="flex h-full flex-col bg-[var(--director-sequencer-surface)]">
                 <div className="flex flex-1 flex-col items-center justify-center gap-2 p-4 text-center">
-                    <p className="text-xs text-[var(--director-dock-fg)]/60">未选中片段</p>
-                    <p className="max-w-[180px] text-[11px] leading-relaxed text-[var(--director-dock-fg)]/45">在时间线中点击片段后，可在此编辑属性</p>
+                    <p className="text-xs text-[var(--director-dock-fg)]/60">未選中片段</p>
+                    <p className="max-w-[180px] text-[11px] leading-relaxed text-[var(--director-dock-fg)]/45">在時間線中點選片段後，可在此編輯屬性</p>
                 </div>
             </div>
         );
@@ -29,7 +29,7 @@ export function EditorInspector() {
                 <ClipSummary clip={clip} />
                 <SectionTitle>基本</SectionTitle>
                 <PropertyField
-                    label="名称"
+                    label="名稱"
                     value={clip.title ?? clip.nodeId ?? clip.id}
                     onChange={(value) => dispatch({ op: "setClipProperty", payload: { id: clip.id, patch: { title: value } } })}
                 />
@@ -54,7 +54,7 @@ export function EditorInspector() {
                 )}
                 {(clip.kind === "video" || clip.kind === "audio") && (
                     <>
-                        <SectionTitle>转场</SectionTitle>
+                        <SectionTitle>轉場</SectionTitle>
                         <PropertyField
                             label="淡入"
                             type="range"
@@ -84,7 +84,7 @@ export function EditorInspector() {
                     onClick={() => selectClip(null)}
                     className="w-full rounded-md border border-[var(--director-sequencer-border)] py-1.5 text-xs text-[var(--director-dock-fg)] hover:bg-[var(--director-control-hover)]"
                 >
-                    清除选中
+                    清除選中
                 </button>
             </div>
         </div>
@@ -101,11 +101,11 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function ClipSummary({ clip }: { clip: TimelineClip }) {
     const kindLabel: Record<TimelineClip["kind"], string> = {
-        video: "视频",
-        audio: "音频",
+        video: "影片",
+        audio: "音訊",
         subtitle: "字幕",
         text: "文本",
-        image: "图片",
+        image: "圖片",
     };
     return (
         <div>
@@ -115,19 +115,19 @@ function ClipSummary({ clip }: { clip: TimelineClip }) {
             </div>
             <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px]">
                 <div className="flex items-baseline justify-between gap-2">
-                    <dt className="shrink-0 text-[var(--director-dock-fg)]/45">起点</dt>
+                    <dt className="shrink-0 text-[var(--director-dock-fg)]/45">起點</dt>
                     <dd className="tabular-nums text-[var(--director-dock-fg)]/80">{formatTimelineTime(clip.startMs)}</dd>
                 </div>
                 <div className="flex items-baseline justify-between gap-2">
-                    <dt className="shrink-0 text-[var(--director-dock-fg)]/45">时长</dt>
+                    <dt className="shrink-0 text-[var(--director-dock-fg)]/45">時長</dt>
                     <dd className="tabular-nums text-[var(--director-dock-fg)]/80">{formatTimelineTime(clip.durationMs)}</dd>
                 </div>
                 <div className="flex items-baseline justify-between gap-2">
-                    <dt className="shrink-0 text-[var(--director-dock-fg)]/45">源起点</dt>
+                    <dt className="shrink-0 text-[var(--director-dock-fg)]/45">源起點</dt>
                     <dd className="tabular-nums text-[var(--director-dock-fg)]/80">{formatTimelineTime(clip.sourceStartMs ?? 0)}</dd>
                 </div>
                 <div className="flex items-baseline justify-between gap-2">
-                    <dt className="shrink-0 text-[var(--director-dock-fg)]/45">结束</dt>
+                    <dt className="shrink-0 text-[var(--director-dock-fg)]/45">結束</dt>
                     <dd className="tabular-nums text-[var(--director-dock-fg)]/80">{formatTimelineTime(clip.startMs + clip.durationMs)}</dd>
                 </div>
             </dl>

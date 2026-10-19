@@ -84,7 +84,7 @@ export function storyboardRowsToProjectShots(rows: StoryboardRow[], detail?: Pro
     }]));
     return rows.map((row, index) => {
         const shotNumber = index + 1;
-        const description = row.plotDescription.trim() || `镜头 ${shotNumber}`;
+        const description = row.plotDescription.trim() || `鏡頭 ${shotNumber}`;
         const durationMs = Math.max(1000, Math.round((Number(row.durationSeconds) || 1) * 1000));
         const mentionReferences = storyboardRowAssetIds(row).flatMap((assetId) => {
             const reference = mentionReferenceByAssetId.get(assetId);
@@ -167,12 +167,12 @@ function normalizeCharacterName(value: string) {
 
 function joinStoryboardAction(row: StoryboardRow) {
     return [
-        labeledText("叙事意图", row.narrativeIntent),
-        labeledText("表演调度", row.performanceBlocking),
-        labeledText("时间节拍", row.timeBeats),
-        labeledText("情绪", row.emotion),
-        labeledText("光线与氛围", row.lightingAndAtmosphere),
-        labeledText("声音", row.audioEffects),
+        labeledText("敘事意圖", row.narrativeIntent),
+        labeledText("表演排程", row.performanceBlocking),
+        labeledText("時間節拍", row.timeBeats),
+        labeledText("情緒", row.emotion),
+        labeledText("光線與氛圍", row.lightingAndAtmosphere),
+        labeledText("聲音", row.audioEffects),
     ].filter(Boolean).join("\n");
 }
 

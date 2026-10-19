@@ -52,22 +52,22 @@ export function assertCanvasGenerationHistoryTaskForInsert(
     const detailId = detail.id?.trim() ?? "";
     const detailProjectId = detail.projectId?.trim() ?? "";
     if (!expectedId || !detailId || detailId !== expectedId) {
-        throw new Error("该任务没有可插入的生成结果");
+        throw new Error("該任務沒有可插入的生成結果");
     }
     if (!projectId || !detailProjectId || detailProjectId !== projectId) {
-        throw new Error("生成任务不属于当前画布");
+        throw new Error("生成任務不屬於當前畫布");
     }
     if (detail.status === "failed" || detail.status === "cancelled") {
-        throw new Error(detail.error || (detail.status === "cancelled" ? "任务已取消" : "任务失败"));
+        throw new Error(detail.error || (detail.status === "cancelled" ? "任務已取消" : "任務失敗"));
     }
     if (detail.status !== "succeeded") {
-        throw new Error(detail.error || "该任务没有可插入的生成结果");
+        throw new Error(detail.error || "該任務沒有可插入的生成結果");
     }
     if (!INSERTABLE_HISTORY_MODES.has(generationTaskMode(detail))) {
-        throw new Error("该任务没有可插入的生成结果");
+        throw new Error("該任務沒有可插入的生成結果");
     }
     if (!historyDetailHasInsertableMedia(detail)) {
-        throw new Error("该任务没有可插入的生成结果");
+        throw new Error("該任務沒有可插入的生成結果");
     }
     return detail;
 }

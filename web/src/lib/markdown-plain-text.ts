@@ -1,6 +1,6 @@
-// 把 Markdown 消息压成一行纯文本，用于历史列表预览和标题：
-// 去掉记号本身（##、**、[]() 等），保留可读内容；围栏代码块整体替换为占位词。
-export function markdownPlainText(value: string, codePlaceholder = "代码块") {
+// 把 Markdown 訊息壓成一行純文本，用於歷史列表預覽和標題：
+// 去掉記號本身（##、**、[]() 等），保留可讀內容；圍欄程式碼塊整體替換為佔位詞。
+export function markdownPlainText(value: string, codePlaceholder = "程式碼塊") {
     return value
         .replace(/```[\s\S]*?(?:```|$)/gu, ` ${codePlaceholder} `)
         .replace(/^\s*\|?[\s:|-]*-[\s:|-]*\|?\s*$/gmu, " ")

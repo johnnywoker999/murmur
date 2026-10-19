@@ -11,7 +11,7 @@ export const DIRECTOR_ACTOR_COLORS = ["#4f8ef7", "#202329", "#2f7de1", "#d84949"
 
 export const directorIdentityTransform = (position: DirectorVec3 = [0, 0, 0]): DirectorTransform => ({ position, rotation: [0, 0, 0], scale: [1, 1, 1] });
 
-export function createDirectorScene(title = "未命名场景"): DirectorScene {
+export function createDirectorScene(title = "未命名場景"): DirectorScene {
     const now = new Date().toISOString();
     const camera = createDirectorCamera();
     const shotId = nanoid();
@@ -29,10 +29,10 @@ export function createDirectorScene(title = "未命名场景"): DirectorScene {
         stageTransform: { ...DIRECTOR_DEFAULT_STAGE_TRANSFORM, position: [...DIRECTOR_DEFAULT_STAGE_TRANSFORM.position], rotation: [...DIRECTOR_DEFAULT_STAGE_TRANSFORM.rotation] },
         labelsVisible: true,
         aspectRatio: "adaptive",
-        objects: [createDirectorActor("演员 1", [0, 0, 0])],
+        objects: [createDirectorActor("演員 1", [0, 0, 0])],
         cameras: [camera],
-        lights: [createDirectorLight("directional", "主光", [4, 6, 4], 2.4), createDirectorLight("directional", "轮廓光", [-4, 3, -2], 1.1), createDirectorLight("ambient", "环境光", [0, 0, 0], 0.65)],
-        shots: [{ id: shotId, name: "镜头 1", cameraId: camera.id, duration: 5, fps: 24, shotSize: "medium", cameraMove: "static", prompt: "" }],
+        lights: [createDirectorLight("directional", "主光", [4, 6, 4], 2.4), createDirectorLight("directional", "輪廓光", [-4, 3, -2], 1.1), createDirectorLight("ambient", "環境光", [0, 0, 0], 0.65)],
+        shots: [{ id: shotId, name: "鏡頭 1", cameraId: camera.id, duration: 5, fps: 24, shotSize: "medium", cameraMove: "static", prompt: "" }],
         activeShotId: shotId,
         createdAt: now,
         updatedAt: now,
@@ -63,7 +63,7 @@ export function toggleDirectorCameraLock(scene: DirectorScene, id: string): Dire
     return { ...scene, cameras: scene.cameras.map((camera) => camera.id === id ? { ...camera, locked: !camera.locked } : camera) };
 }
 
-/** 副本保留媒体与动画内容，但所有可编辑记录均有独立标识与引用。 */
+/** 副本保留媒體與動畫內容，但所有可編輯記錄均有獨立標識與引用。 */
 export function duplicateDirectorObject(source: DirectorObject): DirectorObject {
     const copy = structuredClone(source);
     const ids = new Map(copy.keyframes.map((frame) => [frame.id, nanoid()]));
@@ -89,8 +89,8 @@ export function groupDirectorObjects(scene: DirectorScene, ids: string[]): Direc
     if (members.length < 2) return scene;
     const groups = scene.groups || [];
     let index = 1;
-    while (groups.some((group) => group.name === `分组${index}`)) index += 1;
-    const group: DirectorGroup = { id: nanoid(), name: `分组${index}`, collapsed: false };
+    while (groups.some((group) => group.name === `分組${index}`)) index += 1;
+    const group: DirectorGroup = { id: nanoid(), name: `分組${index}`, collapsed: false };
     const objects = scene.objects.map((object) => selected.has(object.id) ? { ...object, groupId: group.id } : object);
     const remainingGroups = groups.filter((entry) => objects.some((object) => object.groupId === entry.id));
     return { ...scene, groups: [...remainingGroups, group], objects };
@@ -131,7 +131,7 @@ export function ungroupDirectorObjects(scene: DirectorScene, id: string): Direct
     return { ...scene, groups: groups.length ? groups : undefined, objects: scene.objects.map((object) => object.groupId === id ? { ...object, groupId: undefined } : object) };
 }
 
-export function createDirectorObject(primitive: DirectorObject["primitive"] = "box", name = "新对象", position: DirectorVec3 = [0, 0.5, 0], color = "#8795a5"): DirectorObject {
+export function createDirectorObject(primitive: DirectorObject["primitive"] = "box", name = "新物件", position: DirectorVec3 = [0, 0.5, 0], color = "#8795a5"): DirectorObject {
     return {
         id: nanoid(),
         name,
@@ -147,7 +147,7 @@ export function createDirectorObject(primitive: DirectorObject["primitive"] = "b
     };
 }
 
-/** 统一倍率按比例作用于基础值和所有关键帧；轴向不等比缩放仍保留。 */
+/** 統一倍率按比例作用於基礎值和所有關鍵幀；軸向不等比縮放仍保留。 */
 export function applyDirectorUniformScale(object: DirectorObject, input: number): DirectorObject {
     if (!Number.isFinite(input)) return object;
     const next = Math.max(0.1, Math.min(10, input));
@@ -163,7 +163,7 @@ export function applyDirectorUniformScale(object: DirectorObject, input: number)
     };
 }
 
-export function createDirectorActor(name = "演员", position: DirectorVec3 = [0, 0, 0], color: string = DIRECTOR_ACTOR_COLORS[0]): DirectorObject {
+export function createDirectorActor(name = "演員", position: DirectorVec3 = [0, 0, 0], color: string = DIRECTOR_ACTOR_COLORS[0]): DirectorObject {
     return {
         ...createDirectorObject("box", name, position, color),
         kind: "actor",
@@ -187,16 +187,16 @@ export function createDirectorBillboard(name: string, url: string, storageKey?: 
     return { ...createDirectorObject("plane", name, [0, 1.1, 0], "#ffffff"), kind: "billboard", url, storageKey, sourceNodeId, transform: { position: [0, 1.1, 0], rotation: [0, 0, 0], scale: [1.6, 0.9, 1] } };
 }
 
-export function createDirectorCamera(name = "机位1"): DirectorCamera {
+export function createDirectorCamera(name = "機位1"): DirectorCamera {
     return { id: nanoid(), name, transform: directorIdentityTransform([0, 2.2, 10]), target: [0, 1.2, 0], focalLength: 35, fov: 50, aperture: 2.8, focusDistance: 5, near: 0.05, far: 500, keyframes: [] };
 }
 
-/** 35mm 全画幅水平视角换算。摄影机检查器与场景模板共用，避免两处各写一份光学。 */
+/** 35mm 全畫幅水平視角換算。攝影機檢查器與場景模板共用，避免兩處各寫一份光學。 */
 export function directorFocalLengthToFov(focalLength: number) {
     return (2 * Math.atan(36 / (2 * Math.max(1, focalLength))) * 180) / Math.PI;
 }
 
-/** 与焦距编辑使用同一 35mm 全画幅模型，FOV 调整后两项保持同步。 */
+/** 與焦距編輯使用同一 35mm 全畫幅模型，FOV 調整後兩項保持同步。 */
 export function directorFovToFocalLength(fov: number) {
     return 18 / Math.tan((Math.max(1, Math.min(179, fov)) * Math.PI) / 360);
 }
@@ -209,7 +209,7 @@ export function touchDirectorScene(scene: DirectorScene): DirectorScene {
     return { ...scene, updatedAt: new Date().toISOString() };
 }
 
-/** 关键帧命中容差：upsert 与 remove 必须同判据，否则会出现「记录能覆盖但删不掉」。 */
+/** 關鍵幀命中容差：upsert 與 remove 必須同判據，否則會出現「記錄能覆蓋但刪不掉」。 */
 export const DIRECTOR_KEYFRAME_EPSILON = 0.001;
 
 export function upsertDirectorKeyframe(keyframes: DirectorKeyframe[], time: number, transform: DirectorTransform) {
@@ -230,15 +230,15 @@ function upsertBoneKeyframe(keyframes: DirectorBoneKeyframe[], time: number, rot
     return next.sort((a, b) => a.time - b.time);
 }
 
-/** 按 id 删除对象 transform 关键帧；id 不存在时返回原数组引用。 */
+/** 按 id 刪除物件 transform 關鍵幀；id 不存在時返回原陣列引用。 */
 export function removeDirectorKeyframe(keyframes: DirectorKeyframe[], keyframeId: string): DirectorKeyframe[] {
     if (!keyframes.some((item) => item.id === keyframeId)) return keyframes;
     return keyframes.filter((item) => item.id !== keyframeId);
 }
 
 /**
- * 按 id 删除某骨骼轨道上的关键帧。
- * 轨道被删空后整条移除，否则时间轴会留下永远为空的子轨道。
+ * 按 id 刪除某骨骼軌道上的關鍵幀。
+ * 軌道被刪空後整條移除，否則時間軸會留下永遠為空的子軌道。
  */
 export function removeDirectorBoneKeyframe(tracks: DirectorBoneTrack[], bone: DirectorHumanoidBone, keyframeId: string): DirectorBoneTrack[] {
     const track = tracks.find((item) => item.bone === bone);
@@ -250,10 +250,10 @@ export function removeDirectorBoneKeyframe(tracks: DirectorBoneTrack[], bone: Di
 }
 
 /**
- * 时间轴删除关键帧的唯一入口：按轨道类型分派到对应领域函数。
+ * 時間軸刪除關鍵幀的唯一入口：按軌道型別分派到對應領域函式。
  *
- * 未命中（对象/摄影机/骨骼/关键帧任一不存在）时返回同一个 scene 引用，
- * 调用方据此跳过历史与保存，避免「点了没删掉却多一次修订」。
+ * 未命中（物件/攝影機/骨骼/關鍵幀任一不存在）時返回同一個 scene 引用，
+ * 呼叫方據此跳過歷史與儲存，避免「點了沒刪掉卻多一次修訂」。
  */
 export function removeDirectorSceneKeyframe(scene: DirectorScene, target: DirectorKeyframeDeleteTarget): DirectorScene {
     if (target.track === "camera") {
@@ -307,7 +307,7 @@ export function removeDirectorSceneKeyframe(scene: DirectorScene, target: Direct
 }
 
 /**
- * 更新一枚关键帧后续区间的缓动。未命中时返回原 scene 引用，调用方据此跳过历史与保存。
+ * 更新一枚關鍵幀後續區間的緩動。未命中時返回原 scene 引用，呼叫方據此跳過歷史與儲存。
  */
 export function setDirectorSceneKeyframeEasing(scene: DirectorScene, target: DirectorKeyframeDeleteTarget, easing: DirectorKeyframeEasing): DirectorScene {
     const update = <T extends { id: string; easing?: DirectorKeyframeEasing }>(keyframes: T[]) => {
@@ -340,7 +340,7 @@ export function setDirectorSceneKeyframeEasing(scene: DirectorScene, target: Dir
     return { ...scene, objects: scene.objects.map((item) => item.id === object.id ? { ...item, boneTracks } : item) };
 }
 
-/** 缓动属于前一枚关键帧到下一枚关键帧的区间。旧数据未声明时保持线性。 */
+/** 緩動屬於前一枚關鍵幀到下一枚關鍵幀的區間。舊資料未宣告時保持線性。 */
 export function resolveDirectorKeyframeProgress(progress: number, easing: DirectorKeyframeEasing = "linear") {
     const clamped = Math.max(0, Math.min(1, progress));
     if (easing === "step") return 0;
@@ -348,12 +348,12 @@ export function resolveDirectorKeyframeProgress(progress: number, easing: Direct
     return clamped;
 }
 
-/** 轨迹渲染只接受有限时间与位置；坏数据不得进入 Three 几何体。 */
+/** 軌跡渲染只接受有限時間與位置；壞資料不得進入 Three 幾何體。 */
 export function finiteDirectorTransformKeyframes(keyframes: DirectorKeyframe[]) {
     return keyframes.filter((keyframe) => keyframe.positionKeyed !== false && [keyframe.time, ...keyframe.transform.position].every(Number.isFinite));
 }
 
-/** 按时间顺序累计 Transform 关键帧路径长度；非法时间或坐标段忽略，不污染界面统计。 */
+/** 按時間順序累計 Transform 關鍵幀路徑長度；非法時間或座標段忽略，不汙染介面統計。 */
 export function directorTransformPathLength(keyframes: DirectorKeyframe[]) {
     const sorted = keyframes.filter((keyframe) => keyframe.positionKeyed !== false).sort((left, right) => left.time - right.time);
     let length = 0;
@@ -404,30 +404,30 @@ export function interpolateDirectorBoneRotation(base: DirectorQuat, keyframes: D
 
 export function directorBoneLabel(bone: string) {
     return ({
-        hips: "骨盆", spine: "脊柱", chest: "胸腔", neck: "颈部", head: "头部",
+        hips: "骨盆", spine: "脊柱", chest: "胸腔", neck: "頸部", head: "頭部",
         leftShoulder: "左肩", leftUpperArm: "左上臂", leftLowerArm: "左前臂", leftHand: "左手",
         rightShoulder: "右肩", rightUpperArm: "右上臂", rightLowerArm: "右前臂", rightHand: "右手",
-        leftUpperLeg: "左大腿", leftLowerLeg: "左小腿", leftFoot: "左脚",
-        rightUpperLeg: "右大腿", rightLowerLeg: "右小腿", rightFoot: "右脚",
+        leftUpperLeg: "左大腿", leftLowerLeg: "左小腿", leftFoot: "左腳",
+        rightUpperLeg: "右大腿", rightLowerLeg: "右小腿", rightFoot: "右腳",
         leftThumb1: "左拇指·根", leftThumb2: "左拇指·中", leftThumb3: "左拇指·尖",
         leftIndex1: "左食指·根", leftIndex2: "左食指·中", leftIndex3: "左食指·尖",
         leftMiddle1: "左中指·根", leftMiddle2: "左中指·中", leftMiddle3: "左中指·尖",
-        leftRing1: "左无名指·根", leftRing2: "左无名指·中", leftRing3: "左无名指·尖",
+        leftRing1: "左無名指·根", leftRing2: "左無名指·中", leftRing3: "左無名指·尖",
         leftPinky1: "左小指·根", leftPinky2: "左小指·中", leftPinky3: "左小指·尖",
         rightThumb1: "右拇指·根", rightThumb2: "右拇指·中", rightThumb3: "右拇指·尖",
         rightIndex1: "右食指·根", rightIndex2: "右食指·中", rightIndex3: "右食指·尖",
         rightMiddle1: "右中指·根", rightMiddle2: "右中指·中", rightMiddle3: "右中指·尖",
-        rightRing1: "右无名指·根", rightRing2: "右无名指·中", rightRing3: "右无名指·尖",
+        rightRing1: "右無名指·根", rightRing2: "右無名指·中", rightRing3: "右無名指·尖",
         rightPinky1: "右小指·根", rightPinky2: "右小指·中", rightPinky3: "右小指·尖",
     } as Record<string, string>)[bone] || bone;
 }
 
 export function directorPoseLabel(pose: DirectorPose) {
-    return ({ neutral: "自然", stand: "站立", t_pose: "T 型", walk: "行走", run: "跑步", sit: "坐姿", squat: "蹲下", kneel_single: "单膝跪", kneel_double: "双膝跪", hands_hips: "叉腰", lean: "倚靠", bow: "鞠躬", think: "思考", fight: "格斗", kick: "踢球", throw: "投掷", push: "推进", wave: "招手", reach: "伸手", arms_crossed: "抱臂", phone: "看手机" } as Record<DirectorPose, string>)[pose];
+    return ({ neutral: "自然", stand: "站立", t_pose: "T 型", walk: "行走", run: "跑步", sit: "坐姿", squat: "蹲下", kneel_single: "單膝跪", kneel_double: "雙膝跪", hands_hips: "叉腰", lean: "倚靠", bow: "鞠躬", think: "思考", fight: "格鬥", kick: "踢球", throw: "投擲", push: "推進", wave: "招手", reach: "伸手", arms_crossed: "抱臂", phone: "看手機" } as Record<DirectorPose, string>)[pose];
 }
 
 export function directorPoseBoneDeltas(pose: DirectorPose): Partial<Record<DirectorHumanoidBone, DirectorQuat>> {
-    // Soldier 的左右上臂局部 Z 轴方向一致，正向旋转才会把两侧手臂从 T Pose 放下。
+    // Soldier 的左右上臂區域性 Z 軸方向一致，正向旋轉才會把兩側手臂從 T Pose 放下。
     const armsDown = { leftUpperArm: poseQuaternion(0, 0, 1.28), rightUpperArm: poseQuaternion(0, 0, 1.28) };
     const poses: Record<DirectorPose, Partial<Record<DirectorHumanoidBone, DirectorQuat>>> = {
         neutral: armsDown,
@@ -460,14 +460,14 @@ export function directorColorLabel(value: string) {
     new Color(value).getHSL(hsl);
     if (hsl.l >= 0.86 && hsl.s <= 0.2) return "白色";
     if (hsl.l <= 0.18) return "黑色";
-    if (hsl.s <= 0.16) return hsl.l >= 0.52 ? "浅灰色" : "深灰色";
+    if (hsl.s <= 0.16) return hsl.l >= 0.52 ? "淺灰色" : "深灰色";
     const hue = hsl.h * 360;
-    if (hue < 18 || hue >= 345) return "红色";
+    if (hue < 18 || hue >= 345) return "紅色";
     if (hue < 48) return "橙色";
-    if (hue < 72) return "黄色";
-    if (hue < 165) return "绿色";
+    if (hue < 72) return "黃色";
+    if (hue < 165) return "綠色";
     if (hue < 195) return "青色";
-    if (hue < 255) return "蓝色";
+    if (hue < 255) return "藍色";
     if (hue < 290) return "紫色";
     return "粉色";
 }

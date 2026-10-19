@@ -2,8 +2,8 @@ import type { DirectorScene } from "@/types/director";
 import type { DirectorCloseDecision, DirectorDraftEnvelope, DirectorSaveSnapshot, StorageLike } from "@/lib/canvas/director/director-save";
 
 /**
- * UI 只需要保存进度，不需要场景本体。
- * 去掉 scene 后 React state 不必再为「还没有 coordinator」编造一个假场景。
+ * UI 只需要儲存進度，不需要場景本體。
+ * 去掉 scene 後 React state 不必再為「還沒有 coordinator」編造一個假場景。
  */
 export type DirectorSaveProgress = Omit<DirectorSaveSnapshot, "scene">;
 
@@ -14,7 +14,7 @@ export const idleDirectorSaveProgress: DirectorSaveProgress = {
     draftStored: false,
 };
 
-/** 从完整快照投影出进度：订阅回调必须走它，避免只更新 status 而漏掉确认信息。 */
+/** 從完整快照投影出進度：訂閱回撥必須走它，避免只更新 status 而漏掉確認資訊。 */
 export function directorSaveProgress(snapshot: DirectorSaveSnapshot): DirectorSaveProgress {
     return {
         revision: snapshot.revision,
@@ -24,11 +24,11 @@ export function directorSaveProgress(snapshot: DirectorSaveSnapshot): DirectorSa
     };
 }
 
-/** 头部状态展示：文案与语气必须由状态唯一决定，组件不得自己拼措辞。 */
+/** 頭部狀態展示：文案與語氣必須由狀態唯一決定，元件不得自己拼措辭。 */
 export type DirectorSaveIndicator = {
     label: string;
     tone: "idle" | "pending" | "danger";
-    /** 未确认或错误时提供重试；已保存态没有可重试的东西。 */
+    /** 未確認或錯誤時提供重試；已儲存態沒有可重試的東西。 */
     retryable: boolean;
     busy: boolean;
 };
@@ -38,25 +38,25 @@ export function describeDirectorSaveStatus(progress: DirectorSaveProgress): Dire
 
     if (progress.status === "error") {
         return {
-            label: progress.draftStored ? "保存失败 · 本地草稿已保留" : "保存失败 · 本地草稿也未写入",
+            label: progress.draftStored ? "儲存失敗 · 本地草稿已保留" : "儲存失敗 · 本地草稿也未寫入",
             tone: "danger",
             retryable: true,
             busy: false,
         };
     }
     if (progress.status === "saving") {
-        return { label: "正在保存…", tone: "pending", retryable: false, busy: true };
+        return { label: "正在儲存…", tone: "pending", retryable: false, busy: true };
     }
     if (progress.status === "dirty" || unconfirmed) {
-        return { label: "有未保存修改", tone: "pending", retryable: true, busy: false };
+        return { label: "有未儲存修改", tone: "pending", retryable: true, busy: false };
     }
-    return { label: "已保存", tone: "idle", retryable: false, busy: false };
+    return { label: "已儲存", tone: "idle", retryable: false, busy: false };
 }
 
 /**
- * 是否提示恢复：候选必须比权威场景更新才值得打断用户。
- * scene.updatedAt 是 canonical 保存时间，candidate.baseUpdatedAt 是草稿写入时的基线；
- * 基线落后于权威说明远端已保存过更新的内容，这份草稿是陈旧残留。
+ * 是否提示恢復：候選必須比權威場景更新才值得打斷使用者。
+ * scene.updatedAt 是 canonical 儲存時間，candidate.baseUpdatedAt 是草稿寫入時的基線；
+ * 基線落後於權威說明遠端已儲存過更新的內容，這份草稿是陳舊殘留。
  */
 export function shouldOfferDirectorDraftRecovery(input: { candidate: DirectorDraftEnvelope | null; authoritativeScene: DirectorScene | null }): boolean {
     const { candidate, authoritativeScene } = input;
@@ -66,7 +66,7 @@ export function shouldOfferDirectorDraftRecovery(input: { candidate: DirectorDra
     return candidate.scene.updatedAt > authoritativeScene.updatedAt;
 }
 
-/** 关闭决策的用户可见后果，组件按此分支决定退出/二次确认/留下。 */
+/** 關閉決策的使用者可見後果，元件按此分支決定退出/二次確認/留下。 */
 export type DirectorCloseOutcome = { kind: "close" } | { kind: "confirm-draft-exit"; message: string } | { kind: "blocked"; message: string };
 
 export function resolveDirectorCloseOutcome(decision: DirectorCloseDecision): DirectorCloseOutcome {
@@ -74,15 +74,15 @@ export function resolveDirectorCloseOutcome(decision: DirectorCloseDecision): Di
     if (decision === "offer-draft-exit") {
         return {
             kind: "confirm-draft-exit",
-            message: "远端保存失败，但本地草稿已安全保存。下次打开这个镜头可以恢复，确认离开吗？",
+            message: "遠端儲存失敗，但本地草稿已安全儲存。下次開啟這個鏡頭可以恢復，確認離開嗎？",
         };
     }
-    return { kind: "blocked", message: "保存失败且本地草稿未写入，已留在导演台，请重试保存。" };
+    return { kind: "blocked", message: "儲存失敗且本地草稿未寫入，已留在導演臺，請重試儲存。" };
 }
 
 /**
- * beforeunload 是否要触发浏览器保护：只有「改动未确认」或「错误态且没有安全草稿」才拦。
- * 注意这里只能同步表达意图，异步 flush 无法阻塞卸载。
+ * beforeunload 是否要觸發瀏覽器保護：只有「改動未確認」或「錯誤態且沒有安全草稿」才攔。
+ * 注意這裡只能同步表達意圖，非同步 flush 無法阻塞解除安裝。
  */
 export function shouldBlockDirectorUnload(progress: DirectorSaveProgress): boolean {
     if (progress.confirmedRevision < progress.revision) return true;
@@ -90,9 +90,9 @@ export function shouldBlockDirectorUnload(progress: DirectorSaveProgress): boole
 }
 
 /**
- * localStorage 不可用（隐私模式、被禁用、SSR）时的显式实现：
- * 读返回 null，写和删都抛，让 coordinator 如实得到 draftStored=false。
- * 绝不能降级成进程内 Map —— 那会让弹窗谎称「下次可恢复」。
+ * localStorage 不可用（隱私模式、被停用、SSR）時的顯式實現：
+ * 讀返回 null，寫和刪都拋，讓 coordinator 如實得到 draftStored=false。
+ * 絕不能降級成程式內 Map —— 那會讓彈窗謊稱「下次可恢復」。
  */
 export const unavailableDirectorDraftStorage: StorageLike = {
     getItem: () => null,
@@ -104,7 +104,7 @@ export const unavailableDirectorDraftStorage: StorageLike = {
     },
 };
 
-/** 纯 factory：注入 getter 便于测试不可用分支，不引入额外依赖。 */
+/** 純 factory：注入 getter 便於測試不可用分支，不引入額外依賴。 */
 export function resolveDirectorDraftStorage(readStorage: () => Storage | null | undefined): StorageLike {
     let local: Storage | null | undefined;
     try {

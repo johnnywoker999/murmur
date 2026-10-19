@@ -34,7 +34,7 @@ export function CanvasVideoSettingsPopover({ config, onConfigChange, buttonClass
     const summary = [
         ...(resolutionSupported ? [videoResolutionLabel(resolution)] : []),
         ...(sizeSupported ? [taskConstraints?.ratioLabel || videoSizeLabel(size)] : []),
-        taskConstraints?.durationLocked ? "随原视频时长" : videoSecondsLabel(config.videoSeconds, videoProfile),
+        taskConstraints?.durationLocked ? "隨原影片時長" : videoSecondsLabel(config.videoSeconds, videoProfile),
     ].join(" · ");
     const displaySummary = summaryOverride || summary;
 
@@ -65,7 +65,7 @@ export function CanvasVideoSettingsPopover({ config, onConfigChange, buttonClass
     return (
         <>
             <span ref={buttonRef} className="inline-flex min-w-0">
-                <Button size="small" type="text" className={`canvas-generation-settings-trigger ${buttonClassName || "!h-8 !max-w-[170px] !justify-start !rounded-full !px-2.5"}`} style={{ background: theme.node.fill, color: theme.node.text }} icon={<Settings2 className="size-3.5" />} aria-expanded={open} aria-label={`高级设置：${displaySummary}`} title={`高级设置 · ${displaySummary}`} onClick={() => setOpen((current) => !current)}>
+                <Button size="small" type="text" className={`canvas-generation-settings-trigger ${buttonClassName || "!h-8 !max-w-[170px] !justify-start !rounded-full !px-2.5"}`} style={{ background: theme.node.fill, color: theme.node.text }} icon={<Settings2 className="size-3.5" />} aria-expanded={open} aria-label={`進階設定：${displaySummary}`} title={`進階設定 · ${displaySummary}`} onClick={() => setOpen((current) => !current)}>
                     <span className="truncate">{displaySummary}</span>
                 </Button>
             </span>

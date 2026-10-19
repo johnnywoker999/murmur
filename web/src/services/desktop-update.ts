@@ -147,7 +147,7 @@ export function desktopUpdateProgressLabel(state: DesktopUpdateState): string {
         return `${formatDesktopUpdateBytes(state.downloadedBytes)} / ${formatDesktopUpdateBytes(state.totalBytes)}`;
     }
     if (percent !== null) return `${percent}%`;
-    return "正在下载";
+    return "正在下載";
 }
 
 export function formatDesktopUpdateSpeed(bytesPerSecond: number): string {
@@ -161,26 +161,26 @@ export function desktopUpdateRemainingSeconds(state: DesktopUpdateState): number
 
 export function formatDesktopUpdateRemaining(seconds: number | null): string {
     if (seconds === null || !Number.isFinite(seconds)) return "";
-    if (seconds < 60) return "剩余不到 1 分钟";
-    if (seconds < 3600) return `剩余约 ${Math.ceil(seconds / 60)} 分钟`;
+    if (seconds < 60) return "剩餘不到 1 分鐘";
+    if (seconds < 3600) return `剩餘約 ${Math.ceil(seconds / 60)} 分鐘`;
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.round((seconds % 3600) / 60);
-    return minutes ? `剩余约 ${hours} 小时 ${minutes} 分钟` : `剩余约 ${hours} 小时`;
+    return minutes ? `剩餘約 ${hours} 小時 ${minutes} 分鐘` : `剩餘約 ${hours} 小時`;
 }
 
 /** Secondary line under the download status: speed and time left, or why it paused. */
 export function desktopUpdateDetailLabel(state: DesktopUpdateState): string {
     if (state.status === "installing") {
-        if (state.phase === "extracting" && state.totalFiles) return `${state.completedFiles ?? 0} / ${state.totalFiles} 个文件`;
-        if (state.phase === "restarting" || state.installPrepared) return "完成后将自动打开新版本";
-        return "请保持应用开启";
+        if (state.phase === "extracting" && state.totalFiles) return `${state.completedFiles ?? 0} / ${state.totalFiles} 個檔案`;
+        if (state.phase === "restarting" || state.installPrepared) return "完成後將自動開啟新版本";
+        return "請保持應用開啟";
     }
     if (state.status === "downloading") {
-        if (state.reconnecting) return "网络中断，正在重新连接";
-        if (state.totalBytes > 0 && state.downloadedBytes >= state.totalBytes) return "下载完成，正在校验更新包";
+        if (state.reconnecting) return "網路中斷，正在重新連線";
+        if (state.totalBytes > 0 && state.downloadedBytes >= state.totalBytes) return "下載完成，正在校驗更新包";
         const speed = formatDesktopUpdateSpeed(state.bytesPerSecond);
         if (speed) return [speed, formatDesktopUpdateRemaining(desktopUpdateRemainingSeconds(state))].filter(Boolean).join(" · ");
-        return state.downloadedBytes > 0 && state.totalBytes > 0 ? desktopUpdateProgressLabel(state) : "正在连接";
+        return state.downloadedBytes > 0 && state.totalBytes > 0 ? desktopUpdateProgressLabel(state) : "正在連線";
     }
     if (state.status === "error") return userFacingDesktopUpdateError(state.error);
     return "";
@@ -194,19 +194,19 @@ export function hasResumableDesktopUpdate(state: DesktopUpdateState): boolean {
 export function desktopUpdateActionLabel(status: DesktopUpdateStatus): string {
     switch (status) {
         case "available":
-            return "下载更新";
+            return "下載更新";
         case "downloading":
-            return "正在下载";
+            return "正在下載";
         case "ready":
-            return "安装更新";
+            return "安裝更新";
         case "installing":
-            return "正在安装";
+            return "正在安裝";
         case "error":
-            return "再试一次";
+            return "再試一次";
         case "checking":
-            return "正在检查";
+            return "正在檢查";
         case "idle":
-            return "检查更新";
+            return "檢查更新";
         default:
             return "";
     }
@@ -215,7 +215,7 @@ export function desktopUpdateActionLabel(status: DesktopUpdateStatus): string {
 export function userFacingDesktopUpdateError(error: string): string {
     const trimmed = error.trim();
     if (!trimmed || trimmed.length > 80 || /https?:\/\//i.test(trimmed) || /github/i.test(trimmed) || !/[\u4e00-\u9fff]/u.test(trimmed)) {
-        return "更新没有完成，请再试一次。";
+        return "更新沒有完成，請再試一次。";
     }
     return trimmed;
 }
@@ -245,7 +245,7 @@ export async function persistWorkspaceBeforeDesktopInstall() {
     if (failed?.status === "rejected") throw failed.reason;
     const modelConfig = getModelConfigPersistenceState();
     if (modelConfig.status === "saving") throw new DesktopUpdateSaveInProgressError();
-    if (modelConfig.dirty || modelConfig.status === "error") throw new Error("模型配置尚未保存完成，请重试保存，或选择仍然更新。");
+    if (modelConfig.dirty || modelConfig.status === "error") throw new Error("模型配置尚未儲存完成，請重試儲存，或選擇仍然更新。");
     await assertDesktopSaveProgress();
     await assertNoActiveDesktopSaves();
 }
@@ -390,11 +390,11 @@ export function createDesktopUpdateController(options: DesktopUpdateControllerOp
                 apply(next);
             } catch (error) {
                 if (disposed) return;
-                apply({ ...quietInitial, status: "error", error: bindingErrorMessage(error) || "无法检查更新，请检查网络后重试。" });
+                apply({ ...quietInitial, status: "error", error: bindingErrorMessage(error) || "無法檢查更新，請檢查網路後重試。" });
             }
         } catch {
             if (disposed) return;
-            apply({ ...emptyDesktopUpdateState(fallbackVersion), status: "error", error: "无法检查更新，请重试。" });
+            apply({ ...emptyDesktopUpdateState(fallbackVersion), status: "error", error: "無法檢查更新，請重試。" });
         }
     };
 
@@ -430,7 +430,7 @@ export function createDesktopUpdateController(options: DesktopUpdateControllerOp
         if (!hasDesktopUpdateBinding(binding) || runtimeKind() !== "desktop") return;
         if (state.status !== "ready" && !(state.status === "error" && stagedReady)) return;
         if (pendingPersistence) {
-            apply({ ...state, status: "error", error: "上次保存仍未结束，请稍后重试。" });
+            apply({ ...state, status: "error", error: "上次儲存仍未結束，請稍後重試。" });
             return;
         }
         lastAction = "install";
@@ -451,7 +451,7 @@ export function createDesktopUpdateController(options: DesktopUpdateControllerOp
                 await Promise.race([
                     save,
                     new Promise<never>((_, reject) => {
-                        saveTimer = setTimeout(() => reject(new Error("保存耗时较长，尚未开始安装。请稍后重试。")), options.persistTimeoutMs ?? 60_000);
+                        saveTimer = setTimeout(() => reject(new Error("儲存耗時較長，尚未開始安裝。請稍後重試。")), options.persistTimeoutMs ?? 60_000);
                     }),
                 ]);
             }
@@ -468,7 +468,7 @@ export function createDesktopUpdateController(options: DesktopUpdateControllerOp
                 {
                     ...state,
                     status: "error",
-                    error: /[\u4e00-\u9fff]/u.test(bindingErrorMessage(error)) ? bindingErrorMessage(error) : "内容没有保存完成，更新没有开始。请稍后再试。",
+                    error: /[\u4e00-\u9fff]/u.test(bindingErrorMessage(error)) ? bindingErrorMessage(error) : "內容沒有儲存完成，更新沒有開始。請稍後再試。",
                 },
                 { persistBusy: false, actionBusy: false },
             );

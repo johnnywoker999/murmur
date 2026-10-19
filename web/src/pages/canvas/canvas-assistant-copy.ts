@@ -1,5 +1,5 @@
-// 助手面板里所有用户可见文案的唯一来源：机器可读原因、操作名和改动摘要都在这里
-// 翻译成用户语。组件只负责排版，不自己拼文案，避免同一种状态在两处写出两句话。
+// 助手面板裡所有使用者可見文案的唯一來源：機器可讀原因、操作名和改動摘要都在這裡
+// 翻譯成使用者語。元件只負責排版，不自己拼文案，避免同一種狀態在兩處寫出兩句話。
 import type { AgentLifecycleEvent, AgentToolCall, AssistantGenerationProposal, AssistantSkillSelection, AssistantTurnChange, AssistantUndoFailure } from "@/services/api/agent-assistant";
 import { seedancePortraitLabel } from "@/lib/seedance-portrait";
 
@@ -9,93 +9,93 @@ export type AssistantStatusNotice = {
     text: string;
     actionLabel?: string;
     action?: AssistantStatusAction;
-    /** 正在启动时要更频繁地复查状态，其余情况按常规节奏。 */
+    /** 正在啟動時要更頻繁地複查狀態，其餘情況按常規節奏。 */
     starting?: boolean;
 };
 
-/** 兜底文案：原因缺失或后端给了我们还不认识的值时用这一句。 */
-export const ASSISTANT_UNAVAILABLE_FALLBACK = "助手暂时用不了，请稍后再试";
+/** 兜底文案：原因缺失或後端給了我們還不認識的值時用這一句。 */
+export const ASSISTANT_UNAVAILABLE_FALLBACK = "助手暫時用不了，請稍後再試";
 
 export function assistantStatusNotice(reason: string | undefined): AssistantStatusNotice {
     switch (reason) {
         case "model_not_configured":
         case "model_protocol_unsupported":
-            return { text: "还没有可用的助手模型", actionLabel: "去模型配置", action: "model-settings" };
+            return { text: "還沒有可用的助手模型", actionLabel: "去模型配置", action: "model-settings" };
         case "credential_missing":
-            return { text: "MURMUR AI 还没连接好", actionLabel: "去连接", action: "model-settings" };
+            return { text: "MURMUR AI 還沒連線好", actionLabel: "去連線", action: "model-settings" };
         case "host_starting":
-            return { text: "助手正在启动…", starting: true };
+            return { text: "助手正在啟動…", starting: true };
         case "host_start_failed":
         case "host_unreachable":
-            return { text: "助手没有启动成功", actionLabel: "重试", action: "retry" };
+            return { text: "助手沒有啟動成功", actionLabel: "重試", action: "retry" };
         default:
-            return { text: ASSISTANT_UNAVAILABLE_FALLBACK, actionLabel: "重试", action: "retry" };
+            return { text: ASSISTANT_UNAVAILABLE_FALLBACK, actionLabel: "重試", action: "retry" };
     }
 }
 
-/** 工具名是内部标识，用户只该看到「做了什么」。 */
+/** 工具名是內部標識，使用者只該看到「做了什麼」。 */
 export function assistantActionLabel(tool: string | undefined): string {
     const name = (tool || "").trim();
-    if (name.startsWith("asset.")) return "读取素材";
+    if (name.startsWith("asset.")) return "讀取素材";
     switch (name) {
         case "media.overview":
         case "media_overview":
-            return "浏览素材";
+            return "瀏覽素材";
         case "media.inspect":
         case "media_inspect":
-            return "查看和听取素材";
+            return "檢視和聽取素材";
         case "media.check":
         case "media_check":
-            return "检查媒体文件";
+            return "檢查媒體檔案";
         case "canvas.nodes.create":
-            return "新建节点";
+            return "新建節點";
         case "canvas.node.update":
-            return "修改节点";
+            return "修改節點";
         case "canvas.timeline.update":
-            return "修改时间线";
+            return "修改時間線";
         case "canvas.edge.create":
-            return "连线";
+            return "連線";
         case "canvas.get":
         case "canvas.search":
-            return "读取画布";
+            return "讀取畫布";
         case "canvas.generation.propose":
-            return "准备生成";
+            return "準備生成";
         default:
-            return "改动画布";
+            return "改動畫布";
     }
 }
 
-/** 失败的那一步用一句话说清楚是哪件事没成。 */
+/** 失敗的那一步用一句話說清楚是哪件事沒成。 */
 export function assistantFailedActionText(call: AgentToolCall): string {
-    return `${assistantActionLabel(call.tool)}没有成功`;
+    return `${assistantActionLabel(call.tool)}沒有成功`;
 }
 
 /**
- * 这一轮改了什么：只数真实落地的对象，不复述用户的选择数量。
- * 没有任何改动时返回 null，卡片整块不出现。
+ * 這一輪改了什麼：只數真實落地的物件，不復述使用者的選擇數量。
+ * 沒有任何改動時返回 null，卡片整塊不出現。
  */
 export function assistantChangeSummary(change: AssistantTurnChange | null | undefined): string | null {
     if (!change) return null;
     const parts: string[] = [];
     const changes = change.canvasChanges?.length ? change.canvasChanges : [change];
-    if (change.canvasChanges?.length) parts.push(`修改了 ${new Set(change.canvasChanges.map(item => item.canvasId)).size} 个画布`);
+    if (change.canvasChanges?.length) parts.push(`修改了 ${new Set(change.canvasChanges.map(item => item.canvasId)).size} 個畫布`);
     const created = changes.reduce((total, item) => total + (item.createdNodeIds?.length ?? 0), 0);
     const updated = changes.reduce((total, item) => total + (item.updatedNodeIds?.length ?? 0), 0);
     const deleted = changes.reduce((total, item) => total + (item.deletedNodeIds?.length ?? 0), 0);
     const edges = changes.reduce((total, item) => total + (item.createdEdgeIds?.length ?? 0), 0);
     const deletedEdges = changes.reduce((total, item) => total + (item.deletedEdgeIds?.length ?? 0), 0);
-    if (created > 0) parts.push(`新建 ${created} 个节点`);
-    if (updated > 0) parts.push(`修改 ${updated} 个节点`);
-    if (deleted > 0) parts.push(`删除 ${deleted} 个节点`);
-    if (edges > 0) parts.push(`连了 ${edges} 条线`);
-    if (deletedEdges > 0) parts.push(`删除 ${deletedEdges} 条线`);
-    if (changes.some(item => item.timelineUpdated)) parts.push("修改时间线");
-    if (changes.some(item => item.documentUpdated)) parts.push("修改画布内容");
+    if (created > 0) parts.push(`新建 ${created} 個節點`);
+    if (updated > 0) parts.push(`修改 ${updated} 個節點`);
+    if (deleted > 0) parts.push(`刪除 ${deleted} 個節點`);
+    if (edges > 0) parts.push(`連了 ${edges} 條線`);
+    if (deletedEdges > 0) parts.push(`刪除 ${deletedEdges} 條線`);
+    if (changes.some(item => item.timelineUpdated)) parts.push("修改時間線");
+    if (changes.some(item => item.documentUpdated)) parts.push("修改畫布內容");
     if (!parts.length) return null;
     return parts.join("，");
 }
 
-/** 改动卡片要定位的对象：新建的和被改过的都算。 */
+/** 改動卡片要定位的物件：新建的和被改過的都算。 */
 export function assistantChangedNodeIds(change: AssistantTurnChange | null | undefined): string[] {
     if (!change) return [];
     const ids = new Set<string>();
@@ -108,57 +108,57 @@ export function assistantChangedNodeIds(change: AssistantTurnChange | null | und
 export function assistantUndoFailureText(failure: AssistantUndoFailure): string {
     switch (failure) {
         case "canvas_changed":
-            return "这之后画布又改过，不能直接撤销";
+            return "這之後畫布又改過，不能直接撤銷";
         case "already_undone":
-            return "这一轮已经撤销过了";
+            return "這一輪已經撤銷過了";
         case "no_change":
-            return "这一轮没有改动画布";
+            return "這一輪沒有改動畫布";
         default:
-            return "撤销没有成功，请再试一次";
+            return "撤銷沒有成功，請再試一次";
     }
 }
 
-/** 提议可能来自自建渠道，不能把所有费用都归到 BeefAPI。 */
+/** 提議可能來自自建渠道，不能把所有費用都歸到 BeefAPI。 */
 export function assistantProposalText(proposal: AssistantGenerationProposal, priceLines: string[] = []): string {
     const count = proposal.nodeIds?.length ?? 0;
-    const target = proposal.kind === "video" ? "视频" : "图片";
-    return `生成 ${count} ${target === "视频" ? "段视频" : "张参考图片"} · ${seedancePortraitLabel(proposal.model) || proposal.model}\n${priceLines.length ? priceLines.join("\n") + "\n" : ""}确认后开始，按所选渠道计费。`;
+    const target = proposal.kind === "video" ? "影片" : "圖片";
+    return `生成 ${count} ${target === "影片" ? "段影片" : "張參考圖片"} · ${seedancePortraitLabel(proposal.model) || proposal.model}\n${priceLines.length ? priceLines.join("\n") + "\n" : ""}確認後開始，按所選渠道計費。`;
 }
 
 export const ASSISTANT_STARTER_PROMPTS = [
-    "把剧本拆成分镜草案",
-    "给选中的镜头补充景别和情绪",
-    "整理画布并按顺序连线",
-    "检查哪些镜头还缺参考图",
+    "把劇本拆成分鏡草案",
+    "給選中的鏡頭補充景別和情緒",
+    "整理畫布並按順序連線",
+    "檢查哪些鏡頭還缺參考圖",
 ];
 
-/** 官方压缩/重试进度：只说现在在做什么，不提内部事件名。 */
+/** 官方壓縮/重試進度：只說現在在做什麼，不提內部事件名。 */
 export function assistantLifecycleText(event: { phase: AgentLifecycleEvent["phase"] | "tool" | "tool_end"; toolName?: string } | string | null | undefined): string | null {
     const phase = typeof event === "string" ? event : event?.phase;
     switch (phase) {
         case "tool": {
             const tool = typeof event === "string" ? undefined : event?.toolName;
-            if (tool === "media_overview" || tool === "media.overview") return "正在浏览素材，确认画面和声音。";
-            if (tool === "media_inspect" || tool === "media.inspect") return "正在查看和听取选定片段。";
-            if (tool === "media_check" || tool === "media.check") return "正在检查黑屏、音轨和文件信息。";
+            if (tool === "media_overview" || tool === "media.overview") return "正在瀏覽素材，確認畫面和聲音。";
+            if (tool === "media_inspect" || tool === "media.inspect") return "正在檢視和聽取選定片段。";
+            if (tool === "media_check" || tool === "media.check") return "正在檢查黑屏、音軌和檔案資訊。";
             return null;
         }
         case "compaction":
-            return "正在整理对话内容，方便继续。";
+            return "正在整理對話內容，方便繼續。";
         case "retry":
-            return "模型暂时没响应，正在再试一次。";
+            return "模型暫時沒響應，正在再試一次。";
         default:
             return null;
     }
 }
 
-/** 这里只提供继续对话入口，不重发原请求，也不保证后台任务已恢复。 */
+/** 這裡只提供繼續對話入口，不重發原請求，也不保證後臺任務已恢復。 */
 export function assistantTurnCanContinue(reason: string | null | undefined): boolean {
     return ["turn_timeout", "turn_interrupted", "turn_request_budget_exhausted", "turn_tool_step_budget_exhausted", "model_request_failed", "model_error", "provider_error"].includes(reason || "");
 }
 
-export const ASSISTANT_CONTINUE_PROMPT = "继续完成上一条要求。先检查当前画布和已经完成的操作，保留已有结果；不要重复创建节点或重新提交已开始的生成任务。";
-export const ASSISTANT_UNDONE_INCOMPLETE_TEXT = "这一轮未完成，已经产生的画布改动已撤销。";
+export const ASSISTANT_CONTINUE_PROMPT = "繼續完成上一條要求。先檢查當前畫布和已經完成的操作，保留已有結果；不要重複建立節點或重新提交已開始的生成任務。";
+export const ASSISTANT_UNDONE_INCOMPLETE_TEXT = "這一輪未完成，已經產生的畫布改動已撤銷。";
 
 const REASONING_TAG_PREFIXES = ["</thinking>", "<thinking>", "</think>", "<think>"];
 
@@ -169,9 +169,9 @@ function stripDanglingReasoningTag(text: string) {
 }
 
 /**
- * 官方会话把推理放在独立的 thinking 块里，不进入回复。
- * 有的模型仍把 <thinking> 或 <think> 直接写进正文；那是草稿，不是给用户的话。
- * 代码示例里的同名标记保留。未闭合的思考区块隐藏到正文末尾，不猜测答案起点。
+ * 官方會話把推理放在獨立的 thinking 塊裡，不進入回覆。
+ * 有的模型仍把 <thinking> 或 <think> 直接寫進正文；那是草稿，不是給使用者的話。
+ * 程式碼示例裡的同名標記保留。未閉合的思考區塊隱藏到正文末尾，不猜測答案起點。
  */
 export function assistantVisibleReply(text: string): string {
     const tokens = /`+|~{3,}|<\/?(?:think|thinking)>/gi;
@@ -202,7 +202,7 @@ export function assistantVisibleReply(text: string): string {
     return output.trim();
 }
 
-/** 修改看节点，连线看两端；媒体读取失败会影响审片结论，按同一片段判断是否后来成功。 */
+/** 修改看節點，連線看兩端；媒體讀取失敗會影響審片結論，按同一片段判斷是否後來成功。 */
 function assistantActionTarget(call: AgentToolCall): string | null {
     const args = call.args || {};
     switch (call.tool) {
@@ -220,7 +220,7 @@ function assistantActionTarget(call: AgentToolCall): string | null {
         case "canvas.edge.create":
             return `edge:${String(args.fromNodeId ?? "")}>${String(args.toNodeId ?? "")}`;
         case "canvas.nodes.create":
-            // 模型重试新建时常会调整标题或数量：之后任何一次新建成功都算这一步已完成。
+            // 模型重試新建時常會調整標題或數量：之後任何一次新建成功都算這一步已完成。
             return "create";
         case "canvas.generation.propose":
             return `propose:${Array.isArray(args.nodeIds) ? args.nodeIds.join("|") : ""}`;
@@ -230,8 +230,8 @@ function assistantActionTarget(call: AgentToolCall): string | null {
 }
 
 /**
- * 这一轮里最后仍没做成的事：失败后又重试成功的步骤不再提示，
- * 同类失败合并成一句，避免把助手的中间重试当成错误摆给用户。
+ * 這一輪裡最後仍沒做成的事：失敗後又重試成功的步驟不再提示，
+ * 同類失敗合併成一句，避免把助手的中間重試當成錯誤擺給使用者。
  */
 export function assistantUnresolvedFailures(calls: AgentToolCall[] | undefined): string[] {
     const list = calls || [];
@@ -243,8 +243,8 @@ export function assistantUnresolvedFailures(calls: AgentToolCall[] | undefined):
         const resolved = list.slice(index + 1).some((later) => {
             if (later.isError || later.tool !== call.tool) return false;
             if (assistantActionTarget(later) === target) return true;
-            // 同一节点的 overview 补齐缺失 resourceId 后成功，属于原步骤的重试。
-            // 不合并不同素材、片段、版本，也不让 overview 代替 inspect。
+            // 同一節點的 overview 補齊缺失 resourceId 後成功，屬於原步驟的重試。
+            // 不合並不同素材、片段、版本，也不讓 overview 代替 inspect。
             if (!['media.overview', 'media_overview'].includes(call.tool)) return false;
             const before = call.args || {};
             const after = later.args || {};
@@ -255,16 +255,16 @@ export function assistantUnresolvedFailures(calls: AgentToolCall[] | undefined):
         });
         if (resolved) return;
         const label = call.tool.replace("_", ".") === "media.inspect"
-            ? call.args?.mode === "audio" ? "有音频片段听取未完成"
-                : call.args?.mode === "video" ? "有视频片段查看未完成"
-                    : !call.args?.mode || call.args.mode === "frames" ? "有素材的画面查看未完成" : `${assistantActionLabel(call.tool)}没有成功`
-            : `${assistantActionLabel(call.tool)}没有成功`;
+            ? call.args?.mode === "audio" ? "有音訊片段聽取未完成"
+                : call.args?.mode === "video" ? "有影片片段檢視未完成"
+                    : !call.args?.mode || call.args.mode === "frames" ? "有素材的畫面檢視未完成" : `${assistantActionLabel(call.tool)}沒有成功`
+            : `${assistantActionLabel(call.tool)}沒有成功`;
         counts.set(label, (counts.get(label) ?? 0) + 1);
     });
-    return [...counts.entries()].map(([label, count]) => (count > 1 ? `${label}（${count} 处）` : label));
+    return [...counts.entries()].map(([label, count]) => (count > 1 ? `${label}（${count} 處）` : label));
 }
 
-/** 技能标签只显示名称和版本；名称不可识别时说明已移除，不显示内部标识。 */
+/** 技能標籤只顯示名稱和版本；名稱不可識別時說明已移除，不顯示內部標識。 */
 export function assistantSkillLabel(skill: Pick<AssistantSkillSelection, "skillName" | "version">): string {
     const name = skill.skillName?.trim();
     if (!name) return "技能：已移除的技能";

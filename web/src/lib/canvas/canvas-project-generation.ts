@@ -89,11 +89,11 @@ export async function runBackendCanvasGenerationTask(
 }
 
 export function canvasImageReferenceLimitError(config: AiConfig, referenceImages: ReferenceImage[]) {
-    // 工作流的参考素材上限由字段映射槽位决定，不能再套用当前普通图片模型的能力表。
+    // 工作流的參考素材上限由欄位對映槽位決定，不能再套用當前普通圖片模型的能力表。
     if ((config.taskWorkflowProvider || "model") !== "model") return "";
     const maxImages = modelCapabilityConfigFor(config, config.model).image?.references.maxImages;
     if (maxImages === undefined || referenceImages.length <= maxImages) return "";
-    return `当前图片模型最多支持 ${maxImages} 张参考图，当前已连接 ${referenceImages.length} 张。请移除多余连线后重试`;
+    return `當前圖片模型最多支援 ${maxImages} 張參考圖，當前已連線 ${referenceImages.length} 張。請移除多餘連線後重試`;
 }
 
 export function assertCanvasImageReferenceLimit(config: AiConfig, referenceImages: ReferenceImage[]) {
@@ -102,7 +102,7 @@ export function assertCanvasImageReferenceLimit(config: AiConfig, referenceImage
 }
 
 export { backendProviderConfig };
-// 兼容故事板执行器的旧导入路径。
+// 相容故事板執行器的舊匯入路徑。
 export { logicalModelIDForConfig };
 
 const generationOperationLocks = new Map<string, Promise<unknown>>();
@@ -146,7 +146,7 @@ export async function runCanvasGenerationTaskToConsumer(
         const isCurrent = () => !input.signal?.aborted && userScopeMatches(expectedScope) && (dependencies.isCurrent ? dependencies.isCurrent() : true);
         const submission = (state: NonNullable<CanvasNodeMetadata["generationSubmissionState"]>) => {
             if (!isCurrent()) return;
-            const metadata = { taskClientOperationId: input.clientOperationId, generationSubmissionState: state, taskStage: state === "submitting" ? "正在提交生成任务" : state === "unknown" ? "提交结果待确认，请查询原任务" : undefined };
+            const metadata = { taskClientOperationId: input.clientOperationId, generationSubmissionState: state, taskStage: state === "submitting" ? "正在提交生成任務" : state === "unknown" ? "提交結果待確認，請查詢原任務" : undefined };
             const project = useCanvasStore.getState().openProject(input.projectId);
             if (project) useCanvasStore.getState().updateProject(project.id, { nodes: project.nodes.map((node) => node.id === input.nodeId ? { ...node, metadata: { ...node.metadata, ...metadata } } : node) });
             dependencies.onSubmission?.(metadata);
@@ -182,7 +182,7 @@ export async function runCanvasGenerationTaskToConsumer(
         }
         if (input.signal?.aborted) throw new DOMException("The operation was aborted", "AbortError");
         assertUserScope(expectedScope);
-        if (!completedTask) throw new Error("生成任务缺少成功终态");
+        if (!completedTask) throw new Error("生成任務缺少成功終態");
         const taskForConsumer = input.mode === "text" && completedTask.type === "canvas_text" && result.text ? hydrateCompletedTextTask(completedTask, result.text) : completedTask;
         try {
             await dependencies.consumeTask(taskForConsumer);
@@ -197,8 +197,8 @@ export async function runCanvasGenerationTaskToConsumer(
                     ...taskForConsumer.failureDiagnostics,
                     source: "client_result",
                     executionResult: "completed",
-                    stage: "画布应用结果",
-                    summary: cause instanceof Error ? cause.message : "画布应用结果失败",
+                    stage: "畫布應用結果",
+                    summary: cause instanceof Error ? cause.message : "畫布應用結果失敗",
                     capturedAt: new Date().toISOString(),
                 },
             });
@@ -251,7 +251,7 @@ export function generationTaskMetadata(task: GenerationTask): CanvasNodeMetadata
     };
 }
 
-// 失败节点再次提交前必须移除旧任务绑定，否则批次调度会把它误判为仍在处理。
+// 失敗節點再次提交前必須移除舊任務繫結，否則批次排程會把它誤判為仍在處理。
 export function resetGenerationTaskMetadata(metadata: CanvasNodeMetadata | undefined, status: CanvasNodeMetadata["status"] = "idle"): CanvasNodeMetadata {
     const next = {
         ...(metadata || {}),
@@ -340,7 +340,7 @@ export function buildImageGenerationMetadata(type: CanvasImageGenerationType, co
 
 export function nodeReferenceImage(node: CanvasNodeData): ReferenceImage | null {
     if (node.type === CanvasNodeType.MediaConversion) {
-        // 转换结果只在成功物化后作为生成参考；运行中、跳过和失败状态都不能透传旧结果。
+        // 轉換結果只在成功物化後作為生成參考；執行中、跳過和失敗狀態都不能透傳舊結果。
         const conversion = node.metadata?.mediaConversion;
         const storageKey = conversion?.resultStorageKey || node.metadata?.storageKey;
         if (conversion?.status !== "completed" || !storageKey) return null;
@@ -446,11 +446,11 @@ export function buildVideoGenerationMetadata(
 ): CanvasNodeMetadata {
     const metadata = node?.metadata;
     const referenceImageIds = new Set((context?.referenceImages || []).map((image) => image.id));
-    // 工作流视频把已连接媒体交给字段映射处理，不再把历史首尾帧选择当成硬约束。
-    // 工作流视频把已连接媒体交给字段映射处理，不再把历史首尾帧选择当成硬约束。
+    // 工作流影片把已連線媒體交給欄位對映處理，不再把歷史首尾幀選擇當成硬約束。
+    // 工作流影片把已連線媒體交給欄位對映處理，不再把歷史首尾幀選擇當成硬約束。
     const workflowVideo = node?.type === CanvasNodeType.Config && (config?.taskWorkflowProvider === "runninghub" || isCanvasWorkflowProvider(metadata));
-    const startFrame = workflowVideo ? undefined : requireConnectedVideoFrame(metadata?.videoStartFrameNodeId, "首帧", referenceImageIds);
-    const endFrame = workflowVideo ? undefined : requireConnectedVideoFrame(metadata?.videoEndFrameNodeId, "尾帧", referenceImageIds);
+    const startFrame = workflowVideo ? undefined : requireConnectedVideoFrame(metadata?.videoStartFrameNodeId, "首幀", referenceImageIds);
+    const endFrame = workflowVideo ? undefined : requireConnectedVideoFrame(metadata?.videoEndFrameNodeId, "尾幀", referenceImageIds);
     return {
         ...(config ? generationWorkflowMetadata(config) : {}),
         videoEditOperation:
@@ -461,7 +461,7 @@ export function buildVideoGenerationMetadata(
         videoCameraMovePrompt: metadata?.videoCameraMovePrompt,
         videoStartFrameNodeId: startFrame,
         videoEndFrameNodeId: endFrame,
-        videoMiddleFrameNodeId: metadata?.videoMiddleFrameNodeId ? requireConnectedVideoFrame(metadata.videoMiddleFrameNodeId, "中间帧", referenceImageIds) : undefined,
+        videoMiddleFrameNodeId: metadata?.videoMiddleFrameNodeId ? requireConnectedVideoFrame(metadata.videoMiddleFrameNodeId, "中間幀", referenceImageIds) : undefined,
         videoMiddleFrameTime: metadata?.videoMiddleFrameTime,
         videoH3Options: metadata?.videoH3Options,
         videoReferenceOrder: config && isH3Model(config.model) ? h3ResolvedReferenceOrder(metadata?.videoReferenceOrder, [...(context?.referenceImages || []), ...(context?.referenceVideos || []), ...(context?.referenceAudios || [])]) : metadata?.videoReferenceOrder,
@@ -471,7 +471,7 @@ export function buildVideoGenerationMetadata(
 function requireConnectedVideoFrame(frameNodeId: string | undefined, label: string, referenceImageIds: Set<string>) {
     if (!frameNodeId) return undefined;
     if (referenceImageIds.has(frameNodeId)) return frameNodeId;
-    throw new Error(`已配置的${label}参考图未连接或不可用，请重新选择后再生成`);
+    throw new Error(`已配置的${label}參考圖未連線或不可用，請重新選擇後再生成`);
 }
 
 export async function resolveMetadataReferences(metadata: CanvasNodeMetadata) {
@@ -552,7 +552,7 @@ export function resetInterruptedGeneration(nodes: CanvasNodeData[]) {
                 : mediaNode.type === CanvasNodeType.Script && mediaNode.height < NODE_DEFAULT_SIZE[CanvasNodeType.Script].height
                   ? { ...mediaNode, height: NODE_DEFAULT_SIZE[CanvasNodeType.Script].height }
                   : mediaNode;
-        const restoredNode = resizedNode.metadata?.status === "loading" ? { ...resizedNode, metadata: { ...resizedNode.metadata, errorDetails: "正在从任务中心恢复生成状态..." } } : resizedNode;
+        const restoredNode = resizedNode.metadata?.status === "loading" ? { ...resizedNode, metadata: { ...resizedNode.metadata, errorDetails: "正在從任務中心恢復生成狀態..." } } : resizedNode;
         if (restoredNode !== node) changed = true;
         return restoredNode;
     });
@@ -560,7 +560,7 @@ export function resetInterruptedGeneration(nodes: CanvasNodeData[]) {
 }
 
 export function isGenerationCanceled(error: unknown) {
-    return error instanceof Error && (error.message === "请求已取消" || error.name === "AbortError");
+    return error instanceof Error && (error.message === "請求已取消" || error.name === "AbortError");
 }
 
 export function findRetrySourceNode(nodeId: string, nodes: CanvasNodeData[], connections: CanvasConnection[]) {

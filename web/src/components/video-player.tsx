@@ -29,44 +29,44 @@ type VideoPlayerProps = {
 };
 
 const zhCNTranslations = {
-    Accessibility: "辅助功能",
+    Accessibility: "輔助功能",
     AirPlay: "隔空播放",
-    Audio: "音频",
-    Auto: "自动",
-    Boost: "音量增强",
+    Audio: "音訊",
+    Auto: "自動",
+    Boost: "音量增強",
     Captions: "字幕",
-    "Caption Styles": "字幕样式",
-    Chapters: "章节",
-    "Closed-Captions Off": "关闭字幕",
-    "Closed-Captions On": "开启字幕",
-    Connected: "已连接",
-    Connecting: "连接中",
-    Default: "默认",
-    Disabled: "已禁用",
-    Disconnected: "已断开",
-    Download: "下载",
-    "Enter Fullscreen": "进入全屏",
-    "Enter PiP": "进入画中画",
+    "Caption Styles": "字幕樣式",
+    Chapters: "章節",
+    "Closed-Captions Off": "關閉字幕",
+    "Closed-Captions On": "開啟字幕",
+    Connected: "已連線",
+    Connecting: "連線中",
+    Default: "預設",
+    Disabled: "已停用",
+    Disconnected: "已斷開",
+    Download: "下載",
+    "Enter Fullscreen": "進入全屏",
+    "Enter PiP": "進入畫中畫",
     "Exit Fullscreen": "退出全屏",
-    "Exit PiP": "退出画中画",
+    "Exit PiP": "退出畫中畫",
     Fullscreen: "全屏",
-    Loop: "循环播放",
-    Mute: "静音",
+    Loop: "迴圈播放",
+    Mute: "靜音",
     Normal: "正常",
-    Off: "关闭",
-    Pause: "暂停",
+    Off: "關閉",
+    Pause: "暫停",
     Play: "播放",
     Playback: "播放",
-    PiP: "画中画",
-    Quality: "画质",
+    PiP: "畫中畫",
+    Quality: "畫質",
     Replay: "重新播放",
     Reset: "重置",
-    Seek: "跳转",
+    Seek: "跳轉",
     "Seek Backward": "快退",
-    "Seek Forward": "快进",
-    Settings: "设置",
+    "Seek Forward": "快進",
+    Settings: "設定",
     Speed: "倍速",
-    Unmute: "取消静音",
+    Unmute: "取消靜音",
     Volume: "音量",
 } satisfies Partial<DefaultLayoutTranslations>;
 
@@ -78,13 +78,13 @@ export function normalizeVideoPlayerMimeType(mimeType?: string): VideoMimeType {
 }
 
 /**
- * 统一视频播放表面，保留原生媒体 URL 契约，同时提供可访问的完整控件布局。
- * 画布节点需要隔离播放器手势，避免拖动进度条时被误判为拖动画布。
+ * 統一影片播放表面，保留原生媒體 URL 契約，同時提供可訪問的完整控制元件佈局。
+ * 畫布節點需要隔離播放器手勢，避免拖動進度條時被誤判為拖動畫布。
  */
 export function VideoPlayer({
     src,
     mimeType,
-    title = "视频",
+    title = "影片",
     className,
     brandColor = "#f5f5f5",
     preload = "metadata",
@@ -256,7 +256,7 @@ export function VideoPlayer({
                 // causing the intermittent play-then-pause-at-zero bug.
                 noGestures={dataCanvasNoZoom}
                 slots={{
-                    // 节点外部已经显示标题，播放器内不再重复渲染章节标题和设置菜单。
+                    // 節點外部已經顯示標題，播放器內不再重複渲染章節標題和設定選單。
                     chapterTitle: null,
                     settingsMenu: null,
                 }}

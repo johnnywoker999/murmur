@@ -7,8 +7,8 @@ type SubtitleHighlightedTextProps = {
 };
 
 /**
- * 字幕文本的统一样式渲染：未启用高亮或没有高亮数据时原样输出，否则给重点词上底色。
- * 字幕弹窗与画布视频节点叠加层共用，保证两处高亮效果一致。
+ * 字幕文本的統一樣式渲染：未啟用高亮或沒有高亮資料時原樣輸出，否則給重點詞上底色。
+ * 字幕彈窗與畫布影片節點疊加層共用，保證兩處高亮效果一致。
  */
 export function SubtitleHighlightedText({ text, highlight, style }: SubtitleHighlightedTextProps) {
     if (!style.highlightEnabled || !highlight) return text;

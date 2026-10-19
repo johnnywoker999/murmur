@@ -72,7 +72,7 @@ async function hydrateLocalWorkspace(payload: WorkspaceBootstrapPayload) {
             try {
                 await preserveLegacyCacheOnlyAssetDrafts(captureUserScope());
             } catch {
-                // 查询失败不能当成「库是空的」。素材页会单独展示读取失败。
+                // 查詢失敗不能當成「庫是空的」。素材頁會單獨展示讀取失敗。
             }
         }
         if (!persistedPlugins) usePluginStore.setState({ installations: [], runtimeStatuses: {}, pluginStates: {} });

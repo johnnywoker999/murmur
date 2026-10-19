@@ -25,7 +25,7 @@ export function writeWorkspaceSidebarCollapsed(collapsed: boolean, storage?: Wor
     try {
         workspaceSidebarStorage(storage)?.setItem(WORKSPACE_SIDEBAR_STORAGE_KEY, collapsed ? "1" : "0");
     } catch {
-        // localStorage 不可用时保留当前内存状态，不能阻断侧栏交互。
+        // localStorage 不可用時保留當前記憶體狀態，不能阻斷側欄互動。
     }
 }
 

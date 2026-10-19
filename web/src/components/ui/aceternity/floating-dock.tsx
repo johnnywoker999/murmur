@@ -16,9 +16,9 @@ export type FloatingDockCommand = {
     active?: boolean;
     disabled?: boolean;
     danger?: boolean;
-    /** 主操作强调态：用于 LibTV 风格 Dock 中始终突出的添加入口。 */
+    /** 主操作強調態：用於 LibTV 風格 Dock 中始終突出的新增入口。 */
     prominent?: boolean;
-    /** 面板展开型工具——使用 aria-expanded 而非 aria-pressed */
+    /** 面板展開型工具——使用 aria-expanded 而非 aria-pressed */
     expands?: boolean;
 };
 
@@ -58,8 +58,8 @@ type DockMetrics = {
     distance: number;
 };
 
-// magnification 收敛：base 略增以适配圆角方块，magnified 幅度从 +14 降到 +8，
-// 避免 dock 整体跳动，同时保留 Aceternity 接近放大身份。
+// magnification 收斂：base 略增以適配圓角方塊，magnified 幅度從 +14 降到 +8，
+// 避免 dock 整體跳動，同時保留 Aceternity 接近放大身份。
 const DOCK_METRICS: Record<NonNullable<FloatingDockProps["size"]>, DockMetrics> = {
     default: { base: 30, magnified: 38, icon: 15, iconMagnified: 18, distance: 100 },
     compact: { base: 26, magnified: 32, icon: 13, iconMagnified: 16, distance: 84 },
@@ -97,11 +97,11 @@ function useSafeReducedMotion() {
     return reduced;
 }
 
-export const FloatingDock = forwardRef<HTMLDivElement, FloatingDockProps>(function FloatingDock({ items, size = "default", embedded = false, className, style, ariaLabel = "画布工具", showLabels = false }, forwardedRef) {
+export const FloatingDock = forwardRef<HTMLDivElement, FloatingDockProps>(function FloatingDock({ items, size = "default", embedded = false, className, style, ariaLabel = "畫布工具", showLabels = false }, forwardedRef) {
     const mouseX = useMotionValue(Number.POSITIVE_INFINITY);
     const reducedMotion = useSafeReducedMotion();
     const [coarsePointer, setCoarsePointer] = useState(() => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches);
-    // 窄屏下 dock 按钮总宽易超出可用宽度：此时允许横向滚动并禁用放大（放大依赖 overflow-visible，与滚动互斥）
+    // 窄屏下 dock 按鈕總寬易超出可用寬度：此時允許橫向滾動並停用放大（放大依賴 overflow-visible，與滾動互斥）
     const [narrow, setNarrow] = useState(() => (typeof window !== "undefined" ? window.innerWidth < 768 : false));
 
     useEffect(() => {
@@ -119,7 +119,7 @@ export const FloatingDock = forwardRef<HTMLDivElement, FloatingDockProps>(functi
         return () => window.removeEventListener("resize", update);
     }, []);
 
-    // scrollable 场景（触屏或窄屏）禁用放大并允许横向滚动，保证按钮始终可达
+    // scrollable 場景（觸屏或窄屏）停用放大並允許橫向滾動，保證按鈕始終可達
     const scrollable = coarsePointer || narrow;
     const motionEnabled = !reducedMotion && !scrollable;
     const metrics = coarsePointer ? TOUCH_DOCK_METRICS[size] : DOCK_METRICS[size];
@@ -179,8 +179,8 @@ type DockItemRenderProps = {
 };
 
 /**
- * 渲染 Dock 条目，将连续的 danger 命令包裹在 is-danger-group 容器中实现视觉隔离。
- * 满足"危险操作必须与常规按钮隔离"的硬约束。
+ * 渲染 Dock 條目，將連續的 danger 命令包裹在 is-danger-group 容器中實現視覺隔離。
+ * 滿足"危險操作必須與常規按鈕隔離"的硬約束。
  */
 function renderDockItems(items: FloatingDockEntry[], props: DockItemRenderProps) {
     const result: ReactNode[] = [];
@@ -238,9 +238,9 @@ function DockCommandButton({ command, mouseX, metrics, motionEnabled, compact, s
     const iconTarget = useTransform(distance, (value) => proximitySize(value, metrics.icon, metrics.iconMagnified, metrics.distance, motionEnabled));
     const itemSize = useSpring(itemTarget, aceternityMotion.spring.dock);
     const iconSize = useSpring(iconTarget, aceternityMotion.spring.dock);
-    // 鼠标点击产生的 focus 不能阻塞提示收起，只有键盘可见焦点才持续显示提示。
+    // 滑鼠點選產生的 focus 不能阻塞提示收起，只有鍵盤可見焦點才持續顯示提示。
     const showTooltip = !showLabel && (hovered || focused) && !command.disabled && !(command.expands && command.active);
-    // scrollable 场景自定义 tooltip 会被 overflow 裁剪，用原生 title 兜底
+    // scrollable 場景自定義 tooltip 會被 overflow 裁剪，用原生 title 兜底
     const nativeTitle = !motionEnabled ? command.label : undefined;
 
     if (showLabel) {
@@ -274,7 +274,7 @@ function DockCommandButton({ command, mouseX, metrics, motionEnabled, compact, s
 
     return (
         <motion.span ref={ref} className={cn("relative block shrink-0", command.wide && "min-w-[var(--dock-precision-width)]")} style={{ width: itemSize, height: itemSize }}>
-            {/* 放大项留在 Flex 流内，由布局推开邻项，保持 Aceternity Floating Dock 的空间关系。 */}
+            {/* 放大項留在 Flex 流內，由佈局推開鄰項，保持 Aceternity Floating Dock 的空間關係。 */}
             <motion.button
                 type="button"
                 aria-label={command.label}

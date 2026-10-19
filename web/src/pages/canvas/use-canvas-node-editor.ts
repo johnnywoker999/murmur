@@ -62,8 +62,8 @@ export function useCanvasNodeEditor({
                 const nextPosition = position || node.position;
                 if (node.width === width && node.height === height && node.position.x === nextPosition.x && node.position.y === nextPosition.y) return node;
                 changed = true;
-                // 打上「用户手动定过尺寸」标记：图片按真实比例自动适配时要避让它，
-                // 否则每次图片重新加载都会把用户拉过的尺寸改回去。
+                // 打上「使用者手動定過尺寸」標記：圖片按真實比例自動適配時要避讓它，
+                // 否則每次圖片重新載入都會把使用者拉過的尺寸改回去。
                 const resized = { ...node, width, height, position: nextPosition, metadata: { ...node.metadata, manualSize: true } };
                 if (!isFrameNode(node) || node.metadata?.frame?.collapsed) return resized;
                 return { ...resized, metadata: { ...resized.metadata, frame: { collapsed: false, expandedWidth: width, expandedHeight: height } } };
@@ -215,7 +215,7 @@ export function useCanvasNodeEditor({
     const handleConfigNodeChange = useCallback((nodeId: string, patch: Partial<CanvasNodeMetadata>) => {
         setNodes((current) => {
             const next = current.map((node) => (node.id === nodeId ? applyNodeConfigPatch(node, patch) : node));
-            // 生成入口读取 nodesRef；同步写入，避免刚修改工作流比例就立即生成时仍提交旧值。
+            // 生成入口讀取 nodesRef；同步寫入，避免剛修改工作流比例就立即生成時仍提交舊值。
             nodesRef.current = next;
             return next;
         });
@@ -226,12 +226,12 @@ export function useCanvasNodeEditor({
         void persistOwnedEditorNode(updatedNode, patch.assetCategory).then(({ guard, result }) => {
             if (!guard.alive()) return;
             if (result.applied) {
-                if (result.confirmed) message.success("资产分类已更新");
-                else message.warning("文件目前只在这台设备上");
+                if (result.confirmed) message.success("資產分類已更新");
+                else message.warning("檔案目前只在這臺裝置上");
                 return;
             }
             if (result.error === undefined) return;
-            message.error(result.error instanceof Error ? result.error.message : "资产分类更新失败");
+            message.error(result.error instanceof Error ? result.error.message : "資產分類更新失敗");
         });
     }, [message, nodesRef, persistOwnedEditorNode, setNodes]);
 
@@ -245,17 +245,17 @@ export function useCanvasNodeEditor({
     }, [canvasTitle, message]);
 
     const saveNodeAsset = useCallback(async (node: CanvasNodeData) => {
-        if (node.type !== CanvasNodeType.Text && node.type !== CanvasNodeType.Image && node.type !== CanvasNodeType.Video && node.type !== CanvasNodeType.Audio) return message.error("当前节点类型不能保存为素材");
-        if (!node.metadata?.content?.trim()) return message.error("当前节点没有可保存的内容");
+        if (node.type !== CanvasNodeType.Text && node.type !== CanvasNodeType.Image && node.type !== CanvasNodeType.Video && node.type !== CanvasNodeType.Audio) return message.error("當前節點型別不能儲存為素材");
+        if (!node.metadata?.content?.trim()) return message.error("當前節點沒有可儲存的內容");
         const { guard, result } = await persistOwnedEditorNode(node);
         if (!guard.alive()) return;
         if (result.applied) {
-            if (!result.confirmed) message.warning("文件目前只在这台设备上");
-            else message.success(result.linkedToProject ? "已加入项目资产" : "已加入我的素材");
+            if (!result.confirmed) message.warning("檔案目前只在這臺裝置上");
+            else message.success(result.linkedToProject ? "已加入專案資產" : "已加入我的素材");
             return;
         }
         if (result.error === undefined) return;
-        message.error(result.error instanceof Error ? result.error.message : "素材保存失败");
+        message.error(result.error instanceof Error ? result.error.message : "素材儲存失敗");
     }, [message, persistOwnedEditorNode]);
 
     const handleFontSizeChange = useCallback((nodeId: string, fontSize: number) => {

@@ -5,13 +5,13 @@ import { cn } from "@/lib/utils";
 import { Checkbox } from "./checkbox";
 
 /**
- * CheckboxGroup — 复选框组（自研，原生 input，无依赖）。
+ * CheckboxGroup — 核取方塊組（自研，原生 input，無依賴）。
  *
- * - 容器不预设布局：调用方用 className 决定排列（垂直传 `flex flex-col gap-1.5`，
- *   网格传 `grid grid-cols-2 gap-2`），与 AntD Checkbox.Group 行为一致。
- * - 受控 value: V[] + onChange(values)，泛型覆盖枚举/字符串场景；
- *   可直接替换 AntD Checkbox.Group（options/value/onChange/disabled）。
- * - 对标：AntD Checkbox.Group。
+ * - 容器不預設佈局：呼叫方用 className 決定排列（垂直傳 `flex flex-col gap-1.5`，
+ *   網格傳 `grid grid-cols-2 gap-2`），與 AntD Checkbox.Group 行為一致。
+ * - 受控 value: V[] + onChange(values)，泛型覆蓋列舉/字串場景；
+ *   可直接替換 AntD Checkbox.Group（options/value/onChange/disabled）。
+ * - 對標：AntD Checkbox.Group。
  */
 
 export interface CheckboxGroupOption<V extends string = string> {
@@ -24,7 +24,7 @@ export interface CheckboxGroupProps<V extends string = string> {
     value?: V[];
     onChange?: (values: V[]) => void;
     options: Array<CheckboxGroupOption<V>>;
-    /** 组整体禁用 */
+    /** 組整體停用 */
     disabled?: boolean;
     ariaLabel?: string;
     className?: string;

@@ -24,12 +24,12 @@ export function ModelProtocolBrowser({
             vendor: protocol.vendor,
             searchText: protocol.value,
             details: [
-                { label: "请求", value: <code>{protocol.create}</code> },
-                { label: "请求体", value: protocol.contentType },
-                { label: "响应", value: protocol.poll ? "异步轮询" : "同步响应" },
-                { label: "来源", value: protocol.media },
+                { label: "請求", value: <code>{protocol.create}</code> },
+                { label: "請求體", value: protocol.contentType },
+                { label: "響應", value: protocol.poll ? "非同步輪詢" : "同步響應" },
+                { label: "來源", value: protocol.media },
             ],
         }));
 
-    return <ChoiceBrowser key={capability || "all"} {...props} label="调用协议" placeholder="搜索协议名称、厂商或请求路径" options={options} />;
+    return <ChoiceBrowser key={capability || "all"} {...props} label="呼叫協議" placeholder="搜尋協議名稱、廠商或請求路徑" options={options} />;
 }

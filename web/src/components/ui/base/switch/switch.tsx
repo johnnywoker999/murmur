@@ -3,39 +3,39 @@ import { useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Switch — 开关（自研，button role=switch，无依赖）。
+ * Switch — 開關（自研，button role=switch，無依賴）。
  *
- * 设计约束（对齐 ui/README 与 ADR-0008）：
- * - <button type="button" role="switch" aria-checked> 承载语义与键盘（Space/Enter 原生），
- *   :focus-visible outline 落自身；无裸色、只消费三层 token。
- * - 开 = bg-foreground + 反色 thumb（bg-background 语义对齐 Checkbox 选中态），
- *   关 = bg-surface-tertiary + 发丝内描边 + surface-strong 抬升 thumb（同 SegmentedControl 选中面）。
- * - thumb 滑动用 translate-x 位移（尺寸档固定行程），motion-reduce 关闭过渡。
- * - data-state="on|off" 暴露给上下文 CSS 覆盖（admin 语义绿等保留于页面层，不侵入组件）。
- * - API 对齐 AntD Switch：checked/defaultChecked/onChange/disabled/size/checkedChildren/
- *   unCheckedChildren/loading + aria-* 透传；受控与否由 checked 是否传入决定，
- *   onChange(checked) 单参。顶层组件接收 checked/onChange → Form.Item valuePropName="checked" 注入兼容。
- * 对标：AntD Switch；boardui base/switch。
+ * 設計約束（對齊 ui/README 與 ADR-0008）：
+ * - <button type="button" role="switch" aria-checked> 承載語義與鍵盤（Space/Enter 原生），
+ *   :focus-visible outline 落自身；無裸色、只消費三層 token。
+ * - 開 = bg-foreground + 反色 thumb（bg-background 語義對齊 Checkbox 選中態），
+ *   關 = bg-surface-tertiary + 髮絲內描邊 + surface-strong 抬升 thumb（同 SegmentedControl 選中面）。
+ * - thumb 滑動用 translate-x 位移（尺寸檔固定行程），motion-reduce 關閉過渡。
+ * - data-state="on|off" 暴露給上下文 CSS 覆蓋（admin 語義綠等保留於頁面層，不侵入元件）。
+ * - API 對齊 AntD Switch：checked/defaultChecked/onChange/disabled/size/checkedChildren/
+ *   unCheckedChildren/loading + aria-* 透傳；受控與否由 checked 是否傳入決定，
+ *   onChange(checked) 單參。頂層元件接收 checked/onChange → Form.Item valuePropName="checked" 注入相容。
+ * 對標：AntD Switch；boardui base/switch。
  */
 
 export interface SwitchProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type" | "size" | "onChange"> {
-    /** 开关尺寸。默认 md；AntD small → sm 映射。 */
+    /** 開關尺寸。預設 md；AntD small → sm 對映。 */
     size?: "sm" | "md";
-    /** 受控：是否开启 */
+    /** 受控：是否開啟 */
     checked?: boolean;
     /** 非受控初始值 */
     defaultChecked?: boolean;
-    /** loading：拇指位换转圈，忽略点击（视觉保留 checked 态） */
+    /** loading：拇指位換轉圈，忽略點選（視覺保留 checked 態） */
     loading?: boolean;
-    /** 开启时轨道内左侧文案（2 字宽度档） */
+    /** 開啟時軌道內左側文案（2 字寬度檔） */
     checkedChildren?: ReactNode;
-    /** 关闭时轨道内右侧文案 */
+    /** 關閉時軌道內右側文案 */
     unCheckedChildren?: ReactNode;
-    /** 变化回调（AntD 同签名：仅布尔参） */
+    /** 變化回撥（AntD 同簽名：僅布林參） */
     onChange?: (checked: boolean) => void;
 }
 
-/** 几何档：轨道尺寸与 thumb 行程（thumb 用 left-0.5 起始 + translate-x 档位） */
+/** 幾何檔：軌道尺寸與 thumb 行程（thumb 用 left-0.5 起始 + translate-x 檔位） */
 const SWITCH_SIZE: Record<"sm" | "md", { root: string; thumbPlain: string; thumbText: string; hasTextRoot: string }> = {
     sm: {
         root: "h-5 w-8 rounded-full",
@@ -94,7 +94,7 @@ export function Switch({ size = "md", checked: checkedProp, defaultChecked = fal
             )}
             {...props}
         >
-            {/* 关态文案（右侧） */}
+            {/* 關態文案（右側） */}
             {unCheckedChildren !== undefined ? (
                 <span
                     aria-hidden="true"
@@ -103,13 +103,13 @@ export function Switch({ size = "md", checked: checkedProp, defaultChecked = fal
                     {unCheckedChildren}
                 </span>
             ) : null}
-            {/* 开态文案（左侧，反色） */}
+            {/* 開態文案（左側，反色） */}
             {checkedChildren !== undefined ? (
                 <span aria-hidden="true" className={cn("absolute top-1/2 left-1.5 -translate-y-1/2 text-xs leading-none font-medium transition-opacity motion-reduce:transition-none", checked ? "text-background opacity-100" : "text-background opacity-0")}>
                     {checkedChildren}
                 </span>
             ) : null}
-            {/* thumb / loading 转圈 */}
+            {/* thumb / loading 轉圈 */}
             {loading ? (
                 <span aria-hidden="true" className={cn("absolute inset-0 m-auto size-3.5 animate-spin rounded-full border-[1.5px] border-current border-t-transparent", checked ? "text-background" : "text-foreground/60")} />
             ) : (

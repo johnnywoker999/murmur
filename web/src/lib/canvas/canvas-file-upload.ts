@@ -23,9 +23,9 @@ export function uploadVeilOpacity(percent = 0) {
 
 export async function createFileUploadPlaceholder(id: string, file: File, position: Position) {
     const type = uploadNodeType(file);
-    if (!type) throw new Error("请选择图片、视频、音频或 TXT / Markdown 文件");
+    if (!type) throw new Error("請選擇圖片、影片、音訊或 TXT / Markdown 檔案");
     if (type === CanvasNodeType.Image) return createImageUploadPlaceholder(id, file, position, await readUploadImageSize(file));
-    // 浏览器能否解码不决定能否导入；尺寸与封面由上传后的媒体信息补齐。
+    // 瀏覽器能否解碼不決定能否匯入；尺寸與封面由上傳後的媒體資訊補齊。
     const size = NODE_DEFAULT_SIZE[type];
     return {
         ...size, id, type, title: file.name,
@@ -34,14 +34,14 @@ export async function createFileUploadPlaceholder(id: string, file: File, positi
     } satisfies CanvasNodeData;
 }
 
-// 不使用 readImageMeta 的默认尺寸兜底：上传占位必须来自实际解码尺寸。
+// 不使用 readImageMeta 的預設尺寸兜底：上傳佔位必須來自實際解碼尺寸。
 export async function readUploadImageSize(file: File): Promise<{ width: number; height: number }> {
     const url = URL.createObjectURL(file);
     const image = new Image();
     try {
         image.src = url;
         await image.decode();
-        if (!image.naturalWidth || !image.naturalHeight) throw new Error("无法读取图片尺寸，请重新选择图片");
+        if (!image.naturalWidth || !image.naturalHeight) throw new Error("無法讀取圖片尺寸，請重新選擇圖片");
         return { width: image.naturalWidth, height: image.naturalHeight };
     } finally {
         URL.revokeObjectURL(url);
@@ -60,5 +60,5 @@ export function createImageUploadPlaceholder(id: string, file: Pick<File, "name"
 
 export function interruptFileUpload(node: CanvasNodeData): CanvasNodeData {
     if (node.metadata?.fileUpload !== "uploading") return node;
-    return { ...node, metadata: { ...node.metadata, fileUpload: "error", fileUploadProgress: undefined, errorDetails: "上传已中断，请重新选择文件上传" } };
+    return { ...node, metadata: { ...node.metadata, fileUpload: "error", fileUploadProgress: undefined, errorDetails: "上傳已中斷，請重新選擇檔案上傳" } };
 }

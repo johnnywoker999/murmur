@@ -25,19 +25,19 @@ type CanvasPromptOptimizerDrawerProps = {
 };
 
 const modeOptions: Array<{ label: string; value: PromptOptimizationMode }> = [
-    { label: "扩展想法", value: "expand" },
+    { label: "擴充套件想法", value: "expand" },
     { label: "精修已有", value: "refine" },
-    { label: "强化风格", value: "style" },
-    { label: "适配模型", value: "model-adapt" },
-    { label: "结合参考", value: "reference" },
+    { label: "強化風格", value: "style" },
+    { label: "適配模型", value: "model-adapt" },
+    { label: "結合參考", value: "reference" },
 ];
 
 const modeDescriptions: Record<PromptOptimizationMode, string> = {
-    expand: "从一句模糊想法补齐主体、场景、构图、光线和镜头等可执行细节。",
-    refine: "尽量保留原意，只修正表达并补充必要细节，适合已经有初稿的提示词。",
-    style: "保留主体和动作，重点强化电影感、材质、色彩、光影或指定艺术风格。",
-    "model-adapt": "根据当前生成模型的习惯调整提示词结构和描述重点，减少模型不易理解的表达。",
-    reference: "结合已连接的参考图或文本，补充一致性、外观、构图和关联关系。",
+    expand: "從一句模糊想法補齊主體、場景、構圖、光線和鏡頭等可執行細節。",
+    refine: "儘量保留原意，只修正表達並補充必要細節，適合已經有初稿的提示詞。",
+    style: "保留主體和動作，重點強化電影感、材質、色彩、光影或指定藝術風格。",
+    "model-adapt": "根據當前生成模型的習慣調整提示詞結構和描述重點，減少模型不易理解的表達。",
+    reference: "結合已連線的參考圖或文本，補充一致性、外觀、構圖和關聯關係。",
 };
 
 type PanelSize = { width: number; height: number };
@@ -313,7 +313,7 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
         try {
             interactionTarget.setPointerCapture(pointerId);
         } catch {
-            // 某些浏览器在指针已被外层捕获时会拒绝重复捕获，窗口级监听仍可继续完成拖动。
+            // 某些瀏覽器在指標已被外層捕獲時會拒絕重複捕獲，視窗級監聽仍可繼續完成拖動。
         }
         setPanelInteracting(true);
 
@@ -363,7 +363,7 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
             try {
                 if (interactionTarget.hasPointerCapture(pointerId)) interactionTarget.releasePointerCapture(pointerId);
             } catch {
-                // 指针已由浏览器释放时无需再次释放。
+                // 指標已由瀏覽器釋放時無需再次釋放。
             }
             document.body.style.userSelect = previousUserSelect;
             document.body.style.cursor = previousCursor;
@@ -452,7 +452,7 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
         } catch (reason) {
             if (controller.signal.aborted) return;
             setDraftPrompt(promptValue);
-            setError(reason instanceof Error ? reason.message : "提示词优化失败，请稍后重试");
+            setError(reason instanceof Error ? reason.message : "提示詞最佳化失敗，請稍後重試");
         } finally {
             if (!controller.signal.aborted) {
                 setWorking(false);
@@ -466,7 +466,7 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
         if (!value) return;
         onApply(value);
         onClose();
-        message.success("提示词已采用并回填到当前输入框");
+        message.success("提示詞已採用並回填到當前輸入框");
     };
 
     const modeMenuItems = modeOptions.map((option) => ({
@@ -486,8 +486,8 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
             content: (
                 <div className="canvas-prompt-optimizer-bubble is-assistant-bubble">
                     <div className="canvas-prompt-optimizer-message-meta">
-                        <span>提示词助手</span>
-                        <span>当前模式：{modeOptions.find((option) => option.value === mode)?.label}</span>
+                        <span>提示詞助手</span>
+                        <span>當前模式：{modeOptions.find((option) => option.value === mode)?.label}</span>
                     </div>
                     <p>{modeDescriptions[mode]}</p>
                     {mode === "reference" ? (
@@ -498,7 +498,7 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
                         />
                     ) : activeReferences.length ? (
                         <div className="canvas-prompt-optimizer-chat-reference">
-                            <span>将结合参考</span>
+                            <span>將結合參考</span>
                             <div className="flex min-w-0 flex-wrap gap-1.5">
                                 {activeReferences.map((reference) => (
                                     <Tag key={reference.id}>{reference.title || reference.label}</Tag>
@@ -534,7 +534,7 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
             content: (
                 <div className="canvas-prompt-optimizer-bubble is-assistant-bubble is-working" role="status">
                     <LoaderCircle className="size-3.5 animate-spin motion-reduce:animate-none" />
-                    <span>{streaming ? "正在接收优化结果…" : "正在整理你的想法…"}</span>
+                    <span>{streaming ? "正在接收最佳化結果…" : "正在整理你的想法…"}</span>
                 </div>
             ),
         });
@@ -545,7 +545,7 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
             key: "error",
             role: "system",
             content: (
-                <Callout className="canvas-prompt-optimizer-alert" tone="error" title="优化失败">
+                <Callout className="canvas-prompt-optimizer-alert" tone="error" title="最佳化失敗">
                     {error}
                 </Callout>
             ),
@@ -559,17 +559,17 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
             content: (
                 <div className="canvas-prompt-optimizer-bubble is-assistant-bubble is-result-bubble">
                     <div className="canvas-prompt-optimizer-message-meta">
-                        <span>提示词助手</span>
+                        <span>提示詞助手</span>
                         {result.modelProfile ? (
                             <Tag color="blue" bordered={false}>
-                                已按 {result.modelProfile.label} 适配
+                                已按 {result.modelProfile.label} 適配
                             </Tag>
                         ) : null}
                     </div>
                     <div className="canvas-prompt-optimizer-result-heading">
-                        <span>我建议这样写</span>
-                        <Button type="primary" size="small" icon={<Check className="size-3.5" />} onClick={applyPrompt} disabled={!selectedPrompt.trim()} aria-label="采用优化后的提示词">
-                            采用
+                        <span>我建議這樣寫</span>
+                        <Button type="primary" size="small" icon={<Check className="size-3.5" />} onClick={applyPrompt} disabled={!selectedPrompt.trim()} aria-label="採用最佳化後的提示詞">
+                            採用
                         </Button>
                     </div>
                     <Input.TextArea
@@ -577,22 +577,22 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
                         value={selectedPrompt}
                         onChange={(event) => setSelectedPrompt(event.target.value)}
                         autoSize={{ minRows: 4, maxRows: 10 }}
-                        aria-label="优化后的提示词"
+                        aria-label="最佳化後的提示詞"
                     />
 
                     {result.negativePrompt ? (
                         <div className="canvas-prompt-optimizer-chat-detail">
-                            <span>建议规避</span>
+                            <span>建議規避</span>
                             <p>{result.negativePrompt}</p>
                         </div>
                     ) : null}
-                    {result.changes.length ? <ResultList title="我做了什么" items={result.changes} /> : null}
-                    {result.assumptions.length ? <ResultList title="需要你确认" items={result.assumptions} warning /> : null}
+                    {result.changes.length ? <ResultList title="我做了什麼" items={result.changes} /> : null}
+                    {result.assumptions.length ? <ResultList title="需要你確認" items={result.assumptions} warning /> : null}
 
                     {result.variants.length ? (
                         <div className="canvas-prompt-optimizer-subsection">
                             <div className="canvas-prompt-optimizer-field-label">
-                                <span>备选版本</span>
+                                <span>備選版本</span>
                             </div>
                             <div className="space-y-2">
                                 {result.variants.map((variant) => {
@@ -636,22 +636,22 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
                     beginPanelInteraction(event, "drag");
                 }}
             >
-                <div className="canvas-prompt-optimizer-header-main canvas-prompt-optimizer-drag-region" role="button" tabIndex={0} aria-label="移动提示词优化面板" title="拖动移动面板，方向键也可以移动" onKeyDown={handlePanelMoveKeyDown}>
+                <div className="canvas-prompt-optimizer-header-main canvas-prompt-optimizer-drag-region" role="button" tabIndex={0} aria-label="移動提示詞最佳化面板" title="拖動移動面板，方向鍵也可以移動" onKeyDown={handlePanelMoveKeyDown}>
                     <span className="canvas-prompt-optimizer-icon">
                         <Sparkles className="size-4" aria-hidden="true" />
                     </span>
                     <div className="canvas-prompt-optimizer-header-title">
                         <div className="canvas-prompt-optimizer-header-title-row">
-                            <Typography.Text strong>AI 提示词优化</Typography.Text>
-                            <span className="canvas-prompt-optimizer-mode-badge">{generationMode === "image" ? "图片" : "视频"}</span>
+                            <Typography.Text strong>AI 提示詞最佳化</Typography.Text>
+                            <span className="canvas-prompt-optimizer-mode-badge">{generationMode === "image" ? "圖片" : "影片"}</span>
                             <span className="canvas-prompt-optimizer-context" title={targetModel || "未配置模型"}>
                                 · {targetModel || "未配置模型"}
-                                {referenceCount ? ` · 参考 ${referenceCount}` : ""}
+                                {referenceCount ? ` · 參考 ${referenceCount}` : ""}
                             </span>
                         </div>
                     </div>
                 </div>
-                <button type="button" className="canvas-prompt-optimizer-close" onPointerDown={(event) => event.stopPropagation()} onClick={onClose} aria-label="关闭提示词优化">
+                <button type="button" className="canvas-prompt-optimizer-close" onPointerDown={(event) => event.stopPropagation()} onClick={onClose} aria-label="關閉提示詞最佳化">
                     <X className="size-4" aria-hidden="true" />
                 </button>
             </div>
@@ -684,7 +684,7 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
                     value={draftPrompt}
                     onChange={(value) => setDraftPrompt(value)}
                     onSubmit={(value) => void runOptimization(value)}
-                    placeholder="继续描述你的画面想法，Enter 发送"
+                    placeholder="繼續描述你的畫面想法，Enter 傳送"
                     autoSize={{ minRows: 2, maxRows: 6 }}
                     disabled={working}
                     suffix={false}
@@ -702,7 +702,7 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
                                         onClick: ({ key }) => setMode(key as PromptOptimizationMode),
                                     }}
                                 >
-                                    <button type="button" className="canvas-prompt-optimizer-mode-trigger" aria-label="选择优化方式" aria-haspopup="menu">
+                                    <button type="button" className="canvas-prompt-optimizer-mode-trigger" aria-label="選擇最佳化方式" aria-haspopup="menu">
                                         <span>{modeOptions.find((option) => option.value === mode)?.label}</span>
                                         <ChevronDown className="size-3" aria-hidden="true" />
                                     </button>
@@ -714,7 +714,7 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
                                     value={activeOptimizerModel}
                                     onChange={setActiveOptimizerModel}
                                     capability="text"
-                                    placeholder="选择优化模型"
+                                    placeholder="選擇最佳化模型"
 
                                     variant="creation"
                                     className="canvas-prompt-optimizer-model-picker"
@@ -725,14 +725,14 @@ export function CanvasPromptOptimizerDrawer({ open, children, prompt, generation
                                     className="canvas-prompt-optimizer-send"
                                     onClick={() => void runOptimization()}
                                     disabled={!provider || working || !draftPrompt.trim() || (mode === "reference" && !selectedReferences.length)}
-                                    aria-label={working ? "正在优化" : "发送优化请求"}
+                                    aria-label={working ? "正在最佳化" : "傳送最佳化請求"}
                                 >
                                     {working ? <LoaderCircle className="size-3.5 animate-spin motion-reduce:animate-none" /> : <ArrowUp className="size-4" strokeWidth={2.35} aria-hidden="true" />}
                                 </button>
                             </div>
                         </div>
                     }
-                    aria-label="输入提示词优化请求"
+                    aria-label="輸入提示詞最佳化請求"
                 />
             </div>
 
@@ -787,11 +787,11 @@ function ReferenceSelection({ references, selectedReferences, onToggle }: { refe
     return (
         <div className="canvas-prompt-optimizer-reference-selection">
             <div className="canvas-prompt-optimizer-reference-heading">
-                <span>参考内容</span>
-                <span>{references.length ? `已选 ${selectedReferences.length}/${references.length}` : "当前上下文未连接参考"}</span>
+                <span>參考內容</span>
+                <span>{references.length ? `已選 ${selectedReferences.length}/${references.length}` : "當前上下文未連線參考"}</span>
             </div>
             {references.length ? (
-                <div className="canvas-prompt-optimizer-reference-list" role="group" aria-label="本次优化使用的参考内容">
+                <div className="canvas-prompt-optimizer-reference-list" role="group" aria-label="本次最佳化使用的參考內容">
                     {references.map((reference) => {
                         const selected = selectedReferences.some((item) => item.id === reference.id);
                         return (
@@ -811,7 +811,7 @@ function ReferenceSelection({ references, selectedReferences, onToggle }: { refe
                     })}
                 </div>
             ) : (
-                <p className="canvas-prompt-optimizer-reference-empty">请先添加参考图、角色或文本，再使用此模式。</p>
+                <p className="canvas-prompt-optimizer-reference-empty">請先新增參考圖、角色或文本，再使用此模式。</p>
             )}
         </div>
     );

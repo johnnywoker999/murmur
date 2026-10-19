@@ -1,5 +1,5 @@
-// 时间线放置算法（移植自 lingji-cut 的 timeline-placement.ts）。
-// 提供同轨碰撞检测、最近可用位置查找、跨轨放置与时长钳制。
+// 時間線放置演算法（移植自 lingji-cut 的 timeline-placement.ts）。
+// 提供同軌碰撞檢測、最近可用位置查詢、跨軌放置與時長鉗制。
 
 import type { TimelineClip, TimelineTrack } from "@/types/timeline";
 
@@ -38,7 +38,7 @@ export type ClampDurationArgs = {
     maxDurationMs?: number;
 };
 
-/** 半开区间 [startMs, startMs + durationMs) 重叠判断 */
+/** 半開區間 [startMs, startMs + durationMs) 重疊判斷 */
 export function clipsOverlap(left: { startMs: number; durationMs: number }, right: { startMs: number; durationMs: number }): boolean {
     return left.startMs < right.startMs + right.durationMs && right.startMs < left.startMs + left.durationMs;
 }
@@ -57,8 +57,8 @@ export type CanPlaceAtResult = {
 };
 
 /**
- * 判断指定轨道的区间 [startMs, startMs+durationMs) 是否可放置，
- * 不做任何自动 snap/偏移；遇到任何同轨片段重叠即返回 ok=false。
+ * 判斷指定軌道的區間 [startMs, startMs+durationMs) 是否可放置，
+ * 不做任何自動 snap/偏移；遇到任何同軌片段重疊即返回 ok=false。
  */
 export function canPlaceAt(args: CanPlaceAtArgs): CanPlaceAtResult {
     const { trackId, startMs, durationMs, excludeClipId, clips } = args;
@@ -73,7 +73,7 @@ export function canPlaceAt(args: CanPlaceAtArgs): CanPlaceAtResult {
     return { ok: true };
 }
 
-/** 返回与候选区间碰撞的所有片段（按现有顺序，不排序）。 */
+/** 返回與候選區間碰撞的所有片段（按現有順序，不排序）。 */
 export function findCollidingItems(args: CanPlaceAtArgs): TimelineClip[] {
     const { trackId, startMs, durationMs, excludeClipId, clips } = args;
     const candidate = { startMs, durationMs };
@@ -84,7 +84,7 @@ function getSortedClipsOnTrack(trackId: string, clips: TimelineClip[], excludeCl
     return clips.filter((c) => c.trackId === trackId && c.id !== excludeClipId).sort((a, b) => a.startMs - b.startMs);
 }
 
-/** 在指定轨道上寻找离 targetStartMs 最近的可用放置位置 */
+/** 在指定軌道上尋找離 targetStartMs 最近的可用放置位置 */
 export function findNearestAvailablePlacement(args: FindNearestArgs): PlacementResult {
     const { targetStartMs, durationMs, trackId, excludeClipId, clips } = args;
     const managed = getSortedClipsOnTrack(trackId, clips, excludeClipId);
@@ -99,8 +99,8 @@ export function findNearestAvailablePlacement(args: FindNearestArgs): PlacementR
         return { startMs: targetStartMs, fits: true };
     }
 
-    // 目标位置有冲突，扫描所有间隙寻找最近的可用位置：
-    // 第一个片段之前、片段之间、最后一个片段之后（无限大）。
+    // 目標位置有衝突，掃描所有間隙尋找最近的可用位置：
+    // 第一個片段之前、片段之間、最後一個片段之後（無限大）。
     type Gap = { start: number; end: number };
     const gaps: Gap[] = [];
 
@@ -153,7 +153,7 @@ export function findNearestAvailablePlacement(args: FindNearestArgs): PlacementR
     return { startMs: targetStartMs, fits: false };
 }
 
-/** 在所有可放置的视觉/音轨中寻找可放置的轨道（按 order 升序） */
+/** 在所有可放置的視覺/音軌中尋找可放置的軌道（按 order 升序） */
 export function findAvailableTrack(args: FindAvailableTrackArgs): PlacementTrackResult {
     const { targetStartMs, durationMs, excludeClipId, clips, tracks } = args;
     const candidates = tracks.filter((t) => t.kind === "video" || t.kind === "audio").sort((a, b) => a.order - b.order);
@@ -174,7 +174,7 @@ export function findAvailableTrack(args: FindAvailableTrackArgs): PlacementTrack
     return { trackId: null, startMs: targetStartMs };
 }
 
-/** 根据相邻片段和最大时长限制，钳制片段时长 */
+/** 根據相鄰片段和最大時長限制，鉗製片段時長 */
 export function clampClipDurationByNeighbors(args: ClampDurationArgs): number {
     const { clipId, startMs, requestedDurationMs, trackId, clips, maxDurationMs } = args;
     const managed = getSortedClipsOnTrack(trackId, clips, clipId);

@@ -21,7 +21,7 @@ export function buildTimelineImportSegments(node: CanvasNodeData, nodes: CanvasN
         if (candidate.id === clip.nodeId) return true;
         if (candidate.metadata?.assetId && clip.nodeId === candidate.metadata.assetId) return true;
         if (candidate.metadata?.storageKey && clip.directMedia?.storageKey === candidate.metadata.storageKey) return true;
-        // 旧数据里 nodeId 可能被重新生成过；标题一致且唯一时才回退，避免同名视频误导入。
+        // 舊資料裡 nodeId 可能被重新生成過；標題一致且唯一時才回退，避免同名影片誤匯入。
         if (candidate.title && clip.title === candidate.title && !clip.directMedia) {
             return candidateNodes.filter((item) => item.title === candidate.title).length === 1;
         }
@@ -29,7 +29,7 @@ export function buildTimelineImportSegments(node: CanvasNodeData, nodes: CanvasN
     };
     const clips = (timeline?.clips || []).filter((clip) => clip.kind === "video" && candidateNodes.some((candidate) => matchesCandidate(clip, candidate)));
     if (!clips.length) {
-        return { ok: false, error: `未找到「${node.title || "当前视频节点"}」或其上游视频节点在时间线中的片段，请先在时间线中加入对应视频节点` };
+        return { ok: false, error: `未找到「${node.title || "當前影片節點"}」或其上游影片節點在時間線中的片段，請先在時間線中加入對應影片節點` };
     }
     const segments = clips.flatMap((clip) => {
         const matchedNode = candidateNodes.find((candidate) => matchesCandidate(clip, candidate));
@@ -49,6 +49,6 @@ export function buildTimelineImportSegments(node: CanvasNodeData, nodes: CanvasN
             },
         ];
     });
-    if (!segments.length) return { ok: false, error: "时间线片段数据不完整，请先在时间线中重新分割或保存" };
+    if (!segments.length) return { ok: false, error: "時間線片段資料不完整，請先在時間線中重新分割或儲存" };
     return { ok: true, segments };
 }

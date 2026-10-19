@@ -140,10 +140,10 @@ export function useCanvasNodeOperations({
         if (!projectId || !sourceDrawingId || !targetDrawingId) return;
         void cloneCanvasDrawing(projectId, sourceDrawingId, targetDrawingId).then((saved) => {
             if (!saved) {
-                if (source.metadata?.drawingShapeCount) message.warning("原绘图内容未在本机找到，已创建空白副本");
+                if (source.metadata?.drawingShapeCount) message.warning("原繪圖內容未在本機找到，已建立空白副本");
                 return;
             }
-            // 克隆落盘后提升修订号，确保已经挂载的新卡片重新读取派生预览。
+            // 克隆落盤後提升修訂號，確保已經掛載的新卡片重新讀取派生預覽。
             commitNodes(nodesRef.current.map((node) => node.id === target.id ? {
                 ...node,
                 metadata: {
@@ -174,7 +174,7 @@ export function useCanvasNodeOperations({
             ? workflowProvider || (workflowProviderPluginEnabled(runtimeStatuses, "runninghub") ? "runninghub" : undefined)
             : undefined;
         if (selectedWorkflowProvider && !workflowProviderPluginEnabled(runtimeStatuses, selectedWorkflowProvider)) {
-            message.error("RunningHub 工作流插件未启用");
+            message.error("RunningHub 工作流外掛未啟用");
             return;
         }
         const workflowTitle = type === CanvasNodeType.Config && selectedWorkflowProvider === "runninghub" ? "RunningHub 工作流" : undefined;
@@ -192,14 +192,14 @@ export function useCanvasNodeOperations({
         const node = createCanvasNode(type, creationPosition, metadata);
         if (type === CanvasNodeType.Text) {
             const nextNumber = nodesRef.current.filter((item) => item.type === CanvasNodeType.Text).length + 1;
-            node.title = `文本节点 ${nextNumber}`;
+            node.title = `文本節點 ${nextNumber}`;
         }
         if (type === CanvasNodeType.Image || type === CanvasNodeType.Video || type === CanvasNodeType.Audio) {
             const nextNumber = nodesRef.current.filter((item) => item.type === type).length + 1;
-            const label = type === CanvasNodeType.Image ? "图片节点" : type === CanvasNodeType.Video ? "视频节点" : "音频节点";
+            const label = type === CanvasNodeType.Image ? "圖片節點" : type === CanvasNodeType.Video ? "影片節點" : "音訊節點";
             node.title = `${label} ${nextNumber}`;
         }
-        if (type === CanvasNodeType.MediaConversion) node.title = "智能剪辑";
+        if (type === CanvasNodeType.MediaConversion) node.title = "智慧剪輯";
         if (workflowTitle) node.title = workflowTitle;
         commitNodes([...nodesRef.current, node]);
         selectNodes(new Set([node.id]));
@@ -222,12 +222,12 @@ export function useCanvasNodeOperations({
                 projectId: linked?.projectId,
             },
         });
-        folder.title = linked?.title || "我的文件";
+        folder.title = linked?.title || "我的檔案";
         folder.width = FOLDER_COLLAPSED_WIDTH;
         folder.height = FOLDER_COLLAPSED_HEIGHT;
         commitNodes([...nodesRef.current, folder]);
         selectNodes(new Set([folder.id]));
-        message.success(linked ? "素材文件夹已放到画布，打开可浏览其中内容" : "文件夹已创建，可拖入任意非容器节点");
+        message.success(linked ? "素材資料夾已放到畫布，開啟可瀏覽其中內容" : "資料夾已建立，可拖入任意非容器節點");
     }, [commitNodes, getCanvasCenter, message, nodesRef, selectNodes]);
 
     const arrangeSelectedNodes = useCallback((mode: "row" | "column" | "grid" | "flow") => {
@@ -235,7 +235,7 @@ export function useCanvasNodeOperations({
         if (selected.length < 2) return;
         const positions = mode === "flow" ? layoutCanvasFlow(selected, connectionsRef.current) : layoutCanvasNodes(selected, mode);
         commitNodes(nodesRef.current.map((node) => positions.has(node.id) ? { ...node, position: positions.get(node.id)! } : node));
-        message.success(mode === "flow" ? "已按连线整理" : "已整理选中节点");
+        message.success(mode === "flow" ? "已按連線整理" : "已整理選中節點");
     }, [commitNodes, connectionsRef, message, nodesRef, selectedNodeIdsRef]);
 
     const autoArrangeCanvasNodes = useCallback(() => {
@@ -248,26 +248,26 @@ export function useCanvasNodeOperations({
             return !node.parentId;
         });
         if (candidates.length < 2) {
-            message.info(hasSelection ? "请至少选择两个可整理节点" : "画布中至少需要两个可整理节点");
+            message.info(hasSelection ? "請至少選擇兩個可整理節點" : "畫布中至少需要兩個可整理節點");
             return;
         }
 
         const positions = layoutCanvasAuto(candidates, connectionsRef.current);
         commitNodes(currentNodes.map((node) => positions.has(node.id) ? { ...node, position: positions.get(node.id)! } : node));
-        message.success(hasSelection ? "已按媒体分类整理选中节点" : "已按媒体分类整理画布");
+        message.success(hasSelection ? "已按媒體分類整理選中節點" : "已按媒體分類整理畫布");
     }, [commitNodes, connectionsRef, message, nodesRef, selectedNodeIdsRef]);
 
     const spreadSelectedNodes = useCallback(() => {
         const currentNodes = nodesRef.current;
         const selected = currentNodes.filter((node) => selectedNodeIdsRef.current.has(node.id) && !node.metadata?.locked && !isFrameNode(node) && !isHiddenBatchChild(node, currentNodes));
         if (selected.length < 2) {
-            message.info("请至少选择两个可整理节点");
+            message.info("請至少選擇兩個可整理節點");
             return;
         }
         const positions = spreadCanvasNodes(selected);
         if (!positions.size) return;
         commitNodes(currentNodes.map((node) => positions.has(node.id) ? { ...node, position: positions.get(node.id)! } : node));
-        message.success("已按相对布局加大间距");
+        message.success("已按相對佈局加大間距");
     }, [commitNodes, message, nodesRef, selectedNodeIdsRef]);
 
     const alignSelectedNodes = useCallback((mode: CanvasAlignmentMode) => {
@@ -275,7 +275,7 @@ export function useCanvasNodeOperations({
         if (selected.length < 2 || ((mode === "distributeX" || mode === "distributeY") && selected.length < 3)) return;
         const positions = alignCanvasNodes(selected, mode);
         commitNodes(nodesRef.current.map((node) => positions.has(node.id) ? { ...node, position: positions.get(node.id)! } : node));
-        message.success(mode === "distributeX" || mode === "distributeY" ? "已等距分布选中节点" : "已对齐选中节点");
+        message.success(mode === "distributeX" || mode === "distributeY" ? "已等距分佈選中節點" : "已對齊選中節點");
     }, [commitNodes, message, nodesRef, selectedNodeIdsRef]);
 
     const createStoryboardGroup = useCallback(() => {
@@ -283,7 +283,7 @@ export function useCanvasNodeOperations({
             .filter((node) => selectedNodeIdsRef.current.has(node.id) && !node.metadata?.locked && node.type === CanvasNodeType.Image && Boolean(node.metadata?.content))
             .sort((a, b) => a.position.y - b.position.y || a.position.x - b.position.x);
         if (images.length < 2) {
-            message.warning("请至少选择两张已有图片");
+            message.warning("請至少選擇兩張已有圖片");
             return;
         }
         const gap = 24;
@@ -298,10 +298,10 @@ export function useCanvasNodeOperations({
         const frameHeight = FRAME_HEADER_HEIGHT + padding * 2 + rows * cellHeight + (rows - 1) * gap;
         const frame = createCanvasNode(CanvasNodeType.Frame, { x: left + frameWidth / 2 - padding, y: top + frameHeight / 2 - FRAME_HEADER_HEIGHT - padding }, {
             workflowKind: "storyboard",
-            workflowTitle: "分镜组",
+            workflowTitle: "分鏡組",
             frame: { collapsed: false, expandedWidth: frameWidth, expandedHeight: frameHeight },
         });
-        frame.title = `分镜组 · ${images.length} 镜`;
+        frame.title = `分鏡組 · ${images.length} 鏡`;
         frame.position = { x: left - padding, y: top - FRAME_HEADER_HEIGHT - padding };
         frame.width = frameWidth;
         frame.height = frameHeight;
@@ -326,7 +326,7 @@ export function useCanvasNodeOperations({
         ];
         commitNodes(nextNodes);
         selectNodes(new Set([frame.id]));
-        message.success(`已创建 ${images.length} 镜分镜组`);
+        message.success(`已建立 ${images.length} 鏡分鏡組`);
     }, [commitNodes, message, nodesRef, selectNodes, selectedNodeIdsRef]);
 
     const createReferenceGroup = useCallback(() => {
@@ -334,7 +334,7 @@ export function useCanvasNodeOperations({
             .filter((node) => selectedNodeIdsRef.current.has(node.id) && !node.metadata?.locked && (node.type === CanvasNodeType.Image || node.type === CanvasNodeType.Video) && Boolean(node.metadata?.content))
             .sort((a, b) => a.position.y - b.position.y || a.position.x - b.position.x);
         if (media.length < 2) {
-            message.warning("请至少选择两个已有图片或视频节点");
+            message.warning("請至少選擇兩個已有圖片或影片節點");
             return;
         }
         const gap = 20;
@@ -349,11 +349,11 @@ export function useCanvasNodeOperations({
         const frameHeight = FRAME_HEADER_HEIGHT + padding * 2 + rows * cellHeight + (rows - 1) * gap;
         const frame = createCanvasNode(CanvasNodeType.Frame, { x: left + frameWidth / 2, y: top + frameHeight / 2 }, {
             workflowKind: "reference_set",
-            workflowTitle: "引用组",
+            workflowTitle: "引用組",
             referenceAssetNodeIds: media.map((node) => node.id),
             frame: { collapsed: false, expandedWidth: frameWidth, expandedHeight: frameHeight },
         });
-        frame.title = `引用组 · ${media.length} 项`;
+        frame.title = `引用組 · ${media.length} 項`;
         frame.position = { x: left - padding, y: top - FRAME_HEADER_HEIGHT - padding };
         frame.width = frameWidth;
         frame.height = frameHeight;
@@ -377,7 +377,7 @@ export function useCanvasNodeOperations({
             frame,
         ]);
         selectNodes(new Set([frame.id]));
-        message.success(`已创建 ${media.length} 项引用组，折叠后可作为路由节点`);
+        message.success(`已建立 ${media.length} 項引用組，摺疊後可作為路由節點`);
     }, [commitNodes, message, nodesRef, selectNodes, selectedNodeIdsRef]);
 
     const toggleNodeLocked = useCallback((nodeId: string) => {
@@ -385,7 +385,7 @@ export function useCanvasNodeOperations({
         if (!target) return;
         const locked = !target.metadata?.locked;
         commitNodes(nodesRef.current.map((node) => node.id === nodeId ? { ...node, metadata: { ...node.metadata, locked } } : node));
-        message.success(locked ? "节点已锁定位置和尺寸" : "节点已解锁");
+        message.success(locked ? "節點已鎖定位置和尺寸" : "節點已解鎖");
     }, [commitNodes, message, nodesRef]);
 
     const removeNodes = useCallback((ids: Set<string>) => {
@@ -420,9 +420,9 @@ export function useCanvasNodeOperations({
         const isCurrent = () => mounted.current && deletionContext.current === context && userScopeMatches(expectedScope);
         const confirmation = modal.confirm({
             ...canvasTaskConfirmation,
-            title: "删除正在生成的节点？",
-            content: "任务已提交后可能产生费用。",
-            okText: "确认删除",
+            title: "刪除正在生成的節點？",
+            content: "任務已提交後可能產生費用。",
+            okText: "確認刪除",
             cancelText: "取消",
             afterClose: () => { if (deleteConfirmation.current === pending) deleteConfirmation.current = null; },
             onOk: async () => {
@@ -439,7 +439,7 @@ export function useCanvasNodeOperations({
                 removeNodes(requestedIds);
                 const results = await Promise.allSettled(cancellations);
                 if (isCurrent() && results.some((result) => result.status === "rejected")) {
-                    message.warning("节点已删除，未能取消的任务将继续运行。");
+                    message.warning("節點已刪除，未能取消的任務將繼續執行。");
                 }
             },
         });
@@ -506,7 +506,7 @@ export function useCanvasNodeOperations({
         const sourceByTargetId = new Map(sources.map((sourceNode) => [idMap.get(sourceNode.id), sourceNode]));
         copiedNodes.filter((node) => node.type === CanvasNodeType.Drawing).forEach((targetNode) => {
             const sourceNode = sourceByTargetId.get(targetNode.id);
-            if (sourceNode) cloneDrawingForNode(sourceNode, targetNode, "绘图副本保存失败，请重新复制");
+            if (sourceNode) cloneDrawingForNode(sourceNode, targetNode, "繪圖副本儲存失敗，請重新複製");
         });
         setDialogNodeId(canOpenCanvasNodePromptPanel(copiedNodes.find((node) => node.id === id)) ? id : null);
     }, [cloneDrawingForNode, commitConnections, commitNodes, connectionsRef, isolateDirectorCopies, nodesRef, selectNodes, setDialogNodeId]);
@@ -516,7 +516,7 @@ export function useCanvasNodeOperations({
         if (!target) return;
         const rootId = target.metadata?.versionOfNodeId || target.id;
         commitNodes(nodesRef.current.map((node) => (node.metadata?.versionOfNodeId || node.id) === rootId ? { ...node, metadata: { ...node.metadata, versionPrimary: node.id === nodeId } } : node));
-        message.success(`已将 ${target.metadata?.versionLabel || target.title} 设为主版本`);
+        message.success(`已將 ${target.metadata?.versionLabel || target.title} 設為主版本`);
     }, [commitNodes, message, nodesRef]);
 
     const copyNodesToClipboard = useCallback((targetIds: Set<string>) => {
@@ -536,10 +536,10 @@ export function useCanvasNodeOperations({
         try {
             sessionStorage.setItem(CANVAS_NODES_CLIPBOARD_STORAGE_KEY, JSON.stringify(clipboardRef.current));
         } catch {
-            // 大型媒体节点可能超过浏览器存储配额，当前页面内仍可正常粘贴。
+            // 大型媒體節點可能超過瀏覽器儲存配額，當前頁面內仍可正常貼上。
         }
         setHasCopiedNodes(true);
-        // 写入完成前或写入失败时优先内部节点，避免快速粘贴读到系统残留图片。
+        // 寫入完成前或寫入失敗時優先內部節點，避免快速貼上讀到系統殘留圖片。
         const marker = `${CANVAS_NODES_CLIPBOARD_PREFIX}${Date.now()}:${copiedNodes.length}`;
         const sequence = markerWriteSequenceRef.current + 1;
         markerWriteSequenceRef.current = sequence;
@@ -599,7 +599,7 @@ export function useCanvasNodeOperations({
                 metadata,
             };
         }), idMap, clipboard.directorScenes);
-        // 1) 剪贴板内部连线；2) 仍保留到画布上未复制参考节点的入边（只复制结果节点时常见）。
+        // 1) 剪貼簿內部連線；2) 仍保留到畫布上未複製參考節點的入邊（只複製結果節點時常見）。
         const nextConnections = clipboard.connections.flatMap((connection, index) => {
             const fromNodeId = idMap.get(connection.fromNodeId);
             const toNodeId = idMap.get(connection.toNodeId);
@@ -609,7 +609,7 @@ export function useCanvasNodeOperations({
             if (!copiedSourceIds.has(connection.toNodeId) || copiedSourceIds.has(connection.fromNodeId)) return;
             const toNodeId = idMap.get(connection.toNodeId);
             if (!toNodeId) return;
-            // 参考节点仍在画布上时，粘贴结果应重新挂上同一入边。
+            // 參考節點仍在畫布上時，貼上結果應重新掛上同一入邊。
             if (!nodesRef.current.some((node) => node.id === connection.fromNodeId)) return;
             nextConnections.push({ ...connection, id: nanoid(), toNodeId });
         });
@@ -618,7 +618,7 @@ export function useCanvasNodeOperations({
         const sourceByTargetId = new Map(clipboard.nodes.map((sourceNode) => [idMap.get(sourceNode.id), sourceNode]));
         nextNodes.filter((node) => node.type === CanvasNodeType.Drawing).forEach((targetNode) => {
             const sourceNode = sourceByTargetId.get(targetNode.id);
-            if (sourceNode) cloneDrawingForNode(sourceNode, targetNode, "绘图副本保存失败，请重新粘贴");
+            if (sourceNode) cloneDrawingForNode(sourceNode, targetNode, "繪圖副本儲存失敗，請重新貼上");
         });
         const topLevelIds = new Set(nextNodes.filter((node) => !node.parentId).map((node) => node.id));
         selectNodes(topLevelIds);

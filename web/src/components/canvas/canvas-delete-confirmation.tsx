@@ -26,7 +26,7 @@ export function CanvasDeleteConfirmation({ title, description, scope, onConfirm,
             assertCurrent();
             onCancel();
         } catch (cause) {
-            setError(cause instanceof Error ? cause.message : "删除失败，请稍后重试");
+            setError(cause instanceof Error ? cause.message : "刪除失敗，請稍後重試");
         } finally {
             busy.current = false;
             setDeleting(false);
@@ -34,7 +34,7 @@ export function CanvasDeleteConfirmation({ title, description, scope, onConfirm,
     };
     return <AppModal open centered title={title} closable={!deleting} keyboard={!deleting} maskClosable={!deleting}
         onCancel={() => { if (!busy.current) onCancel(); }}
-        footer={<><Button disabled={deleting} onClick={onCancel}>取消</Button><Button danger type="primary" loading={deleting} onClick={() => void confirm()}>删除</Button></>}>
+        footer={<><Button disabled={deleting} onClick={onCancel}>取消</Button><Button danger type="primary" loading={deleting} onClick={() => void confirm()}>刪除</Button></>}>
         <p className="text-sm text-foreground/60">{description}</p>
         {error ? <p role="alert" className="mt-3 text-sm">{error}</p> : null}
     </AppModal>;

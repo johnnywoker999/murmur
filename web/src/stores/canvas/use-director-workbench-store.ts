@@ -11,7 +11,7 @@ type DirectorWorkbenchStore = {
     selectedBone: string | null;
     selectedLightId: string | null;
     mode: DirectorMode;
-    /** 取景模式（3D/CAM/五个正交轴向）。纯视口状态，不影响一级模式的能力矩阵。 */
+    /** 取景模式（3D/CAM/五個正交軸向）。純視口狀態，不影響一級模式的能力矩陣。 */
     viewMode: DirectorViewMode;
     transformMode: "translate" | "rotate" | "scale";
     renderMode: DirectorRenderMode;
@@ -23,14 +23,14 @@ type DirectorWorkbenchStore = {
     setSelectedObjectId: (id: string | null) => void;
     setSelectedBone: (bone: string | null) => void;
     setSelectedLightId: (id: string | null) => void;
-    /** 切换一级模式。离开动画模式时一并停播、关 Auto Key、夹回合法渲染视图。 */
+    /** 切換一級模式。離開動畫模式時一併停播、關 Auto Key、夾回合法渲染檢視。 */
     setMode: (mode: DirectorMode) => void;
-    /** 切换取景模式。UI-only：不写入 DirectorScene，不产生 undo/history。 */
+    /** 切換取景模式。UI-only：不寫入 DirectorScene，不產生 undo/history。 */
     setViewMode: (mode: DirectorViewMode) => void;
-    /** 顶层工作区切换只影响视口与时间线显示，不写入场景数据。 */
+    /** 頂層工作區切換隻影響視口與時間線顯示，不寫入場景資料。 */
     setWorkspaceView: (view: "scene" | "preview") => void;
     setTransformMode: (mode: DirectorWorkbenchStore["transformMode"]) => void;
-    /** 切换渲染视图。当前模式不允许的视图一律忽略，不做静默降级。 */
+    /** 切換渲染檢視。當前模式不允許的檢視一律忽略，不做靜默降級。 */
     setRenderMode: (mode: DirectorRenderMode) => void;
     setPlayhead: (time: number) => void;
     setPlaying: (playing: boolean) => void;
@@ -87,8 +87,8 @@ export const useDirectorWorkbenchStore = create<DirectorWorkbenchStore>((set) =>
         };
     }),
     setTransformMode: (transformMode) => set({ transformMode }),
-    // 夹在 store 层而不是只在 UI 层过滤：dock 与顶栏是两条路径，
-    // 只挡其中一条迟早会漏（本轮就漏过一次：dock 的「骨骼视图」在摆场模式仍可点）。
+    // 夾在 store 層而不是隻在 UI 層過濾：dock 與頂欄是兩條路徑，
+    // 只擋其中一條遲早會漏（本輪就漏過一次：dock 的「骨骼檢視」在擺場模式仍可點）。
     setRenderMode: (renderMode) => set((state) => (directorModeCapabilities(state.mode).renderModes.includes(renderMode) ? { renderMode } : {})),
     setPlayhead: (playhead) => set({ playhead }),
     setPlaying: (playing) => set({ playing }),

@@ -33,7 +33,7 @@ export function CanvasImageSettingsPopover({ config, onConfigChange, onOpenChang
     const summaryParts = [
         ...(profile.size.parameter !== "none" ? [imageSizeLabel(normalized.size)] : []),
         ...(profile.quality.supported ? [imageQualityLabel(normalized.quality)] : []),
-        ...(showCount && profile.maxOutputs > 1 ? [`${normalized.count} 张`] : []),
+        ...(showCount && profile.maxOutputs > 1 ? [`${normalized.count} 張`] : []),
         ...(profile.transparentBackground.supported && normalized.transparentBackground === "true" ? ["透明"] : []),
     ];
     const summary = summaryOverride || summaryParts.join(" · ");
@@ -73,7 +73,7 @@ export function CanvasImageSettingsPopover({ config, onConfigChange, onOpenChang
     return (
         <>
             <span ref={buttonRef} className="inline-flex min-w-0">
-                <Button size="small" type="text" className={`canvas-generation-settings-trigger ${buttonClassName || "!h-8 !max-w-[180px] !justify-start !rounded-full !px-2.5"}`} style={{ background: theme.node.fill, color: theme.node.text }} icon={<Settings2 className="size-3.5" />} aria-expanded={open} aria-label={`高级设置：${summary}`} title={`高级设置 · ${summary}`} onClick={() => updateOpen(!open)}>
+                <Button size="small" type="text" className={`canvas-generation-settings-trigger ${buttonClassName || "!h-8 !max-w-[180px] !justify-start !rounded-full !px-2.5"}`} style={{ background: theme.node.fill, color: theme.node.text }} icon={<Settings2 className="size-3.5" />} aria-expanded={open} aria-label={`進階設定：${summary}`} title={`進階設定 · ${summary}`} onClick={() => updateOpen(!open)}>
                     <span className="truncate">{summary}</span>
                 </Button>
             </span>

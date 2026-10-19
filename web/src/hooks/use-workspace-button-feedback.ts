@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-/** 一次点击的触觉式反馈，不表达请求成功，也不接管业务回调或画布事件。 */
+/** 一次點選的觸覺式反饋，不表達請求成功，也不接管業務回撥或畫布事件。 */
 export function useWorkspaceButtonFeedback(enabled: boolean) {
     useEffect(() => {
         if (!enabled) return;

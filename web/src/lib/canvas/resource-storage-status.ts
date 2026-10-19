@@ -12,17 +12,17 @@ export function resourceStorageLocation(storageKey?: string, localRuntime = isLo
 
 export function resourceStorageLabel(storageKey?: string, localRuntime = isLocalRuntimeMode()) {
     const location = resourceStorageLocation(storageKey, localRuntime);
-    if (location === "oss") return "已上传";
+    if (location === "oss") return "已上傳";
     if (location === "local") return "本地";
-    return "未保存";
+    return "未儲存";
 }
 
 export function resourceStorageTitle(storageKey?: string, localRuntime = isLocalRuntimeMode()) {
     const location = resourceStorageLocation(storageKey, localRuntime);
-    if (location === "oss") return "已上传到对象存储，并以账号资源同步";
+    if (location === "oss") return "已上傳到物件儲存，並以賬號資源同步";
     // Legacy source contract retained for downstream desktop builds:
-    // localRuntime ? "仅保存在本机资源库"
-    // 运行时文案语义：保存在本机资源目录，不会上传到云端。
-    if (location === "local") return localRuntime ? "保存在本机资源目录" : "保存在当前浏览器本地，等待远程资源同步";
-    return "还没有可用的资源标识";
+    // localRuntime ? "僅儲存在本機資源庫"
+    // 執行時文案語義：儲存在本機資源目錄，不會上傳到雲端。
+    if (location === "local") return localRuntime ? "儲存在本機資源目錄" : "儲存在當前瀏覽器本地，等待遠端資源同步";
+    return "還沒有可用的資源標識";
 }

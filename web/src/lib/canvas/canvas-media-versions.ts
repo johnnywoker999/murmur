@@ -28,7 +28,7 @@ function snapshotMetadata(metadata: CanvasNodeMetadata | undefined, rootId: stri
     return snapshot;
 }
 
-// 原位生成保留稳定节点 ID，同时把生成前媒体快照放入同一版本族。
+// 原位生成保留穩定節點 ID，同時把生成前媒體快照放入同一版本族。
 export function prepareInPlaceMediaVersion(nodes: CanvasNodeData[], nodeId: string): CanvasNodeData[] {
     const source = nodes.find((node) => node.id === nodeId);
     if (!source?.metadata?.content) return nodes;

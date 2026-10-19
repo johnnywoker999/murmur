@@ -24,8 +24,8 @@ const OUTPUT_NAME = SEGMENT_OUTPUT_NAME;
 function assertValidRange(range: VideoSegmentRange, durationMs?: number) {
     const startMs = Math.max(0, Math.round(range.startMs));
     const endMs = Math.round(range.endMs);
-    if (endMs <= startMs) throw new Error("片段结束时间必须晚于开始时间");
-    if (durationMs !== undefined && endMs > Math.round(durationMs)) throw new Error("片段结束时间超过视频时长");
+    if (endMs <= startMs) throw new Error("片段結束時間必須晚於開始時間");
+    if (durationMs !== undefined && endMs > Math.round(durationMs)) throw new Error("片段結束時間超過影片時長");
 }
 
 async function readVideoSourceBlob(source: VideoSegmentSource) {
@@ -35,10 +35,10 @@ async function readVideoSourceBlob(source: VideoSegmentSource) {
     }
     if (source.url) {
         const response = await fetch(source.url);
-        if (!response.ok) throw new Error(`视频资源请求失败（${response.status}）`);
+        if (!response.ok) throw new Error(`影片資源請求失敗（${response.status}）`);
         return response.blob();
     }
-    throw new Error("找不到视频素材，请重新上传后再操作");
+    throw new Error("找不到影片素材，請重新上傳後再操作");
 }
 
 function leaseProgress(onProgress?: (progress: VideoSegmentProgress) => void) {
@@ -69,7 +69,7 @@ async function runSegmentJob(
         onProgress?.({ phase: "encoding", progress: 55 });
         try {
             const exitCode = await ffmpeg.exec(["-y", ...buildArgs(startSec, durationSec, inputName, resolvedOutput)]);
-            if (exitCode !== 0) throw new Error("媒体处理失败，请确认视频编码格式兼容");
+            if (exitCode !== 0) throw new Error("媒體處理失敗，請確認影片編碼格式相容");
             const output = await ffmpeg.readFile(resolvedOutput);
             assertUsableSegmentOutput(output, outputType.startsWith("audio/") ? "audio" : "video");
             onProgress?.({ phase: "encoding", progress: 100 });
@@ -80,18 +80,18 @@ async function runSegmentJob(
     }, { onProgress: leaseProgress(onProgress) });
 }
 
-/** 按片段范围截取视频，输出统一编码 MP4（复用时间线 trim 的参数模板）。 */
+/** 按片段範圍擷取影片，輸出統一編碼 MP4（複用時間線 trim 的引數模板）。 */
 export async function trimVideoSegment(source: VideoSegmentSource, range: VideoSegmentRange, durationMs?: number, onProgress?: (progress: VideoSegmentProgress) => void) {
     return runSegmentJob(source, range, durationMs, (startSec, durationSec, inputName, outputName) => buildSegmentTrimArgs(startSec, durationSec, inputName, outputName), onProgress, "video/mp4");
 }
 
-/** 从视频中移除音轨，保留画面并输出独立无声视频。 */
+/** 從影片中移除音軌，保留畫面並輸出獨立無聲影片。 */
 export async function removeAudioFromVideo(source: VideoSegmentSource, range: VideoSegmentRange, durationMs?: number, onProgress?: (progress: VideoSegmentProgress) => void) {
     const fullSource = isFullSourceRange(range.startMs, range.endMs, durationMs);
     return runSegmentJob(source, range, durationMs, (startSec, durationSec, inputName, outputName) => buildRemoveAudioArgs(startSec, durationSec, outputName, { fullSource, inputName }), onProgress, "video/mp4", MUTED_VIDEO_OUTPUT_NAME);
 }
 
-/** 从视频片段提取声音；优先 MP3，精简 FFmpeg 内核不支持 MP3 时自动回退 WAV。 */
+/** 從影片片段提取聲音；優先 MP3，精簡 FFmpeg 核心不支援 MP3 時自動回退 WAV。 */
 export async function extractVideoAudio(source: VideoSegmentSource, range: VideoSegmentRange, durationMs?: number, onProgress?: (progress: VideoSegmentProgress) => void) {
     assertValidRange(range, durationMs);
     return withFFmpegLease(async ({ ffmpeg, filePrefix }) => {
@@ -111,13 +111,13 @@ export async function extractVideoAudio(source: VideoSegmentSource, range: Video
             const probeCode = await ffmpeg.ffprobe(["-v", "error", "-select_streams", "a:0", "-show_entries", "stream=index:format=duration", "-of", "json", inputName, "-o", probeName]);
             // The bundled ffprobe writes valid JSON while leaving ret at -1.
             // Validate its output and duration; do not mistake that sentinel for an encoder failure.
-            if (probeCode !== 0 && probeCode !== -1) throw new Error("无法读取视频音轨信息，请检查素材是否完整");
+            if (probeCode !== 0 && probeCode !== -1) throw new Error("無法讀取影片音軌資訊，請檢查素材是否完整");
             const probe = await ffmpeg.readFile(probeName);
             assertVideoAudioProbe(typeof probe === "string" ? probe : new TextDecoder().decode(probe));
             const args = (audioCodec: string, outputName = audioName) => buildExtractAudioArgs(audioCodec, startSec, durationSec, outputName, inputName);
             let outputName = audioName;
             let outputType = "audio/mpeg";
-            // 大多数 MP4 音轨本身就是 AAC；优先直接复制，避免无谓的整段重编码。
+            // 大多數 MP4 音軌本身就是 AAC；優先直接複製，避免無謂的整段重編碼。
             let exitCode = await ffmpeg.exec(["-y", ...buildCopyAudioArgs(startSec, durationSec, audioCopyName, inputName)]);
             if (exitCode === 0) {
                 outputName = audioCopyName;
@@ -126,7 +126,7 @@ export async function extractVideoAudio(source: VideoSegmentSource, range: Video
             if (exitCode !== 0) exitCode = await ffmpeg.exec(["-y", ...args("libmp3lame")]);
             if (exitCode !== 0) exitCode = await ffmpeg.exec(["-y", ...args("mp3")]);
             if (exitCode !== 0) {
-                // 若内核缺少音频编码器，直接复制源音轨到 M4A，避免重编码依赖。
+                // 若核心缺少音訊編碼器，直接複製源音軌到 M4A，避免重編碼依賴。
                 outputName = audioCopyName;
                 outputType = "audio/mp4";
                 exitCode = await ffmpeg.exec(["-y", ...buildCopyAudioArgs(startSec, durationSec, outputName, inputName)]);
@@ -139,7 +139,7 @@ export async function extractVideoAudio(source: VideoSegmentSource, range: Video
                 outputType = "audio/wav";
                 exitCode = await ffmpeg.exec(["-y", ...args("pcm_s16le", outputName)]);
             }
-            if (exitCode !== 0) throw new Error("音频提取失败：当前 FFmpeg 内核不支持可用的音频编码");
+            if (exitCode !== 0) throw new Error("音訊提取失敗：當前 FFmpeg 核心不支援可用的音訊編碼");
             const output = await ffmpeg.readFile(outputName);
             assertUsableSegmentOutput(output, "audio");
             onProgress?.({ phase: "encoding", progress: 100 });
@@ -152,7 +152,7 @@ export async function extractVideoAudio(source: VideoSegmentSource, range: Video
 
 export type VideoCropRect = { x: number; y: number; width: number; height: number };
 
-/** 按源视频像素裁切画面，保留原音轨并输出新视频。 */
+/** 按源影片畫素裁切畫面，保留原音軌並輸出新影片。 */
 export async function cropVideo(source: VideoSegmentSource, crop: VideoCropRect, onProgress?: (progress: VideoSegmentProgress) => void) {
     return withFFmpegLease(async ({ ffmpeg, filePrefix }) => {
         const { fetchFile } = await import("@ffmpeg/util");
@@ -164,7 +164,7 @@ export async function cropVideo(source: VideoSegmentSource, crop: VideoCropRect,
         onProgress?.({ phase: "encoding", progress: 55 });
         try {
             const exitCode = await ffmpeg.exec(["-y", ...buildVideoCropArgs(crop.x, crop.y, crop.width, crop.height, inputName, cropName)]);
-            if (exitCode !== 0) throw new Error("视频画面裁切失败，请确认视频编码格式兼容");
+            if (exitCode !== 0) throw new Error("影片畫面裁切失敗，請確認影片編碼格式相容");
             const output = await ffmpeg.readFile(cropName);
             assertUsableSegmentOutput(output, "video");
             onProgress?.({ phase: "encoding", progress: 100 });

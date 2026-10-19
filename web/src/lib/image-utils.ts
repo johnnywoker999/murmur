@@ -34,7 +34,7 @@ export function readFileAsDataUrl(file: File) {
     return new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(String(reader.result || ""));
-        reader.onerror = () => reject(new Error("读取图片失败"));
+        reader.onerror = () => reject(new Error("讀取圖片失敗"));
         reader.readAsDataURL(file);
     });
 }

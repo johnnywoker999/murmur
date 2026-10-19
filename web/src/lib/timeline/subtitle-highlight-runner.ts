@@ -14,12 +14,12 @@ export interface SubtitleHighlightProgress {
 
 export type SubtitleHighlightRunnerOptions = {
     projectId: string;
-    /** 画布节点 id，用于任务元数据标记来源 */
+    /** 畫布節點 id，用於任務後設資料標記來源 */
     nodeId: string;
     config: AiConfig;
-    /** 每个 batch 的字幕条数。默认 30 */
+    /** 每個 batch 的字幕條數。預設 30 */
     batchSize?: number;
-    /** 同时进行的 batch 数。默认 3；LLM 请求是 I/O 密集型，3-4 并行通常稳定低于 provider 限速 */
+    /** 同時進行的 batch 數。預設 3；LLM 請求是 I/O 密集型，3-4 並行通常穩定低於 provider 限速 */
     concurrency?: number;
     signal?: AbortSignal;
     onProgress?: (progress: SubtitleHighlightProgress) => void;
@@ -34,7 +34,7 @@ export async function generateSubtitleHighlights(entries: SrtEntry[], options: S
     const concurrency = Math.max(1, Math.floor(options.concurrency ?? 3));
     const systemPrompt = buildSubtitleHighlightSystemPrompt();
 
-    // 切批：保留原顺序，每个 batch 独立可并行
+    // 切批：保留原順序，每個 batch 獨立可並行
     const batches: { index: number; entries: SrtEntry[] }[] = [];
     for (let i = 0; i < entries.length; i += batchSize) {
         batches.push({ index: batches.length, entries: entries.slice(i, i + batchSize) });
@@ -51,7 +51,7 @@ export async function generateSubtitleHighlights(entries: SrtEntry[], options: S
         percent: 0,
     });
 
-    // worker 池模式：从共享游标里抢任务，保证 concurrency 个 batch 同时跑
+    // worker 池模式：從共享遊標裡搶任務，保證 concurrency 個 batch 同時跑
     let cursor = 0;
     const firstError: { current: unknown } = { current: null };
 
@@ -94,8 +94,8 @@ export async function generateSubtitleHighlights(entries: SrtEntry[], options: S
         throw new DOMException("Aborted", "AbortError");
     }
     if (firstError.current) {
-        const message = firstError.current instanceof Error ? firstError.current.message : "未知错误";
-        throw new Error(`字幕关键词高亮生成失败：${message}`);
+        const message = firstError.current instanceof Error ? firstError.current.message : "未知錯誤";
+        throw new Error(`字幕關鍵詞高亮生成失敗：${message}`);
     }
 
     return results.flat();

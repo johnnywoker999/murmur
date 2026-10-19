@@ -5,15 +5,15 @@ const ASSET_KINDS: readonly AssetKind[] = ["text", "image", "video", "audio", "m
 const ASSET_STATUSES: readonly AssetStatus[] = ["draft", "review", "confirmed", "archived"];
 
 /**
- * 素材持久化合同的运行时边界。它只接受能被后续业务安全消费的完整记录，绝不通过空 URL、通配 MIME 或零尺寸伪造默认值。
- * 展示层可以隔离历史坏记录，但新增、更新和写回前必须经过这里的严格校验。
+ * 素材持久化合同的執行時邊界。它只接受能被後續業務安全消費的完整記錄，絕不通過空 URL、通配 MIME 或零尺寸偽造預設值。
+ * 展示層可以隔離歷史壞記錄，但新增、更新和寫回前必須經過這裡的嚴格校驗。
  */
 
 export function parseAssetRecord(value: unknown): Asset {
-    if (!isRecord(value)) throw new Error("素材记录不是对象");
+    if (!isRecord(value)) throw new Error("素材記錄不是物件");
     const id = requireTrimmedString(value, "id");
     const kind = requireTrimmedString(value, "kind");
-    if (!ASSET_KINDS.includes(kind as AssetKind)) throw new Error(`不支持的素材类型 ${kind}`);
+    if (!ASSET_KINDS.includes(kind as AssetKind)) throw new Error(`不支援的素材型別 ${kind}`);
     const title = requireString(value, "title");
     const coverUrl = requireString(value, "coverUrl");
     const tags = requireStringArray(value.tags, "tags");
@@ -59,15 +59,15 @@ export function parseAssetRecord(value: unknown): Asset {
             bytes: requireNonNegativeNumber(data, "bytes"),
             mimeType: requireMediaMimeType(data, "image"),
         };
-        requireMediaLocator(parsed.dataUrl, parsed.storageKey, "图片", "dataUrl");
+        requireMediaLocator(parsed.dataUrl, parsed.storageKey, "圖片", "dataUrl");
         return { ...base, kind, data: parsed } satisfies ImageAsset;
     }
     if (kind === "video") {
         const parsed = {
             url: requireString(data, "url"),
             storageKey: optionalString(data, "storageKey"),
-            // 上游视频结果经常不带 width/height。0 表示未知，不是伪造尺寸；
-            // 若按「必须大于 0」拒绝，生成成功的视频会在入库时被判失败。
+            // 上游影片結果經常不帶 width/height。0 表示未知，不是偽造尺寸；
+            // 若按「必須大於 0」拒絕，生成成功的影片會在入庫時被判失敗。
             width: requireNonNegativeNumber(data, "width"),
             height: requireNonNegativeNumber(data, "height"),
             durationMs: optionalNonNegativeNumber(data, "durationMs"),
@@ -75,7 +75,7 @@ export function parseAssetRecord(value: unknown): Asset {
             bytes: requireNonNegativeNumber(data, "bytes"),
             mimeType: requireMediaMimeType(data, "video"),
         };
-        requireMediaLocator(parsed.url, parsed.storageKey, "视频", "url");
+        requireMediaLocator(parsed.url, parsed.storageKey, "影片", "url");
         return { ...base, kind, data: parsed } satisfies VideoAsset;
     }
     if (kind === "audio") {
@@ -86,7 +86,7 @@ export function parseAssetRecord(value: unknown): Asset {
             bytes: requireNonNegativeNumber(data, "bytes"),
             mimeType: requireMediaMimeType(data, "audio"),
         };
-        requireMediaLocator(parsed.url, parsed.storageKey, "音频", "url");
+        requireMediaLocator(parsed.url, parsed.storageKey, "音訊", "url");
         return { ...base, kind, data: parsed } satisfies AudioAsset;
     }
     if (kind === "model") {
@@ -103,17 +103,17 @@ export function parseAssetRecord(value: unknown): Asset {
     if (kind === "entity") {
         return { ...base, kind, data: { definition: requireRecord(data.definition, "definition") } } satisfies EntityAsset;
     }
-    throw new Error(`不支持的素材类型 ${kind}`);
+    throw new Error(`不支援的素材型別 ${kind}`);
 }
 
 export function parseAssetRecordList(values: unknown): Asset[] {
-    if (!Array.isArray(values)) throw new Error("素材列表无效");
+    if (!Array.isArray(values)) throw new Error("素材列表無效");
     return values.map((item, index) => {
         try {
             return parseAssetRecord(item);
         } catch (error) {
             const id = isRecord(item) && typeof item.id === "string" && item.id.trim() ? item.id : `#${index}`;
-            throw new Error(`素材 ${id} 合同无效：${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`素材 ${id} 合同無效：${error instanceof Error ? error.message : String(error)}`);
         }
     });
 }
@@ -126,19 +126,19 @@ function requireMediaLocator(primary: string, storageKey: string | undefined, la
 
 function requireString(record: Record<string, unknown>, key: string): string {
     const value = record[key];
-    if (typeof value !== "string") throw new Error(`素材字段 ${key} 必须是字符串`);
+    if (typeof value !== "string") throw new Error(`素材欄位 ${key} 必須是字串`);
     return value;
 }
 
 function requireTrimmedString(record: Record<string, unknown>, key: string): string {
     const value = requireString(record, key).trim();
-    if (!value) throw new Error(`素材字段 ${key} 不能为空`);
+    if (!value) throw new Error(`素材欄位 ${key} 不能為空`);
     return value;
 }
 
 function optionalString(record: Record<string, unknown>, key: string): string | undefined {
     if (!Object.prototype.hasOwnProperty.call(record, key) || record[key] === undefined) return undefined;
-    if (typeof record[key] !== "string") throw new Error(`素材字段 ${key} 必须是字符串`);
+    if (typeof record[key] !== "string") throw new Error(`素材欄位 ${key} 必須是字串`);
     return record[key] as string;
 }
 
@@ -149,13 +149,13 @@ function optionalTrimmedString(record: Record<string, unknown>, key: string): st
 
 function requireStringArray(value: unknown, key: string): string[] {
     if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
-        throw new Error(`素材字段 ${key} 必须是字符串数组`);
+        throw new Error(`素材欄位 ${key} 必須是字串陣列`);
     }
     return value;
 }
 
 function requireRecord(value: unknown, key: string): Record<string, unknown> {
-    if (!isRecord(value)) throw new Error(`素材字段 ${key} 必须是对象`);
+    if (!isRecord(value)) throw new Error(`素材欄位 ${key} 必須是物件`);
     return value;
 }
 
@@ -167,31 +167,31 @@ function optionalRecord(value: unknown, key: string): Record<string, unknown> | 
 function requireNonNegativeNumber(record: Record<string, unknown>, key: string): number {
     const value = record[key];
     if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
-        throw new Error(`素材字段 ${key} 必须是非负数字`);
+        throw new Error(`素材欄位 ${key} 必須是非負數字`);
     }
     return value;
 }
 
 function requirePositiveNumber(record: Record<string, unknown>, key: string): number {
     const value = requireNonNegativeNumber(record, key);
-    if (value === 0) throw new Error(`素材字段 ${key} 必须大于 0`);
+    if (value === 0) throw new Error(`素材欄位 ${key} 必須大於 0`);
     return value;
 }
 
 function requireConcreteMimeType(record: Record<string, unknown>): string {
     const mimeType = requireTrimmedString(record, "mimeType").toLowerCase();
     if (!/^[a-z0-9!#$&^_.+-]+\/[a-z0-9!#$&^_.+-]+$/.test(mimeType) || mimeType.endsWith("/*")) {
-        throw new Error("素材字段 mimeType 必须是具体 MIME 类型");
+        throw new Error("素材欄位 mimeType 必須是具體 MIME 型別");
     }
     return mimeType;
 }
 
 function requireMediaMimeType(record: Record<string, unknown>, kind: "image" | "video" | "audio"): string {
     const mimeType = requireConcreteMimeType(record);
-    // application/octet-stream 是诚实的“类型未知”；除此之外必须与素材种类一致，
-    // 防止图片记录携带 audio/* 等跨类型元数据后在下载、转码阶段才暴露错误。
+    // application/octet-stream 是誠實的“型別未知”；除此之外必須與素材種類一致，
+    // 防止圖片記錄攜帶 audio/* 等跨型別後設資料後在下載、轉碼階段才暴露錯誤。
     if (mimeType !== "application/octet-stream" && !mimeType.startsWith(`${kind}/`)) {
-        throw new Error(`素材字段 mimeType 与 ${kind} 类型不匹配`);
+        throw new Error(`素材欄位 mimeType 與 ${kind} 型別不匹配`);
     }
     return mimeType;
 }
@@ -203,14 +203,14 @@ function optionalNonNegativeNumber(record: Record<string, unknown>, key: string)
 
 function optionalBoolean(record: Record<string, unknown>, key: string): boolean | undefined {
     if (!Object.prototype.hasOwnProperty.call(record, key) || record[key] === undefined) return undefined;
-    if (typeof record[key] !== "boolean") throw new Error(`素材字段 ${key} 必须是布尔值`);
+    if (typeof record[key] !== "boolean") throw new Error(`素材欄位 ${key} 必須是布林值`);
     return record[key] as boolean;
 }
 
 function optionalAssetStatus(value: unknown): AssetStatus | undefined {
     if (value === undefined) return undefined;
     if (typeof value !== "string" || !ASSET_STATUSES.includes(value as AssetStatus)) {
-        throw new Error("素材 status 无效");
+        throw new Error("素材 status 無效");
     }
     return value as AssetStatus;
 }

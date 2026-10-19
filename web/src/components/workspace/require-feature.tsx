@@ -9,10 +9,10 @@ import { useUserStore } from "@/stores/use-user-store";
 type FeatureKey = "shortDramaEnabled" | "taskCenterEnabled" | "frontendModelsEnabled" | "pluginCenterEnabled";
 
 const featureNames: Record<FeatureKey, string> = {
-    shortDramaEnabled: "短剧创作",
-    taskCenterEnabled: "任务中心",
-    frontendModelsEnabled: "前台模型",
-    pluginCenterEnabled: "插件中心",
+    shortDramaEnabled: "短劇創作",
+    taskCenterEnabled: "任務中心",
+    frontendModelsEnabled: "前臺模型",
+    pluginCenterEnabled: "外掛中心",
 };
 
 export function RequireFeature({ feature, children }: { feature: FeatureKey; children: ReactNode }) {
@@ -23,7 +23,7 @@ export function RequireFeature({ feature, children }: { feature: FeatureKey; chi
 
         return (
             <WorkspacePage>
-                <WorkspaceState icon="empty" title={`${featureNames[feature]}暂不可用`} description="当前本地工作区未启用此模块。" action={<Button type="primary" onClick={() => navigate("/", { replace: true })}>返回创作台</Button>} />
+                <WorkspaceState icon="empty" title={`${featureNames[feature]}暫不可用`} description="當前本地工作區未啟用此模組。" action={<Button type="primary" onClick={() => navigate("/", { replace: true })}>返回創作臺</Button>} />
             </WorkspacePage>
         );
     }

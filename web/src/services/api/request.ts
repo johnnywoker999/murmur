@@ -13,8 +13,8 @@ export type BackendEnvelope<T> = {
 };
 
 /**
- * 业务错误的统一载体：HTTP 200 只代表传输完成，code/reason 才决定业务是否成功。
- * 调用方应依赖机器可读字段做分支，message 仅用于向用户展示，避免把后端文案当协议解析。
+ * 業務錯誤的統一載體：HTTP 200 只代表傳輸完成，code/reason 才決定業務是否成功。
+ * 呼叫方應依賴機器可讀欄位做分支，message 僅用於向用戶展示，避免把後端文案當協議解析。
  */
 
 export class ApiError extends Error {
@@ -47,10 +47,10 @@ export function getTransportFailureKind(error: unknown): "timeout" | "network" |
     return cause.code === "ECONNABORTED" || cause.code === "ETIMEDOUT" ? "timeout" : "network";
 }
 
-// 所有后端 JSON 请求共用同一实例，避免认证、Base URL 和错误语义在模块间漂移。
+// 所有後端 JSON 請求共用同一例項，避免認證、Base URL 和錯誤語義在模組間漂移。
 export let apiBaseURL = import.meta.env.VITE_CANVAS_BACKEND_URL || "/api";
-// 本地预览和桌面模式都必须在后端暂不可用时尽快降级到本地工作区；
-// 没有超时会让启动水合一直停留在 loading，Playwright 和用户都看不到页面。
+// 本地預覽和桌面模式都必須在後端暫不可用時儘快降級到本地工作區；
+// 沒有超時會讓啟動水合一直停留在 loading，Playwright 和使用者都看不到頁面。
 export const apiClient = axios.create({ baseURL: apiBaseURL, withCredentials: true, timeout: 4_000 });
 
 export function configureApiRuntime(baseURL: string, launchToken: string, uiBootstrapToken?: string) {
@@ -62,15 +62,15 @@ export function configureApiRuntime(baseURL: string, launchToken: string, uiBoot
 }
 
 /**
- * 解包后端业务信封的唯一边界。这里把非零业务 code 转成 ApiError，保留 reason、重试语义和 Retry-After；
- * 取消请求必须继续抛出 AbortError，不能被包装成普通失败，否则页面切换会被误报为错误。
+ * 解包後端業務信封的唯一邊界。這裡把非零業務 code 轉成 ApiError，保留 reason、重試語義和 Retry-After；
+ * 取消請求必須繼續丟擲 AbortError，不能被包裝成普通失敗，否則頁面切換會被誤報為錯誤。
  */
 
 export async function request<T>(promise: Promise<{ data: BackendEnvelope<T>; status?: number; headers?: unknown }>) {
     try {
         const response = await promise;
         if (response.data.code !== 0) {
-            throw new ApiError(response.data.msg || "请求失败", {
+            throw new ApiError(response.data.msg || "請求失敗", {
                 status: response.status,
                 code: response.data.code,
                 reason: response.data.reason,
@@ -91,7 +91,7 @@ function unwrapTransportError(error: unknown): never {
         throw error;
     }
     if (axios.isCancel(error) || (axios.isAxiosError(error) && error.code === axios.AxiosError.ERR_CANCELED)) {
-        throw new DOMException("请求已取消", "AbortError");
+        throw new DOMException("請求已取消", "AbortError");
     }
     if (axios.isAxiosError<BackendEnvelope<unknown>>(error)) {
         const status = error.response?.status;
@@ -120,13 +120,13 @@ function responseRequestId(headers: unknown): string | undefined {
 function transportFailureMessage(status?: number, fallback?: string) {
     switch (status) {
         case 502:
-            return "后端服务暂时不可用，请稍后重试";
+            return "後端服務暫時不可用，請稍後重試";
         case 503:
-            return "服务暂时不可用，请稍后重试";
+            return "服務暫時不可用，請稍後重試";
         case 504:
-            return "服务响应超时，请稍后重试";
+            return "服務響應超時，請稍後重試";
         default:
-            return fallback || "请求失败";
+            return fallback || "請求失敗";
     }
 }
 
@@ -170,8 +170,8 @@ async function send<T>(method: string, url: string, data?: unknown, config?: Htt
 }
 
 /**
- * 业务 JSON 的唯一调用入口。模块不要再写 `request(apiClient.get(...))`，也不要再 `axios.create`。
- * 拦截器仍挂在 `apiClient` 上；流式 fetch、媒体 blob 和渠道中转走各自边界。
+ * 業務 JSON 的唯一呼叫入口。模組不要再寫 `request(apiClient.get(...))`，也不要再 `axios.create`。
+ * 攔截器仍掛在 `apiClient` 上；流式 fetch、媒體 blob 和渠道中轉走各自邊界。
  */
 export const http = {
     get: <T>(url: string, config?: HttpRequestConfig) => send<T>("get", url, undefined, config),

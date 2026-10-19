@@ -16,15 +16,15 @@ export async function createVideoGenerationsTask(deps: VideoProviderDeps, config
     const profile = modelCapabilityConfigFor(config, model).video!;
     const contract = isBeefAPIEndpoint(config.baseUrl) ? beefAPIVideoContract(modelOptionName(model)) : undefined;
     if (contract?.maxReferences) {
-        for (const [label, count, limit] of [["图片", references.length, contract.maxReferences.image], ["视频", videoReferences.length, contract.maxReferences.video], ["音频", audioReferences.length, contract.maxReferences.audio]] as const) {
-            if (limit !== undefined && count > limit) throw new Error(limit === 0 ? `当前模型暂不支持参考${label}，请移除此素材或选择支持该素材的模型` : `当前模型最多支持 ${limit} 个参考${label}，请移除多余素材后重新生成`);
+        for (const [label, count, limit] of [["圖片", references.length, contract.maxReferences.image], ["影片", videoReferences.length, contract.maxReferences.video], ["音訊", audioReferences.length, contract.maxReferences.audio]] as const) {
+            if (limit !== undefined && count > limit) throw new Error(limit === 0 ? `當前模型暫不支援參考${label}，請移除此素材或選擇支援該素材的模型` : `當前模型最多支援 ${limit} 個參考${label}，請移除多餘素材後重新生成`);
         }
     }
     const inline = contract?.inlineMedia === true && contract.protocol === config.interfaceType;
-    if (references.length > profile.references.maxImages) throw new Error(`当前视频模型最多支持 ${profile.references.maxImages} 张参考图`);
-    if (videoReferences.length > profile.references.maxVideos) throw new Error(`当前视频模型最多支持 ${profile.references.maxVideos} 个参考视频`);
-    if (audioReferences.length > profile.references.maxAudios) throw new Error(`当前视频模型最多支持 ${profile.references.maxAudios} 段参考音频`);
-    if (audioReferences.length > 0 && videoReferences.length === 0 && !profile.operations.includes("audio_to_video")) throw new Error("NewAPI Video Generations 的参考音频必须同时提供至少 1 个参考视频；纯音频生视频请切换到支持该模式的渠道");
+    if (references.length > profile.references.maxImages) throw new Error(`當前影片模型最多支援 ${profile.references.maxImages} 張參考圖`);
+    if (videoReferences.length > profile.references.maxVideos) throw new Error(`當前影片模型最多支援 ${profile.references.maxVideos} 個參考影片`);
+    if (audioReferences.length > profile.references.maxAudios) throw new Error(`當前影片模型最多支援 ${profile.references.maxAudios} 段參考音訊`);
+    if (audioReferences.length > 0 && videoReferences.length === 0 && !profile.operations.includes("audio_to_video")) throw new Error("NewAPI Video Generations 的參考音訊必須同時提供至少 1 個參考影片；純音訊生影片請切換到支援該模式的渠道");
     const [imageUrls, videoUrls, audioUrls] = await Promise.all([
         Promise.all(references.map((item) => resolveVideoGenerationsUrl(inline ? item.dataUrl || item.url : item.url || item.dataUrl, item.storageKey, inline, profile.references.maxImageBytes))),
         Promise.all(videoReferences.map((item) => resolveVideoGenerationsUrl(item.url, item.storageKey, inline))),
@@ -34,7 +34,7 @@ export async function createVideoGenerationsTask(deps: VideoProviderDeps, config
     const h3 = contract !== undefined && isH3Model(model);
     const h3Media = h3 ? h3MediaPayload(model,[...imageUrls.map((url,i)=>({id:references[i]!.id,type:"image" as const,url})),...videoUrls.map((url,i)=>({id:videoReferences[i]!.id,type:"video" as const,url})),...audioUrls.map((url,i)=>({id:audioReferences[i]!.id,type:"audio" as const,url}))],options,Number(h3Duration(model,config.videoSeconds)),resolution) : undefined;
     const h3Ratio = config.size.trim() || (h3Media?.referenceMode ? "adaptive" : "16:9");
-    if (h3 && !h3Media?.referenceMode && !h3Media?.frameMode && h3Ratio==="adaptive") throw new Error("自适应比例仅支持参考生成，请选择固定比例");
+    if (h3 && !h3Media?.referenceMode && !h3Media?.frameMode && h3Ratio==="adaptive") throw new Error("自適應比例僅支援參考生成，請選擇固定比例");
     const payload = {
         model: modelOptionName(model),
         prompt: prompt.trim(),
@@ -54,10 +54,10 @@ export async function createVideoGenerationsTask(deps: VideoProviderDeps, config
         const raw = await deps.transport.post<ApiVideoResponse>(deps.transport.apiUrl(isApiMartVideoConfig(config) ? "/videos/generations" : "/video/generations"), payload, options);
         const created = isApiMartVideoConfig(config) ? unwrapApiMartCreate(raw) : deps.response.unwrapVideoResponse(raw);
         const id = deps.response.videoTaskId(created);
-        if (!id) throw new Error("NewAPI Video Generations 没有返回任务 ID");
+        if (!id) throw new Error("NewAPI Video Generations 沒有返回任務 ID");
         return { id, provider: "video-generations", model };
     } catch (error) {
-        throw new Error(deps.response.readAxiosError(error, "NewAPI Video Generations 任务创建失败"));
+        throw new Error(deps.response.readAxiosError(error, "NewAPI Video Generations 任務建立失敗"));
     }
 }
 
@@ -68,13 +68,13 @@ export async function pollVideoGenerationsTask(deps: VideoProviderDeps, config: 
         const status = String(state.status || "").toUpperCase();
         if (status === "SUCCESS" || status === "SUCCEEDED" || status === "COMPLETED") {
             const url = videoResultUrl(state);
-            if (!url) return { status: "failed", error: "视频任务已完成但没有返回视频地址" };
+            if (!url) return { status: "failed", error: "影片任務已完成但沒有返回影片地址" };
             return { status: "completed", result: await deps.response.videoResultFromUrl(url, options) };
         }
-        if (status === "FAILURE" || status === "FAILED" || status === "CANCELLED") return { status: "failed", error: String(state.fail_reason || state.error || "视频生成失败") };
+        if (status === "FAILURE" || status === "FAILED" || status === "CANCELLED") return { status: "failed", error: String(state.fail_reason || state.error || "影片生成失敗") };
         return { status: "pending" };
     } catch (error) {
-        throw new Error(deps.response.readAxiosError(error, "NewAPI Video Generations 任务查询失败"));
+        throw new Error(deps.response.readAxiosError(error, "NewAPI Video Generations 任務查詢失敗"));
     }
 }
 
@@ -95,7 +95,7 @@ function videoResultUrl(state: Record<string, unknown>) {
 function unwrapApiMartCreate(payload: unknown): { task_id?: string; id?: string } {
     const data = payload && typeof payload === "object" ? (payload as { data?: unknown }).data : undefined;
     const item = Array.isArray(data) ? data[0] : data;
-    if (!item || typeof item !== "object") throw new Error("APIMart 没有返回视频任务");
+    if (!item || typeof item !== "object") throw new Error("APIMart 沒有返回影片任務");
     return item as { task_id?: string; id?: string };
 }
 
@@ -107,17 +107,17 @@ function newAPIVideoResolutionRequest(profile: NonNullable<ReturnType<typeof mod
 async function resolveVideoGenerationsUrl(value: string | undefined, storageKey?: string, inline = false, maxBytes = 0) {
     if (inline && storageKey?.startsWith("resource:")) {
         const blob = await getResourceBlob(storageKey);
-        if (!blob) throw new Error("参考素材无法读取，请重新导入后重试");
-        if (maxBytes > 0 && blob.size > maxBytes) throw new Error("参考图片超过当前模型的大小限制，请压缩后重新导入");
+        if (!blob) throw new Error("參考素材無法讀取，請重新匯入後重試");
+        if (maxBytes > 0 && blob.size > maxBytes) throw new Error("參考圖片超過當前模型的大小限制，請壓縮後重新匯入");
         return blobToDataUrl(blob);
     }
     if (inline && value?.startsWith("data:")) {
-        if (maxBytes > 0 && value.length > Math.ceil(maxBytes / 3) * 4 + 256) throw new Error("参考图片超过当前模型的大小限制，请压缩后重新导入");
+        if (maxBytes > 0 && value.length > Math.ceil(maxBytes / 3) * 4 + 256) throw new Error("參考圖片超過當前模型的大小限制，請壓縮後重新匯入");
         return value;
     }
     if (storageKey?.startsWith("resource:")) return getResourceOSSUrl(storageKey);
     if (isPublicMediaUrl(value || "")) return String(value);
-    throw new Error("NewAPI Video Generations 的参考素材需要公网 URL；本地素材不能直接发送到该渠道，请改用支持本地素材的渠道或提供公网素材地址");
+    throw new Error("NewAPI Video Generations 的參考素材需要公網 URL；本地素材不能直接傳送到該渠道，請改用支援本地素材的渠道或提供公網素材地址");
 }
 
 function isPublicMediaUrl(value: string) {

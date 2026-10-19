@@ -179,8 +179,8 @@ export function CanvasAssetTray({ libraryAssets, canvasImages, showLibrary = tru
     const dockItems: FloatingDockEntry[] = [
         {
             id: "asset-tray-toggle",
-            label: open ? "收起素材空间" : `打开素材空间，共 ${(showLibrary ? libraryAssets.length : 0) + canvasImages.length} 项`,
-            displayLabel: libtvReadonlyDense ? "" : "资产管理",
+            label: open ? "收起素材空間" : `開啟素材空間，共 ${(showLibrary ? libraryAssets.length : 0) + canvasImages.length} 項`,
+            displayLabel: libtvReadonlyDense ? "" : "資產管理",
             icon: libtvReadonlyDense ? <CircleUserRound /> : <span className="relative"><Images /><span className="absolute -right-1.5 -top-1.5 min-w-3 rounded-full px-0.5 text-center text-[var(--fs-nano)] font-bold leading-3" style={{ background: theme.accent.primary, color: theme.accent.onPrimary }}>{(showLibrary ? libraryAssets.length : 0) + canvasImages.length}</span></span>,
             active: open,
             onClick: () => {
@@ -204,25 +204,25 @@ export function CanvasAssetTray({ libraryAssets, canvasImages, showLibrary = tru
                         className="canvas-asset-tray-panel aceternity-floating-panel absolute bottom-[var(--canvas-dock-popover-offset)] left-0 flex w-[min(88vw,312px)] origin-bottom-left flex-col overflow-hidden rounded-[var(--r-2xl)] p-2.5 backdrop-blur-2xl"
                         style={{ background: theme.spatial.elevated, color: theme.node.text, height: safeTrayHeight, minHeight: Math.min(TRAY_MIN_HEIGHT, getMaxTrayHeight()), maxHeight: "calc(100vh - 6rem)", boxShadow: `0 32px 100px ${theme.spatial.shadow}` }}
                     >
-                        <button type="button" className="canvas-asset-tray-resize-handle absolute left-1/2 top-1 z-10 flex h-5 w-28 -translate-x-1/2 items-center justify-center rounded-full opacity-35 transition-opacity hover:opacity-75" onPointerDown={startResize} aria-label="从顶部调整素材托盘高度" title="拖动调整高度">
+                        <button type="button" className="canvas-asset-tray-resize-handle absolute left-1/2 top-1 z-10 flex h-5 w-28 -translate-x-1/2 items-center justify-center rounded-full opacity-35 transition-opacity hover:opacity-75" onPointerDown={startResize} aria-label="從頂部調整素材托盤高度" title="拖動調整高度">
                             <span className="h-1 w-12 rounded-full bg-current" />
                         </button>
 
                         <div className="flex justify-end px-1 pb-2.5 pt-1.5">
-                            <motion.button type="button" whileHover={motionEnabled ? { rotate: -5, scale: 1.05 } : undefined} whileTap={motionEnabled ? { scale: 0.92 } : undefined} className="grid size-7 shrink-0 place-items-center rounded-full outline-none focus-visible:ring-2" style={{ background: theme.spatial.surface, color: theme.node.muted }} onClick={() => setOpen(false)} aria-label="收起素材空间">
+                            <motion.button type="button" whileHover={motionEnabled ? { rotate: -5, scale: 1.05 } : undefined} whileTap={motionEnabled ? { scale: 0.92 } : undefined} className="grid size-7 shrink-0 place-items-center rounded-full outline-none focus-visible:ring-2" style={{ background: theme.spatial.surface, color: theme.node.muted }} onClick={() => setOpen(false)} aria-label="收起素材空間">
                                 <ChevronDown className="size-4" />
                             </motion.button>
                         </div>
 
                         <div className={cn("relative grid gap-1 rounded-[var(--r-lg)] p-0.5", showLibrary ? "grid-cols-2" : "grid-cols-1")} style={{ background: theme.spatial.surface }}>
-                            {showLibrary ? <TrayTabButton active={tab === "library"} label={`个人资产库 ${libraryAssets.length}`} theme={theme} onClick={() => setTab("library")} /> : null}
-                            <TrayTabButton active={tab === "canvas"} label={`当前画布 ${canvasImages.length}`} theme={theme} onClick={() => setTab("canvas")} />
+                            {showLibrary ? <TrayTabButton active={tab === "library"} label={`個人資產庫 ${libraryAssets.length}`} theme={theme} onClick={() => setTab("library")} /> : null}
+                            <TrayTabButton active={tab === "canvas"} label={`當前畫布 ${canvasImages.length}`} theme={theme} onClick={() => setTab("canvas")} />
                         </div>
 
                         <label className="mt-2 flex h-8 items-center gap-1.5 rounded-[11px] px-2.5 focus-within:ring-2" style={{ background: theme.spatial.surface }}>
                             <Search className="size-3.5 shrink-0" style={{ color: theme.node.muted }} />
-                            <input type="search" value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="搜索资产..." className="min-w-0 flex-1 bg-transparent text-[var(--fs-tiny)] outline-none placeholder:opacity-55" aria-label="搜索资产" />
-                            {keyword ? <button type="button" className="grid size-6 shrink-0 place-items-center rounded-full opacity-55 hover:opacity-100" onClick={() => setKeyword("")} aria-label="清空搜索"><X className="size-3" /></button> : null}
+                            <input type="search" value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="搜尋資產..." className="min-w-0 flex-1 bg-transparent text-[var(--fs-tiny)] outline-none placeholder:opacity-55" aria-label="搜尋資產" />
+                            {keyword ? <button type="button" className="grid size-6 shrink-0 place-items-center rounded-full opacity-55 hover:opacity-100" onClick={() => setKeyword("")} aria-label="清空搜尋"><X className="size-3" /></button> : null}
                         </label>
 
                         <div className="thin-scrollbar mt-2.5 min-h-0 flex-1 overflow-x-hidden overflow-y-auto pr-1">
@@ -234,7 +234,7 @@ export function CanvasAssetTray({ libraryAssets, canvasImages, showLibrary = tru
                                         ))}
                                     </div>
                                 ) : (
-                                    <TrayEmpty text="没有匹配的资产" theme={theme} />
+                                    <TrayEmpty text="沒有匹配的資產" theme={theme} />
                                 )
                             ) : filteredNodes.length ? (
                                 <div className="space-y-1.5">
@@ -243,7 +243,7 @@ export function CanvasAssetTray({ libraryAssets, canvasImages, showLibrary = tru
                                     ))}
                                 </div>
                             ) : (
-                                <TrayEmpty text="当前画布没有匹配图片" theme={theme} />
+                                <TrayEmpty text="當前畫布沒有匹配圖片" theme={theme} />
                             )}
                         </div>
 
@@ -261,7 +261,7 @@ export function CanvasAssetTray({ libraryAssets, canvasImages, showLibrary = tru
                     flex: "0 0 auto",
                     ...(desktopDockLabels ? { background: "transparent", borderColor: "transparent", boxShadow: "none" } : {}),
                 }}
-                ariaLabel="素材空间"
+                ariaLabel="素材空間"
                 showLabels={libtvReadonlyDense ? false : desktopDockLabels}
                 embedded={libtvReadonlyDense ? false : desktopDockLabels}
             />
@@ -286,7 +286,7 @@ function AssetTrayRow({ title, imageUrl, storageKey, asset, insertable = false, 
         <motion.button
             type="button"
             data-canvas-asset-row
-            aria-label={`${title}，${active ? "当前已选择" : draggable ? "拖入画布或点击插入" : insertable ? "点击插入画布" : "点击定位到画布"}`}
+            aria-label={`${title}，${active ? "當前已選擇" : draggable ? "拖入畫布或點選插入" : insertable ? "點選插入畫布" : "點選定位到畫布"}`}
             draggable={draggable}
             whileHover={motionEnabled ? { x: 4, scale: 1.008 } : undefined}
             whileTap={motionEnabled ? { scale: 0.985 } : undefined}
@@ -317,5 +317,5 @@ function TrayEmpty({ text, theme }: { text: string; theme: CanvasTheme }) {
 
 function canvasImageTitle(node: CanvasNodeData) {
     if (node.type !== CanvasNodeType.Image) return node.title;
-    return node.title || node.metadata?.prompt || "图片节点";
+    return node.title || node.metadata?.prompt || "圖片節點";
 }

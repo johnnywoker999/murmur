@@ -39,7 +39,7 @@ function isAbortLike(error: unknown, signal?: AbortSignal): boolean {
 
 async function defaultSpawn(onProgress?: (progress: CanvasFFmpegProgress) => void): Promise<FFmpegInstance> {
     if (typeof __BEEFTV_HEAVY_MEDIA_ENABLED__ !== "undefined" && !__BEEFTV_HEAVY_MEDIA_ENABLED__) {
-        throw new Error("精简版未包含 FFmpeg 本地媒体工具；请安装完整媒体包或使用模型生成与原素材编排");
+        throw new Error("精簡版未包含 FFmpeg 本地媒體工具；請安裝完整媒體包或使用模型生成與原素材編排");
     }
     const [{ FFmpeg }, { default: ffmpegCoreURL }, { default: ffmpegWasmURL }] = await Promise.all([
         import("@ffmpeg/ffmpeg"),
@@ -52,7 +52,7 @@ async function defaultSpawn(onProgress?: (progress: CanvasFFmpegProgress) => voi
         await ffmpeg.load({ coreURL: ffmpegCoreURL, wasmURL: ffmpegWasmURL });
     } catch (cause) {
         ffmpeg.terminate();
-        throw new Error("视频合并工具加载失败，请刷新页面后重试", { cause });
+        throw new Error("影片合併工具載入失敗，請重新整理頁面後重試", { cause });
     }
     return ffmpeg;
 }

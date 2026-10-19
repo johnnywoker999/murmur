@@ -3,12 +3,12 @@ import type { DirectorObject, DirectorVec3 } from "../../../types/director";
 export type DirectorFootprint = { width: number; depth: number };
 export type DirectorPlacementCandidate = { footprint: DirectorFootprint; position: DirectorVec3 };
 
-/** 摆放最小间隙，保证新对象与既有对象之间肉眼可分。 */
+/** 擺放最小間隙，保證新物件與既有物件之間肉眼可分。 */
 export const DIRECTOR_PLACEMENT_MARGIN = 0.25;
 const SEARCH_STEP = 0.75;
 const MAX_RINGS = 24;
 const SAMPLES_PER_RING = 12;
-// 模型导入后被 normalizeModel 缩放到最大边 2，未知尺寸时按此保守占位。
+// 模型匯入後被 normalizeModel 縮放到最大邊 2，未知尺寸時按此保守佔位。
 const MODEL_FOOTPRINT = 2;
 const GRID_STEP = 0.5;
 
@@ -31,7 +31,7 @@ function baseFootprint(object: Pick<DirectorObject, "kind" | "primitive">): Dire
     return { width: 1, depth: 1 };
 }
 
-/** XZ 平面占位：只用 scale 的 x/z，取绝对值以容忍负缩放；不参与 Y 判断。 */
+/** XZ 平面佔位：只用 scale 的 x/z，取絕對值以容忍負縮放；不參與 Y 判斷。 */
 export function directorObjectFootprint(object: Pick<DirectorObject, "kind" | "primitive" | "transform">): DirectorFootprint {
     const base = baseFootprint(object);
     const scaleX = Math.abs(object.transform?.scale?.[0] ?? 1);
@@ -48,7 +48,7 @@ function overlaps(a: DirectorPlacementCandidate, b: DirectorPlacementCandidate, 
     return Math.abs(a.position[0] - b.position[0]) < halfX && Math.abs(a.position[2] - b.position[2]) < halfZ;
 }
 
-/** 确定性 ring 采样：先原位，再逐环外扩；索引顺序固定，便于测试与复现。 */
+/** 確定性 ring 取樣：先原位，再逐環外擴；索引順序固定，便於測試與復現。 */
 function candidateOffsets() {
     const offsets: Array<[number, number]> = [[0, 0]];
     for (let ring = 1; ring <= MAX_RINGS; ring += 1) {
@@ -62,10 +62,10 @@ function candidateOffsets() {
 }
 
 /**
- * 为新对象求不与任何既有对象 XZ 占位相交的位置。
- * 只改 X/Z，保留调用方给定的 Y（actor/model 的地面 y、primitive 的 0.5、billboard 的 1.1）。
- * 隐藏对象同样占位；ring 采样耗尽时回退到「所有占位最右边界之外」的确定性位置，
- * 该位置在有限 existing 集合下必然不与任何 AABB 相交。
+ * 為新物件求不與任何既有物件 XZ 佔位相交的位置。
+ * 只改 X/Z，保留呼叫方給定的 Y（actor/model 的地面 y、primitive 的 0.5、billboard 的 1.1）。
+ * 隱藏物件同樣佔位；ring 取樣耗盡時回退到「所有佔位最右邊界之外」的確定性位置，
+ * 該位置在有限 existing 集合下必然不與任何 AABB 相交。
  */
 export function resolveDirectorPlacement(input: { object: Pick<DirectorObject, "kind" | "primitive" | "transform">; existing: Array<Pick<DirectorObject, "kind" | "primitive" | "transform">>; margin?: number; gridSnap?: boolean }): DirectorVec3 {
     const { object, existing } = input;
@@ -90,22 +90,22 @@ export function resolveDirectorPlacement(input: { object: Pick<DirectorObject, "
 }
 
 /**
- * 取所有占位的最右边界，再让新对象整体位于其右侧。
- * 因为 |dx| >= halfX + margin 恒成立，overlaps 的 X 条件必然为假，故一定不相交。
+ * 取所有佔位的最右邊界，再讓新物件整體位於其右側。
+ * 因為 |dx| >= halfX + margin 恆成立，overlaps 的 X 條件必然為假，故一定不相交。
  */
 function clearRightOfAll(occupied: DirectorPlacementCandidate[], footprint: DirectorFootprint, margin: number, originX: number) {
     const maxRight = occupied.reduce((rightmost, item) => Math.max(rightmost, item.position[0] + item.footprint.width / 2), Number.NEGATIVE_INFINITY);
     if (!Number.isFinite(maxRight)) return originX;
-    // 额外加一个 margin 抵消浮点误差，保证严格大于 overlaps 的阈值。
+    // 額外加一個 margin 抵消浮點誤差，保證嚴格大於 overlaps 的閾值。
     return maxRight + footprint.width / 2 + margin * 2;
 }
 
-/** 地面锚点：只有 XZ，Y 恒由构造器决定，绝不从这里流入。 */
+/** 地面錨點：只有 XZ，Y 恆由建構子決定，絕不從這裡流入。 */
 export type DirectorGroundPoint = { x: number; z: number };
 
 /**
- * 新增对象时的空间意图。两个来源都可能缺失（尚未移动过 pointer、上下文不可用）。
- * 顺序固定：pointer > orbit target > 对象自身默认 XZ。
+ * 新增物件時的空間意圖。兩個來源都可能缺失（尚未移動過 pointer、上下文不可用）。
+ * 順序固定：pointer > orbit target > 物件自身預設 XZ。
  */
 export type DirectorPlacementIntent = {
     pointer: DirectorGroundPoint | null;
@@ -115,8 +115,8 @@ export type DirectorPlacementIntent = {
 export const emptyDirectorPlacementIntent: DirectorPlacementIntent = { pointer: null, orbitTarget: null };
 
 /**
- * 归一化任意数值来源为合法地面点：非有限（NaN / ±Infinity）一律判为不可用。
- * 射线与地面平行、相机在平面内、上下文半失效时都会产出这类值，必须在入口挡掉。
+ * 歸一化任意數值來源為合法地面點：非有限（NaN / ±Infinity）一律判為不可用。
+ * 射線與地面平行、相機在平面內、上下文半失效時都會產出這類值，必須在入口擋掉。
  */
 export function finiteDirectorGroundPoint(x: unknown, z: unknown): DirectorGroundPoint | null {
     if (typeof x !== "number" || typeof z !== "number") return null;
@@ -125,13 +125,13 @@ export function finiteDirectorGroundPoint(x: unknown, z: unknown): DirectorGroun
 }
 
 /**
- * 按固定优先级选出锚点 XZ，并严格保留 fallback 的 Y。
- * fallback 来自构造器（primitive 0.5 / actor 0 / model 0 / billboard 1.1），
- * 因此「贴地对象不悬空、billboard 不落地」这一语义只依赖构造器，不受指针高度影响。
+ * 按固定優先順序選出錨點 XZ，並嚴格保留 fallback 的 Y。
+ * fallback 來自建構子（primitive 0.5 / actor 0 / model 0 / billboard 1.1），
+ * 因此「貼地物件不懸空、billboard 不落地」這一語義只依賴建構子，不受指標高度影響。
  *
- * 两个来源都在选择时重新归一化：intent 可能携带结构完整但数值非法的点
- * （NaN / ±Infinity）。若只用 `??` 判空，非法 pointer 会遮蔽合法 orbitTarget，
- * 两者都非法时也无法可靠回退 fallback。
+ * 兩個來源都在選擇時重新歸一化：intent 可能攜帶結構完整但數值非法的點
+ * （NaN / ±Infinity）。若只用 `??` 判空，非法 pointer 會遮蔽合法 orbitTarget，
+ * 兩者都非法時也無法可靠回退 fallback。
  */
 export function resolveDirectorPlacementAnchor(input: { intent: DirectorPlacementIntent | null; fallback: DirectorVec3 }): DirectorVec3 {
     const { intent, fallback } = input;

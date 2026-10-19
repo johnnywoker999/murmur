@@ -15,10 +15,10 @@ export const EDITOR_SHELL_PLUGIN_ID = "editor-shell";
 const manifest: PluginManifestV2 = {
     apiVersion: "beeftv.plugin/v2",
     id: EDITOR_SHELL_PLUGIN_ID,
-    name: "剪辑工作台",
+    name: "剪輯工作臺",
     version: "0.1.0",
-    description: "注册时间线、预览、检查器、素材、字幕、转写、导出和 AI 编辑八个工作台插槽。",
-    author: "MURMUR AI 团队",
+    description: "註冊時間線、預覽、檢查器、素材、字幕、轉寫、匯出和 AI 編輯八個工作臺插槽。",
+    author: "MURMUR AI 團隊",
     surfaces: ["fullscreen"],
     permissions: ["timeline.read", "timeline.command", "export.run"],
     trusted: true,

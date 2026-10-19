@@ -67,14 +67,14 @@ export function canvasMediaNodeOrigin(node: CanvasNodeData | null | undefined): 
 export function canvasMediaNodeSemanticLabel(node: CanvasNodeData | null | undefined): string | null {
     const role = canvasMediaNodeRole(node);
     if (!role) return null;
-    if (role === "generator") return "生成节点";
+    if (role === "generator") return "生成節點";
     const origin = canvasMediaNodeOrigin(node);
-    if (origin === "upload") return "已上传";
-    if (origin === "library") return "素材库";
+    if (origin === "upload") return "已上傳";
+    if (origin === "library") return "素材庫";
     if (origin === "generated") return "AI 生成";
-    if (origin === "derived") return "处理结果";
-    if (origin === "imported") return "已导入";
-    return "结果";
+    if (origin === "derived") return "處理結果";
+    if (origin === "imported") return "已匯入";
+    return "結果";
 }
 
 export function canOpenCanvasNodePromptPanel(node: CanvasNodeData | null | undefined): boolean {

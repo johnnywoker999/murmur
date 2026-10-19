@@ -44,7 +44,7 @@ function readTaskPreference(key: string, fallback: string): string {
     try {
         return window.localStorage.getItem(key) ?? fallback;
     } catch (error) {
-        console.warn("读取任务中心偏好失败", error);
+        console.warn("讀取任務中心偏好失敗", error);
         return fallback;
     }
 }
@@ -53,7 +53,7 @@ function writeTaskPreference(key: string, value: string): void {
     try {
         window.localStorage.setItem(key, value);
     } catch (error) {
-        console.warn("保存任务中心偏好失败", error);
+        console.warn("儲存任務中心偏好失敗", error);
     }
 }
 
@@ -110,7 +110,7 @@ export default function TasksPage() {
     const domainProjectNameById = useMemo(() => new Map(domainProjects.map((item) => [item.project.id, item.project.name])), [domainProjects]);
     const projectOptions = useMemo(() => projects.map((project) => {
         const projectName = project.projectId ? domainProjectNameById.get(project.projectId) : "";
-        return { label: projectName ? `${project.title || "未命名画布"} · ${projectName}` : project.title || "未命名画布", value: project.id };
+        return { label: projectName ? `${project.title || "未命名畫布"} · ${projectName}` : project.title || "未命名畫布", value: project.id };
     }), [domainProjectNameById, projects]);
     const modelOptions = useMemo(() => Array.from(new Set(tasks.map((task) => formatModelName(effectiveConfig, task)).filter(Boolean))).sort((left, right) => left.localeCompare(right, "zh-CN")), [effectiveConfig, tasks]);
     const filteredTasks = useMemo(() => tasks.filter((task) => {
@@ -214,9 +214,9 @@ export default function TasksPage() {
             })
             .catch((error) => {
                 if (cancelled) return;
-                // 领域项目只是任务页的辅助筛选数据；读取失败不能阻断任务列表，但必须清空旧快照并留下可检索的诊断。
+                // 領域專案只是任務頁的輔助篩選資料；讀取失敗不能阻斷任務列表，但必須清空舊快照並留下可檢索的診斷。
                 setDomainProjects([]);
-                console.warn("加载任务关联项目失败，已禁用本次项目筛选", error);
+                console.warn("載入任務關聯專案失敗，已停用本次專案篩選", error);
             });
         return () => {
             cancelled = true;
@@ -262,7 +262,7 @@ export default function TasksPage() {
             return next;
         } catch (error) {
             setTasksIncomplete(true);
-            if (showLoading) message.error(error instanceof Error ? error.message : "任务加载失败");
+            if (showLoading) message.error(error instanceof Error ? error.message : "任務載入失敗");
             return undefined;
         } finally {
             if (showLoading) setLoading(false);
@@ -328,12 +328,12 @@ export default function TasksPage() {
 
     const runAction = async (id: string) => {
         if (localMode) {
-            message.info("本地历史记录不能在任务中心重试，请回到对应画布重新生成");
+            message.info("本地歷史記錄不能在任務中心重試，請回到對應畫布重新生成");
             return;
         }
         const currentTask = tasksRef.current.find((task) => task.id === id);
         if (currentTask && taskRetryBlocked(currentTask)) {
-            message.warning("请先查看失败原因，不要立即重新提交");
+            message.warning("請先檢視失敗原因，不要立即重新提交");
             return;
         }
         setActingId(id);
@@ -342,7 +342,7 @@ export default function TasksPage() {
             // detail before any paid retry rather than treating absent input as consent.
             const detail = await queryGenerationTask(id);
             if (taskRetryBlocked(detail)) {
-                message.warning("请先查看失败原因，不要立即重新提交");
+                message.warning("請先檢視失敗原因，不要立即重新提交");
                 return;
             }
             const portraitError = portraitTaskRetryError(detail.inputJson, detail.model);
@@ -356,9 +356,9 @@ export default function TasksPage() {
             setDetailTask((current) => (current?.id === id ? { ...current, ...next } : current));
             setStatusFilter("active");
             setPage(1);
-            message.success("任务已重新入队");
+            message.success("任務已重新入隊");
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "操作失败");
+            message.error(error instanceof Error ? error.message : "操作失敗");
         } finally {
             setActingId("");
         }
@@ -373,7 +373,7 @@ export default function TasksPage() {
                 const logs = await listTaskLogs(task.id);
                 if (request === detailRequestRef.current) {
                     setTaskLogs(logs);
-                    message.info("原任务仍在处理中，请稍后再取回结果");
+                    message.info("原任務仍在處理中，請稍後再取回結果");
                 }
                 return;
             }
@@ -384,9 +384,9 @@ export default function TasksPage() {
             if (logs && request === detailRequestRef.current) setTaskLogs(logs);
             if (!localMode) window.dispatchEvent(new CustomEvent("wallet:updated"));
             void loadTasks(false);
-            if (request === detailRequestRef.current) message.success("视频已取回，未重新生成");
+            if (request === detailRequestRef.current) message.success("影片已取回，未重新生成");
         } catch (error) {
-            if (request === detailRequestRef.current) message.error(error instanceof Error ? error.message : "查询上游任务失败");
+            if (request === detailRequestRef.current) message.error(error instanceof Error ? error.message : "查詢上游任務失敗");
         } finally {
             setActingId("");
         }
@@ -404,7 +404,7 @@ export default function TasksPage() {
             {
                 const videoModel = values.model?.trim() || effectiveConfig.videoModel || effectiveConfig.model;
                 if (values.operation !== "compare_versions" && !isAiConfigReady(effectiveConfig, videoModel)) {
-                    message.error("请先在设置里配置可用的视频模型、Base URL 和 API Key");
+                    message.error("請先在設定裡配置可用的影片模型、Base URL 和 API Key");
                     return;
                 }
                 const requestConfig = resolveModelRequestConfig(effectiveConfig, videoModel);
@@ -419,7 +419,7 @@ export default function TasksPage() {
                     input: {
                         source: "tasks-page",
                         mode: values.operation === "compare_versions" ? "workflow" : "video",
-                        prompt: buildVideoOperationPrompt(values.operation, values.prompt, operationOptions.find((item) => item.value === values.operation)?.label || "其他视频操作"),
+                        prompt: buildVideoOperationPrompt(values.operation, values.prompt, operationOptions.find((item) => item.value === values.operation)?.label || "其他影片操作"),
                         config: values.operation === "compare_versions" ? undefined : backendProviderConfig(requestConfig),
                         metadata: { videoEditOperation: values.operation },
                     },
@@ -430,9 +430,9 @@ export default function TasksPage() {
             setPage(1);
             setCreateOpen(false);
             form.resetFields();
-            message.success("任务已创建");
+            message.success("任務已建立");
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "任务创建失败");
+            message.error(error instanceof Error ? error.message : "任務建立失敗");
         } finally {
             setCreating(false);
         }
@@ -443,12 +443,12 @@ export default function TasksPage() {
             <WorkspacePage grid className="library-page task-library-page">
                 <div className="studio-band">
                     <PageHeader
-                        title="创作历史"
-                        description="查看文本、图片和视频生成任务，跟踪进度并处理失败任务。"
-                        meta={<span className="app-projects-header-meta">{taskStats.total} 个任务</span>}
+                        title="創作歷史"
+                        description="檢視文本、圖片和影片生成任務，跟蹤進度並處理失敗任務。"
+                        meta={<span className="app-projects-header-meta">{taskStats.total} 個任務</span>}
                         actions={
                             <Button type="primary" icon={<Plus className="size-3.5" />} onClick={() => localMode ? navigate("/create") : setCreateOpen(true)}>
-                                {localMode ? "开始创作" : "新建任务"}
+                                {localMode ? "開始創作" : "新建任務"}
                             </Button>
                         }
                     />
@@ -460,17 +460,17 @@ export default function TasksPage() {
                                 {viewMode === "list" ? (
                                     <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-foreground/55">
                                         <Switch size="sm" checked={groupEnabled} onChange={changeGroupEnabled} />
-                                        <span>按画布分组</span>
+                                        <span>按畫布分組</span>
                                     </label>
                                 ) : null}
                                 <div className="task-view-switch">
                                     <SegmentedControl<TaskViewMode>
-                                        ariaLabel="任务视图"
+                                        ariaLabel="任務檢視"
                                         size="sm"
                                         value={viewMode}
                                         options={[
-                                            { value: "list", icon: <List className="size-3.5" />, title: "列表视图" },
-                                            { value: "grid", icon: <LayoutGrid className="size-3.5" />, title: "网格视图" },
+                                            { value: "list", icon: <List className="size-3.5" />, title: "列表檢視" },
+                                            { value: "grid", icon: <LayoutGrid className="size-3.5" />, title: "網格檢視" },
                                         ]}
                                         onChange={changeViewMode}
                                     />
@@ -479,17 +479,17 @@ export default function TasksPage() {
                         )}
                     >
                         <TaskStatusFilterBar stats={taskStats} value={statusFilter} onChange={(value) => { setStatusFilter(value); setPage(1); }} />
-                        <Input id="task-search" name="taskSearch" allowClear className="app-list-search" prefix={<Search className="size-4 text-foreground/40" />} value={keyword} placeholder="搜索任务、模型或画布" onChange={(event) => { setKeyword(event.target.value); setPage(1); }} />
-                        <Select className="w-full sm:w-48" value={projectFilter} onChange={(value) => { setProjectFilter(value); setPage(1); }} options={[{ label: "全部画布", value: "all" }, ...projectOptions]} />
-                        <Select className="w-full sm:w-32" value={kindFilter} onChange={(value) => { setKindFilter(value as TaskKindFilter); setPage(1); }} options={[{ label: "全部类型", value: "all" }, { label: "文本", value: "text" }, { label: "图片", value: "image" }, { label: "视频", value: "video" }]} />
+                        <Input id="task-search" name="taskSearch" allowClear className="app-list-search" prefix={<Search className="size-4 text-foreground/40" />} value={keyword} placeholder="搜尋任務、模型或畫布" onChange={(event) => { setKeyword(event.target.value); setPage(1); }} />
+                        <Select className="w-full sm:w-48" value={projectFilter} onChange={(value) => { setProjectFilter(value); setPage(1); }} options={[{ label: "全部畫布", value: "all" }, ...projectOptions]} />
+                        <Select className="w-full sm:w-32" value={kindFilter} onChange={(value) => { setKindFilter(value as TaskKindFilter); setPage(1); }} options={[{ label: "全部型別", value: "all" }, { label: "文本", value: "text" }, { label: "圖片", value: "image" }, { label: "影片", value: "video" }]} />
                         <Select className="w-full sm:w-44" value={modelFilter} onChange={(value) => { setModelFilter(value); setPage(1); }} options={[{ label: "全部模型", value: "all" }, ...modelOptions.map((model) => ({ label: model, value: model }))]} />
                     </CollectionToolbar>
                 </div>
 
                 <div className="collection-content task-collection-content">
-                    <Typography.Paragraph type="secondary">显示最近 100 条任务、最多 100 条进行中任务及当前画布历史。</Typography.Paragraph>
-                    {tasksIncomplete ? <Alert type="warning" showIcon title="任务状态未完整同步" description="部分任务查询失败。当前显示的任务数量与状态可能不完整，请刷新重试。" /> : null}
-                    {loading && !tasks.length ? <div className="library-loading-grid" aria-label="正在加载任务">{Array.from({ length: 8 }, (_, index) => <div key={index} className="library-skeleton" />)}</div> : null}
+                    <Typography.Paragraph type="secondary">顯示最近 100 條任務、最多 100 條進行中任務及當前畫布歷史。</Typography.Paragraph>
+                    {tasksIncomplete ? <Alert type="warning" showIcon title="任務狀態未完整同步" description="部分任務查詢失敗。當前顯示的任務數量與狀態可能不完整，請重新整理重試。" /> : null}
+                    {loading && !tasks.length ? <div className="library-loading-grid" aria-label="正在載入任務">{Array.from({ length: 8 }, (_, index) => <div key={index} className="library-skeleton" />)}</div> : null}
                     {!loading || tasks.length ? (
                         visibleTasks.length ? (
                             viewMode === "grid" ? (
@@ -513,51 +513,51 @@ export default function TasksPage() {
                         ) : (
                             <WorkspaceState
                                 compact
-                                title={tasksIncomplete ? "暂时无法确认任务状态" : taskEmptyState(statusFilter).title}
-                                description={tasksIncomplete ? "任务查询失败，暂时没有可显示的记录。请刷新重试。" : taskEmptyState(statusFilter).description}
-                                action={<Button className="library-primary-action" type="primary" icon={<Plus className="size-3.5" />} onClick={() => localMode ? navigate("/create") : setCreateOpen(true)}>{localMode ? "开始创作" : "新建任务"}</Button>}
+                                title={tasksIncomplete ? "暫時無法確認任務狀態" : taskEmptyState(statusFilter).title}
+                                description={tasksIncomplete ? "任務查詢失敗，暫時沒有可顯示的記錄。請重新整理重試。" : taskEmptyState(statusFilter).description}
+                                action={<Button className="library-primary-action" type="primary" icon={<Plus className="size-3.5" />} onClick={() => localMode ? navigate("/create") : setCreateOpen(true)}>{localMode ? "開始創作" : "新建任務"}</Button>}
                             />
                         )
                     ) : null}
                     {!groupingActive ? <PaginationBar current={page} pageSize={pageSize} total={filteredTasks.length} pageSizeOptions={[20, 50, 100]} onChange={(nextPage, nextPageSize) => { setPage(nextPageSize !== pageSize ? 1 : nextPage); setPageSize(nextPageSize); }} /> : null}
                 </div>
             </WorkspacePage>
-            <Modal className="library-modal" title="新建异步生成任务" open={createOpen} onCancel={() => setCreateOpen(false)} onOk={submitTask} confirmLoading={creating} okText="创建任务">
+            <Modal className="library-modal" title="新建非同步生成任務" open={createOpen} onCancel={() => setCreateOpen(false)} onOk={submitTask} confirmLoading={creating} okText="建立任務">
                 <Form form={form} layout="vertical" initialValues={{ operation: "text_to_video" }}>
-                    <Form.Item name="operation" label="任务类型" rules={[{ required: true, message: "请选择任务类型" }]}>
+                    <Form.Item name="operation" label="任務型別" rules={[{ required: true, message: "請選擇任務型別" }]}>
                         <Select options={operationOptions} />
                     </Form.Item>
-                    <Form.Item name="prompt" label="创作指令" rules={[{ required: true, message: "请输入创作指令" }]}>
-                        <Input.TextArea rows={5} placeholder="描述短剧、MV、TVC 或要执行的视频编辑操作" />
+                    <Form.Item name="prompt" label="創作指令" rules={[{ required: true, message: "請輸入創作指令" }]}>
+                        <Input.TextArea rows={5} placeholder="描述短劇、MV、TVC 或要執行的影片編輯操作" />
                     </Form.Item>
-                    <Form.Item name="projectId" label="绑定画布">
-                        <Select allowClear showSearch optionFilterProp="label" options={projectOptions} placeholder={projectOptions.length ? "可选，选择要绑定的画布" : "暂无本地画布"} />
+                    <Form.Item name="projectId" label="繫結畫布">
+                        <Select allowClear showSearch optionFilterProp="label" options={projectOptions} placeholder={projectOptions.length ? "可選，選擇要繫結的畫布" : "暫無本地畫布"} />
                     </Form.Item>
-                    <Form.Item name="model" label="目标模型">
-                        <Input placeholder="可选，例如 seedance、kling、wan、nano-banana" />
+                    <Form.Item name="model" label="目標模型">
+                        <Input placeholder="可選，例如 seedance、kling、wan、nano-banana" />
                     </Form.Item>
                 </Form>
             </Modal>
-            <Drawer className="library-drawer" title="任务详情" open={Boolean(detailTask)} onClose={() => { detailRequestRef.current += 1; setDetailTask(null); }} size="large" destroyOnHidden>
+            <Drawer className="library-drawer" title="任務詳情" open={Boolean(detailTask)} onClose={() => { detailRequestRef.current += 1; setDetailTask(null); }} size="large" destroyOnHidden>
                 {detailTask ? (
                     <div className="space-y-5">
-                        {detailIncomplete ? <Alert type="warning" showIcon title="部分详情或日志读取失败" description="保留已读取的记录，当前状态可能未更新。请关闭详情后重新打开重试。" /> : null}
+                        {detailIncomplete ? <Alert type="warning" showIcon title="部分詳情或日誌讀取失敗" description="保留已讀取的記錄，當前狀態可能未更新。請關閉詳情後重新開啟重試。" /> : null}
                         <div className="task-detail-facts grid text-sm sm:grid-cols-2">
-                            <InfoItem label="状态" value={statusLabel[detailTask.status]} />
-                            <InfoItem label="画布名称" value={getTaskCanvasContext(detailTask, canvasById, domainProjectNameById).canvasName} />
-                            <InfoItem label="任务类型" value={formatTaskKind(detailTask)} />
+                            <InfoItem label="狀態" value={statusLabel[detailTask.status]} />
+                            <InfoItem label="畫布名稱" value={getTaskCanvasContext(detailTask, canvasById, domainProjectNameById).canvasName} />
+                            <InfoItem label="任務型別" value={formatTaskKind(detailTask)} />
                             <InfoItem label="模型" value={formatModelName(effectiveConfig, detailTask)} />
-                            <InfoItem label="尝试次数" value={`第 ${detailTask.attempts || 1} 次`} />
-                            <InfoItem label="创建时间" value={formatDate(detailTask.createdAt)} />
-                            <InfoItem label="开始时间" value={formatDate(detailTask.startedAt)} />
-                            <InfoItem label="完成时间" value={formatDate(detailTask.completedAt)} />
-                            <InfoItem label="耗时" value={formatTaskDuration(detailTask)} />
+                            <InfoItem label="嘗試次數" value={`第 ${detailTask.attempts || 1} 次`} />
+                            <InfoItem label="建立時間" value={formatDate(detailTask.createdAt)} />
+                            <InfoItem label="開始時間" value={formatDate(detailTask.startedAt)} />
+                            <InfoItem label="完成時間" value={formatDate(detailTask.completedAt)} />
+                            <InfoItem label="耗時" value={formatTaskDuration(detailTask)} />
                             {detailTask.providerCancelStatus ? <InfoItem label="上游取消" value={providerCancelStatusLabel(detailTask)} /> : null}
-                            {detailTask.providerCancelRequestedAt ? <InfoItem label="请求取消时间" value={formatDate(detailTask.providerCancelRequestedAt)} /> : null}
+                            {detailTask.providerCancelRequestedAt ? <InfoItem label="請求取消時間" value={formatDate(detailTask.providerCancelRequestedAt)} /> : null}
                         </div>
                         <div className="flex flex-wrap justify-end gap-2">
-                            {canQueryProviderTask(detailTask) ? <Button icon={<RefreshCw className="size-4" />} loading={actingId === detailTask.id} onClick={() => void queryProviderTask(detailTask)}>取回结果</Button> : null}
-                            {isTaskFailed(detailTask) ? <Button icon={<Bug className="size-4" />} onClick={() => navigate(`/settings?section=diagnostics&taskId=${encodeURIComponent(detailTask.id)}${detailTask.projectId ? `&projectId=${encodeURIComponent(detailTask.projectId)}` : ""}`)}>导出诊断包</Button> : null}
+                            {canQueryProviderTask(detailTask) ? <Button icon={<RefreshCw className="size-4" />} loading={actingId === detailTask.id} onClick={() => void queryProviderTask(detailTask)}>取回結果</Button> : null}
+                            {isTaskFailed(detailTask) ? <Button icon={<Bug className="size-4" />} onClick={() => navigate(`/settings?section=diagnostics&taskId=${encodeURIComponent(detailTask.id)}${detailTask.projectId ? `&projectId=${encodeURIComponent(detailTask.projectId)}` : ""}`)}>匯出診斷包</Button> : null}
                         </div>
                         {detailTask.error || isTaskFailed(detailTask) ? (
                             <GenerationFailureNotice
@@ -566,20 +566,20 @@ export default function TasksPage() {
                             />
                         ) : null}
                         <TaskResultMedia value={detailTask.resultJson} taskType={detailTask.type} />
-                        <DetailBlock title="提示词" value={detailLoading ? "详情加载中..." : detailTask.prompt || "无"} tall />
+                        <DetailBlock title="提示詞" value={detailLoading ? "詳情載入中..." : detailTask.prompt || "無"} tall />
                         <TaskParameters inputJson={detailLoading ? undefined : detailTask.inputJson} />
-                        <DetailBlock title="结果" value={detailLoading ? "详情加载中..." : formatTaskJson(detailTask.resultJson)} />
+                        <DetailBlock title="結果" value={detailLoading ? "詳情載入中..." : formatTaskJson(detailTask.resultJson)} />
                         <div>
-                            <Typography.Text strong>日志</Typography.Text>
+                            <Typography.Text strong>日誌</Typography.Text>
                             <div className="mt-2 max-h-60 overflow-auto rounded-lg bg-slate-950 p-3 text-xs text-slate-100">
-                                {logsLoading ? "日志加载中..." : taskLogs.length ? taskLogs.map((log) => `[${new Date(log.createdAt).toLocaleString()}] ${log.level.toUpperCase()} ${formatTaskLog(log)}`).join("\n\n") : detailIncomplete ? "日志未完整读取" : "暂无日志"}
+                                {logsLoading ? "日誌載入中..." : taskLogs.length ? taskLogs.map((log) => `[${new Date(log.createdAt).toLocaleString()}] ${log.level.toUpperCase()} ${formatTaskLog(log)}`).join("\n\n") : detailIncomplete ? "日誌未完整讀取" : "暫無日誌"}
                             </div>
                         </div>
                     </div>
                 ) : null}
             </Drawer>
             <Modal
-                title={<span className="block truncate pr-8">{mediaPreview?.title || "生成结果预览"}</span>}
+                title={<span className="block truncate pr-8">{mediaPreview?.title || "生成結果預覽"}</span>}
                 open={Boolean(mediaPreview)}
                 onCancel={() => setMediaPreview(null)}
                 footer={null}
@@ -612,7 +612,7 @@ function TaskResultMedia({ value, taskType }: { value?: string; taskType: string
     if (!urls.length) return null;
     return (
         <div>
-            <Typography.Text strong>生成结果</Typography.Text>
+            <Typography.Text strong>生成結果</Typography.Text>
             <div className="mt-2 grid max-h-[360px] grid-cols-2 gap-2 overflow-auto rounded-lg bg-stone-950 p-2 md:grid-cols-3">
                 {urls.map((url, index) => {
                     const isVideo = isVideoResult(url, taskType);
@@ -621,7 +621,7 @@ function TaskResultMedia({ value, taskType }: { value?: string; taskType: string
                             key={`${url}-${index}`}
                             src={url}
                             kind={isVideo ? "video" : "image"}
-                            alt={`生成结果 ${index + 1}`}
+                            alt={`生成結果 ${index + 1}`}
                             controls={isVideo}
                             className={isVideo ? "task-result-media is-video" : "task-result-media"}
                             fallbackClassName={isVideo ? "task-result-media is-video" : "task-result-media"}
@@ -679,10 +679,10 @@ function groupTasksByCanvas(tasks: GenerationTask[], canvasById: Map<string, { t
 }
 
 function taskEmptyState(status: TaskStatusFilter) {
-    if (status === "all") return { title: "还没有任务", description: "新提交的生成会在这里显示状态和实时进度。" };
-    if (status === "active") return { title: "没有运行中的任务", description: "新提交的生成会在这里显示排队状态和实时进度。" };
-    if (status === "succeeded") return { title: "还没有已完成任务", description: "生成成功后，结果预览和执行记录会保留在这里。" };
-    return { title: "没有失败或取消的任务", description: "失败或取消的生成会出现在这里，并提供原因和可用操作。" };
+    if (status === "all") return { title: "還沒有任務", description: "新提交的生成會在這裡顯示狀態和即時進度。" };
+    if (status === "active") return { title: "沒有執行中的任務", description: "新提交的生成會在這裡顯示排隊狀態和即時進度。" };
+    if (status === "succeeded") return { title: "還沒有已完成任務", description: "生成成功後，結果預覽和執行記錄會保留在這裡。" };
+    return { title: "沒有失敗或取消的任務", description: "失敗或取消的生成會出現在這裡，並提供原因和可用操作。" };
 }
 
 function formatDate(value?: string) {
@@ -728,13 +728,13 @@ function TaskParameters({ inputJson }: { inputJson?: string }) {
     const fields = taskParameterFields(inputJson);
     return (
         <div>
-            <Typography.Text strong>参数</Typography.Text>
+            <Typography.Text strong>引數</Typography.Text>
             {fields.length ? (
                 <div className="task-detail-facts mt-2 grid text-sm sm:grid-cols-2">
                     {fields.map((field) => <InfoItem key={field.label} label={field.label} value={field.value} wrap />)}
                 </div>
             ) : (
-                <div className="mt-2 rounded-md bg-foreground/[.04] px-3 py-3 text-sm text-foreground/50">暂无参数记录</div>
+                <div className="mt-2 rounded-md bg-foreground/[.04] px-3 py-3 text-sm text-foreground/50">暫無引數記錄</div>
             )}
         </div>
     );
@@ -752,19 +752,19 @@ function taskParameterFields(inputJson?: string) {
 
     add("模式", input.mode);
     add("尺寸 / 比例", config.size);
-    add("分辨率", config.vquality || config.quality);
-    add("时长", config.videoSeconds === undefined ? undefined : `${config.videoSeconds} 秒`);
-    add("生成数量", config.count);
-    add("生成声音", booleanParameter(config.videoGenerateAudio));
+    add("解析度", config.vquality || config.quality);
+    add("時長", config.videoSeconds === undefined ? undefined : `${config.videoSeconds} 秒`);
+    add("生成數量", config.count);
+    add("生成聲音", booleanParameter(config.videoGenerateAudio));
     add("水印", booleanParameter(config.videoWatermark));
     add("音色", config.audioVoice);
-    add("音频格式", config.audioFormat);
-    add("音频速度", config.audioSpeed);
+    add("音訊格式", config.audioFormat);
+    add("音訊速度", config.audioSpeed);
 
-    add("参考图片", formatReferenceList(input.referenceImages, "图片"));
-    add("参考视频", formatReferenceList(input.referenceVideos, "视频"));
-    add("参考音频", formatReferenceList(input.referenceAudios, "音频"));
-    add("遮罩图片", formatReferenceList(input.mask ? [input.mask] : [], "遮罩"));
+    add("參考圖片", formatReferenceList(input.referenceImages, "圖片"));
+    add("參考影片", formatReferenceList(input.referenceVideos, "影片"));
+    add("參考音訊", formatReferenceList(input.referenceAudios, "音訊"));
+    add("遮罩圖片", formatReferenceList(input.mask ? [input.mask] : [], "遮罩"));
     return fields;
 }
 
@@ -796,7 +796,7 @@ function booleanParameter(value: unknown) {
 }
 
 function formatReferenceList(value: unknown, kind: string) {
-    if (!Array.isArray(value) || !value.length) return "无";
+    if (!Array.isArray(value) || !value.length) return "無";
     return value.map((item, index) => {
         const reference = asRecord(item);
         const name = typeof reference.name === "string" && reference.name.trim() && !/^https?:|^data:|^blob:/i.test(reference.name) ? reference.name.trim() : `${kind}${index + 1}`;
@@ -808,7 +808,7 @@ function formatReferenceList(value: unknown, kind: string) {
 }
 
 function formatTaskJson(value?: string) {
-    if (!value) return "无";
+    if (!value) return "無";
     try {
         return JSON.stringify(JSON.parse(value), null, 2);
     } catch {

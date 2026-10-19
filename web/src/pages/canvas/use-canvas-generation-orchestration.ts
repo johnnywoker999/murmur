@@ -37,9 +37,9 @@ import { useCanvasStoryboard } from "./use-canvas-storyboard";
 
 type UseCanvasGenerationOrchestrationOptions = {
     projectId: string;
-    /** 生成任务查询与 live 绑定：短剧关闭时为空。 */
+    /** 生成任務查詢與 live 繫結：短劇關閉時為空。 */
     linkedProjectId?: string;
-    /** 执行器 / 重试 / 历史插入的素材归属，沿用当前画布项目 id。 */
+    /** 執行器 / 重試 / 歷史插入的素材歸屬，沿用當前畫布專案 id。 */
     domainProjectId?: string;
     projectLoaded: boolean;
     localOnly: boolean;
@@ -223,10 +223,10 @@ export function useCanvasGenerationOrchestration({
             const isCurrent = () => lifetime.matches(owner, projectIdRef.current) && userScopeMatches(userScope);
             modal.confirm({
                 ...canvasTaskConfirmation,
-                title: deliveryOnly ? "停止取回结果？" : "取消生成任务？",
-                content: deliveryOnly ? "已生成的结果会保留，之后可以继续取回。" : localOnly ? "任务会立即停止本地执行。" : "任务会立即停止本地执行；如果已经提交到上游，系统会继续核对取消结果和积分状态。",
-                okText: deliveryOnly ? "停止取回" : "取消任务",
-                cancelText: "继续等待",
+                title: deliveryOnly ? "停止取回結果？" : "取消生成任務？",
+                content: deliveryOnly ? "已生成的結果會保留，之後可以繼續取回。" : localOnly ? "任務會立即停止本地執行。" : "任務會立即停止本地執行；如果已經提交到上游，系統會繼續核對取消結果和積分狀態。",
+                okText: deliveryOnly ? "停止取回" : "取消任務",
+                cancelText: "繼續等待",
                 onOk: async () => {
                     if (!isCurrent()) return;
                     try {
@@ -237,10 +237,10 @@ export function useCanvasGenerationOrchestration({
                         setTaskDetail((current) => (current?.id === task.id ? next : current));
                         await queryClient.invalidateQueries({ queryKey: ["canvas-active-tasks", projectId] });
                         if (!isCurrent()) return;
-                        message.success(deliveryOnly ? "已停止取回" : "任务已取消");
+                        message.success(deliveryOnly ? "已停止取回" : "任務已取消");
                     } catch (error) {
                         if (!isCurrent()) return;
-                        message.error(error instanceof Error ? error.message : "取消任务失败");
+                        message.error(error instanceof Error ? error.message : "取消任務失敗");
                     }
                 },
             });
@@ -277,11 +277,11 @@ export function useCanvasGenerationOrchestration({
                         setNodes((current) => insertedNodes.reduce((nodes, inserted) => rebaseInsertedCanvasNode(nodes, inserted), current));
                         setSelectedNodeIds(new Set([node.id]));
                         setGenerationHistoryOpen(false);
-                        message.success("已从生成历史插入到画布");
+                        message.success("已從生成歷史插入到畫布");
                     },
                 });
             } catch (error) {
-                message.error(error instanceof Error ? error.message : "生成结果无法插入画布");
+                message.error(error instanceof Error ? error.message : "生成結果無法插入畫布");
             } finally {
                 insertingHistory.current.exit();
             }
@@ -299,7 +299,7 @@ export function useCanvasGenerationOrchestration({
     const retryImageBatchChildren = useCallback(
         (rootId: string, children: CanvasNodeData[]) => {
             const { retryable, blocked } = selectRetryableImageBatchChildren(children);
-            if (blocked) message.warning("部分图片需要先处理失败原因，请打开对应节点查看");
+            if (blocked) message.warning("部分圖片需要先處理失敗原因，請開啟對應節點檢視");
             if (!retryable.length) return;
             const root = nodesRef.current.find((node) => node.id === rootId);
             if (root) {
@@ -331,7 +331,7 @@ export function useCanvasGenerationOrchestration({
                 connectionId: nanoid(),
             });
             if (!created.ok) {
-                if (created.reason === "empty-prompt") message.warning("文本节点为空，无法生图");
+                if (created.reason === "empty-prompt") message.warning("文本節點為空，無法生圖");
                 return;
             }
             nodesRef.current = created.nextNodes;

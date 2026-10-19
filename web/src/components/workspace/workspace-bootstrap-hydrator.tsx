@@ -20,7 +20,7 @@ export function WorkspaceBootstrapHydrator({ children }: { children: ReactNode }
         let cancelled = false;
         const loadWorkspace = () => {
             const bootstrap = getWorkspaceBootstrap();
-            const timeout = new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error("本地工作区启动超时")), 15_000));
+            const timeout = new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error("本地工作區啟動超時")), 15_000));
             return Promise.race([bootstrap, timeout]);
         };
         void initializeWorkspaceState({
@@ -67,8 +67,8 @@ export function WorkspaceBootstrapHydrator({ children }: { children: ReactNode }
         };
     }, []);
 
-    if (restoreStatus === "error") return <WorkspaceErrorState title="工作区暂时无法加载" description="项目或模型配置未能完成读取。原有配置不会被覆盖，请重新加载后再试。" onRetry={() => window.location.reload()} />;
-    return hydrated && restoreStatus === "ready" ? children : <FullScreenLoader label="正在准备本地工作区" detail="加载项目、画布与模型配置" />;
+    if (restoreStatus === "error") return <WorkspaceErrorState title="工作區暫時無法載入" description="專案或模型配置未能完成讀取。原有配置不會被覆蓋，請重新載入後再試。" onRetry={() => window.location.reload()} />;
+    return hydrated && restoreStatus === "ready" ? children : <FullScreenLoader label="正在準備本地工作區" detail="載入專案、畫布與模型配置" />;
 }
 
 export async function initializeWorkspaceState<T>({
@@ -109,7 +109,7 @@ async function hydrateLocalModelConfig() {
     } catch (error) {
         // 純靜態部署（GitHub Pages）沒有後端：保留瀏覽器裡的本地配置即可，
         // 不能因為讀不到 canonical 檔案就把整個工作區判定為失敗。
-        console.warn("模型配置后端不可用，使用浏览器本地配置", error);
+        console.warn("模型配置後端不可用，使用瀏覽器本地配置", error);
         useConfigStore.getState().replaceConfig(localWorkspaceConfig(normalizeConfigSnapshot({ config: useConfigStore.getState().config }).config));
         return;
     }
@@ -130,8 +130,8 @@ function createLocalWorkspacePayload(): WorkspaceBootstrapPayload {
             localAssets: true,
             providerCalls: true,
         },
-        user: { id: "local", username: "local", displayName: "本地工作区", role: "user", status: "active", createdAt: "", updatedAt: "" },
-        workspace: { id: "local", name: "本地工作区", owner: "local", storage: "sqlite" },
+        user: { id: "local", username: "local", displayName: "本地工作區", role: "user", status: "active", createdAt: "", updatedAt: "" },
+        workspace: { id: "local", name: "本地工作區", owner: "local", storage: "sqlite" },
         storageMode: "local",
         features: { shortDramaEnabled: true, taskCenterEnabled: true, customChannelsEnabled: true, frontendModelsEnabled: false, pluginCenterEnabled: true, systemPluginsVisibleToUsers: true },
     };

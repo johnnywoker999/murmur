@@ -6,17 +6,17 @@
 @custom-variant dark (&:is(.dark *));
 
 /* =========================================================================
-   Design Token System — 三层架构 (Primitive → Semantic → Component)
-   这些是产品工作区的共享基础样式。
-   规范：禁止在组件中新增裸 text-[Npx]/rounded-[Npx]/z-[N]，必须使用 token
+   Design Token System — 三層架構 (Primitive → Semantic → Component)
+   這些是產品工作區的共享基礎樣式。
+   規範：禁止在元件中新增裸 text-[Npx]/rounded-[Npx]/z-[N]，必須使用 token
    ========================================================================= */
 
 /* -------------------------------------------------------------------------
-   Layer 1: Primitive — 纯值，无语义，不随主题变（所有维度的基础）
+   Layer 1: Primitive — 純值，無語義，不隨主題變（所有維度的基礎）
    ------------------------------------------------------------------------- */
 :root {
 
-    /* --- 0. 字体（composio：Inter + 开源等宽；@theme inline 自引用解析点）--- */
+    /* --- 0. 字型（composio：Inter + 開源等寬；@theme inline 自引用解析點）--- */
     --font-sans: "Inter Variable", "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
     --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     --font-heading: "Inter Variable", "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
@@ -34,37 +34,37 @@
     --color-neutral-900: oklch(0.205 0 0);
     --color-neutral-950: oklch(0.145 0 0);
 
-    /* 节点类型语义色板（对应 #97 色带+图标徽章方案）
-       注意：用 --palette- 前缀避免与 @theme 的 --color-* 命名空间冲突导致循环引用 */
-    --palette-node-image: oklch(0.75 0.15 75);        /* 琥珀 300 — 图片 */
-    --palette-node-video: oklch(0.65 0.22 350);        /* 品红 400 — 视频 */
-    --palette-node-text: oklch(0.45 0.02 250);         /* 中性蓝灰 700 — 文本 */
-    --palette-node-audio: oklch(0.7 0.13 220);         /* 青蓝 400 — 音频 */
-    --palette-node-config: oklch(0.55 0.04 250);       /* 灰蓝 500 — 配置 */
-    --palette-node-script: oklch(0.6 0.18 300);        /* 紫色 400 — 脚本 */
-    --palette-node-drawing: oklch(0.65 0.12 55);       /* 赭石 400 — 绘图 */
-    --palette-node-frame: oklch(0.7 0.15 155);         /* 翠绿 400 — 帧 */
-    --palette-node-character: oklch(0.78 0.13 20);     /* 桃红 300 — 角色引用 */
+    /* 節點型別語義色板（對應 #97 色帶+圖示徽章方案）
+       注意：用 --palette- 字首避免與 @theme 的 --color-* 名稱空間衝突導致迴圈引用 */
+    --palette-node-image: oklch(0.75 0.15 75);        /* 琥珀 300 — 圖片 */
+    --palette-node-video: oklch(0.65 0.22 350);        /* 品紅 400 — 影片 */
+    --palette-node-text: oklch(0.45 0.02 250);         /* 中性藍灰 700 — 文本 */
+    --palette-node-audio: oklch(0.7 0.13 220);         /* 青藍 400 — 音訊 */
+    --palette-node-config: oklch(0.55 0.04 250);       /* 灰藍 500 — 配置 */
+    --palette-node-script: oklch(0.6 0.18 300);        /* 紫色 400 — 指令碼 */
+    --palette-node-drawing: oklch(0.65 0.12 55);       /* 赭石 400 — 繪圖 */
+    --palette-node-frame: oklch(0.7 0.15 155);         /* 翠綠 400 — 幀 */
+    --palette-node-character: oklch(0.78 0.13 20);     /* 桃紅 300 — 角色引用 */
     --palette-node-skill: oklch(0.7 0.17 55);          /* 橙色 400 — 技能 */
 
-    /* 状态色（用 --palette- 前缀避免循环引用）*/
+    /* 狀態色（用 --palette- 字首避免迴圈引用）*/
     --palette-status-success: #16a34a;
     --palette-status-error: #dc2626;
     --palette-status-loading: #2563eb;
     --palette-status-warning: #d97706;
 
-    /* 顶部常驻通知条主题色：按「通知类型」区分底色（类型定义见 lib/announcements/banner-notice）
-       两档取值都由白字对比度反推——light 档 ≥ 4.5:1（WCAG AA 正文），dark 档约 8.5:1（压暗避免刺眼）*/
+    /* 頂部常駐通知條主題色：按「通知型別」區分底色（型別定義見 lib/announcements/banner-notice）
+       兩檔取值都由白字對比度反推——light 檔 ≥ 4.5:1（WCAG AA 正文），dark 檔約 8.5:1（壓暗避免刺眼）*/
     --palette-banner-notice-500: #5c67e2; /* 公告 · 白字 4.67:1 */
     --palette-banner-notice-700: #3f4590; /* 白字 8.52:1 */
-    --palette-banner-activity-500: #da2470; /* 活动 · 白字 4.70:1 */
+    --palette-banner-activity-500: #da2470; /* 活動 · 白字 4.70:1 */
     --palette-banner-activity-700: #7b3552; /* 白字 8.49:1 */
     --palette-banner-update-500: #138279; /* 更新 · 白字 4.67:1 */
     --palette-banner-update-700: #235450; /* 白字 8.55:1 */
     --palette-banner-warning-500: #b55b0c; /* 警告 · 白字 4.70:1 */
     --palette-banner-warning-700: #6a4424; /* 白字 8.52:1 */
 
-    /* --- 2. 间距（4px 栅格 + 半距）--- */
+    /* --- 2. 間距（4px 柵格 + 半距）--- */
     --space-0: 0px;
     --space-half: 2px;
     --space-1: 4px;
@@ -83,20 +83,20 @@
     --space-20: 80px;
     --space-24: 96px;
 
-    /* --- 3. 字号（10 档）--- */
-    --fs-nano: 7px;         /* 纳米标注（角标计数、节点预览、% 后缀）*/
-    --fs-micro: 9px;        /* 极小标注（分镜行号辅助）*/
-    --fs-tiny: 10px;        /* 小标注（徽章、tag）*/
-    --fs-label: 11px;       /* 标签文字 */
-    --fs-caption: 12px;     /* 说明文字 */
-    --fs-body: 14px;        /* 正文（基准）*/
+    /* --- 3. 字號（10 檔）--- */
+    --fs-nano: 7px;         /* 奈米標註（角標計數、節點預覽、% 字尾）*/
+    --fs-micro: 9px;        /* 極小標註（分鏡行號輔助）*/
+    --fs-tiny: 10px;        /* 小標註（徽章、tag）*/
+    --fs-label: 11px;       /* 標籤文字 */
+    --fs-caption: 12px;     /* 說明文字 */
+    --fs-body: 14px;        /* 正文（基準）*/
     --fs-body-lg: 15px;     /* 大正文 */
-    --fs-heading: 16px;     /* 小标题 */
-    --fs-heading-lg: 18px;  /* 大标题 */
-    --fs-title: 22px;       /* 页面标题 */
-    --fs-display: 36px;     /* 展示标题 */
+    --fs-heading: 16px;     /* 小標題 */
+    --fs-heading-lg: 18px;  /* 大標題 */
+    --fs-title: 22px;       /* 頁面標題 */
+    --fs-display: 36px;     /* 展示標題 */
 
-    /* --- 3b. composio 排版语义（tokens.json typography 14 档；字号变量，行高/字重/字距见 utilities .typ-* 类）--- */
+    /* --- 3b. composio 排版語義（tokens.json typography 14 檔；字號變數，行高/字重/字距見 utilities .typ-* 類）--- */
     --typ-display-mega: 72px;  /* display-mega */
     --typ-display-xl: 56px;    /* display-xl */
     --typ-display-lg: 44px;    /* display-lg */
@@ -112,7 +112,7 @@
     --typ-button: 14px;        /* button */
     --typ-nav-link: 14px;      /* nav-link */
 
-    /* --- 4. 圆角（10 档）--- */
+    /* --- 4. 圓角（10 檔）--- */
     --r-xs: 4px;
     --r-sm: 6px;
     --r-md: 8px;
@@ -127,7 +127,7 @@
     --r-5xl: 32px;
     --r-full: 9999px;
 
-    /* --- 5. 阴影（含 glow）--- */
+    /* --- 5. 陰影（含 glow）--- */
     --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -139,9 +139,9 @@
     --shadow-glow-lg: 0 0 40px rgba(125, 162, 255, 0.4);
 
     /* --- 5b. 抬升（overlay / card）---
-       --shadow-* 在暗色下会翻成白影，浮层用会发光刺眼。以下 token 两个主题都用黑影，
-       靠 hairline（内描边）而不是发光来交代层级，浮层与卡片统一引用这里。 */
-    /* 亮色下卡片浮在白底上，hairline 要比暗色更实才看得见边界（暗色靠影，亮色靠线）。 */
+       --shadow-* 在暗色下會翻成白影，浮層用會發光刺眼。以下 token 兩個主題都用黑影，
+       靠 hairline（內描邊）而不是發光來交代層級，浮層與卡片統一引用這裡。 */
+    /* 亮色下卡片浮在白底上，hairline 要比暗色更實才看得見邊界（暗色靠影，亮色靠線）。 */
     --elevation-hairline: inset 0 0 0 1px rgba(17, 17, 17, 0.13);
     --elevation-card: 0 1px 2px rgba(0, 0, 0, 0.05);
     --elevation-card-hover: 0 10px 26px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -149,17 +149,17 @@
     --elevation-panel: -18px 0 52px rgba(0, 0, 0, 0.16);
     --focus-ring-soft: 0 0 0 3px color-mix(in srgb, var(--ring) 28%, transparent);
 
-    /* 卡片表面：亮色需要一点灰底把卡片从白页面里托出来，暗色则是提亮。 */
+    /* 卡片表面：亮色需要一點灰底把卡片從白頁面裡托出來，暗色則是提亮。 */
     --surface-card: rgba(17, 17, 17, 0.028);
     --surface-card-hover: rgba(17, 17, 17, 0.055);
-    /* 项目列表卡是高频入口，不能沿用过轻的通用 surface。 */
+    /* 專案列表卡是高頻入口，不能沿用過輕的通用 surface。 */
     --project-library-surface: #f5f5f5;
     --project-library-cover-surface: #ececec;
     --project-library-icon-surface: #ffffff;
     --project-library-shadow: none;
 
-    /* === 新卡片系统 Token（对应 docs/ui-design-system.md）=== */
-    /* 卡片表面通过明度分层，普通卡片不依赖描边和投影。 */
+    /* === 新卡片系統 Token（對應 docs/ui-design-system.md）=== */
+    /* 卡片表面通過明度分層，普通卡片不依賴描邊和投影。 */
     --card-surface: #f7f7f7;
     --card-surface-hover: #f0f0f0;
     --card-surface-raised: #ececec;
@@ -170,12 +170,12 @@
     --card-elevation: none;
     --card-elevation-hover: none;
 
-    /* 画布卡片封面区 - 浅灰衬托内容 */
+    /* 畫布卡片封面區 - 淺灰襯托內容 */
     --canvas-cover-surface: #f5f5f5;
     --canvas-icon-surface: #ffffff;
     --canvas-icon-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 
-    /* 画布文件夹：由现有画布语义色派生，封面样式不脱离主题合同。 */
+    /* 畫布資料夾：由現有畫布語義色派生，封面樣式不脫離主題合同。 */
     --canvas-folder-surface: color-mix(in srgb, var(--background) 76%, transparent);
     --canvas-folder-surface-strong: color-mix(in srgb, var(--background) 90%, transparent);
     --canvas-folder-edge: color-mix(in srgb, var(--background) 72%, var(--foreground) 28%);
@@ -185,7 +185,7 @@
     --canvas-folder-action-fg: var(--btn-solid-fg);
     --canvas-folder-shadow: var(--elevation-overlay);
 
-    /* 媒体区背景 */
+    /* 媒體區背景 */
     --media-surface: #f5f5f5;
 
     /* 骨架屏 */
@@ -196,8 +196,8 @@
         rgba(17, 17, 17, 0.04) 100%
     );
 
-    /* 交互状态必须成对定义背景和前景。主操作、普通选择、勾选和 Switch
-       是四种不同角色，禁止再把反相主按钮颜色直接复用到普通选中态。 */
+    /* 互動狀態必須成對定義背景和前景。主操作、普通選擇、勾選和 Switch
+       是四種不同角色，禁止再把反相主按鈕顏色直接複用到普通選中態。 */
     --btn-solid-bg: #242426;
     --btn-solid-hover-bg: #38383b;
     --btn-solid-active-bg: #1a1a1c;
@@ -225,34 +225,34 @@
     --control-disabled-fg: rgba(17, 17, 17, 0.36);
     --control-focus-ring: color-mix(in srgb, var(--ring) 72%, transparent);
 
-    /* --- 6. Elevation（z-index 14 档，按视觉层划分，见 ADR-001）--- */
-    --z-canvas: 0;              /* L0 画布底 */
-    --z-canvas-overlay: 5;      /* L1 画布覆盖（网格、连线）*/
-    --z-node: 10;               /* L2 节点层（未选中）*/
-    --z-node-active: 20;        /* L3 激活节点（选中/拖拽）*/
-    --z-toolbar: 30;            /* L4 浮动工具栏（顶栏、dock、zoom）*/
-    --z-node-toolbar: 50;       /* L5 节点工具栏（click 触发）*/
-    --z-panel: 60;              /* L6 侧边面板（侧栏、素材托盘）*/
-    --z-panel-floating: 80;     /* L7 浮动面板（助手/agent/活动任务）*/
-    --z-modal: 100;             /* L8 对话框 */
+    /* --- 6. Elevation（z-index 14 檔，按視覺層劃分，見 ADR-001）--- */
+    --z-canvas: 0;              /* L0 畫布底 */
+    --z-canvas-overlay: 5;      /* L1 畫布覆蓋（網格、連線）*/
+    --z-node: 10;               /* L2 節點層（未選中）*/
+    --z-node-active: 20;        /* L3 啟用節點（選中/拖拽）*/
+    --z-toolbar: 30;            /* L4 浮動工具欄（頂欄、dock、zoom）*/
+    --z-node-toolbar: 50;       /* L5 節點工具欄（click 觸發）*/
+    --z-panel: 60;              /* L6 側邊面板（側欄、素材托盤）*/
+    --z-panel-floating: 80;     /* L7 浮動面板（助手/agent/活動任務）*/
+    --z-modal: 100;             /* L8 對話方塊 */
     --z-modal-overlay: 110;     /* L9 遮罩 */
-    --z-canvas-overlay-active: 150; /* 画布浮层：最后交互的面板 */
-    --z-popover: 200;           /* L10 弹出层 */
+    --z-canvas-overlay-active: 150; /* 畫布浮層：最後互動的面板 */
+    --z-popover: 200;           /* L10 彈出層 */
     --z-toast: 500;             /* L11 通知 */
     --z-tooltip: 1000;          /* L12 提示 */
-    --z-dialog-popover: 1100;   /* AntD Modal 之上的设置浮层 */
-    --z-loader: 1200;           /* 全屏加载遮罩 */
-    --z-max: 2000;              /* L13 最高（紧急通知）*/
+    --z-dialog-popover: 1100;   /* AntD Modal 之上的設定浮層 */
+    --z-loader: 1200;           /* 全屏載入遮罩 */
+    --z-max: 2000;              /* L13 最高（緊急通知）*/
 
-    /* --- 6b. Canvas 浮层定位 inset（画布安全区，对应审计 D2/P0-2）--- */
-    --canvas-inset-x: 16px;             /* 浮层水平安全区（dock inset、顶栏 px）*/
-    --canvas-inset-y: 16px;             /* 浮层垂直安全区（dock 底部）*/
-    /* LibTV 顶栏基线：48px 安全区内放置 32px 浮层，距视口边缘 8px。 */
-    --canvas-topbar-h: 48px;            /* 顶部栏高度 */
-    --canvas-topbar-offset: 56px;       /* 顶栏下方浮层顶部偏移（topbar-h + 8px 间距）*/
-    --canvas-dock-popover-offset: 50px; /* dock 弹出面板底部偏移 */
+    /* --- 6b. Canvas 浮層定位 inset（畫布安全區，對應審計 D2/P0-2）--- */
+    --canvas-inset-x: 16px;             /* 浮層水平安全區（dock inset、頂欄 px）*/
+    --canvas-inset-y: 16px;             /* 浮層垂直安全區（dock 底部）*/
+    /* LibTV 頂欄基線：48px 安全區內放置 32px 浮層，距視口邊緣 8px。 */
+    --canvas-topbar-h: 48px;            /* 頂部欄高度 */
+    --canvas-topbar-offset: 56px;       /* 頂欄下方浮層頂部偏移（topbar-h + 8px 間距）*/
+    --canvas-dock-popover-offset: 50px; /* dock 彈出面板底部偏移 */
 
-    /* --- 7. 动效（对应 #99 动效 token）--- */
+    /* --- 7. 動效（對應 #99 動效 token）--- */
     /* duration */
     --motion-dur-instant: 80ms;
     --motion-dur-fast: 150ms;
@@ -271,16 +271,16 @@
     --motion-delay-sm: 60ms;
     --motion-delay-md: 100ms;
     --motion-delay-lg: 150ms;
-    /* motion-scale（联动 prefers-reduced-motion）*/
+    /* motion-scale（聯動 prefers-reduced-motion）*/
     --motion-scale: 1;
 
-    /* --- 8. 描边宽度 --- */
+    /* --- 8. 描邊寬度 --- */
     --stroke-0: 0px;
     --stroke-1: 1px;
     --stroke-2: 2px;
     --stroke-3: 3px;
 
-    /* --- 9. 不透明度（6 档）--- */
+    /* --- 9. 不透明度（6 檔）--- */
     --opa-hide: 0.08;
     --opa-faint: 0.2;
     --opa-muted: 0.45;
@@ -288,22 +288,22 @@
     --opa-medium: 0.72;
     --opa-full: 1;
 
-    /* 毛玻璃参数：收敛浮层玻璃质感，避免组件散落字面 blur/saturate */
+    /* 毛玻璃引數：收斂浮層玻璃質感，避免元件散落字面 blur/saturate */
     --glass-blur: 10px;
     --glass-saturate: 112%;
     --glass-alpha: 0.94;
     --glass-alpha-strong: 0.97;
     --glass-border-alpha: 0.78;
 
-    /* 站点皮肤对登录页的组件级入口；经典皮肤保持原始值。 */
+    /* 站點皮膚對登入頁的元件級入口；經典皮膚保持原始值。 */
     --auth-page-bg: #08090c;
     --auth-panel-bg: #0b0c10;
     --auth-card-bg: rgba(18, 19, 24, 0.94);
     --auth-accent: rgba(147, 197, 253, 0.8);
     --auth-muted: rgba(255, 255, 255, 0.45);
 
-    /* 可配置皮肤的组件入口。经典主题保持这些项目原始值；自定义主题在
-       React 启动前由公开外观配置覆盖，页面和组件只消费这些语义变量。 */
+    /* 可配置皮膚的元件入口。經典主題保持這些專案原始值；自定義主題在
+       React 啟動前由公開外觀配置覆蓋，頁面和元件只消費這些語義變數。 */
     --icon-foreground: #3f3f46;
     --icon-muted: #a1a1aa;
     --icon-active: #171717;
@@ -320,19 +320,19 @@
     --theme-hover-lift: 1px;
 }
 
-/* prefers-reduced-motion 降级（对应 #99 三级降级策略 L1）*/
+/* prefers-reduced-motion 降級（對應 #99 三級降級策略 L1）*/
 @media (prefers-reduced-motion: reduce) {
     :root {
         --motion-scale: 0.3;
     }
 }
 
-/* 用户在应用内选择"无动效"时，JS 添加 .no-motion 类（L2 禁用）*/
+/* 使用者在應用內選擇"無動效"時，JS 新增 .no-motion 類（L2 停用）*/
 .no-motion {
     --motion-scale: 0;
 }
 
-/* infinite 装饰动画在 reduced-motion / no-motion 下降级（对应 #99 三级降级）*/
+/* infinite 裝飾動畫在 reduced-motion / no-motion 下降級（對應 #99 三級降級）*/
 @media (prefers-reduced-motion: reduce) {
     .canvas-connection-flow,
     .canvas-connection-comet,
@@ -451,7 +451,7 @@
     }
 }
 
-/* 动效计算函数（实际 duration = base * motion-scale）*/
+/* 動效計算函式（實際 duration = base * motion-scale）*/
 :root {
     --motion-dur-instant-calc: calc(var(--motion-dur-instant) * var(--motion-scale));
     --motion-dur-fast-calc: calc(var(--motion-dur-fast) * var(--motion-scale));
@@ -461,7 +461,7 @@
 }
 
 @theme inline {
-    /* 响应式断点（对应 #99 四断点体系：mobile/tablet/desktop/wide）*/
+    /* 響應式斷點（對應 #99 四斷點體系：mobile/tablet/desktop/wide）*/
     --breakpoint-tablet: 768px;
     --breakpoint-desktop: 1024px;
     --breakpoint-wide: 1440px;
@@ -508,8 +508,8 @@
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
 
-    /* === Design Token System 映射（对应 #96 三层架构）=== */
-    /* 色彩 — 节点类型色（可用 text-node-image / bg-node-video 等）*/
+    /* === Design Token System 對映（對應 #96 三層架構）=== */
+    /* 色彩 — 節點型別色（可用 text-node-image / bg-node-video 等）*/
     --color-node-image: var(--cn-type-image);
     --color-node-video: var(--cn-type-video);
     --color-node-text: var(--cn-type-text);
@@ -521,7 +521,7 @@
     --color-node-character: var(--cn-type-character);
     --color-node-skill: var(--cn-type-skill);
 
-    /* 色彩 — 状态色（可用 text-status-success / bg-status-error 等）*/
+    /* 色彩 — 狀態色（可用 text-status-success / bg-status-error 等）*/
     --color-status-success: var(--status-success);
     --color-status-error: var(--status-error);
     --color-status-loading: var(--status-loading);
@@ -534,17 +534,17 @@
     --color-surface-strong: var(--workspace-surface-strong);
     --color-workspace-glass: var(--workspace-glass-surface);
 
-    /* 色彩 — Canvas 语义色 */
+    /* 色彩 — Canvas 語義色 */
     --color-cn-text: var(--cn-text);
     --color-cn-muted: var(--cn-muted);
     --color-cn-faint: var(--cn-faint);
     --color-cn-stroke: var(--cn-stroke);
     --color-cn-fill: var(--cn-fill);
 
-    /* 字号
-       注意：Tailwind v4 的字号命名空间是 --text-*，--font-size-* 不被识别，
-       因此下面这组声明不会生成 text-micro / text-caption 之类的工具类。
-       组件请沿用既有惯例直接引用 Primitive：text-[var(--fs-label)]、text-[var(--fs-caption)] 等。 */
+    /* 字號
+       注意：Tailwind v4 的字號名稱空間是 --text-*，--font-size-* 不被識別，
+       因此下面這組宣告不會生成 text-micro / text-caption 之類的工具類。
+       元件請沿用既有慣例直接引用 Primitive：text-[var(--fs-label)]、text-[var(--fs-caption)] 等。 */
     --font-size-micro: var(--fs-micro);
     --font-size-tiny: var(--fs-tiny);
     --font-size-label: var(--fs-label);
@@ -565,7 +565,7 @@
     --ease-aceternity: var(--motion-ease-out);
     --ease-product-enter: cubic-bezier(0.16, 1, 0.3, 1);
     --workspace-canvas: var(--background);
-    /* 页面、导航和内容区共用同一底色；卡片/浮层才允许使用 surface token。 */
+    /* 頁面、導航和內容區共用同一底色；卡片/浮層才允許使用 surface token。 */
     --workspace-page: var(--workspace-canvas);
     --workspace-navigation: var(--workspace-page);
     --workspace-content: var(--workspace-page);
@@ -580,16 +580,16 @@
     --workspace-accent-soft: rgba(17, 17, 17, 0.07);
     --workspace-nav-active-bg: color-mix(in srgb, var(--workspace-accent) 12%, transparent);
     --workspace-nav-active-hover-bg: color-mix(in srgb, var(--workspace-accent) 16%, transparent);
-    --workspace-sidebar-width: 250px;        /* 侧栏展开宽度：较 208px 加宽 20% */
-    --workspace-sidebar-nav-width: 250px;    /* 展开态导航内容宽度 */
-    --workspace-sidebar-collapsed-width: 67px; /* 折叠态保留可发现的图标菜单轨 */
+    --workspace-sidebar-width: 250px;        /* 側欄展開寬度：較 208px 加寬 20% */
+    --workspace-sidebar-nav-width: 250px;    /* 展開態導航內容寬度 */
+    --workspace-sidebar-collapsed-width: 67px; /* 摺疊態保留可發現的圖示選單軌 */
 
-    --workspace-shell-gutter: 6px;        /* 工作区外壳画布留白与卡片间隙（组件 token）*/
+    --workspace-shell-gutter: 6px;        /* 工作區外殼畫布留白與卡片間隙（元件 token）*/
 
-    --workspace-card-gap: 4px;       /* 侧边栏与主区卡片之间间隙（组件 token）*/
+    --workspace-card-gap: 4px;       /* 側邊欄與主區卡片之間間隙（元件 token）*/
 
-    /* --- Semantic 层（引用 Primitive，随主题切换）--- */
-    /* 通用语义色（引用 Primitive neutral 色板）*/
+    /* --- Semantic 層（引用 Primitive，隨主題切換）--- */
+    /* 通用語義色（引用 Primitive neutral 色板）*/
     --bg: var(--color-neutral-0);
     --fg: var(--color-neutral-950);
     --border-semantic: var(--color-neutral-200);
@@ -599,27 +599,27 @@
     --surface-hover: rgba(17, 17, 17, 0.05);
     --surface-active: rgba(17, 17, 17, 0.09);
 
-    /* composio 文字层级（light 自推导；dark 值见 .dark 同区）*/
+    /* composio 文字層級（light 自推導；dark 值見 .dark 同區）*/
     --workspace-text-body: var(--color-neutral-600);  /* body 角色 */
     --workspace-text-muted: var(--color-neutral-500); /* muted 角色 */
     --workspace-text-faint: var(--color-neutral-400); /* muted-soft 角色 */
-    --workspace-canvas-deep: var(--color-neutral-0);  /* canvas-deep 角色（light 无更深处）*/
+    --workspace-canvas-deep: var(--color-neutral-0);  /* canvas-deep 角色（light 無更深處）*/
     --workspace-glass-surface: color-mix(in srgb, var(--workspace-surface) calc(var(--glass-alpha) * 100%), transparent);
     --workspace-glass-border: color-mix(in srgb, var(--workspace-border) calc(var(--glass-border-alpha) * 100%), transparent);
     --accent: var(--workspace-accent);
     --accent-soft: var(--workspace-accent-soft);
     --muted: var(--color-neutral-100);
 
-    /* 顶部常驻通知条（Layer 3 组件引用；文字恒为白）
-       四个 --notice-banner-surface-<type> 与通知类型一一对应，dark 覆盖见 .dark 语义覆盖区；
-       --notice-banner-surface 是「公告」的别名，供不区分类型的引用使用。*/
+    /* 頂部常駐通知條（Layer 3 元件引用；文字恆為白）
+       四個 --notice-banner-surface-<type> 與通知型別一一對應，dark 覆蓋見 .dark 語義覆蓋區；
+       --notice-banner-surface 是「公告」的別名，供不區分型別的引用使用。*/
     --notice-banner-surface-notice: var(--palette-banner-notice-500);
     --notice-banner-surface-activity: var(--palette-banner-activity-500);
     --notice-banner-surface-update: var(--palette-banner-update-500);
     --notice-banner-surface-warning: var(--palette-banner-warning-500);
     --notice-banner-surface: var(--notice-banner-surface-notice);
 
-    /* Canvas Theme 语义（从 CSS 变量反序列化到 TS 主题对象，对应 #96 决策3）*/
+    /* Canvas Theme 語義（從 CSS 變數反序列化到 TS 主題物件，對應 #96 決策3）*/
     --cn-text: var(--color-neutral-950);
     --cn-muted: var(--color-neutral-500);
     --cn-faint: var(--color-neutral-400);
@@ -628,7 +628,7 @@
     --cn-active-stroke: var(--workspace-accent);
     --cn-active-stroke-soft: var(--workspace-accent-soft);
 
-    /* Aceternity spatial 语义（对应 #96 决策3：CSS→TS 单向同步）*/
+    /* Aceternity spatial 語義（對應 #96 決策3：CSS→TS 單向同步）*/
     --cn-spatial-surface: var(--workspace-surface);
     --cn-spatial-surface-strong: var(--workspace-surface-strong);
     --cn-spatial-shadow: rgba(0, 0, 0, 0.12);
@@ -649,7 +649,7 @@
     --director-control-hover: rgba(255, 255, 255, 0.09);
     --director-swatch-inset: rgba(0, 0, 0, 0.18);
 
-    /* 编辑器工作台：圆角浮卡舞台底色 + 常亮强调色（明暗两主题同值，避免 workspace-accent 黑白反转）*/
+    /* 編輯器工作臺：圓角浮卡舞臺底色 + 常亮強調色（明暗兩主題同值，避免 workspace-accent 黑白反轉）*/
     --director-workspace-bg: #0b0d0f;
     --director-accent: #4f8cff;
     --director-accent-hover: #6ba0ff;
@@ -661,7 +661,7 @@
     --director-warning-soft: rgba(251, 191, 36, 0.14);
     --director-danger-soft: rgba(248, 113, 113, 0.14);
 
-    /* 节点类型色（引用 Primitive 节点色板，对应 #97 决策1 色带方案）*/
+    /* 節點型別色（引用 Primitive 節點色板，對應 #97 決策1 色帶方案）*/
     --cn-type-image: var(--palette-node-image);
     --cn-type-video: var(--palette-node-video);
     --cn-type-text: var(--palette-node-text);
@@ -673,7 +673,7 @@
     --cn-type-character: var(--palette-node-character);
     --cn-type-skill: var(--palette-node-skill);
 
-    /* 状态语义色 */
+    /* 狀態語義色 */
     --status-success: var(--palette-status-success);
     --status-error: var(--palette-status-error);
     --status-loading: var(--palette-status-loading);
@@ -743,7 +743,7 @@
     --workspace-navigation: var(--workspace-page);
     --workspace-content: var(--workspace-page);
     --workspace-surface: #181818;
-    --workspace-surface-strong: #2a2a2a; /* composio surface-strong（原 #222222 并入 elevated 语义）*/
+    --workspace-surface-strong: #2a2a2a; /* composio surface-strong（原 #222222 併入 elevated 語義）*/
     --workspace-border: #222222;
     --workspace-border-strong: #333333;
     --workspace-grid-line: rgba(255, 255, 255, 0.038);
@@ -767,7 +767,7 @@
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
 
-    /* --- Semantic 层 dark 覆盖 --- */
+    /* --- Semantic 層 dark 覆蓋 --- */
     --bg: var(--color-neutral-950);
     --fg: var(--color-neutral-50);
     --border-semantic: var(--color-neutral-800);
@@ -778,14 +778,14 @@
     --surface-active: rgba(255, 255, 255, 0.12);
     --muted: var(--color-neutral-900);
 
-    /* 顶部常驻通知条：暗色下四种类型统一压暗，白字对比度约 8.5:1 */
+    /* 頂部常駐通知條：暗色下四種型別統一壓暗，白字對比度約 8.5:1 */
     --notice-banner-surface-notice: var(--palette-banner-notice-700);
     --notice-banner-surface-activity: var(--palette-banner-activity-700);
     --notice-banner-surface-update: var(--palette-banner-update-700);
     --notice-banner-surface-warning: var(--palette-banner-warning-700);
     --notice-banner-surface: var(--notice-banner-surface-notice);
 
-    /* composio 文字层级（dark 直取）*/
+    /* composio 文字層級（dark 直取）*/
     --workspace-text-body: #a8a8a8;  /* body（tokens.json text/body）*/
     --workspace-text-muted: #888888; /* muted（tokens.json text/muted）*/
     --workspace-text-faint: #666666; /* muted-soft（tokens.json text/muted-soft）*/
@@ -819,7 +819,7 @@
     --director-control-hover: rgba(255, 255, 255, 0.09);
     --director-swatch-inset: rgba(0, 0, 0, 0.18);
 
-    /* 编辑器工作台：圆角浮卡舞台底色 + 常亮强调色（明暗两主题同值，避免 workspace-accent 黑白反转）*/
+    /* 編輯器工作臺：圓角浮卡舞臺底色 + 常亮強調色（明暗兩主題同值，避免 workspace-accent 黑白反轉）*/
     --director-workspace-bg: #0b0d0f;
     --director-accent: #4f8cff;
     --director-accent-hover: #6ba0ff;
@@ -833,7 +833,7 @@
 }
 
 
-/* 剪辑工作台：跟随明暗主题的表面（作用域覆盖 director 常暗 token；canvas 导演工作台全局值不受影响）*/
+/* 剪輯工作臺：跟隨明暗主題的表面（作用域覆蓋 director 常暗 token；canvas 導演工作臺全域性值不受影響）*/
 .editor-workbench {
     --director-sequencer-surface: #fbfcfe;
     --director-sequencer-surface-raised: #f1f4f7;
@@ -863,7 +863,7 @@
     --director-workspace-bg: #0b0d0f;
 }
 
-/* 全屏编辑：workbench 全屏时铺满视口（背景沿用工作区底色） */
+/* 全屏編輯：workbench 全屏時鋪滿視口（背景沿用工作區底色） */
 .editor-workbench:fullscreen {
     width: 100vw;
     height: 100vh;
@@ -873,10 +873,10 @@
 
 .dark {
 
-    /* --- Shadow dark 覆盖（暗色下黑影不可见，改用白色微影制造抬升感，审计 D4/P2-D2）---
-       组件 token（--node-shadow/--dock-shadow/--panel-shadow/--modal-shadow）均引用
-       var(--shadow-*)，此处覆盖自动级联。--cn-spatial-shadow（内联 boxShadow 用）已有
-       暗色变体(0.4)，保留不动。 */
+    /* --- Shadow dark 覆蓋（暗色下黑影不可見，改用白色微影製造抬升感，審計 D4/P2-D2）---
+       元件 token（--node-shadow/--dock-shadow/--panel-shadow/--modal-shadow）均引用
+       var(--shadow-*)，此處覆蓋自動級聯。--cn-spatial-shadow（內聯 boxShadow 用）已有
+       暗色變體(0.4)，保留不動。 */
     --shadow-xs: 0 1px 2px rgba(255, 255, 255, 0.04);
     --shadow-sm: 0 2px 4px rgba(255, 255, 255, 0.05);
     --shadow-md: 0 4px 12px rgba(255, 255, 255, 0.06);
@@ -884,7 +884,7 @@
     --shadow-xl: 0 16px 40px rgba(255, 255, 255, 0.08);
     --shadow-2xl: 0 24px 60px rgba(255, 255, 255, 0.1);
 
-    /* 抬升 token：暗色下继续用黑影压深，只把 hairline 换成浅色描边。 */
+    /* 抬升 token：暗色下繼續用黑影壓深，只把 hairline 換成淺色描邊。 */
     --elevation-hairline: inset 0 0 0 1px rgba(255, 255, 255, 0.085);
     --elevation-card: 0 1px 2px rgba(0, 0, 0, 0.4);
     --elevation-card-hover: 0 12px 30px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.32);
@@ -898,7 +898,7 @@
     --project-library-icon-surface: #0d0d0d;
     --project-library-shadow: none;
 
-    /* === 新卡片系统 Token - Dark（对应 docs/ui-design-system.md）=== */
+    /* === 新卡片系統 Token - Dark（對應 docs/ui-design-system.md）=== */
     --card-surface: #171717;
     --card-surface-hover: #1e1e1e;
     --card-surface-raised: #252525;
@@ -951,10 +951,10 @@
 }
 
 /* -------------------------------------------------------------------------
-   Layer 3: Component — 引用 Semantic，某组件专属
+   Layer 3: Component — 引用 Semantic，某元件專屬
    ------------------------------------------------------------------------- */
 :root {
-    /* 插件页也消费统一的主题开关合同，不再维护一套脱离主题的固定色。 */
+    /* 外掛頁也消費統一的主題開關合同，不再維護一套脫離主題的固定色。 */
     --plugin-switch-checked-bg: var(--control-switch-checked-bg);
     --plugin-switch-checked-hover-bg: var(--control-switch-checked-hover-bg);
     --plugin-switch-checked-handle: var(--control-switch-checked-handle);
@@ -962,7 +962,7 @@
     --plugin-switch-off-hover-bg: var(--control-switch-off-hover-bg);
     --plugin-switch-off-handle: var(--control-switch-off-handle);
 
-    /* Library 卡片组件：所有作品库共用同一表面和状态合同。 */
+    /* Library 卡片元件：所有作品庫共用同一表面和狀態合同。 */
     --library-surface: var(--card-surface);
     --library-surface-hover: var(--card-surface-hover);
     --library-cover-surface: var(--card-surface-raised);
@@ -970,7 +970,7 @@
     --library-hover-offset: -2px;
     --library-active-offset: -1px;
 
-    /* Dock 组件（FloatingDock、悬停工具栏，对应 #95 工具栏方案）*/
+    /* Dock 元件（FloatingDock、懸停工具欄，對應 #95 工具欄方案）*/
     --dock-radius: var(--r-xl);            /* 14px */
     --dock-padding: var(--space-2);       /* 8px */
     --dock-icon-size: 32px;
@@ -985,33 +985,33 @@
     --dock-radius-compact: var(--r-dock-compact);
     --dock-tooltip-z: 140;
     --dock-precision-width: var(--space-12);
-    --dock-z-popover: 30;                 /* dock 子面板在 toolbar 根 stacking context 内的层级（见 ADR-001）*/
-    --dock-switch-track: #000000;         /* 抓手/框选胶囊轨道：纯黑，和工具栏表面分开 */
+    --dock-z-popover: 30;                 /* dock 子面板在 toolbar 根 stacking context 內的層級（見 ADR-001）*/
+    --dock-switch-track: #000000;         /* 抓手/框選膠囊軌道：純黑，和工具欄表面分開 */
     --dock-switch-thumb: #ffffff;
-    --dock-switch-thumb-text: #000000;    /* 选中图标落在白圆上，用纯黑描边避免发灰 */
+    --dock-switch-thumb-text: #000000;    /* 選中圖示落在白圓上，用純黑描邊避免發灰 */
 
-    /* 页面顶部栏（PageHeader / 工作台头部）*/
+    /* 頁面頂部欄（PageHeader / 工作臺頭部）*/
     --page-topbar-h: 64px;
     --page-topbar-px: var(--space-4);
     --page-topbar-surface: var(--bg-secondary);
     --page-topbar-border: var(--workspace-border);
     --canvas-topbar-surface: var(--workspace-glass-surface);
-    /* Canvas 创建菜单：固定行高保证图标、徽标和单行标签互不挤占 */
+    /* Canvas 建立選單：固定行高保證圖示、徽標和單行標籤互不擠佔 */
     --canvas-create-node-height: var(--space-16);
     --canvas-create-resource-height: var(--space-8);
 
-    /* Node 组件：节点首先是内容容器，常态不使用卡片投影或发光。 */
+    /* Node 元件：節點首先是內容容器，常態不使用卡片投影或發光。 */
     --node-radius: var(--r-lg);           /* 12px */
     --node-header-height: 24px;
     --node-title-fs: var(--fs-label);     /* 11px */
     --node-badge-fs: var(--fs-tiny);      /* 10px */
-    --node-type-strip-width: 3px;         /* 色带宽度 */
-    --node-type-badge-size: 20px;         /* 图标徽章尺寸 */
-    --node-z-content: 30;                 /* 节点遮罩层（stacking context 内，见 ADR-001）*/
-    --node-z-overlay: 40;                 /* 节点角标/按钮层 */
-    --node-z-handle: 50;                  /* 节点 resize handle 层 */
+    --node-type-strip-width: 3px;         /* 色頻寬度 */
+    --node-type-badge-size: 20px;         /* 圖示徽章尺寸 */
+    --node-z-content: 30;                 /* 節點遮罩層（stacking context 內，見 ADR-001）*/
+    --node-z-overlay: 40;                 /* 節點角標/按鈕層 */
+    --node-z-handle: 50;                  /* 節點 resize handle 層 */
 
-    /* 节点上下文生成器：一层浮动表面，内部仅靠明度和间距组织信息。 */
+    /* 節點上下文生成器：一層浮動表面，內部僅靠明度和間距組織資訊。 */
     --canvas-composer-radius: var(--r-lg);
     --canvas-composer-surface: var(--workspace-surface-strong);
     --canvas-composer-control-surface: color-mix(in srgb, var(--foreground) 5%, transparent);
@@ -1028,7 +1028,7 @@
     --canvas-mention-chip-offset-y: 0.14em;
     --canvas-reference-chip-size: 44px;
 
-    /* Modal 组件（对话框，对应 #98 面板层级）*/
+    /* Modal 元件（對話方塊，對應 #98 面板層級）*/
     --modal-radius: var(--r-lg);
     --modal-width-compact: 480px;
     --modal-width-standard: 640px;
@@ -1043,7 +1043,7 @@
     --style-center-sidebar-width: 184px;
     --style-center-search-width: 320px;
 
-    /* Panel 组件（侧边面板，对应 #98 五层体系 L2）*/
+    /* Panel 元件（側邊面板，對應 #98 五層體系 L2）*/
     --panel-radius: var(--r-2xl);         /* 16px */
     --panel-padding: var(--space-4);      /* 16px */
     --panel-shadow: var(--shadow-lg);
@@ -1063,39 +1063,39 @@
     --director-pose-button-height: 28px;
     --director-color-swatch-size: var(--space-6);
 
-    /* Canvas 布局（画布页浮层定位，对应审计 P0-8.1/P1-2.1）*/
-    --canvas-sidebar-width: 232px;        /* 项目侧栏宽度（短剧模式）*/
-    --canvas-panel-width: min(332px, calc(100vw - 24px)); /* 浮动面板默认宽度（活动任务等）*/
+    /* Canvas 佈局（畫布頁浮層定位，對應審計 P0-8.1/P1-2.1）*/
+    --canvas-sidebar-width: 232px;        /* 專案側欄寬度（短劇模式）*/
+    --canvas-panel-width: min(332px, calc(100vw - 24px)); /* 浮動面板預設寬度（活動任務等）*/
     --video-segment-preview-max-height: min(46vh, 480px);
 
-    /* Prompt 面板（对应 #98 决策2 渐进式三区）*/
+    /* Prompt 面板（對應 #98 決策2 漸進式三區）*/
     --prompt-panel-max-height: min(70vh, 640px);
-    --prompt-panel-section-fs: var(--fs-body);     /* 14px A区 */
-    --prompt-panel-caption-fs: var(--fs-caption);  /* 12px B区 */
-    --prompt-panel-label-fs: var(--fs-label);      /* 11px 标签 */
+    --prompt-panel-section-fs: var(--fs-body);     /* 14px A區 */
+    --prompt-panel-caption-fs: var(--fs-caption);  /* 12px B區 */
+    --prompt-panel-label-fs: var(--fs-label);      /* 11px 標籤 */
     --settings-model-option-min-height: 76px;
-    --prompt-panel-heading-fs: var(--fs-heading);  /* 16px 区标题 */
+    --prompt-panel-heading-fs: var(--fs-heading);  /* 16px 區標題 */
     --creation-media-pending-max-width: 320px;
 
-    /* 进度条（对应 #98 决策3 任务进度）*/
+    /* 進度條（對應 #98 決策3 任務進度）*/
     --progress-bar-height: 6px;
     --progress-bar-radius: var(--r-xs);   /* 3px */
     --progress-bar-fill: var(--status-loading);
     --progress-bar-fill-success: var(--status-success);
     --progress-bar-fill-error: var(--status-error);
 
-    /* 缩放控制（对应 #95 决策5）*/
+    /* 縮放控制（對應 #95 決策5）*/
     --zoom-control-min: 0.05;
     --zoom-control-max: 2;
     --zoom-control-step: 0.1;
 
-    /* 短剧流程引导步骤（里程碑节点 + 状态轨道）*/
-    --flow-step-node: var(--space-5);             /* 20px 完成/待办节点直径 */
-    --flow-step-node-current: var(--space-6);     /* 24px 当前节点直径 */
-    --flow-step-gap: var(--space-1);              /* 4px 节点与标签间距 */
-    --flow-step-track-height: var(--stroke-2);    /* 2px 状态轨道高 */
-    --flow-step-track-width: var(--space-5);      /* 20px 轨道段长 */
-    --flow-step-current-glow: 0 0 0 4px var(--cn-active-stroke-soft); /* 当前节点光晕 */
+    /* 短劇流程引導步驟（里程碑節點 + 狀態軌道）*/
+    --flow-step-node: var(--space-5);             /* 20px 完成/待辦節點直徑 */
+    --flow-step-node-current: var(--space-6);     /* 24px 當前節點直徑 */
+    --flow-step-gap: var(--space-1);              /* 4px 節點與標籤間距 */
+    --flow-step-track-height: var(--stroke-2);    /* 2px 狀態軌道高 */
+    --flow-step-track-width: var(--space-5);      /* 20px 軌道段長 */
+    --flow-step-current-glow: 0 0 0 4px var(--cn-active-stroke-soft); /* 當前節點光暈 */
 }
 
 @layer base {
@@ -1136,7 +1136,7 @@
     }
 }
 
-/* CodeMirror 使用运行时注入样式，需在全局覆盖中绑定项目主题 token。 */
+/* CodeMirror 使用執行時注入樣式，需在全域性覆蓋中繫結專案主題 token。 */
 .prompt-code-editor,
 .prompt-code-editor .cm-editor {
     width: 100%;
@@ -1191,7 +1191,7 @@
 
 @layer utilities {
 
-    /* --- composio 排版语义类（tokens.json typography 14 档；abcDiatype → Inter，code → JetBrains Mono）--- */
+    /* --- composio 排版語義類（tokens.json typography 14 檔；abcDiatype → Inter，code → JetBrains Mono）--- */
     .typ-display-mega { font-family: var(--font-sans); font-size: var(--typ-display-mega); line-height: 1.05; font-weight: 500; letter-spacing: -2.16px; }
     .typ-display-xl { font-family: var(--font-sans); font-size: var(--typ-display-xl); line-height: 1.05; font-weight: 500; letter-spacing: -1.68px; }
     .typ-display-lg { font-family: var(--font-sans); font-size: var(--typ-display-lg); line-height: 1.1; font-weight: 500; letter-spacing: -1.32px; }
@@ -1254,7 +1254,7 @@
     }
 
 
-    /* 侧栏导航子项展开引导线：替代每组子项自行维护的分割线 */
+    /* 側欄導航子項展開引導線：替代每組子項自行維護的分割線 */
     .app-workspace-nav-guide-line {
         position: absolute;
         top: 0;
@@ -1264,7 +1264,7 @@
         pointer-events: none;
     }
 
-    /* 分组标题：小号大写标签，弱化但可读；有标题的分组支持折叠，padding/间距由折叠按钮接管 */
+    /* 分組標題：小號大寫標籤，弱化但可讀；有標題的分組支援摺疊，padding/間距由摺疊按鈕接管 */
     .app-workspace-nav-group-label {
         display: block;
         font-size: var(--fs-label);
@@ -1304,7 +1304,7 @@
         color: color-mix(in srgb, var(--foreground) 70%, transparent);
     }
 
-    /* 工作区切换器下拉浮层 */
+    /* 工作區切換器下拉浮層 */
     .app-workspace-nav-popover {
         box-shadow: none;
     }
@@ -1336,7 +1336,7 @@
         --workspace-overlay-shadow: 0 30px 84px rgba(0, 0, 0, 0.62), 0 8px 24px rgba(0, 0, 0, 0.34);
     }
 
-    /* 全局轻量通知与消息提示框 */
+    /* 全域性輕量通知與訊息提示框 */
     .ant-message-notice .ant-message-notice-content,
     :where(.dark, [data-theme="dark"]) .ant-message-notice .ant-message-notice-content {
         color: var(--foreground) !important;
@@ -1406,7 +1406,7 @@
         border-radius: 8px !important;
     }
 
-    /* 展开菜单（下拉/弹出）取消阴影：层级由边框 + 背景对比表达 */
+    /* 展開選單（下拉/彈出）取消陰影：層級由邊框 + 背景對比表達 */
     body.app-spatial-overlays :where(.ant-dropdown-menu, .ant-select-dropdown, .ant-popover-container, .ant-cascader-menus, .ant-mentions-dropdown) {
         box-shadow: none !important;
     }
@@ -1478,7 +1478,7 @@
 
 
 
-    /* 工作区保留滚轮与触控板滚动，只隐藏会形成额外竖向分割的浏览器轨道。 */
+    /* 工作區保留滾輪與觸控板滾動，只隱藏會形成額外豎向分割的瀏覽器軌道。 */
     .app-spatial-workspace .app-workspace-scroll {
         scrollbar-width: none;
     }
@@ -1567,7 +1567,7 @@
 
     @media (max-width: 639px) {
 
-        /* 窄屏下侧栏常驻，收缩到图标主轨，避免遮挡主内容 */
+        /* 窄屏下側欄常駐，收縮到圖示主軌，避免遮擋主內容 */
         .app-workspace-shell.is-spatial .app-workspace-sidebar.is-collapsed {
             width: 0 !important;
         }
@@ -1596,7 +1596,7 @@
     }
 
     .app-user-workspace {
-        /* 用户端工作区：浅灰画布 + 白色内容面，弱化后台式分隔线。 */
+        /* 使用者端工作區：淺灰畫布 + 白色內容面，弱化後臺式分隔線。 */
         --workspace-canvas: #f4f4f5;
         --workspace-page: var(--workspace-canvas);
         --workspace-navigation: #efeff0;
@@ -1637,7 +1637,7 @@
         --workspace-nav-active-hover-bg: rgba(255, 255, 255, 0.13);
     }
 
-    /* 画布编辑器保持独立的全屏工作区，但沿用用户端的安全区和控件密度。 */
+    /* 畫布編輯器保持獨立的全屏工作區，但沿用使用者端的安全區和控制元件密度。 */
     .app-user-workspace.app-spatial-workspace {
         --canvas-topbar-h: 64px;
         --canvas-inset-x: 16px;
@@ -1645,7 +1645,7 @@
         --canvas-dock-popover-offset: 50px;
     }
 
-    /* 画布编辑器和管理后台不继承用户端的圆角卡片外壳。 */
+    /* 畫布編輯器和管理後臺不繼承使用者端的圓角卡片外殼。 */
     .app-user-workspace .app-workspace-sidebar {
         background: var(--workspace-sidebar);
     }
@@ -1710,7 +1710,7 @@
         background: var(--workspace-page);
     }
 
-    /* 画布编辑器与运营后台（hideChrome 契约）：保持全屏连体，不套圆角卡片 */
+    /* 畫布編輯器與運營後臺（hideChrome 契約）：保持全屏連體，不套圓角卡片 */
     .app-workspace-shell:not(.is-spatial) {
         padding: 0;
     }
@@ -1721,7 +1721,7 @@
         box-shadow: none;
     }
 
-    /* 工作区外壳通过表面明度与间距分层，避免边框和内高光叠加造成线条感。 */
+    /* 工作區外殼通過表面明度與間距分層，避免邊框和內高光疊加造成線條感。 */
     .app-workspace-sidebar,
     .app-workspace-stage {
         border: 0;
@@ -1878,7 +1878,7 @@
         white-space: nowrap;
     }
 
-    /* 顶部操作区复用底部 FloatingDock 的命令状态，保持两组浮层在不同主题下有同一套反馈。 */
+    /* 頂部操作區複用底部 FloatingDock 的命令狀態，保持兩組浮層在不同主題下有同一套反饋。 */
     .canvas-topbar-action {
         height: 28px !important;
         min-height: 28px !important;
@@ -1899,12 +1899,12 @@
         transform: translateY(-1px) rotate(-8deg);
     }
 
-    /* 原版顶栏只保留一个轻量同步指示；详细错误、草稿下载和版本恢复仍在点击弹层内。 */
+    /* 原版頂欄只保留一個輕量同步指示；詳細錯誤、草稿下載和版本恢復仍在點選彈層內。 */
     .canvas-topbar .canvas-sync-status-label {
         display: none;
     }
 
-    .canvas-topbar [aria-label^="画布保存状态"] {
+    .canvas-topbar [aria-label^="畫布儲存狀態"] {
         width: 28px;
         min-width: 28px;
         padding-inline: 0;
@@ -2170,7 +2170,7 @@
         pointer-events: none;
     }
 
-        /* 原版项目簇右侧在画布切换按钮后保留约 12px 呼吸空间。 */
+        /* 原版專案簇右側在畫布切換按鈕後保留約 12px 呼吸空間。 */
         .canvas-topbar-project-cluster { padding-right: 14px; }
         .canvas-topbar-utility-cluster { padding-inline: 2px; }
         .canvas-topbar-utility-cluster .canvas-topbar-utility-button {
@@ -2179,12 +2179,12 @@
         }
     }
 
-    /* Agent 打开时，顶栏控制组和底部 Dock 共享剩余画布宽度，避免被右侧面板遮住。 */
+    /* Agent 開啟時，頂欄控制組和底部 Dock 共享剩餘畫布寬度，避免被右側面板遮住。 */
     .canvas-topbar[style*="padding-right"] > .canvas-topbar-cluster:last-child {
         margin-right: 0;
     }
 
-    /* 右侧命令组在窄屏保持可达，不挤压项目标题，也不制造横向溢出。 */
+    /* 右側命令組在窄屏保持可達，不擠壓專案標題，也不製造橫向溢位。 */
     .canvas-topbar > .canvas-topbar-cluster:last-child {
         min-width: 0;
         max-width: min(52vw, 620px);
@@ -2196,16 +2196,16 @@
         display: none;
     }
 
-    /* Agent 展开后保留核心动作，其他入口仍可从画布菜单访问，避免顶部工具组挤压画布。 */
-    .canvas-topbar[data-agent-open="true"] .canvas-topbar-tools-cluster > :has([aria-label="搜索画布节点"]),
-    .canvas-topbar[data-agent-open="true"] .canvas-topbar-tools-cluster > :has([aria-label="短剧流程"]),
-    .canvas-topbar[data-agent-open="true"] .canvas-topbar-tools-cluster > :has([aria-label="打开云端 Agent"]),
-    .canvas-topbar[data-agent-open="true"] .canvas-topbar-tools-cluster > :has([aria-label="打开 Agent"]) {
+    /* Agent 展開後保留核心動作，其他入口仍可從畫布選單訪問，避免頂部工具組擠壓畫布。 */
+    .canvas-topbar[data-agent-open="true"] .canvas-topbar-tools-cluster > :has([aria-label="搜尋畫布節點"]),
+    .canvas-topbar[data-agent-open="true"] .canvas-topbar-tools-cluster > :has([aria-label="短劇流程"]),
+    .canvas-topbar[data-agent-open="true"] .canvas-topbar-tools-cluster > :has([aria-label="開啟雲端 Agent"]),
+    .canvas-topbar[data-agent-open="true"] .canvas-topbar-tools-cluster > :has([aria-label="開啟 Agent"]) {
         display: none;
     }
 
-    /* 原版在 Agent 停靠后仍保留右上角核心动作，但会把图标压到 32px 高，
-       给画布标题和停靠面板之间留出稳定的呼吸区。 */
+    /* 原版在 Agent 停靠後仍保留右上角核心動作，但會把圖示壓到 32px 高，
+       給畫布標題和停靠面板之間留出穩定的呼吸區。 */
     .canvas-topbar[data-agent-open="true"] .canvas-topbar-tools-cluster .canvas-topbar-action {
         height: 32px !important;
         min-height: 32px !important;
@@ -2238,7 +2238,7 @@
         width: fit-content;
     }
 
-    /* Agent 停靠态保留节点内容与连接点，收起会遮挡节点内容的内联编辑按钮。 */
+    /* Agent 停靠態保留節點內容與連線點，收起會遮擋節點內容的內聯編輯按鈕。 */
     .canvas-editor-shell[data-agent-open="true"] .canvas-node-inline-action,
     .canvas-editor-shell[data-agent-open="true"] .canvas-node-inline-edit {
         display: none;
@@ -2268,8 +2268,8 @@
             display: none;
         }
 
-        /* 时间线在窄屏保持完整信息层级：预览和片段信息上下排列，
-           工具条允许横向查看而不是把末尾操作静默裁掉。 */
+        /* 時間線在窄屏保持完整資訊層級：預覽和片段資訊上下排列，
+           工具條允許橫向檢視而不是把末尾操作靜默裁掉。 */
         .canvas-timeline-dialog .canvas-timeline-toolbar {
             overflow-x: auto;
             overflow-y: hidden;
@@ -2287,7 +2287,7 @@
         }
     }
 
-    /* 画布项目侧栏：把章节、画风和资产入口收敛成低干扰的创作导航。 */
+    /* 畫布專案側欄：把章節、畫風和資產入口收斂成低幹擾的創作導航。 */
     .canvas-project-sidebar {
         --canvas-sidebar-surface: color-mix(in srgb, var(--background) 94%, var(--foreground) 6%);
         width: var(--canvas-sidebar-width);
@@ -2488,7 +2488,7 @@
         stroke-width: 1.8;
     }
 
-    /* 账户触发按钮为身份标识，占位图标默认不弱化（与其他工具图标区分） */
+    /* 賬戶觸發按鈕為身份標識，佔點陣圖示預設不弱化（與其他工具圖示區分） */
     .app-workspace-account-trigger > span > svg {
         color: var(--foreground);
     }
@@ -2503,7 +2503,7 @@
         outline-offset: -2px;
     }
 
-    /* 品牌字标：弱化但可读，hover 加深 */
+    /* 品牌字標：弱化但可讀，hover 加深 */
     .app-workspace-brand-wordmark {
         color: color-mix(in srgb, var(--foreground) 78%, transparent);
         letter-spacing: 0.01em;
@@ -2513,7 +2513,7 @@
         position: relative;
     }
 
-    /* 侧栏激活项只保留底色高亮，不使用左侧竖条（用户决策：选中不画竖线）。 */
+    /* 側欄啟用項只保留底色高亮，不使用左側豎條（使用者決策：選中不畫豎線）。 */
     .app-workspace-nav-link.is-active {
         background: var(--workspace-nav-active-bg);
         color: var(--foreground);
@@ -2544,18 +2544,18 @@
         color: var(--foreground);
     }
 
-    /* Sidebar custom scrollbar - 隐身融入设计 */
+    /* Sidebar custom scrollbar - 隱身融入設計 */
     .app-workspace-sidebar-scroll-area {
-        position: relative; /* 为渐变遮罩定位 */
+        position: relative; /* 為漸變遮罩定位 */
         overflow-y: auto;
         scrollbar-width: thin;
-        scrollbar-color: transparent transparent; /* 默认完全隐藏 */
+        scrollbar-color: transparent transparent; /* 預設完全隱藏 */
         transition: scrollbar-color var(--motion-state) ease-in-out;
     }
 
     .app-workspace-sidebar-scroll-area::-webkit-scrollbar {
         width: 4px;
-        background: transparent; /* 默认轨道透明 */
+        background: transparent; /* 預設軌道透明 */
     }
 
     .app-workspace-sidebar-scroll-area::-webkit-scrollbar-track {
@@ -2563,12 +2563,12 @@
     }
 
     .app-workspace-sidebar-scroll-area::-webkit-scrollbar-thumb {
-        background: transparent; /* 默认滑块透明 */
+        background: transparent; /* 預設滑塊透明 */
         border-radius: 9999px;
         transition: background-color var(--motion-state) ease-in-out;
     }
 
-    /* Hover state - 显示滚动条 */
+    /* Hover state - 顯示捲軸 */
     .app-workspace-sidebar:hover .app-workspace-sidebar-scroll-area,
     .app-workspace-sidebar-scroll-area:hover {
         scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
@@ -2590,7 +2590,7 @@
         background-color: rgba(255, 255, 255, 0.15);
     }
 
-    /* Scroll fade gradients - 光影提示设计 */
+    /* Scroll fade gradients - 光影提示設計 */
     .app-workspace-sidebar-scroll-area.has-top-fade::before,
     .app-workspace-sidebar-scroll-area.has-bottom-fade::after {
         content: "";
@@ -2598,7 +2598,7 @@
         left: 0;
         right: 0;
         height: 12px;
-        pointer-events: none; /* 不阻塞点击事件 */
+        pointer-events: none; /* 不阻塞點選事件 */
         z-index: 10;
     }
 
@@ -2625,7 +2625,7 @@
         border-radius: 4px;
     }
 
-    /* 全屏仅用于应用启动；骨架延续真实工作区结构，路由加载只占内容舞台。 */
+    /* 全屏僅用於應用啟動；骨架延續真實工作區結構，路由載入只佔內容舞臺。 */
     .full-screen-loader {
         position: fixed;
         inset: 0;
@@ -2787,7 +2787,7 @@
         .workspace-route-loader { transition: none; }
     }
 
-    /* 启动页以品牌标记和创作流程为视觉中心，不模拟尚未出现的工作区骨架。 */
+    /* 啟動頁以品牌標記和創作流程為視覺中心，不模擬尚未出現的工作區骨架。 */
     .full-screen-loader {
         display: grid;
         place-items: center;
@@ -2985,8 +2985,8 @@
         transform: scale(0.98);
     }
 
-    /* aria-pressed 表示持久选择，不是主操作。即使调用方仍传 primary，
-       也统一降为软选中态，避免暗色主题出现成排白色按钮。 */
+    /* aria-pressed 表示持久選擇，不是主操作。即使呼叫方仍傳 primary，
+       也統一降為軟選中態，避免暗色主題出現成排白色按鈕。 */
     :where(.ant-btn[aria-pressed="true"]) {
         border-color: var(--control-selected-border) !important;
         background: var(--control-selected-bg) !important;
@@ -2999,8 +2999,8 @@
         color: var(--control-selected-fg) !important;
     }
 
-    /* AntD Switch 只有一个 handleBg token，无法分别表达开/关滑块颜色。
-       这里是全应用唯一的状态配对层，确保任何容器和 Portal 中都保持对比。 */
+    /* AntD Switch 只有一個 handleBg token，無法分別表達開/關滑塊顏色。
+       這裡是全應用唯一的狀態配對層，確保任何容器和 Portal 中都保持對比。 */
     :where(.ant-switch.ant-switch-checked) {
         background: var(--control-switch-checked-bg) !important;
         box-shadow:
@@ -3029,7 +3029,7 @@
         background: var(--control-switch-off-handle) !important;
     }
 
-    /* 自研 Switch（data-state on/off）上下文语义覆盖：插件开关保持绿/中性双态。 */
+    /* 自研 Switch（data-state on/off）上下文語義覆蓋：外掛開關保持綠/中性雙態。 */
     :where([data-slot="switch"].plugin-state-switch[data-state="on"]) {
         background: var(--plugin-switch-checked-bg) !important;
     }
@@ -3973,7 +3973,7 @@
         to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* 创作首页使用独立的“编辑面 + 操作 Dock”结构，避免继承画布的面板语言。 */
+    /* 創作首頁使用獨立的“編輯面 + 操作 Dock”結構，避免繼承畫布的面板語言。 */
     .creation-home {
         --creation-bg: var(--workspace-page);
         --creation-surface: #131519;
@@ -4214,7 +4214,7 @@ html:not(.dark) .creation-studio-control:hover,
     .creation-studio-submit:disabled { cursor: not-allowed; background: #2d3139; color: #5a606b; }
     .creation-studio-submit.is-stopping { background: #bd4949; color: white; }
 
-    /* 对话态不沿用空态大面板：编辑、控制与消息流各自保持紧凑的固定职责。 */
+    /* 對話態不沿用空態大面板：編輯、控制與訊息流各自保持緊湊的固定職責。 */
     .creation-empty-workspace {
         width: min(1120px, calc(100% - 64px));
         justify-content: center;
@@ -4722,7 +4722,7 @@ html:not(.dark) .creation-studio-control:hover,
         transform: translateY(-2px);
     }
 
-    /* 画布库采用电影档案的浏览节奏：搜索轻、画面重、信息退后。 */
+    /* 畫布庫採用電影檔案的瀏覽節奏：搜尋輕、畫面重、資訊退後。 */
     .canvas-library-page .app-page-header {
         border-bottom: 0;
         padding-bottom: 4px;
@@ -4774,14 +4774,14 @@ html:not(.dark) .creation-studio-control:hover,
     .canvas-library-count { display: flex; align-items: baseline; gap: 6px; justify-self: end; color: color-mix(in srgb, var(--foreground) 38%, transparent); font-size: var(--fs-micro); white-space: nowrap; }
     .canvas-library-count strong { color: var(--foreground); font-size: var(--fs-heading-lg); font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: .02em; }
 
-    /* 画布库使用稳定的最小列宽；卡片不靠负边距或溢出制造层叠。 */
+    /* 畫布庫使用穩定的最小列寬；卡片不靠負邊距或溢位製造層疊。 */
     .canvas-library-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); align-items: stretch; gap: var(--space-6) var(--space-5); }
     .canvas-library-page .app-pagination-bar { position: static; margin-top: var(--space-4); border: 0; background: transparent; padding: var(--space-1-half) var(--space-2); backdrop-filter: none; }
 
-    /* === 画布卡片重构（对应 docs/ui-design-system.md）=== */
+    /* === 畫布卡片重構（對應 docs/ui-design-system.md）=== */
     .app-canvas-project-card { min-width: 0; cursor: pointer; color: var(--foreground); transition: transform var(--motion-state) var(--motion-ease-out), background-color var(--motion-state) ease-out; }
 
-    /* 创建卡与内容卡使用相同表面和克制位移。 */
+    /* 建立卡與內容卡使用相同表面和剋制位移。 */
     .app-canvas-create-card { display: flex; min-width: 0; cursor: pointer; flex-direction: column; align-items: stretch; border: 0; border-radius: var(--r-lg); background: var(--card-surface); padding: 0; color: var(--foreground); text-align: left; transition: transform var(--motion-state) var(--motion-ease-out), background-color var(--motion-state) ease-out; }
     .app-canvas-create-card:hover:not(:disabled), .app-canvas-create-card:focus-visible { background: var(--card-surface-hover); transform: translateY(-2px); }
     .app-canvas-create-card:active:not(:disabled) { transform: translateY(-1px) scale(0.995); transition-duration: var(--motion-instant); }
@@ -4794,7 +4794,7 @@ html:not(.dark) .creation-studio-control:hover,
     .app-canvas-create-meta { margin: 6px 14px 16px; color: color-mix(in srgb, var(--foreground) 38%, transparent); font-size: var(--fs-caption); }
     .app-canvas-create-card:disabled { cursor: not-allowed; opacity: .5; }
 
-    /* 画布卡片依靠表面明度表达 hover，选中态才显示描边。 */
+    /* 畫布卡片依靠表面明度表達 hover，選中態才顯示描邊。 */
     .app-canvas-project-card.is-library { overflow: hidden; border: 0; border-radius: var(--r-lg); background: var(--card-surface); box-shadow: none; content-visibility: auto; contain-intrinsic-size: 0 320px; }
     .app-canvas-project-card.is-library .app-canvas-project-preview { overflow: hidden; border-radius: var(--r-lg) var(--r-lg) 0 0; background: var(--canvas-cover-surface); }
     .app-canvas-project-card.is-library:hover, .app-canvas-project-card.is-library:focus-within { background: var(--card-surface-hover); box-shadow: none; transform: translateY(-2px); }
@@ -4826,7 +4826,7 @@ html:not(.dark) .creation-studio-control:hover,
     .app-canvas-project-body.is-compact { min-height: 0; padding: 11px 1px 1px; }
     .app-canvas-project-card:hover .app-canvas-project-body { background: transparent; }
 
-    /* Focus状态 - 键盘导航可见 */
+    /* Focus狀態 - 鍵盤導航可見 */
     .app-canvas-project-card:focus:not(:focus-visible) { outline: none; box-shadow: none; }
     .app-canvas-project-card:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; box-shadow: none; }
     .canvas-project-card-footer { margin-top: 12px; }
@@ -4850,7 +4850,7 @@ html:not(.dark) .creation-studio-control:hover,
 
     .app-canvas-selection-toolbar { border-color: color-mix(in srgb, var(--workspace-accent) 25%, var(--workspace-border)); background: color-mix(in srgb, var(--workspace-accent) 7%, transparent); color: color-mix(in srgb, var(--workspace-accent) 48%, var(--foreground)); }
 
-    /* 画布文件夹：去掉旧的三层叠压，改为更干净的文件夹封面 + 预览图 + 信息带。 */
+    /* 畫布資料夾：去掉舊的三層疊壓，改為更乾淨的資料夾封面 + 預覽圖 + 資訊帶。 */
     .canvas-folder-card {
         position: relative;
         min-width: 0;
@@ -5020,7 +5020,7 @@ html:not(.dark) .creation-studio-control:hover,
         .canvas-folder-card:hover .canvas-folder-preview .canvas-project-media img { transform: none; }
     }
 
-    /* 作品库式页面：与画布列表共享浏览节奏，内容优先于边框和工具栏。 */
+    /* 作品庫式頁面：與畫佈列表共享瀏覽節奏，內容優先於邊框和工具欄。 */
     .library-page .app-page-header { border-bottom: 0; }
     .library-page .app-page-header h1 { font-size: var(--fs-title); font-weight: 620; }
     .library-page .app-page-header p { max-width: 560px; }
@@ -5044,7 +5044,7 @@ html:not(.dark) .creation-studio-control:hover,
         font-weight: 560;
         font-variant-numeric: tabular-nums;
     }
-    /* 页头与页面共用同一画布，仅通过间距和排版建立层级。 */
+    /* 頁頭與頁面共用同一畫布，僅通過間距和排版建立層級。 */
     .studio-band {
         position: relative;
         border: 0;
@@ -5059,7 +5059,7 @@ html:not(.dark) .creation-studio-control:hover,
         padding-inline: 0;
     }
 
-    /* 用户端内容库统一壳层：让资产、技能、任务和项目共享同一套创作型浏览节奏。 */
+    /* 使用者端內容庫統一殼層：讓資產、技能、任務和專案共享同一套創作型瀏覽節奏。 */
     .app-user-workspace .library-page > div {
         width: min(100%, 1440px);
         margin-inline: auto;
@@ -5160,7 +5160,7 @@ html:not(.dark) .creation-studio-control:hover,
         }
     }
 
-    /* 技能中心 hero：GalleryGridBlock 式标题区——徽章 + 大标题 + 描述居中，背景点阵 + 双光斑，底部淡出到页面背景。仅技能页。 */
+    /* 技能中心 hero：GalleryGridBlock 式標題區——徽章 + 大標題 + 描述居中，背景點陣 + 雙光斑，底部淡出到頁面背景。僅技能頁。 */
     .skills-hero { position: relative; overflow: hidden; margin-top: 4px; border-radius: var(--r-xl); background: color-mix(in srgb, var(--foreground) 2%, transparent); }
     .skills-hero::before { position: absolute; inset: 0; background-image: radial-gradient(circle at 16% 0%, color-mix(in srgb, var(--primary) 13%, transparent), transparent 42%), radial-gradient(circle at 84% 8%, color-mix(in srgb, var(--primary) 7%, transparent), transparent 40%), radial-gradient(circle at 50% 130%, color-mix(in srgb, var(--foreground) 10%, transparent), transparent 46%), radial-gradient(circle, color-mix(in srgb, var(--foreground) 4.5%, transparent) 1px, transparent 1.6px); background-size: 100% 100%, 100% 100%, 100% 100%, 22px 22px; content: ""; pointer-events: none; }
     .skills-hero::after { position: absolute; right: 0; bottom: 0; left: 0; height: 40px; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--workspace-content) 92%, transparent)); content: ""; pointer-events: none; }
@@ -5170,24 +5170,24 @@ html:not(.dark) .creation-studio-control:hover,
     .skills-hero-title { color: var(--foreground); font-size: var(--fs-display); font-weight: 720; letter-spacing: -0.02em; line-height: 1.15; }
     .skills-hero-description { margin-top: 6px; max-width: 460px; color: color-mix(in srgb, var(--foreground) 56%, transparent); font-size: var(--fs-body); line-height: 1.6; }
     .skills-hero-meta { margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; background: color-mix(in srgb, var(--foreground) 6%, transparent); padding: 4px 12px; color: color-mix(in srgb, var(--foreground) 46%, transparent); font-size: var(--fs-label); font-variant-numeric: tabular-nums; }
-    /* 移动端收窄 hero 高度，避免抢占首屏。 */
+    /* 移動端收窄 hero 高度，避免搶佔首屏。 */
     @media (max-width: 640px) { .skills-hero-inner { min-height: 112px; padding: 16px 18px 20px; } .skills-hero-title { font-size: var(--fs-title); } }
 
-    /* 技能页工具栏与 hero 圆角容器之间留出小间隙（共享 .library-toolbar 的 margin-top 8px 会被 Tailwind mt-7 覆盖，故用更高特异性局部类固定 20px）。 */
+    /* 技能頁工具欄與 hero 圓角容器之間留出小間隙（共享 .library-toolbar 的 margin-top 8px 會被 Tailwind mt-7 覆蓋，故用更高特異性區域性類固定 20px）。 */
     .library-toolbar.skills-toolbar { margin-top: 20px; }
-    /* 技能中心 scope 切换：shadcn TabsList 语言——底托 + 激活胶囊，图标 + 计数徽章；内容区切换淡入上移。 */
+    /* 技能中心 scope 切換：shadcn TabsList 語言——底托 + 啟用膠囊，圖示 + 計數徽章；內容區切換淡入上移。 */
     .skills-tabs { position: relative; display: inline-flex; min-width: 0; flex: 0 1 auto; max-width: 100%; align-items: center; gap: 2px; overflow-x: auto; border-radius: var(--r-xl); background: color-mix(in srgb, var(--foreground) 5%, transparent); padding: 4px; }
-    /* tab 按钮须为定位元素（DOM 顺序在指示器之后）以渲染在胶囊之上，否则 absolute 指示器会遮住文字与图标。 */
+    /* tab 按鈕須為定位元素（DOM 順序在指示器之後）以渲染在膠囊之上，否則 absolute 指示器會遮住文字與圖示。 */
     .skills-tab { position: relative; display: inline-flex; height: 32px; flex: 0 0 auto; align-items: center; gap: 5px; border: 0; border-radius: var(--r-lg); background: transparent; padding-inline: 10px; color: color-mix(in srgb, var(--foreground) 48%, transparent); font-size: var(--fs-body); font-weight: 520; transition: color 160ms ease-out; }
     .skills-tab:hover { color: color-mix(in srgb, var(--foreground) 76%, transparent); }
     .skills-tab.is-active { color: var(--foreground); font-weight: 560; }
     .skills-tabs-indicator { position: absolute; top: 4px; bottom: 4px; left: 0; border-radius: var(--r-lg); background: var(--workspace-content); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); transition: left 300ms cubic-bezier(0.16, 1, 0.3, 1), width 300ms cubic-bezier(0.16, 1, 0.3, 1); }
-    /* 深主题：激活胶囊须亮于底托（--workspace-content 在深色下与页面底色相同，会形成黑块），用白色叠加提亮，白字在亮灰胶囊上保持可读。 */
+    /* 深主題：啟用膠囊須亮於底托（--workspace-content 在深色下與頁面底色相同，會形成黑塊），用白色疊加提亮，白字在亮灰膠囊上保持可讀。 */
     .dark .skills-tabs-indicator { background: color-mix(in srgb, white 10%, var(--workspace-content)); }
     .skills-tab:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
     .skills-tab svg { width: 16px; height: 16px; stroke-width: 1.8; }
     .skills-tab-count { display: inline-flex; min-width: 18px; height: 18px; align-items: center; justify-content: center; border-radius: 999px; background: color-mix(in srgb, var(--foreground) 9%, transparent); padding-inline: 5px; color: color-mix(in srgb, var(--foreground) 44%, transparent); font-size: var(--fs-label); font-variant-numeric: tabular-nums; line-height: 1; }
-    /* 激活徽章用实底 primary + primary-foreground：明暗主题均为一对已定义的前景/背景组合，避免深主题下浅底亮字对比不足。 */
+    /* 啟用徽章用實底 primary + primary-foreground：明暗主題均為一對已定義的前景/背景組合，避免深主題下淺底亮字對比不足。 */
     .skills-tab.is-active .skills-tab-count { background: var(--primary); color: var(--primary-foreground); }
     @keyframes skills-panel-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
     .skills-scope-panel { animation: skills-panel-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both; }
@@ -5224,7 +5224,7 @@ html:not(.dark) .creation-studio-control:hover,
         padding: 0;
     }
 
-    /* 设置页：导航是稳定区域，内容使用连续 section，不再用卡片套卡片表达层级。 */
+    /* 設定頁：導航是穩定區域，內容使用連續 section，不再用卡片套卡片表達層級。 */
     .settings-page .settings-topbar {
         display: flex;
         min-height: 40px;
@@ -6047,11 +6047,11 @@ html:not(.dark) .creation-studio-control:hover,
         border-radius: var(--r-lg);
     }
 
-    /* 任务行卡片外观与 hover 已并入下方 .task-record-row 唯一源规则（本类仅任务页使用）。 */
+    /* 任務行卡片外觀與 hover 已併入下方 .task-record-row 唯一源規則（本類僅任務頁使用）。 */
     .library-page .app-page-header .workspace-signal-icon,
     .library-page .app-page-header .workspace-signal-icon > svg { transition: transform 420ms var(--motion-ease-out); }
     .library-page .app-page-header:hover .workspace-signal-icon { transform: rotate(-6deg) scale(1.04); }
-    /* 画布库页头操作：沿用现有配色，只统一几何比例与触感反馈。 */
+    /* 畫布庫頁頭操作：沿用現有配色，只統一幾何比例與觸感反饋。 */
     .canvas-library-header-actions {
         display: flex;
         flex-wrap: wrap;
@@ -6166,11 +6166,11 @@ html:not(.dark) .creation-studio-control:hover,
     .library-toolbar .ant-select-selector,
     .library-toolbar .ant-segmented { border: 0 !important; background: color-mix(in srgb, var(--foreground) 5%, transparent) !important; box-shadow: none !important; }
     .library-toolbar .ant-input-affix-wrapper { border-radius: var(--r-xl) !important; height: 40px; padding: 4px 10px; }
-    /* 搜索框作为与 tab 容器同构的圆角容器：外壳 12px 圆角 + 浅底 + 内边距，内部输入区透明融入。 */
+    /* 搜尋框作為與 tab 容器同構的圓角容器：外殼 12px 圓角 + 淺底 + 內邊距，內部輸入區透明融入。 */
     .library-toolbar .ant-input-affix-wrapper .ant-input { border: 0; background: transparent; box-shadow: none; }
-    /* AntD v6 单选 Select 的边框/圆角/背景/高度全部在 .ant-select 根元素上（.ant-select-selector 类已不存在），覆盖必须命中根元素并带 !important。 */
+    /* AntD v6 單選 Select 的邊框/圓角/背景/高度全部在 .ant-select 根元素上（.ant-select-selector 類已不存在），覆蓋必須命中根元素並帶 !important。 */
     .library-toolbar .ant-select { border-radius: var(--r-xl) !important; display: flex; height: 40px !important; align-items: center !important; padding-inline: 10px !important; }
-    /* tab 切换后搜索框输入与下拉选中文字与 tab 激活态（--foreground）同色；占位符与图标维持各自 token 不变。 */
+    /* tab 切換後搜尋框輸入與下拉選中文字與 tab 啟用態（--foreground）同色；佔位符與圖示維持各自 token 不變。 */
     .library-toolbar .ant-input,
     .library-toolbar .ant-select { color: var(--foreground) !important; }
     .library-toolbar .ant-segmented { border-radius: var(--r-xl); }
@@ -6178,7 +6178,7 @@ html:not(.dark) .creation-studio-control:hover,
     .library-toolbar .ant-btn:hover { background: color-mix(in srgb, var(--foreground) 7%, transparent); color: var(--foreground); }
     .library-grid { display: grid; align-items: start; gap: 26px 18px; }
     .library-card { position: relative; min-width: 0; overflow: hidden; cursor: pointer; border: 0; border-radius: var(--r-2xl); background: transparent; color: var(--foreground); transition: transform var(--motion-state) var(--motion-ease-out), background-color var(--motion-state) ease-out; }
-    /* 库页图标瓦片共享基础：grid 居中 + 浅底；尺寸/圆角/颜色由各用例类覆盖（skill-card-icon、wallet-balance-icon、suggest-icon 共用）。 */
+    /* 庫頁圖示瓦片共享基礎：grid 居中 + 淺底；尺寸/圓角/顏色由各用例類覆蓋（skill-card-icon、wallet-balance-icon、suggest-icon 共用）。 */
     .library-icon-tile { display: grid; flex: 0 0 auto; place-items: center; background: var(--library-icon-surface); }
     .library-card-surface { background: var(--library-surface); box-shadow: none; }
     .library-card-surface:hover, .library-card-surface:focus-within { background: var(--library-surface-hover); box-shadow: none; }
@@ -6187,24 +6187,24 @@ html:not(.dark) .creation-studio-control:hover,
     .library-create-card { display: flex; min-width: 0; cursor: pointer; flex-direction: column; align-items: stretch; border: 0; background: transparent; padding: 0; color: var(--foreground); text-align: left; transition: transform var(--motion-state) var(--motion-ease-out); }
     .library-create-card:hover, .library-create-card:focus-visible { transform: translateY(-2px); outline: 0; }
     .library-create-cover { display: grid; aspect-ratio: 16 / 10; place-items: center; overflow: hidden; border-radius: var(--r-2xl); background: var(--card-surface); color: color-mix(in srgb, var(--foreground) 35%, transparent); box-shadow: none; transition: background-color var(--motion-state) ease-out, color var(--motion-state) ease-out; }
-    /* 创建卡与同网格里的内容卡共用封面比例，否则首格会矮一截、网格底线对不齐。 */
+    /* 建立卡與同網格里的內容卡共用封面比例，否則首格會矮一截、網格底線對不齊。 */
     .project-library-grid .library-create-cover { aspect-ratio: 16 / 9; }
     .library-create-card:hover .library-create-cover, .library-create-card:focus-visible .library-create-cover { background: var(--card-surface-hover); color: var(--foreground); box-shadow: none; }
     .library-create-cover svg { stroke-width: 1.8; }
     .library-create-card:hover .library-create-cover svg, .library-create-card:focus-visible .library-create-cover svg { transform: none; }
     .library-create-title { margin-top: 15px; font-size: var(--fs-heading-lg); font-weight: 620; line-height: 1.3; }
     .library-create-meta { margin-top: 6px; color: color-mix(in srgb, var(--foreground) 38%, transparent); font-size: var(--fs-caption); }
-    /* 技能网格里的创建卡要和技能卡等高，不然首格会短一截。 */
+    /* 技能網格里的建立卡要和技能卡等高，不然首格會短一截。 */
     .skill-library-grid .library-create-card { justify-content: center; min-height: 260px; border-radius: var(--r-xl); background: var(--card-surface); padding: 16px; box-shadow: none; }
     .skill-library-grid .library-create-cover { aspect-ratio: auto; min-height: 96px; flex: 1 1 auto; border-radius: var(--r-lg); }
     .skill-library-grid .library-create-title { margin-top: 13px; font-size: var(--fs-body-lg); }
 
-    /* 列数按内容体量分开定：项目卡是这些页面的主角，6 列会把它挤成缩略图；
-       资产卡只承载一张图 + 标题，密一点反而好扫。 */
+    /* 列數按內容體量分開定：專案卡是這些頁面的主角，6 列會把它擠成縮圖；
+       資產卡只承載一張圖 + 標題，密一點反而好掃。 */
     .assets-library-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
     .project-library-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-5) var(--space-4); align-items: stretch; }
     .skill-library-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
-    /* 项目卡是一个完整实体表面；封面只是顶部内容区，避免透明主体和内嵌细线造成「镂空」感。 */
+    /* 專案卡是一個完整實體表面；封面只是頂部內容區，避免透明主體和內嵌細線造成「鏤空」感。 */
     .project-library-card { display: block; border-radius: var(--r-lg); background: var(--card-surface) !important; box-shadow: none; }
     .project-library-card:hover, .project-library-card:focus-within { background: var(--card-surface-hover) !important; box-shadow: none; }
     .project-library-card:hover, .project-library-card:focus-within, .project-library-grid .library-create-card:hover, .project-library-grid .library-create-card:focus-visible { transform: translateY(-2px); }
@@ -6239,7 +6239,7 @@ html:not(.dark) .creation-studio-control:hover,
     .project-library-cover-ratio { left: 14px; font-variant-numeric: tabular-nums; }
     .project-library-cover-stage { right: 14px; }
     .project-library-body { display: block; padding: 15px 14px 16px; }
-    /* LibTV 项目卡片基线：封面后只显示名称与日期；进度等扩展信息留在详情页。 */
+    /* LibTV 專案卡片基線：封面後只顯示名稱與日期；進度等擴充套件資訊留在詳情頁。 */
     .project-library-page .project-library-body { min-height: 58px; padding: 8px; }
     .project-library-page .project-library-date { display: block; margin-top: 2px; color: color-mix(in srgb, var(--foreground) 42%, transparent); font-size: var(--fs-caption); line-height: 20px; }
     .project-library-page .project-library-subtitle,
@@ -6266,15 +6266,15 @@ html:not(.dark) .creation-studio-control:hover,
     .library-load-more button { cursor: pointer; border: 0; background: transparent; color: inherit; font: inherit; text-decoration: underline; text-underline-offset: 3px; }
     .library-load-more button:focus:not(:focus-visible) { outline: none; }
 
-    /* 任务列表：整屏几十条长 prompt 极易糊成一片，靠三件事拉开密度——
-       行距（min-height + gap）、标题只给一行且宽度封顶、次要信息降到 42% 前景色。 */
+    /* 任務列表：整屏幾十條長 prompt 極易糊成一片，靠三件事拉開密度——
+       行距（min-height + gap）、標題只給一行且寬度封頂、次要資訊降到 42% 前景色。 */
     .task-record-list { display: grid; gap: 2px; margin-top: 10px; }
     .task-record-row { position: relative; display: grid; min-width: 0; grid-template-columns: 84px minmax(0, 1fr) 120px 104px; align-items: center; gap: 18px; min-height: 92px; border-radius: var(--r-md); background: transparent; padding: 12px 14px; transition: background-color var(--motion-state) ease-out; }
     .task-record-row:hover, .task-record-row:focus-within { background: color-mix(in srgb, var(--foreground) 4%, transparent); }
     .task-record-row.is-attention { background: color-mix(in srgb, var(--palette-status-error) 4%, transparent); }
     .task-record-main { min-width: 0; }
     .task-record-heading { display: flex; min-width: 0; align-items: baseline; gap: 10px; overflow: hidden; }
-    /* 标题封顶 68ch：超宽屏下一行能塞 200+ 汉字，读者反而找不到落点。 */
+    /* 標題封頂 68ch：超寬屏下一行能塞 200+ 漢字，讀者反而找不到落點。 */
     .task-record-title { display: block; min-width: 0; max-width: 68ch; flex: 0 1 auto; overflow: hidden; border: 0; background: transparent; padding: 0; color: color-mix(in srgb, var(--foreground) 92%, transparent); text-align: left; font-size: var(--fs-body); font-weight: 560; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }
     .task-record-title:hover { color: var(--foreground); }
     .task-record-status { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 6px; color: color-mix(in srgb, var(--foreground) 52%, transparent); font-size: var(--fs-tiny); line-height: 1.4; white-space: nowrap; }
@@ -6291,12 +6291,12 @@ html:not(.dark) .creation-studio-control:hover,
     .task-record-dot.is-failed { background: var(--palette-status-error); }
     .task-record-dot.is-idle { background: color-mix(in srgb, var(--foreground) 30%, transparent); }
     .task-record-thumb { position: relative; display: grid; width: 84px; height: 60px; flex: 0 0 auto; place-items: center; overflow: hidden; border: 0; border-radius: var(--r-md); background: color-mix(in srgb, var(--foreground) 4%, transparent); padding: 0; color: color-mix(in srgb, var(--foreground) 28%, transparent); }
-    /* 媒体脱离 Grid 固有尺寸计算，避免竖图按原始宽高比把固定缩略图撑出任务行。 */
+    /* 媒體脫離 Grid 固有尺寸計算，避免豎圖按原始寬高比把固定縮圖撐出任務行。 */
     .task-record-thumb img, .task-record-thumb video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
     .task-video-poster-placeholder { display: grid; width: 100%; height: 100%; place-content: center; justify-items: center; gap: 4px; background: color-mix(in srgb, var(--foreground) 3%, transparent); color: color-mix(in srgb, var(--foreground) 42%, transparent); }
     .task-video-poster-placeholder small { font-size: var(--fs-micro); font-weight: 600; letter-spacing: .08em; }
     .task-video-poster-placeholder > svg { width: 20px; height: 20px; }
-    /* 资源已被删除或失效时，由组件接管原生破图，相关页面仍保持可读。 */
+    /* 資源已被刪除或失效時，由元件接管原生破圖，相關頁面仍保持可讀。 */
     .media-unavailable { display: flex; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: color-mix(in srgb, var(--foreground) 38%, transparent); font-size: var(--fs-tiny); line-height: 1.25; text-align: center; }
     .media-unavailable > svg { width: 18px; height: 18px; flex: 0 0 auto; }
     .task-record-thumb:disabled { cursor: default; }
@@ -6321,7 +6321,7 @@ html:not(.dark) .creation-studio-control:hover,
     .task-status-filter .ant-segmented-item-label > span { display: inline-flex; align-items: center; gap: 6px; }
     .task-status-filter .ant-segmented-item-label b { color: inherit; font-size: var(--fs-tiny); font-weight: 620; font-variant-numeric: tabular-nums; opacity: .62; }
     .task-view-switch { display: inline-flex; align-items: center; gap: 2px; padding: 2px; border-radius: var(--r-md); background: color-mix(in srgb, var(--foreground) 5%, transparent); }
-    /* AntD 6 按钮样式经 CSS-in-JS 运行时注入（晚于本文件），hover 组合特异性达 .ant-btn:not(:disabled):not(.ant-btn-disabled):hover (0,4,0)，必须用 !important 才能稳定覆盖；限定在本组件作用域内，不污染全局。 */
+    /* AntD 6 按鈕樣式經 CSS-in-JS 執行時注入（晚於本檔案），hover 組合特異性達 .ant-btn:not(:disabled):not(.ant-btn-disabled):hover (0,4,0)，必須用 !important 才能穩定覆蓋；限定在本元件作用域內，不汙染全域性。 */
     .task-view-switch .ant-btn { border: 0 !important; box-shadow: none !important; }
     .task-view-switch .ant-btn:not([aria-pressed="true"]) { background: transparent !important; color: color-mix(in srgb, var(--foreground) 48%, transparent) !important; }
     .task-view-switch .ant-btn:not([aria-pressed="true"]):hover { color: var(--foreground) !important; background: color-mix(in srgb, var(--foreground) 7%, transparent) !important; }
@@ -6379,8 +6379,8 @@ html:not(.dark) .creation-studio-control:hover,
     .task-result-media.is-video { aspect-ratio: 16 / 9; }
     .task-media-preview-unavailable { aspect-ratio: 16 / 9; max-height: 76vh; background: color-mix(in srgb, var(--foreground) 4%, transparent); }
 
-    /* 项目概览：原本是「有边框的浅色盒子 + 一堆等重小字」，层级读不出来。
-       改成：主区留白撑开、标题字阶拉高、右栏用背景色而非边框分隔、流水线行给足行高。 */
+    /* 專案概覽：原本是「有邊框的淺色盒子 + 一堆等重小字」，層級讀不出來。
+       改成：主區留白撐開、標題字階拉高、右欄用背景色而非邊框分隔、流水線行給足行高。 */
     .project-workspace-header {
         display: grid;
         grid-template-columns: auto minmax(0, 1fr) auto;
@@ -6661,14 +6661,14 @@ html:not(.dark) .creation-studio-control:hover,
         .project-pipeline-arrow { display: none; }
     }
 
-    /* 导演工作台：项目详情共享壳与五个子页面的统一质感层 */
+    /* 導演工作臺：專案詳情共享殼與五個子頁面的統一質感層 */
     .project-workbench-header { position: relative; box-shadow: none; }
 
     .project-workbench-header h1 {
         letter-spacing: 0.01em;
     }
 
-    /* 章节编辑器：稿纸式正文区 */
+    /* 章節編輯器：稿紙式正文區 */
     .project-chapter-editor-scroll {
         background:
             linear-gradient(180deg, color-mix(in srgb, var(--foreground) 1.6%, transparent), transparent 96px),
@@ -6701,7 +6701,7 @@ html:not(.dark) .creation-studio-control:hover,
         line-height: 1.4;
     }
 
-    /* 画布与资产网格：呼吸感与统一表面 */
+    /* 畫布與資產網格：呼吸感與統一表面 */
     .project-workbench-page .project-library-grid {
         gap: 26px 20px;
     }
@@ -6715,7 +6715,7 @@ html:not(.dark) .creation-studio-control:hover,
         border-radius: var(--r-lg);
     }
 
-    /* 设置页分区收拢 */
+    /* 設定頁分割槽收攏 */
     .project-workbench-page section.border-b,
     .project-workbench-page section.border-y {
         border-color: color-mix(in srgb, var(--foreground) 9%, transparent) !important;
@@ -6727,7 +6727,7 @@ html:not(.dark) .creation-studio-control:hover,
         }
     }
 
-    /* 全局素材库需要等高；项目资产页按内容自然高度，角色设定再多也不拉伸媒体卡。 */
+    /* 全域性素材庫需要等高；專案資產頁按內容自然高度，角色設定再多也不拉伸媒體卡。 */
     .assets-library-page .assets-library-grid { align-items: stretch; }
     .assets-library-page .assets-library-grid { gap: var(--space-5) var(--space-4); }
     .assets-library-page .assets-library-grid > .asset-library-card, .assets-library-page .assets-library-grid > .library-create-card { height: 100%; }
@@ -6807,10 +6807,10 @@ html:not(.dark) .creation-studio-control:hover,
         .project-asset-preview-details { padding-right: 0; }
     }
 
-    /* 技能卡与其他作品库卡片共用无框表面，仅选中态显示状态描边。 */
+    /* 技能卡與其他作品庫卡片共用無框表面，僅選中態顯示狀態描邊。 */
     .skill-library-card { display: flex; min-height: 260px; flex-direction: column; padding: 16px 16px 14px; animation: skill-card-in 420ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
 
-    /* 画廊入场：切换 scope/翻页时卡片依次淡入上浮（stagger 由内联 animation-delay 控制），入场后保持 transform 复位以免影响 hover。 */
+    /* 畫廊入場：切換 scope/翻頁時卡片依次淡入上浮（stagger 由內聯 animation-delay 控制），入場後保持 transform 復位以免影響 hover。 */
     @keyframes skill-card-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
     .skill-card-icon { width: 48px; height: 48px; margin-bottom: 12px; border-radius: var(--r-lg); color: color-mix(in srgb, var(--foreground) 64%, transparent); transition: background-color var(--motion-state) ease-out, color var(--motion-state) ease-out, transform var(--motion-state) ease-out; transform: translateY(0); }
     .skill-card-icon svg { width: 22px; height: 22px; stroke-width: 1.8; }
@@ -6833,7 +6833,7 @@ html:not(.dark) .creation-studio-control:hover,
     .skill-card-tag { flex: 0 0 auto; max-width: 76px; overflow: hidden; border-radius: var(--r-sm); background: color-mix(in srgb, var(--foreground) 7%, transparent); padding: 2px 7px; color: color-mix(in srgb, var(--foreground) 50%, transparent); font-size: var(--fs-micro); text-overflow: ellipsis; white-space: nowrap; }
     .skill-card-flag { margin-left: auto; flex: 0 0 auto; color: color-mix(in srgb, var(--foreground) 52%, transparent); }
     .skill-card-action { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
-    /* 加入按钮：无边框浅底（与 tab/搜索容器同语言），is-added 态弱化表达已加入。 */
+    /* 加入按鈕：無邊框淺底（與 tab/搜尋容器同語言），is-added 態弱化表達已加入。 */
     .skill-card-join { display: inline-flex; min-width: 0; height: 32px; flex: 1 1 auto; align-items: center; justify-content: center; gap: 6px; overflow: hidden; border: 0; border-radius: var(--r-md); background: color-mix(in srgb, var(--foreground) 6%, transparent); padding-inline: 12px; color: var(--foreground); font-size: var(--fs-caption); font-weight: 560; white-space: nowrap; transition: background-color 160ms ease-out, color 160ms ease-out; }
     .skill-card-join svg { color: currentColor; }
     .skill-card-join:hover { background: color-mix(in srgb, var(--foreground) 10%, transparent); color: var(--foreground); }
@@ -6845,7 +6845,7 @@ html:not(.dark) .creation-studio-control:hover,
     .skill-card-owner-flag { flex: 1 1 auto; color: color-mix(in srgb, var(--foreground) 46%, transparent); font-size: var(--fs-caption); }
 
     .library-loading-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 26px 18px; margin-top: 20px; }
-    /* 画布骨架屏 - 使用新token */
+    /* 畫布骨架屏 - 使用新token */
     .library-skeleton { aspect-ratio: 16 / 10; border-radius: var(--r-xl); background: var(--skeleton-surface); animation: library-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     .task-library-page .library-loading-grid { grid-template-columns: 1fr; gap: 2px; }
     .task-library-page .library-loading-grid .library-skeleton { height: 92px; aspect-ratio: auto; border-radius: var(--r-lg); }
@@ -6961,7 +6961,7 @@ html:not(.dark) .creation-studio-control:hover,
         white-space: nowrap;
     }
 
-    /* 自研分页：页码胶囊 28px、r-md 圆角、无边框、hover 浅底、激活实底胶囊。选中用“普通选中”色角色（workspace-content 实底 + foreground 文字，与 skills-tabs 激活胶囊同语言），不占用 primary（主操作按钮专属）。 */
+    /* 自研分頁：頁碼膠囊 28px、r-md 圓角、無邊框、hover 淺底、啟用實底膠囊。選中用“普通選中”色角色（workspace-content 實底 + foreground 文字，與 skills-tabs 啟用膠囊同語言），不佔用 primary（主操作按鈕專屬）。 */
     .app-pagination-total { flex: 0 0 auto; color: color-mix(in srgb, var(--foreground) 46%, transparent); font-size: var(--fs-caption); font-variant-numeric: tabular-nums; white-space: nowrap; }
     .app-pagination-size.ant-select { display: flex; height: 28px !important; align-items: center !important; border-radius: var(--r-md) !important; padding-inline: 8px !important; }
     .app-pagination-pages { display: inline-flex; align-items: center; gap: 2px; }
@@ -7021,7 +7021,7 @@ html:not(.dark) .creation-studio-control:hover,
         backdrop-filter: blur(5px);
     }
 
-    /* 画风选择器自身就是完整工作区表面，移除 AntD 外壳避免形成双层厚边。 */
+    /* 畫風選擇器自身就是完整工作區表面，移除 AntD 外殼避免形成雙層厚邊。 */
     .canvas-style-picker-modal .ant-modal-container,
     .canvas-style-detail-modal .ant-modal-container,
     .style-profile-editor-modal .ant-modal-container,
@@ -7360,8 +7360,8 @@ html:not(.dark) .creation-studio-control:hover,
         backdrop-filter: blur(22px);
     }
 
-    /* 节点工具下拉菜单使用与其他画布浮层一致的不透明灰色底。AntD
-       菜单会被 portal 到 body，不能依赖节点局部的背景继承。 */
+    /* 節點工具下拉選單使用與其他畫布浮層一致的不透明灰色底。AntD
+       選單會被 portal 到 body，不能依賴節點區域性的背景繼承。 */
     .canvas-node-toolbar-menu,
     .canvas-node-toolbar-menu .ant-dropdown-menu {
         background: var(--cn-spatial-surface-strong) !important;
@@ -7475,7 +7475,7 @@ html:not(.dark) .creation-studio-control:hover,
         overscroll-behavior: contain;
     }
 
-    /* Logo 选择器只负责定位，不引入弹出/收起动画。 */
+    /* Logo 選擇器只負責定位，不引入彈出/收起動畫。 */
     .model-logo-picker-popover {
         animation: none !important;
         transition: none !important;
@@ -7512,9 +7512,9 @@ html:not(.dark) .creation-studio-control:hover,
         box-shadow: 0 24px 72px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.16);
     }
 
-    /* Dock 命令按钮：BottomMenu 式干净状态——透明默认 + hover/active 仅换底色，
-       去掉描边/内阴影/发光阴影的多层反馈，hover 与 active 用同一套视觉语言，
-       保持 dock 整体性（参考 uselayouts BottomMenu 的 bg-muted/bg-accent 切换）。*/
+    /* Dock 命令按鈕：BottomMenu 式乾淨狀態——透明預設 + hover/active 僅換底色，
+       去掉描邊/內陰影/發光陰影的多層反饋，hover 與 active 用同一套視覺語言，
+       保持 dock 整體性（參考 uselayouts BottomMenu 的 bg-muted/bg-accent 切換）。*/
     .aceternity-dock-command {
         border-color: transparent;
         background: transparent;
@@ -7540,7 +7540,7 @@ html:not(.dark) .creation-studio-control:hover,
         color: var(--dock-command-active-text);
     }
 
-    /* LibTV 将添加节点作为 Dock 的主入口，即使菜单未展开也保持白色强调。 */
+    /* LibTV 將新增節點作為 Dock 的主入口，即使選單未展開也保持白色強調。 */
     .aceternity-dock-command.is-prominent {
         background: #f4f4f4;
         color: #111111;
@@ -7852,7 +7852,7 @@ html:not(.dark) .creation-studio-control:hover,
         scrollbar-width: auto;
     }
 
-    /* 表头与滚动行区共享同宽 scrollbar gutter，保证列线对齐；滚动条本身透明隐藏 */
+    /* 表頭與滾動行區共享同寬 scrollbar gutter，保證列線對齊；捲軸本身透明隱藏 */
     .storyboard-header-gutter {
         overflow-x: hidden;
         overflow-y: scroll;
@@ -8343,7 +8343,7 @@ html:not(.dark) .creation-studio-control:hover,
         border-color: #78716c !important;
     }
 
-    /* H3 选项会 portal 到 body，必须高于承载控件的设置面板。 */
+    /* H3 選項會 portal 到 body，必須高於承載控制元件的設定面板。 */
     .canvas-h3-option-popup {
         z-index: calc(var(--z-dialog-popover) + 1) !important;
     }
@@ -8465,8 +8465,8 @@ html:not(.dark) .creation-studio-control:hover,
             0 12px 28px rgba(0, 0, 0, 0.3);
     }
 
-    /* LibTV 的画布浮层表面比工作区底色略亮，保持顶栏与主 Dock 的
-       视觉层级可见；只作用于画布浮层，不改变全局 workspace surface。 */
+    /* LibTV 的畫布浮層表面比工作區底色略亮，保持頂欄與主 Dock 的
+       視覺層級可見；只作用於畫布浮層，不改變全域性 workspace surface。 */
     .dark .canvas-topbar-cluster,
     .dark .libtv-main-dock {
         background: rgb(34 34 34) !important;
@@ -8571,7 +8571,7 @@ html:not(.dark) .creation-studio-control:hover,
         padding-inline: 0 !important;
     }
 
-    .canvas-libtv-overlay-toolbar button[aria-label="缩放画布"] {
+    .canvas-libtv-overlay-toolbar button[aria-label="縮放畫布"] {
         border-color: transparent !important;
         background: transparent !important;
         box-shadow: none !important;
@@ -9247,7 +9247,7 @@ html:not(.dark) .creation-studio-control:hover,
     .canvas-folder-file-icon { position: absolute; inset: 0; width: 36px; height: 36px; margin: auto; opacity: .42; }
     .canvas-folder-file-sheet { display: block; width: 100%; height: 100%; background: var(--canvas-folder-surface-strong); }
 
-    /* 三个参考态严格保留各自材质：玻璃磨砂、白纸层叠、红黑夜间封面。 */
+    /* 三個參考態嚴格保留各自材質：玻璃磨砂、白紙層疊、紅黑夜間封面。 */
     .canvas-folder-preview-glass {
         --canvas-folder-front-shape: path("M 28 70 H 112 C 126 70 136 74 146 82 L 174 104 C 183 112 192 116 205 116 H 332 C 348 116 360 128 360 144 V 252 C 360 268 348 280 332 280 H 28 C 12 280 0 268 0 252 V 98 C 0 82 12 70 28 70 Z");
         --canvas-folder-surface: rgba(248, 249, 251, .62);
@@ -9432,12 +9432,12 @@ html:not(.dark) .creation-studio-control:hover,
     .canvas-connection-create-description { transition: none; }
 }
 
-/* 拖动跨过沙箱 iframe 时仍由父画布接收事件；结束后恢复正文滚动与交互。 */
+/* 拖動跨過沙箱 iframe 時仍由父畫布接收事件；結束後恢復正文滾動與互動。 */
 [data-canvas-node-dragging="true"] .node-element iframe {
     pointer-events: none;
 }
 
-/* LibTV 风格拖拽反馈：拖拽中的卡片保持抓取光标并抬高阴影，避免与画布背景融在一起。 */
+/* LibTV 風格拖拽反饋：拖拽中的卡片保持抓取遊標並抬高陰影，避免與畫布背景融在一起。 */
 [data-canvas-node-dragging="true"] .node-element[data-node-id] {
     cursor: grabbing;
 }
@@ -9453,14 +9453,14 @@ html:not(.dark) .creation-studio-control:hover,
 
     /* The editor surface replaces the inline text action while open. Keep the
        control out of hit-testing and the accessibility tree; opacity:0 still
-       leaves an unclickable 放大编辑 in snapshots. */
+       leaves an unclickable 放大編輯 in snapshots. */
     .canvas-editor-shell[data-canvas-editor-panel-open="true"] .canvas-node-inline-action,
     .canvas-editor-shell[data-canvas-editor-panel-open="true"] .canvas-node-inline-edit {
         display: none;
     }
 
-    /* 名称是远景定位资产的依据；保持屏幕字号，短名称宽度不超出节点。
-       宽度跟随实时缩放变量，避免滚轮缩放时等待 React 提交才改变截断位置。 */
+    /* 名稱是遠景定位資產的依據；保持螢幕字號，短名稱寬度不超出節點。
+       寬度跟隨即時縮放變數，避免滾輪縮放時等待 React 提交才改變截斷位置。 */
     .canvas-node-external-header {
         width: var(--canvas-node-header-width);
         box-sizing: border-box;
@@ -9491,7 +9491,7 @@ html:not(.dark) .creation-studio-control:hover,
 
     @media (min-width: 1024px) {
 
-        /* 原版文本节点把装饰线放在卡片上半区，底部信息区域保留空间但不显文案。 */
+        /* 原版文本節點把裝飾線放在卡片上半區，底部資訊區域保留空間但不顯文案。 */
         .canvas-node-empty-text-mark {
             transform: translateY(-32px);
         }
@@ -9516,7 +9516,7 @@ html:not(.dark) .creation-studio-control:hover,
 
     /* Do not set pointer-events here. The unselected host uses
        pointer-events-none; a child `auto` would make the opacity-0
-       放大编辑 button hit-testable again. Selected hosts restore
+       放大編輯 button hit-testable again. Selected hosts restore
        pointer-events-auto on `.canvas-node-inline-edit`. */
     .canvas-node-inline-action {
         border: 0;
@@ -9612,13 +9612,13 @@ html:not(.dark) .creation-studio-control:hover,
         outline-offset: -1px;
     }
 
-    /* 摄像机控制覆盖在提示词编辑区上方，不参与编辑区的尺寸计算。 */
+    /* 攝像機控制覆蓋在提示詞編輯區上方，不參與編輯區的尺寸計算。 */
     .canvas-node-composer.has-camera-panel {
         overflow: visible;
         z-index: 20;
     }
 
-    /* 提示词优化保持在输入框附近，使用紧凑的 Popover 作为第二层输入工具。 */
+    /* 提示詞最佳化保持在輸入框附近，使用緊湊的 Popover 作為第二層輸入工具。 */
     .canvas-prompt-optimizer-popover-surface {
         width: min(var(--canvas-prompt-optimizer-width, 420px), calc(100vw - 24px));
         height: min(var(--canvas-prompt-optimizer-height, 620px), calc(100vh - 24px));
@@ -11181,7 +11181,7 @@ html:not(.dark) .creation-studio-control:hover,
     }
 
     .canvas-resource-inline-mention.is-replace-target::after {
-        content: "替换";
+        content: "替換";
         position: absolute;
         inset: 0;
         z-index: 1;
@@ -11499,7 +11499,7 @@ html:not(.dark) .creation-studio-control:hover,
         transition: none !important;
     }
 
-    /* 平移时优先保证世界层合成，暂时关闭每个媒体卡片及其内部浮层的滤镜和阴影绘制。 */
+    /* 平移時優先保證世界層合成，暫時關閉每個媒體卡片及其內部浮層的濾鏡和陰影繪製。 */
     [data-canvas-viewport-interacting="true"] :where(.canvas-node-shell, .canvas-frame-shell, .canvas-folder-preview, .canvas-folder-front, .aceternity-comet-card),
     [data-canvas-viewport-interacting="true"] :where(.canvas-node-shell, .canvas-frame-shell) :where([class*="backdrop-blur"], [class*="shadow-"]) {
         box-shadow: none !important;
@@ -11508,12 +11508,12 @@ html:not(.dark) .creation-studio-control:hover,
         -webkit-backdrop-filter: none !important;
     }
 
-    /* LibTV 式默认选择光标：短促圆润的黑色箭头配细白描边，不使用发光或阴影。 */
+    /* LibTV 式預設選擇遊標：短促圓潤的黑色箭頭配細白描邊，不使用發光或陰影。 */
     .canvas-cursor-select {
         cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22' viewBox='0 0 20 22'%3E%3Cpath d='M4.05 2.75c-.78-.38-1.64.34-1.38 1.17l4.05 13.1c.26.84 1.38 1.01 1.88.28l2.35-3.38 4.14-.63c.88-.14 1.17-1.25.46-1.78L4.05 2.75Z' fill='%23070707' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 3 3, default;
     }
 
-    /* 框选移动期只标记发生变化的 DOM 节点，避免每帧提交 React 选择状态。 */
+    /* 框選移動期只標記發生變化的 DOM 節點，避免每幀提交 React 選擇狀態。 */
     [data-node-id][data-canvas-selection-preview="include"] {
         outline: calc(2px * var(--canvas-live-inverse-scale)) solid var(--workspace-accent);
         outline-offset: calc(3px * var(--canvas-live-inverse-scale));
@@ -11535,14 +11535,14 @@ html:not(.dark) .creation-studio-control:hover,
         cursor: grabbing !important;
     }
 
-    /* 静止期用最终倍率重新排版 DOM，避免 Windows Chromium 复用交互期的低分辨率合成纹理。 */
+    /* 靜止期用最終倍率重新排版 DOM，避免 Windows Chromium 複用互動期的低解析度合成紋理。 */
     .canvas-world-layer {
         transform: translate(var(--canvas-live-x), var(--canvas-live-y)) scale(var(--canvas-live-scale-ratio));
         transform-origin: 0 0;
     }
 
     .canvas-world-raster-layer {
-        /* 使用标准 transform，避免搜狗 Chromium 对 zoom 下绝对定位的偏移。 */
+        /* 使用標準 transform，避免搜狗 Chromium 對 zoom 下絕對定位的偏移。 */
         transform: scale(var(--canvas-committed-scale));
         transform-origin: 0 0;
     }
@@ -11566,14 +11566,14 @@ html:not(.dark) .creation-studio-control:hover,
         backdrop-filter: none !important;
     }
 
-    /* 节点状态徽章 success 淡出动画（对应 #97 决策2）*/
+    /* 節點狀態徽章 success 淡出動畫（對應 #97 決策2）*/
     @keyframes canvas-status-success-fade {
         0% { opacity: 1; transform: scale(1); }
         70% { opacity: 1; transform: scale(1); }
         100% { opacity: 0; transform: scale(0.9); }
     }
 
-    /* 任务进度条 shimmer 扫描动画（对应 #98 决策3）*/
+    /* 任務進度條 shimmer 掃描動畫（對應 #98 決策3）*/
     @keyframes canvas-task-progress-shimmer {
         0% { transform: translateX(-100%); }
         100% { transform: translateX(200%); }
@@ -11582,8 +11582,8 @@ html:not(.dark) .creation-studio-control:hover,
         animation: canvas-task-progress-shimmer 1.4s linear infinite;
     }
 
-    /* 节点内进度：上游百分比久未变化时改为循环扫描，不再显示停住的进度条。
-       减少动效时不动，只铺一层浅色满条，表示仍在进行。 */
+    /* 節點內進度：上游百分比久未變化時改為迴圈掃描，不再顯示停住的進度條。
+       減少動效時不動，只鋪一層淺色滿條，表示仍在進行。 */
     @keyframes canvas-node-progress-indeterminate {
         0% { transform: translateX(-100%); }
         100% { transform: translateX(350%); }
@@ -11604,8 +11604,8 @@ html:not(.dark) .creation-studio-control:hover,
         animation: canvas-connection-flow 1.25s var(--motion-ease-linear) infinite;
     }
 
-    /* 流光：一小段高亮沿连线跑。周期与上面的虚线流动刻意错开，两者同频会锁成
-       一条整体平移的虚线、看不出「有光在走」。只在悬停/选中态渲染（见 canvas-connections.tsx）。 */
+    /* 流光：一小段高亮沿連線跑。週期與上面的虛線流動刻意錯開，兩者同頻會鎖成
+       一條整體平移的虛線、看不出「有光在走」。只在懸停/選中態渲染（見 canvas-connections.tsx）。 */
     .canvas-connection-comet {
         animation: canvas-connection-comet 2.1s var(--motion-ease-linear) infinite;
     }
@@ -11641,7 +11641,7 @@ html:not(.dark) .creation-studio-control:hover,
         }
     }
 
-    /* 位移量必须等于 dasharray 之和（16 + 118），否则循环处会跳一下 */
+    /* 位移量必須等於 dasharray 之和（16 + 118），否則迴圈處會跳一下 */
     @keyframes canvas-connection-comet {
         to {
             stroke-dashoffset: -134;
@@ -11774,7 +11774,7 @@ html:not(.dark) .creation-studio-control:hover,
     }
 }
 
-/* 章节编辑区用清晰边界区分工具栏与正文，同时保留连续写作空间。 */
+/* 章節編輯區用清晰邊界區分工具欄與正文，同時保留連續寫作空間。 */
 .project-workbench-page .project-chapter-editor-wrap {
     min-height: 100%;
 }
@@ -11849,7 +11849,7 @@ html[data-theme-switching="true"] :where(.canvas-node-shell, .aceternity-comet-c
     transition: none !important;
 }
 
-/* 创作页是工作舞台，不使用管理台的边框、卡片和分段控件语言。 */
+/* 創作頁是工作舞臺，不使用管理臺的邊框、卡片和分段控制元件語言。 */
 .creation-home {
     --creation-accent: var(--workspace-accent);
     --creation-bg: var(--workspace-page);
@@ -12008,7 +12008,7 @@ html:not(.dark) .creation-chat-reference:hover:not(:disabled) { background: rgba
     gap: 2px;
 }
 
-/* 录音条自身可压缩，避免波形 + 胶囊同时出现时把右侧控件挤到第二行。 */
+/* 錄音條自身可壓縮，避免波形 + 膠囊同時出現時把右側控制元件擠到第二行。 */
 .creation-chat-controls:has(> .voice-recording-inline) { flex-wrap: nowrap; }
 
 .creation-chat-control,
@@ -12203,7 +12203,7 @@ html:not(.dark) .creation-model-picker-heading strong { color: #20242a; }
     .creation-chat-reference { animation: none; transition: none; }
 }
 
-/* 创作入口与空间导航在同一块画布上，避免视觉断层。 */
+/* 創作入口與空間導航在同一塊畫布上，避免視覺斷層。 */
 
 .director-sequencer {
     position: relative;
@@ -12225,7 +12225,7 @@ html:not(.dark) .creation-model-picker-heading strong { color: #20242a; }
 
 .director-viewport-notice {
     position: absolute;
-    /* 可恢复故障必须压过右上角的新手引导，否则真实点击会被引导卡片截获。 */
+    /* 可恢復故障必須壓過右上角的新手引導，否則真實點選會被引導卡片截獲。 */
     z-index: var(--z-toast);
     display: grid;
     gap: var(--space-2);
@@ -12337,9 +12337,9 @@ html:not(.dark) .creation-model-picker-heading strong { color: #20242a; }
     background: var(--director-sequencer-border);
 }
 
-/* 一级模式切换。位于工作台顶栏（跟随明暗主题），因此用主题感知的语义 token，
-   不能用 --director-dock-* 那套常暗色，否则亮色主题下会看不见。
-   选中态用 control-selected 角色，而不是主操作色：它表达「当前视图」而非主要命令。 */
+/* 一級模式切換。位於工作臺頂欄（跟隨明暗主題），因此用主題感知的語義 token，
+   不能用 --director-dock-* 那套常暗色，否則亮色主題下會看不見。
+   選中態用 control-selected 角色，而不是主操作色：它表達「當前檢視」而非主要命令。 */
 .director-workbench-topbar {
     position: absolute;
     z-index: var(--z-toolbar);
@@ -12412,7 +12412,7 @@ html:not(.dark) .creation-model-picker-heading strong { color: #20242a; }
     padding-inline: var(--space-1);
 }
 
-.director-workbench-topbar-tools [aria-label="导演台模式"] .director-mode-switch-button {
+.director-workbench-topbar-tools [aria-label="導演臺模式"] .director-mode-switch-button {
     padding-inline: var(--space-1);
 }
 
@@ -12429,7 +12429,7 @@ html:not(.dark) .creation-model-picker-heading strong { color: #20242a; }
     right: var(--space-2);
 }
 
-.director-workbench-topbar-tools [aria-label="导演台工作区视图"] .director-mode-switch-button {
+.director-workbench-topbar-tools [aria-label="導演臺工作區檢視"] .director-mode-switch-button {
     height: var(--space-10);
     border-radius: var(--r-full);
     padding-inline: var(--space-1);
@@ -12847,7 +12847,7 @@ html:not(.dark) .creation-model-picker-heading strong { color: #20242a; }
     margin-bottom: var(--space-2);
 }
 
-.director-actor-inspector input[aria-label="名称"] {
+.director-actor-inspector input[aria-label="名稱"] {
     height: 28px;
     border: 0;
     border-radius: var(--r-md);
@@ -13507,9 +13507,9 @@ html:not(.dark) .creation-model-picker-heading strong { color: #20242a; }
     transform: translate(-50%, -50%) rotate(45deg);
 }
 
-/* 可删除关键帧：8px 菱形本体太小，用透明外框把命中区扩到 18px，保留视觉尺寸。
-   hover / focus 都走 outline，不覆写 box-shadow —— 基础规则的 hairline 保持原样。
-   focus-visible 与 hover 同特异性，靠源码顺序让焦点环压过悬停环。 */
+/* 可刪除關鍵幀：8px 菱形本體太小，用透明外框把命中區擴到 18px，保留視覺尺寸。
+   hover / focus 都走 outline，不覆寫 box-shadow —— 基礎規則的 hairline 保持原樣。
+   focus-visible 與 hover 同特異性，靠原始碼順序讓焦點環壓過懸停環。 */
 .director-sequencer-key.is-actionable {
     padding: 0;
     border: 0;
@@ -13916,7 +13916,7 @@ html:not(.dark) .creation-duration-choices button:hover { background: rgba(28, 3
     .creation-intro-signal { animation: none; }
 }
 
-/* 创作页（空态首页、对话输入条）共用同一套紧凑 Composer 规格：文字区起步约两行（60px），随输入自动增高；空态仅改变位置，不改变组件密度。 */
+/* 創作頁（空態首頁、對話輸入條）共用同一套緊湊 Composer 規格：文字區起步約兩行（60px），隨輸入自動增高；空態僅改變位置，不改變元件密度。 */
 .creation-home .creation-chat-composer { border-radius: 18px; }
 .creation-home .creation-chat-writing-surface,
 .creation-home .creation-chat-composer.is-empty .creation-chat-writing-surface,
@@ -13925,7 +13925,7 @@ html:not(.dark) .creation-duration-choices button:hover { background: rgba(28, 3
     padding: 12px 16px 6px;
 }
 
-/* 上传 input 为 hidden，编辑器是该网格的唯一可见子项；创作页输入区保持整行宽度。 */
+/* 上傳 input 為 hidden，編輯器是該網格的唯一可見子項；創作頁輸入區保持整行寬度。 */
 .creation-home .creation-chat-composer.is-empty .creation-chat-writing-surface,
 .creation-home .creation-chat-composer.is-thread .creation-chat-writing-surface { grid-template-columns: minmax(0, 1fr); gap: 0; }
 .creation-home .creation-chat-editor textarea,
@@ -14078,7 +14078,7 @@ html:not(.dark) .creation-media-preview-modal .ant-modal-container { background:
     .creation-image-result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* 旧创作规则位于 utilities 层且使用 !important；必须在同层覆盖。 */
+/* 舊創作規則位於 utilities 層且使用 !important；必須在同層覆蓋。 */
 @layer utilities {
     .creation-home .creation-chat-control,
     .creation-home .creation-chat-composer .creation-model-picker.canvas-composer-model-picker {
@@ -14199,7 +14199,7 @@ html:not(.dark) .creation-media-preview-modal .ant-modal-container { background:
     .creation-custom-value.is-duration { width: 100%; grid-column: auto; margin-top: 7px; }
 }
 
-/* 解除旧版参数侧栏 Grid，Popover 必须是纵向信息分组。 */
+/* 解除舊版引數側欄 Grid，Popover 必須是縱向資訊分組。 */
 .creation-parameter-section {
     display: block !important;
     grid-template-columns: none !important;
@@ -14219,7 +14219,7 @@ html:not(.dark) .creation-media-preview-modal .ant-modal-container { background:
 .creation-duration-choices button { height: 30px; }
 .creation-custom-value.is-duration { grid-column: auto !important; width: 100%; margin-top: 7px; }
 
-/* 创作参数是即时选择，不使用后台式表单控件。 */
+/* 創作引數是即時選擇，不使用後臺式表單控制元件。 */
 .creation-control-popover-surface {
     border: 0 !important;
     border-radius: 12px !important;
@@ -14359,7 +14359,7 @@ html:not(.dark) .creation-media-preview-modal .ant-modal-container { background:
 
 .creation-custom-value em { color: var(--creation-muted); font-size: 11px; font-style: normal; }
 
-/* 首页图像参数保持紧凑，避免比例预设把弹层撑成整屏高度。 */
+/* 首頁影像引數保持緊湊，避免比例預設把彈層撐成整屏高度。 */
 .creation-parameter-menu .image-size-picker {
     gap: 7px;
 }
@@ -14429,7 +14429,7 @@ html:not(.dark) .creation-duration-choices button:hover,
 html:not(.dark) .creation-custom-trigger:hover { background: rgba(28, 32, 37, .055) !important; }
 html:not(.dark) .creation-custom-value { background: rgba(28, 32, 37, .055) !important; }
 
-/* 历史对话是按更新时间倒序排列的普通记录列表，不使用时间轴视觉。 */
+/* 歷史對話是按更新時間倒序排列的普通記錄列表，不使用時間軸視覺。 */
 .creation-top-actions {
     position: absolute;
     z-index: 30;
@@ -14572,7 +14572,7 @@ html:not(.dark) .creation-history-drawer-root {
 
 /* -------------------------------------------------------------------------
    Monochrome product surfaces
-   页面级黑白主题收口：焦点用边框表达，浮层使用单一表面，避免渐变、米色和蓝紫光圈在不同页面漂移。
+   頁面級黑白主題收口：焦點用邊框表達，浮層使用單一表面，避免漸變、米色和藍紫光圈在不同頁面漂移。
    ------------------------------------------------------------------------- */
 .creation-home {
     --creation-accent: var(--workspace-accent);
@@ -14609,8 +14609,8 @@ html:not(.dark) .creation-history-drawer-root {
     backdrop-filter: none !important;
 }
 
-/* Tooltip 必须使用同一套浮层背景/前景语义色。Ant Design 会让它继承
-   colorTextLightSolid（实心按钮文字色），深色主题下会形成深底深字。 */
+/* Tooltip 必須使用同一套浮層背景/前景語義色。Ant Design 會讓它繼承
+   colorTextLightSolid（實心按鈕文字色），深色主題下會形成深底深字。 */
 :where(.ant-tooltip) {
     --ant-tooltip-arrow-background-color: var(--popover) !important;
     --ant-tooltip-overlay-color: var(--popover-foreground) !important;
@@ -14645,7 +14645,7 @@ html:not(.dark) .creation-history-drawer-root {
     color: color-mix(in srgb, var(--foreground) 76%, transparent) !important;
 }
 
-/* 图标 + 文字 Tag 对齐：AntD 6 的 icon 是 svg 直接子节点，需整体内联居中 */
+/* 圖示 + 文字 Tag 對齊：AntD 6 的 icon 是 svg 直接子節點，需整體內聯居中 */
 .ant-tag:has(> svg) {
     display: inline-flex;
     align-items: center;
@@ -14665,7 +14665,7 @@ html:not(.dark) .creation-history-drawer-root {
 }
 
 
-/* 鼠标点击不留下“选中框”；键盘导航仍通过 :focus-visible 保留可发现的焦点提示。 */
+/* 滑鼠點選不留下“選中框”；鍵盤導航仍通過 :focus-visible 保留可發現的焦點提示。 */
 :where(button:not(:disabled), a[href], [role="button"]:not([aria-disabled="true"]), label[for], input[type="checkbox"]:not(:disabled), input[type="radio"]:not(:disabled), .ant-btn:not(:disabled), .ant-switch:not(.ant-switch-disabled), .ant-select:not(.ant-select-disabled), .ant-dropdown-trigger, .ant-tabs-tab, .ant-segmented-item, .ant-pagination-item, .ant-pagination-prev, .ant-pagination-next, .ant-dropdown-menu-item, .ant-menu-item, .ant-select-item-option, .ant-checkbox-wrapper, .ant-radio-wrapper, .ant-upload, .ant-collapse-header, .ant-slider, .ant-rate-star, .ant-tag-checkable) {
     cursor: pointer;
 }
@@ -14679,7 +14679,7 @@ html:not(.dark) .creation-history-drawer-root {
     box-shadow: none !important;
 }
 
-/* Modal 关闭后会把焦点还给触发按钮；收窄该按钮的键盘焦点环，避免出现持续的粗灰边。 */
+/* Modal 關閉後會把焦點還給觸發按鈕；收窄該按鈕的鍵盤焦點環，避免出現持續的粗灰邊。 */
 .canvas-topbar-import-button:focus-visible {
     outline: 1px solid color-mix(in srgb, var(--foreground) 55%, transparent) !important;
     outline-offset: 1px !important;
@@ -14693,12 +14693,12 @@ html:not(.dark) .creation-history-drawer-root {
 }
 
 
-/* 显式兜底：Tailwind 生成的 hover 背景在部分层叠顺序下未生效，这里保持语义 token 一致。 */
+/* 顯式兜底：Tailwind 生成的 hover 背景在部分層疊順序下未生效，這裡保持語義 token 一致。 */
 .hover\:bg-surface-hover:hover {
     background-color: var(--surface-hover);
 }
 
-/* 空态把视觉锚点放在输入框上方，保留足够留白让首个动作自然下沉。 */
+/* 空態把視覺錨點放在輸入框上方，保留足夠留白讓首個動作自然下沉。 */
 .creation-empty-workspace {
     justify-content: flex-start;
     padding-top: clamp(28px, 7vh, 84px);
@@ -14732,7 +14732,7 @@ html:not(.dark) .creation-history-drawer-root {
 .creation-empty-art-caption span:first-child { color: var(--creation-text); font-variant-numeric: tabular-nums; }
 .creation-empty-workspace .creation-chat-intro { margin-bottom: 24px; }
 
-/* 素材选择器是创作页、自由画布和项目画布的唯一视觉入口。 */
+/* 素材選擇器是創作頁、自由畫布和專案畫布的唯一視覺入口。 */
 .workspace-modal {
     width: min(var(--modal-width-standard), calc(100vw - var(--space-6))) !important;
     max-width: calc(100vw - var(--space-6)) !important;
@@ -14848,7 +14848,7 @@ html:not(.dark) .creation-history-drawer-root {
     .asset-picker-actions { justify-content: flex-end; }
 }
 
-/* 轮播承担首屏视觉主角，工作区只保留很窄的安全边距。 */
+/* 輪播承擔首屏視覺主角，工作區只保留很窄的安全邊距。 */
 .creation-empty-workspace { width: min(1320px, calc(100% - 24px)); padding-top: clamp(18px, 3vh, 40px); }
 .creation-empty-art { width: min(1060px, calc(100% - 72px)); height: 300px; margin-bottom: 22px; }
 .creation-empty-art-frame.is-back { top: 28px; left: 2%; width: 23%; height: 220px; }
@@ -14879,7 +14879,7 @@ html:not(.dark) .creation-history-drawer-root {
     .creation-empty-composer { width: 100%; }
 }
 
-/* 用户端浮层：更像创作工作室的工作面，不保留默认后台表单的硬边和密集分隔。 */
+/* 使用者端浮層：更像創作工作室的工作面，不保留預設後臺表單的硬邊和密集分隔。 */
 .library-modal .ant-modal-container {
     padding: 0 !important;
 }
@@ -14894,7 +14894,7 @@ html:not(.dark) .creation-history-drawer-root {
 .library-modal :where(.ant-input, .ant-input-affix-wrapper, .ant-select-selector, .ant-input-number, .ant-picker) { min-height: 42px; border-color: color-mix(in srgb, var(--foreground) 15%, transparent) !important; border-radius: var(--r-md) !important; background: color-mix(in srgb, var(--foreground) 3%, transparent) !important; box-shadow: none !important; }
 .library-modal .ant-input-affix-wrapper .ant-input { min-height: 34px; background: transparent !important; }
 .library-modal :where(.ant-input:hover, .ant-input-affix-wrapper:hover, .ant-select-selector:hover) { border-color: color-mix(in srgb, var(--foreground) 26%, transparent) !important; }
-/* 聚焦态：--workspace-accent 暗色下是 #f5f5f5，直接描边会形成刺眼白圈，降到半透明。 */
+/* 聚焦態：--workspace-accent 暗色下是 #f5f5f5，直接描邊會形成刺眼白圈，降到半透明。 */
 .library-modal :where(.ant-input:focus, .ant-input-affix-wrapper-focused, .ant-select-focused .ant-select-selector) { border-color: var(--control-focus-ring) !important; box-shadow: none !important; }
 .library-modal .ant-btn-primary { border: 1px solid transparent; border-radius: var(--r-md); background: var(--btn-solid-bg); color: var(--btn-solid-fg); box-shadow: none; font-weight: 560; }
 .library-modal .ant-btn-primary:not(:disabled):hover { border-color: transparent; background: var(--btn-solid-hover-bg); color: var(--btn-solid-fg); }
@@ -14912,7 +14912,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     background: var(--btn-solid-active-bg) !important;
 }
 
-/* 短剧创作：AI 创建入口面板与创建弹窗来源/画风选择 */
+/* 短劇創作：AI 建立入口面板與建立彈窗來源/畫風選擇 */
 .app-story-create-panel {
     position: relative;
     overflow: hidden;
@@ -15576,7 +15576,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     .library-drawer .ant-drawer-body { padding: 18px; }
 }
 
-/* ===== 工作台首页 · 创作仪表盘（欢迎区 + 统计卡 + 活跃度/素材图表 + 最近项目表格） ===== */
+/* ===== 工作臺首頁 · 創作儀表盤（歡迎區 + 統計卡 + 活躍度/素材圖表 + 最近專案表格） ===== */
 .app-home-dashboard {
     --home-panel-radius: var(--r-lg);
     --home-panel-surface: var(--workspace-surface-strong);
@@ -15596,7 +15596,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
 .app-home-dashboard h2 { font-size: var(--home-section-fs); }
 .app-home-dashboard h3 { font-size: var(--fs-heading); }
 
-/* 面板外壳：卡片、图表、表格共用 */
+/* 面板外殼：卡片、圖表、表格共用 */
 .home-panel {
     border-radius: var(--home-panel-radius);
     border: 1px solid var(--home-panel-border);
@@ -15626,7 +15626,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     border-top: 1px solid var(--home-panel-border);
 }
 
-/* 欢迎区 */
+/* 歡迎區 */
 .home-welcome {
     display: flex;
     flex-wrap: wrap;
@@ -15669,7 +15669,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     gap: 10px;
 }
 
-/* 统计卡 */
+/* 統計卡 */
 .home-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -15731,7 +15731,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     white-space: nowrap;
 }
 
-/* 图表区 */
+/* 圖表區 */
 .home-charts-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -15794,7 +15794,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
 .home-donut-legend i { width: 8px; height: 8px; border-radius: 999px; }
 .home-donut-legend em { font-style: normal; color: color-mix(in srgb, var(--foreground) 45%, transparent); font-variant-numeric: tabular-nums; }
 
-/* 最近项目表格 */
+/* 最近專案表格 */
 .home-lower-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -15887,7 +15887,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     text-align: center;
 }
 
-/* 快捷创建与工作流 */
+/* 快捷建立與工作流 */
 .home-quick-create { display: flex; flex-direction: column; padding-top: 4px; }
 
 .home-quick-item {
@@ -15954,7 +15954,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
 }
 
 
-/* 空态：banner + 对话区（控态时展示，发送后切换分镜台） */
+/* 空態：banner + 對話區（控態時展示，傳送後切換分鏡臺） */
 .creation-home .creation-empty-workspace {
     flex: 1 1 auto;
     min-height: 0;
@@ -16040,7 +16040,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     line-height: 1.55;
 }
 
-/* 空态布局收敛：保持图片区、文案和输入区的文档流顺序，内容超高时由主区滚动承载。 */
+/* 空態佈局收斂：保持圖片區、文案和輸入區的檔案流順序，內容超高時由主區滾動承載。 */
 .creation-home .creation-empty-workspace {
     justify-content: flex-start;
 }
@@ -16074,9 +16074,9 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     .creation-empty-workspace > .creation-empty-suggest { margin-top: 20px; }
 }
 
-/* ===== 素材库 · 重构（BeefTV影视资产） =====
-   与画布库共用 studio-band 毛玻璃页头与 frame 外壳；类型化封面、accent 反白筛选、
-   批量操作条、banner+欢迎卡空态、资产档案抽屉。全局保持黑白单色。 */
+/* ===== 素材庫 · 重構（BeefTV影視資產） =====
+   與畫布庫共用 studio-band 毛玻璃頁頭與 frame 外殼；型別化封面、accent 反白篩選、
+   批次操作條、banner+歡迎卡空態、資產檔案抽屜。全域性保持黑白單色。 */
 .assets-library-page .assets-header-meta { gap: 6px; }
 .assets-library-page .assets-header-meta::before {
     width: 6px;
@@ -16087,7 +16087,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     content: "";
 }
 
-/* LibTV 资产工作台第一阶段：把资产页从“管理表单”调整为“素材工作台”。 */
+/* LibTV 資產工作臺第一階段：把資產頁從“管理表單”調整為“素材工作臺”。 */
 .assets-library-page .assets-library-hero {
     gap: 18px;
     padding-bottom: 0;
@@ -16295,7 +16295,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     .assets-storage-usage { width: 100%; }
     .assets-storage-usage-track { min-width: 32px; }
 }
-/* 筛选胶囊：激活态 accent 反白 + 计数徽章反白 */
+/* 篩選膠囊：啟用態 accent 反白 + 計數徽章反白 */
 .assets-filter-item {
     display: flex;
     height: 32px;
@@ -16336,7 +16336,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     .assets-filter-item { width: 100%; flex: none; }
 }
 
-/* 类型化封面：容器继承 4/3 比例，内部 button 撑满 */
+/* 型別化封面：容器繼承 4/3 比例，內部 button 撐滿 */
 .assets-cover { position: relative; overflow: hidden; }
 .assets-cover-link { position: relative; display: block; width: 100%; height: 100%; padding: 0; cursor: pointer; text-align: left; }
 .assets-cover-link:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
@@ -16385,7 +16385,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
 .assets-cover-link > :where(img, video, .cached-resource-image-shell) { transition: transform 260ms cubic-bezier(.2,.75,.25,1), filter 180ms ease-out; }
 .assets-cover-link:hover > :where(img, video, .cached-resource-image-shell), .assets-cover-link:focus-visible > :where(img, video, .cached-resource-image-shell) { filter: saturate(1.04); transform: scale(1.025); }
 
-/* 选中态：accent 勾选框（右下）+ accent 描边由 is-selected 提供 */
+/* 選中態：accent 勾選框（右下）+ accent 描邊由 is-selected 提供 */
 .assets-select-check {
     position: absolute;
     right: 8px;
@@ -16444,7 +16444,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
 .assets-cover-more:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 .asset-library-card:hover .assets-cover-more, .asset-library-card:focus-within .assets-cover-more { opacity: 1; }
 
-/* 音频：频谱条占位；文本：内容摘要底纹；模型：线框图标 */
+/* 音訊：頻譜條佔位；文本：內容摘要底紋；模型：線框圖示 */
 .assets-cover-wave { position: relative; display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; gap: 3px; padding: 0 14%; background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--workspace-accent) 16%, transparent), transparent 58%), color-mix(in srgb, var(--foreground) 4%, transparent); }
 .assets-cover-wave::after { position: absolute; inset: 50% 12% auto; height: 1px; background: color-mix(in srgb, var(--workspace-accent) 25%, transparent); content: ""; }
 .assets-cover-wave > span { display: block; width: 3px; min-height: 5px; flex: 0 1 3px; border-radius: var(--r-full); background: color-mix(in srgb, var(--workspace-accent) 46%, transparent); }
@@ -16465,7 +16465,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
 .assets-cover-model > svg { width: 34px; height: 34px; stroke-width: 1.1; }
 .assets-cover-model > span { max-width: 76%; overflow: hidden; font-size: var(--fs-micro); text-overflow: ellipsis; white-space: nowrap; }
 
-/* 批量操作条：浮现动画，黑白表面 */
+/* 批次操作條：浮現動畫，黑白表面 */
 .assets-batch-bar {
     display: flex;
     align-items: center;
@@ -16487,7 +16487,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
 .assets-batch-actions .ant-btn { border: 0; border-radius: var(--r-md); background: transparent; color: color-mix(in srgb, var(--foreground) 56%, transparent); box-shadow: none; }
 .assets-batch-actions .ant-btn:hover { background: color-mix(in srgb, var(--foreground) 7%, transparent); color: var(--foreground); }
 
-/* 空态：banner 剧照 + 三张欢迎卡 */
+/* 空態：banner 劇照 + 三張歡迎卡 */
 .assets-empty { display: flex; width: 100%; flex-direction: column; align-items: center; padding: 5vh 0 8vh; }
 .assets-empty-banner { position: relative; width: min(720px, calc(100% - 24px)); height: 180px; margin-bottom: 24px; }
 .assets-empty-banner-frame { position: absolute; overflow: hidden; border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent); border-radius: var(--r-lg); box-shadow: var(--elevation-card); }
@@ -16528,7 +16528,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
 .asset-preview-uploading-copy strong { font-variant-numeric: tabular-nums; }
 .asset-preview-uploading-panel .ant-progress { margin: var(--space-2) 0 0; }
 
-/* 资产档案抽屉 */
+/* 資產檔案抽屜 */
 .asset-archive-header { display: flex; align-items: flex-start; gap: 14px; }
 .asset-archive-header-icon { display: grid; width: 46px; height: 46px; flex: 0 0 auto; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--workspace-accent) 10%, transparent); color: var(--workspace-accent); }
 .asset-archive-header-icon svg { width: 22px; height: 22px; stroke-width: 1.6; }
@@ -16650,9 +16650,9 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     .assets-select-check, .assets-cover-more { opacity: 1; }
 }
 
-/* ===== 素材页布局与线条修正 ===== */
+/* ===== 素材頁佈局與線條修正 ===== */
 
-/* 1. 欢迎卡与 banner 同列宽，边缘对齐 */
+/* 1. 歡迎卡與 banner 同列寬，邊緣對齊 */
 .assets-empty-cards { width: min(720px, calc(100% - 24px)); }
 .assets-empty-workspace { align-items: stretch; padding: 28px 8px 42px; }
 .assets-empty-copy { display: flex; align-items: center; gap: 12px; width: min(720px, calc(100% - 24px)); margin: 0 auto; color: color-mix(in srgb, var(--foreground) 54%, transparent); font-size: var(--fs-label); }
@@ -16663,7 +16663,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
 .assets-empty-workspace .assets-empty-cards { margin-top: 18px; }
 .assets-empty-workspace .assets-empty-card { min-height: 126px; padding: 14px 16px; }
 
-/* 2. 批量操作条：sticky + 毛玻璃，滚动长列表时始终可见 */
+/* 2. 批次操作條：sticky + 毛玻璃，滾動長列表時始終可見 */
 .assets-batch-bar {
     position: sticky;
     top: 12px;
@@ -16673,13 +16673,13 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     -webkit-backdrop-filter: blur(12px);
 }
 
-/* 3. 素材网格以 6 列为桌面基准；首格是新增素材，因此每页 35 项时正好组成 6×6 完整网格。 */
+/* 3. 素材網格以 6 列為桌面基準；首格是新增素材，因此每頁 35 項時正好組成 6×6 完整網格。 */
 .assets-library-page .assets-library-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, max(180px, calc(100% / var(--assets-grid-columns, 6) - 14px))), 1fr)); gap: 18px 14px; }
 .assets-library-page .library-create-title { margin-top: 12px; font-size: var(--fs-body); }
 .assets-library-page .library-create-meta { margin-top: 4px; font-size: var(--fs-label); }
 @media (max-width: 899px) and (min-width: 640px) { .assets-library-page .assets-library-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); } }
 
-/* 4. 封面浮层统一：窄屏隐藏分类徽章；浅底封面（文本/音频/模型）改用自适应玻璃浮层 */
+/* 4. 封面浮層統一：窄屏隱藏分類徽章；淺底封面（文本/音訊/模型）改用自適應玻璃浮層 */
 @media (max-width: 1100px) { .assets-cover-badge.is-category { display: none; } }
 .assets-cover.is-light .assets-cover-badge.is-category {
     border-color: color-mix(in srgb, var(--foreground) 14%, transparent);
@@ -16821,7 +16821,7 @@ button.ant-btn-primary:not(.ant-btn-dangerous):not(.ant-btn-background-ghost):no
     .ai-message-codeblock-copy { transition: none; }
 }
 
-/* --- ai-message 代码块语法高亮（shiki 双主题 CSS 变量：--shiki-light/--shiki-dark）--- */
+/* --- ai-message 程式碼塊語法高亮（shiki 雙主題 CSS 變數：--shiki-light/--shiki-dark）--- */
 .ai-message-codeblock-pre .shiki { margin: 0; padding: 0; background: transparent !important; }
 .ai-message-codeblock-pre .shiki code { font-family: inherit; font-size: inherit; color: inherit; }
 html:not(.dark) .ai-message-codeblock-pre .shiki,
@@ -16870,7 +16870,7 @@ html.dark .ai-message-codeblock-pre .shiki span { color: var(--shiki-dark) !impo
     accent-color: var(--primary);
 }
 
-/* ===== 创作页 · 连续对话与媒体状态 ===== */
+/* ===== 創作頁 · 連續對話與媒體狀態 ===== */
 .creation-home .creation-thread-workbench {
     display: flex;
     flex: 1 1 auto;
@@ -17379,7 +17379,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
     .creation-home .creation-media-error { width: 100%; margin-left: 0; }
 }
 
-/* --- 编辑器工作台细滚动条（Concat thin-scroll 参照：8px 细轨 + 圆角滑块，明暗面板通用）--- */
+/* --- 編輯器工作臺細捲軸（Concat thin-scroll 參照：8px 細軌 + 圓角滑塊，明暗面板通用）--- */
 .director-scroll {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
@@ -17406,7 +17406,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
     background: transparent;
 }
 
-/* --- 编辑器 sunken 滑块（Concat 参照：凹陷轨道 + 圆点滑块，跟随主题 token）--- */
+/* --- 編輯器 sunken 滑塊（Concat 參照：凹陷軌道 + 圓點滑塊，跟隨主題 token）--- */
 .editor-slider {
     -webkit-appearance: none;
     appearance: none;
@@ -17453,7 +17453,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
 }
 
 /* ─────────────────────────────────────────────────────────────
- * Select 弹层 / Tooltip 入场动画(kit 组件消费;描边 + 淡入)
+ * Select 彈層 / Tooltip 入場動畫(kit 元件消費;描邊 + 淡入)
  * ───────────────────────────────────────────────────────────── */
 @keyframes ra-pop-in {
     from {
@@ -17470,7 +17470,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
     transform-origin: var(--ra-pop-origin, top);
     animation: ra-pop-in var(--ra-pop-duration, 150ms) var(--workspace-ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
-/* react-aria 弹层按 data-placement 选择弹出方向（select/tooltip/dropdown 通用）*/
+/* react-aria 彈層按 data-placement 選擇彈出方向（select/tooltip/dropdown 通用）*/
 .ra-pop-in[data-placement^="top"] { --ra-pop-origin: bottom center; }
 .ra-pop-in[data-placement^="bottom"] { --ra-pop-origin: top center; }
 .ra-pop-in[data-placement^="left"] { --ra-pop-origin: right center; }
@@ -17484,7 +17484,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
 
 }
 
-/* —— 创建页空态推荐主卡（吸收 boardui pro-prompt 光晕卡形态）—— */
+/* —— 建立頁空態推薦主卡（吸收 boardui pro-prompt 光暈卡形態）—— */
 .creation-home .creation-hero-prompt {
     position: relative;
     display: flex;
@@ -17541,7 +17541,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
 }
 
 
-/* —— 创建页历史抽屉：新建置顶卡 + 时间分组（吸收 boardui agent-chat-history）—— */
+/* —— 建立頁歷史抽屜：新建置頂卡 + 時間分組（吸收 boardui agent-chat-history）—— */
 .creation-history-new {
     display: flex;
     width: calc(100% - 4px);
@@ -17586,7 +17586,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
 }
 .creation-history-group-head h4::after { content: ""; flex: 1; height: 1px; background: var(--creation-history-line); transform: translateY(-2px); }
 
-/* 图片上传：浅磨砂与低饱和流光，和模型生成状态分离。 */
+/* 圖片上傳：淺磨砂與低飽和流光，和模型生成狀態分離。 */
 .canvas-file-upload {
     --upload-glow-blue: color-mix(in srgb, var(--status-loading) 22%, transparent);
     --upload-glow-mint: color-mix(in srgb, var(--status-success) 14%, transparent);
@@ -17651,8 +17651,8 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
 }
 
 /* ===== 2026-09 user workspace alignment =====
-   这一组规则只作用于真实用户端壳层和首页，后台与画布编辑器保持原有职责和交互。
-   几何基准：侧栏 216px、顶部 64px、导航行 44px、首页内容最大宽度 1180px。 */
+   這一組規則只作用於真實使用者端殼層和首頁，後臺與畫布編輯器保持原有職責和互動。
+   幾何基準：側欄 216px、頂部 64px、導航行 44px、首頁內容最大寬度 1180px。 */
 .app-user-workspace {
     --workspace-reference-sidebar: 216px;
     --workspace-reference-collapsed: 70px;
@@ -18550,7 +18550,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
     display: none;
 }
 
-/* 首页：把视觉重心从装饰图改到标题、模式切换和真实 Composer。 */
+/* 首頁：把視覺重心從裝飾圖改到標題、模式切換和真實 Composer。 */
 .app-user-workspace .creation-home {
     background: #ffffff;
 }
@@ -18812,7 +18812,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
 .dark .app-user-workspace .creation-empty-workspace > .creation-mode-capsule { background: #232326; border-color: rgba(255,255,255,.08); }
 .dark .app-user-workspace .creation-empty-workspace > .creation-mode-capsule .creation-chat-control[aria-selected="true"] { background: #303034; color: #ffffff; }
 
-/* 用户首页：扩大内容承载区，但让输入区保持聚焦；精选作品采用一大四小的信息层级。 */
+/* 使用者首頁：擴大內容承載區，但讓輸入區保持聚焦；精選作品採用一大四小的資訊層級。 */
 .app-user-workspace .creation-empty-workspace {
     width: min(1180px, calc(100% - 40px));
     justify-content: flex-start;
@@ -19070,7 +19070,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
     height: 12px;
 }
 
-/* 品牌/模型两级菜单是 ModelPicker 默认结构，不能只写在 creation variant 下。 */
+/* 品牌/模型兩級選單是 ModelPicker 預設結構，不能只寫在 creation variant 下。 */
 .canvas-model-picker-brands {
     display: grid;
     gap: 4px;
@@ -19226,7 +19226,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
     font-size: 10px;
 }
 
-/* 模型下拉：选中项与当前 hover/focus 项展示说明，其他项保持安静。 */
+/* 模型下拉：選中項與當前 hover/focus 項展示說明，其他項保持安靜。 */
 .canvas-model-picker-option {
     transition: min-height 180ms cubic-bezier(.16, 1, .3, 1), background-color 160ms ease, transform 160ms cubic-bezier(.16, 1, .3, 1) !important;
 }
@@ -19256,7 +19256,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
     border-radius: 12px;
 }
 
-/* 顶栏积分中心：真实余额、充值、兑换与流水集中在一个消费型弹窗中。 */
+/* 頂欄積分中心：真實餘額、充值、兌換與流水集中在一個消費型彈窗中。 */
 .workspace-wallet-modal .ant-modal-container {
     display: flex;
     flex-direction: column;
@@ -20817,7 +20817,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
     transition: background var(--user-motion), border-color var(--user-motion), color var(--user-motion), transform var(--user-motion);
 }
 
-/* 模型选择器：先选品牌，再选模型；品牌列表保持完整可见，不用内部滚动条。 */
+/* 模型選擇器：先選品牌，再選模型；品牌列表保持完整可見，不用內部捲軸。 */
 .app-user-workspace .creation-model-picker-menu {
     max-height: var(--canvas-model-picker-max-height) !important;
     overflow: hidden !important;
@@ -20916,7 +20916,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
 .app-user-workspace .creation-featured-copy > span { color: var(--user-ink-muted) !important; }
 .app-user-workspace .creation-featured-copy em { color: var(--user-accent) !important; }
 
-/* 首页精选灵感：一张主推荐带动右侧节奏，避免机械等宽网格。 */
+/* 首頁精選靈感：一張主推薦帶動右側節奏，避免機械等寬網格。 */
 .app-user-workspace .creation-featured-layout {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     grid-auto-rows: auto;
@@ -20933,7 +20933,7 @@ html:not(.dark) .creation-home .creation-user-message-copy-wrap { box-shadow: 0 
 .app-user-workspace .creation-featured-card:not(.is-featured-hero) .creation-featured-copy { padding: 12px 14px 14px; }
 .app-user-workspace .creation-featured-card:not(.is-featured-hero) .creation-featured-copy > span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-/* 对话记录统一成窄而有层次的工作区，不让输入区吞掉首屏。 */
+/* 對話記錄統一成窄而有層次的工作區，不讓輸入區吞掉首屏。 */
 .app-user-workspace .creation-thread-toolbar,
 .app-user-workspace .creation-thread-stage,
 .app-user-workspace .creation-thread-composer { width: min(1066px, calc(100% - 48px)); }
@@ -21379,9 +21379,9 @@ main[data-libtv-readonly-dense="true"] .canvas-floating-dock {
     color: rgba(255,255,255,.62) !important;
     font-size: 16px !important;
 }
-[data-libtv-readonly-dense="true"] .canvas-floating-dock > span:has(> button[aria-label="适合屏幕"]),
-[data-libtv-readonly-dense="true"] .canvas-floating-dock > span:has(> button[aria-label="自动整理节点"]),
-[data-libtv-readonly-dense="true"] .canvas-floating-dock > span:has(> button[aria-label="缩小画布"]),
+[data-libtv-readonly-dense="true"] .canvas-floating-dock > span:has(> button[aria-label="適合螢幕"]),
+[data-libtv-readonly-dense="true"] .canvas-floating-dock > span:has(> button[aria-label="自動整理節點"]),
+[data-libtv-readonly-dense="true"] .canvas-floating-dock > span:has(> button[aria-label="縮小畫布"]),
 [data-libtv-readonly-dense="true"] .canvas-floating-dock > span.aceternity-dock-separator {
     display: none;
 }
@@ -21391,7 +21391,7 @@ main[data-libtv-readonly-dense="true"] .canvas-floating-dock {
     .canvas-libtv-readonly-title { max-width: 55vw; }
 }
 
-/* 全局反馈采用画布内状态与节点状态，不再渲染风格不一致的右上角 Toast。 */
+/* 全域性反饋採用畫布內狀態與節點狀態，不再渲染風格不一致的右上角 Toast。 */
 .ant-message,
 .ant-notification {
     display: none !important;

@@ -4,7 +4,7 @@ import type { DirectorBoneKeyframe, DirectorCamera, DirectorCameraMove, Director
 import { DIRECTOR_KEYFRAME_EPSILON, interpolateDirectorBoneRotation, interpolateDirectorTransform, upsertDirectorBoneKeyframe, upsertDirectorKeyframe } from "./director-scene";
 import { resolveDirectorCameraTransform } from "./director-view-modes";
 
-// 缩放为 0 时无法用比例表达增量，改用绝对偏移；阈值同时兼顾数值噪声。
+// 縮放為 0 時無法用比例表達增量，改用絕對偏移；閾值同時兼顧數值噪聲。
 const SCALE_EPSILON = 1e-6;
 
 export type DirectorTransformDelta = {
@@ -121,10 +121,10 @@ export type DirectorObjectTransformEdit = {
 };
 
 /**
- * 静态与动画语义的唯一入口。
- * autoKey 打开：只写当前吸附播放头上的关键帧，base 与其他关键帧保持不变。
- * autoKey 关闭：把「渲染值 -> 编辑值」的增量整体搬到 base 和所有已有关键帧，
- * 使编辑在存在关键帧时依然可见，且不改变未被编辑场景的既有渲染结果。
+ * 靜態與動畫語義的唯一入口。
+ * autoKey 開啟：只寫當前吸附播放頭上的關鍵幀，base 與其他關鍵幀保持不變。
+ * autoKey 關閉：把「渲染值 -> 編輯值」的增量整體搬到 base 和所有已有關鍵幀，
+ * 使編輯在存在關鍵幀時依然可見，且不改變未被編輯場景的既有渲染結果。
  */
 export function resolveDirectorObjectTransformEdit(input: { base: DirectorTransform; keyframes: DirectorKeyframe[]; rendered: DirectorTransform; edited: DirectorTransform; autoKey: boolean; time: number }): DirectorObjectTransformEdit {
     const { base, keyframes, rendered, edited, autoKey, time } = input;
@@ -199,22 +199,22 @@ export function resolveDirectorMultiObjectGroupTransformEdit(input: { objects: D
 }
 
 export type DirectorBoneLayerInput = {
-    /** 有动作片段时由 mixer 求值的当前旋转；无动作时为空。 */
+    /** 有動作片段時由 mixer 求值的當前旋轉；無動作時為空。 */
     motion?: DirectorQuat | null;
-    /** 静默姿势下的骨骼静置旋转。 */
+    /** 靜默姿勢下的骨骼靜置旋轉。 */
     rest?: DirectorQuat | null;
-    /** 姿势预设相对静置的增量。 */
+    /** 姿勢預設相對靜置的增量。 */
     poseDelta?: DirectorQuat | null;
-    /** 静态骨骼覆盖值。 */
+    /** 靜態骨骼覆蓋值。 */
     override?: DirectorQuat | null;
-    /** 骨骼关键帧轨道。 */
+    /** 骨骼關鍵幀軌道。 */
     keyframes?: DirectorBoneKeyframe[] | null;
     time: number;
 };
 
 /**
- * 骨骼求值优先级（低到高）：静置/姿势或动作片段 -> 静态覆盖 -> 骨骼关键帧。
- * 手指骨骼与主干骨骼共用同一规则。
+ * 骨骼求值優先順序（低到高）：靜置/姿勢或動作片段 -> 靜態覆蓋 -> 骨骼關鍵幀。
+ * 手指骨骼與主幹骨骼共用同一規則。
  */
 export function resolveDirectorBoneRotation(input: DirectorBoneLayerInput): DirectorQuat | null {
     const motionOrRest = input.motion ? input.motion : input.rest ? (input.poseDelta ? (new Quaternion(...input.rest).multiply(new Quaternion(...input.poseDelta)).toArray() as DirectorQuat) : input.rest) : null;
@@ -261,8 +261,8 @@ export type DirectorGestureEvent = "start" | "commit" | "cancel";
 export const directorGestureIdle: DirectorGestureState = { active: false, committed: false, transforming: false };
 
 /**
- * 一次手势只允许一个终态：commit 恰好提交一次，任何终态都必须清掉 transforming，
- * 否则 OrbitControls 会一直停留在禁用状态。
+ * 一次手勢只允許一個終態：commit 恰好提交一次，任何終態都必須清掉 transforming，
+ * 否則 OrbitControls 會一直停留在停用狀態。
  */
 export function reduceDirectorGesture(state: DirectorGestureState, event: DirectorGestureEvent): DirectorGestureState {
     if (event === "start") return { active: true, committed: false, transforming: true };
@@ -272,8 +272,8 @@ export function reduceDirectorGesture(state: DirectorGestureState, event: Direct
 }
 
 /**
- * 记录关键帧：取值时间与写入时间是两个不同的量。
- * 取值用 raw playhead（视口真正渲染的时间），写入用 snapped 目的时间。
+ * 記錄關鍵幀：取值時間與寫入時間是兩個不同的量。
+ * 取值用 raw playhead（視口真正渲染的時間），寫入用 snapped 目的時間。
  */
 export function resolveDirectorKeyframeRecord(input: { base: DirectorTransform; keyframes: DirectorKeyframe[]; rawTime: number; snappedTime: number; channel?: "position" | "rotation" | "scale" }) {
     const rendered = interpolateDirectorTransform(input.base, input.keyframes, input.rawTime);
@@ -300,10 +300,10 @@ export function resolveDirectorKeyframeRecord(input: { base: DirectorTransform; 
 }
 
 /**
- * 把自由观察相机显式写回实际摄影机。
+ * 把自由觀察相機顯式寫回實際攝影機。
  *
- * 没有动画轨道时更新基础 transform；已有轨道时写当前播放头关键帧，否则旧关键帧会
- * 继续接管 CAM 取景，让界面提示“已对齐”但画面立即跳回旧位置。
+ * 沒有動畫軌道時更新基礎 transform；已有軌道時寫當前播放頭關鍵幀，否則舊關鍵幀會
+ * 繼續接管 CAM 取景，讓介面提示“已對齊”但畫面立即跳回舊位置。
  */
 export function resolveDirectorCameraAlignment(camera: DirectorCamera, transform: DirectorTransform, time: number): DirectorCamera {
     if (!camera.keyframes.length) return { ...camera, transform };
@@ -321,13 +321,13 @@ export function resolveDirectorCameraGizmoEdit(input: { camera: DirectorCamera; 
     return rotationChanged ? { ...aligned, lookAtMode: "rotation", lookAtObjectId: undefined, keyframes: aligned.keyframes.map((key) => Math.abs(key.time - input.snappedTime) < DIRECTOR_KEYFRAME_EPSILON ? { ...key, rotationKeyed: true } : key) } : aligned;
 }
 
-/** 生成运镜只更新首尾帧；保留用户手工添加的中间帧、帧 id 与 easing。 */
+/** 生成運鏡只更新首尾幀；保留使用者手工新增的中間幀、幀 id 與 easing。 */
 export function resolveDirectorCameraMoveKeyframes(keyframes: DirectorKeyframe[], start: DirectorTransform, end: DirectorTransform, duration: number) {
     const endTime = Number.isFinite(duration) && duration > 0 ? duration : 0;
     return upsertDirectorKeyframe(upsertDirectorKeyframe(keyframes, 0, start), endTime, end);
 }
 
-/** 播放头按镜头时长循环；非法输入回落 0，长帧也保留越界余量。 */
+/** 播放頭按鏡頭時長迴圈；非法輸入回落 0，長幀也保留越界餘量。 */
 export function advanceDirectorPlayhead(playhead: number, elapsed: number, duration: number) {
     if (!Number.isFinite(duration) || duration <= 0) return 0;
     const current = Number.isFinite(playhead) ? playhead : 0;
@@ -336,9 +336,9 @@ export function advanceDirectorPlayhead(playhead: number, elapsed: number, durat
 }
 
 /**
- * 暂停且相机没有被关键帧驱动时不写相机，避免与用户 Orbit 操作互相抢夺。
- * key 必须包含该 playhead 上真正解算出的 transform，否则「同一 playhead 改关键帧内容」
- * 不会引起重新同步。
+ * 暫停且相機沒有被關鍵幀驅動時不寫相機，避免與使用者 Orbit 操作互相搶奪。
+ * key 必須包含該 playhead 上真正解算出的 transform，否則「同一 playhead 改關鍵幀內容」
+ * 不會引起重新同步。
  */
 export function directorCameraSyncKey(input: { camera?: { id: string; transform: DirectorTransform; target: DirectorVec3; fov: number; near: number; far: number; keyframes: DirectorKeyframe[] } | null; playhead: number; playing: boolean }) {
     const { camera, playhead, playing } = input;

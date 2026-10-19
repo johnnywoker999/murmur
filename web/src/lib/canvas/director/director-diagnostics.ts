@@ -1,15 +1,15 @@
 /**
- * 导演台诊断领域：稳定白名单 code + 安全结构化字段。
+ * 導演臺診斷領域：穩定白名單 code + 安全結構化欄位。
  *
- * 调用边界的硬约束（安全边界，不是风格偏好）：
- * - 绝不接收 Error / stack / componentStack / URL / Cookie / Authorization / token / 密钥；
- * - 绝不接收 scene 名称、素材正文、prompt 等业务文本；
- * - message 只能来自本模块的固定常量表，调用方不能自带文案；
- * - 字段只允许「白名单枚举 | 布尔 | 有限数值 | 通过 safe-id 校验的 id」；
- * - 未知 code 与未知字段一律丢弃，不透传。
+ * 呼叫邊界的硬約束（安全邊界，不是風格偏好）：
+ * - 絕不接收 Error / stack / componentStack / URL / Cookie / Authorization / token / 金鑰；
+ * - 絕不接收 scene 名稱、素材正文、prompt 等業務文本；
+ * - message 只能來自本模組的固定常量表，呼叫方不能自帶文案；
+ * - 欄位只允許「白名單列舉 | 布林 | 有限數值 | 通過 safe-id 校驗的 id」；
+ * - 未知 code 與未知欄位一律丟棄，不透傳。
  */
 
-/** 故障与恢复代码白名单。新增代码必须同时补 message 与测试。 */
+/** 故障與恢復程式碼白名單。新增程式碼必須同時補 message 與測試。 */
 export const DIRECTOR_DIAGNOSTIC_CODES = [
     "DIRECTOR_VIEWPORT_RENDER_FAILED",
     "DIRECTOR_VIEWPORT_CONTEXT_LOST",
@@ -28,19 +28,19 @@ export type DirectorDiagnosticCode = (typeof DIRECTOR_DIAGNOSTIC_CODES)[number];
 
 const CODE_SET: ReadonlySet<string> = new Set(DIRECTOR_DIAGNOSTIC_CODES);
 
-/** 固定文案：调用方不得传入任意字符串，避免业务正文经 message 泄漏。 */
+/** 固定文案：呼叫方不得傳入任意字串，避免業務正文經 message 洩漏。 */
 const MESSAGES: Record<DirectorDiagnosticCode, string> = {
-    DIRECTOR_VIEWPORT_RENDER_FAILED: "导演台 3D 视口渲染失败",
-    DIRECTOR_VIEWPORT_CONTEXT_LOST: "导演台 WebGL 上下文丢失",
-    DIRECTOR_VIEWPORT_CONTEXT_RESTORED: "导演台 WebGL 上下文已恢复",
-    DIRECTOR_MODEL_LOAD_FAILED: "导演台 3D 模型加载失败",
-    DIRECTOR_MODEL_LOAD_RETRY: "导演台 3D 模型重试加载",
-    DIRECTOR_MODEL_ADOPT_FAILED: "导演台 3D 模型采纳失败",
-    DIRECTOR_SAVE_FLUSH_FAILED: "导演台场景保存失败",
-    DIRECTOR_SAVE_RETRY_FAILED: "导演台场景重试保存仍失败",
-    DIRECTOR_SAVE_RETRY_RECOVERED: "导演台场景重试保存成功",
-    DIRECTOR_SAVE_DRAFT_UNAVAILABLE: "导演台本地草稿不可用",
-    DIRECTOR_CLOSE_BLOCKED: "导演台关闭被阻止",
+    DIRECTOR_VIEWPORT_RENDER_FAILED: "導演臺 3D 視口渲染失敗",
+    DIRECTOR_VIEWPORT_CONTEXT_LOST: "導演臺 WebGL 上下文丟失",
+    DIRECTOR_VIEWPORT_CONTEXT_RESTORED: "導演臺 WebGL 上下文已恢復",
+    DIRECTOR_MODEL_LOAD_FAILED: "導演臺 3D 模型載入失敗",
+    DIRECTOR_MODEL_LOAD_RETRY: "導演臺 3D 模型重試載入",
+    DIRECTOR_MODEL_ADOPT_FAILED: "導演臺 3D 模型採納失敗",
+    DIRECTOR_SAVE_FLUSH_FAILED: "導演臺場景儲存失敗",
+    DIRECTOR_SAVE_RETRY_FAILED: "導演臺場景重試儲存仍失敗",
+    DIRECTOR_SAVE_RETRY_RECOVERED: "導演臺場景重試儲存成功",
+    DIRECTOR_SAVE_DRAFT_UNAVAILABLE: "導演臺本地草稿不可用",
+    DIRECTOR_CLOSE_BLOCKED: "導演臺關閉被阻止",
 };
 
 const LEVELS: Record<DirectorDiagnosticCode, "info" | "warning" | "error"> = {
@@ -57,34 +57,34 @@ const LEVELS: Record<DirectorDiagnosticCode, "info" | "warning" | "error"> = {
     DIRECTOR_CLOSE_BLOCKED: "warning",
 };
 
-/** 对象种类枚举：只表达形态，绝不表达名称或素材来源。 */
+/** 物件種類列舉：只表達形態，絕不表達名稱或素材來源。 */
 export const DIRECTOR_OBJECT_KINDS = ["actor", "model", "billboard", "primitive", "unknown"] as const;
 export type DirectorDiagnosticObjectKind = (typeof DIRECTOR_OBJECT_KINDS)[number];
 const OBJECT_KIND_SET: ReadonlySet<string> = new Set(DIRECTOR_OBJECT_KINDS);
 
-/** 保存决策枚举：与 coordinator 的关闭决策同构，但不携带任何场景内容。 */
+/** 儲存決策列舉：與 coordinator 的關閉決策同構，但不攜帶任何場景內容。 */
 export const DIRECTOR_SAVE_OUTCOMES = ["close", "offer-draft-exit", "stay"] as const;
 export type DirectorDiagnosticSaveOutcome = (typeof DIRECTOR_SAVE_OUTCOMES)[number];
 const SAVE_OUTCOME_SET: ReadonlySet<string> = new Set(DIRECTOR_SAVE_OUTCOMES);
 
 /**
- * 允许的结构化字段。全部可选，且每个字段都有独立的校验规则。
- * 这里故意不提供任何自由文本字段。
+ * 允許的結構化欄位。全部可選，且每個欄位都有獨立的校驗規則。
+ * 這裡故意不提供任何自由文本欄位。
  */
 export type DirectorDiagnosticFields = {
-    /** 对象 id：safe-id 校验；不通过则丢弃。 */
+    /** 物件 id：safe-id 校驗；不通過則丟棄。 */
     objectId?: string;
-    /** 场景 id：safe-id 校验。绝不接收 scene 名称。 */
+    /** 場景 id：safe-id 校驗。絕不接收 scene 名稱。 */
     sceneId?: string;
     objectKind?: DirectorDiagnosticObjectKind;
     saveOutcome?: DirectorDiagnosticSaveOutcome;
-    /** 加载/保存重试次数。 */
+    /** 載入/儲存重試次數。 */
     attempt?: number;
-    /** 修订号。 */
+    /** 修訂號。 */
     revision?: number;
     /** 本地草稿是否可用。 */
     draftStored?: boolean;
-    /** 是否由用户显式触发（区分自动重试与手动重试）。 */
+    /** 是否由使用者顯式觸發（區分自動重試與手動重試）。 */
     userInitiated?: boolean;
 };
 
@@ -101,7 +101,7 @@ export function isDirectorDiagnosticCode(value: unknown): value is DirectorDiagn
     return typeof value === "string" && CODE_SET.has(value);
 }
 
-/** id 白名单校验：任何含 URL、query、路径分隔、空格、凭证形态的输入都不合法。 */
+/** id 白名單校驗：任何含 URL、query、路徑分隔、空格、憑證形態的輸入都不合法。 */
 function safeDirectorId(value: unknown): string | undefined {
     if (typeof value !== "string") return undefined;
     const trimmed = value.trim();
@@ -116,8 +116,8 @@ function boundedInteger(value: unknown, min: number, max: number): number | unde
 }
 
 /**
- * 纯投影：把任意输入收敛成安全事件。未知 code 返回 null，调用方据此丢弃。
- * 未知字段、非法 id、越界数值、非布尔值一律不出现在输出里。
+ * 純投影：把任意輸入收斂成安全事件。未知 code 返回 null，呼叫方據此丟棄。
+ * 未知欄位、非法 id、越界數值、非布林值一律不出現在輸出裡。
  */
 export function projectDirectorDiagnostic(code: unknown, fields: unknown): DirectorDiagnosticEvent | null {
     if (!isDirectorDiagnosticCode(code)) return null;
@@ -151,11 +151,11 @@ export function projectDirectorDiagnostic(code: unknown, fields: unknown): Direc
 }
 
 /**
- * 把安全字段压成 code 后缀，便于在统一诊断流里检索而无需自由文本。
+ * 把安全欄位壓成 code 字尾，便於在統一診斷流裡檢索而無需自由文本。
  *
- * scene/object 走 safe-id 投影后的值（非法 id 在投影阶段已被丢弃，不会到这里），
- * 因此后缀里只可能出现受限字符集。完整签名同时用于去重：
- * 不同 objectId / sceneId 必须是不同事件，不能在去重窗口内互相吞掉。
+ * scene/object 走 safe-id 投影后的值（非法 id 在投影階段已被丟棄，不會到這裡），
+ * 因此字尾裡只可能出現受限字元集。完整簽名同時用於去重：
+ * 不同 objectId / sceneId 必須是不同事件，不能在去重視窗內互相吞掉。
  */
 export function formatDirectorDiagnosticCode(event: DirectorDiagnosticEvent): string {
     const parts: string[] = [event.code];
@@ -170,7 +170,7 @@ export function formatDirectorDiagnosticCode(event: DirectorDiagnosticEvent): st
     return parts.join(" ");
 }
 
-/** 从 DirectorObject 的形态推导枚举，不读取 name / url / storageKey。 */
+/** 從 DirectorObject 的形態推導列舉，不讀取 name / url / storageKey。 */
 export function directorDiagnosticObjectKind(object: { kind?: string; primitive?: string } | null | undefined): DirectorDiagnosticObjectKind {
     if (!object) return "unknown";
     if (object.kind === "actor") return "actor";

@@ -13,102 +13,102 @@ export type CanvasPromptPreset = {
 export const CANVAS_BUILTIN_PRESETS: CanvasPromptPreset[] = [
     {
         id: "character-sheet",
-        name: "角色设定图",
-        description: "正面、侧面、背面与表情参考，锁定角色一致性",
-        prompt: "生成角色设定图：保持同一角色身份、五官、发型、服装和体态一致，包含正面、侧面、背面和关键表情参考，背景简洁，便于后续镜头复用。",
+        name: "角色設定圖",
+        description: "正面、側面、背面與表情參考，鎖定角色一致性",
+        prompt: "生成角色設定圖：保持同一角色身份、五官、髮型、服裝和體態一致，包含正面、側面、背面和關鍵表情參考，背景簡潔，便於後續鏡頭複用。",
         modes: ["image"],
         source: "builtin",
     },
     {
         id: "multi-angle",
-        name: "多机位视角",
-        description: "围绕同一主体生成连续、可衔接的机位变化",
-        prompt: "围绕同一主体设计多机位画面，保持人物、服装、场景和光线一致，分别给出远景、全景、中景、近景、特写、侧面、背面和俯拍视角，镜头之间具有连续性。",
+        name: "多機位視角",
+        description: "圍繞同一主體生成連續、可銜接的機位變化",
+        prompt: "圍繞同一主體設計多機位畫面，保持人物、服裝、場景和光線一致，分別給出遠景、全景、中景、近景、特寫、側面、背面和俯拍視角，鏡頭之間具有連續性。",
         modes: ["image", "video"],
         source: "builtin",
     },
     {
         id: "next-shot",
-        name: "画面推演",
-        description: "推演当前画面的前后动作与镜头衔接",
-        prompt: "基于当前画面推演下一个连续镜头：保持角色和场景一致，明确主体接下来的动作、视线、环境变化、镜头运动和自然衔接方式，不要跳变构图或身份。",
+        name: "畫面推演",
+        description: "推演當前畫面的前後動作與鏡頭銜接",
+        prompt: "基於當前畫面推演下一個連續鏡頭：保持角色和場景一致，明確主體接下來的動作、視線、環境變化、鏡頭運動和自然銜接方式，不要跳變構圖或身份。",
         modes: ["image", "video"],
         source: "builtin",
     },
     {
         id: "story-beats",
-        name: "连续镜头",
-        description: "将短剧情拆成可生成的连续镜头节拍",
-        prompt: "把这段内容拆成连续镜头节拍。每个镜头写清主体动作、景别、构图、机位、运镜、光线、情绪和与前后镜头的衔接，并保持角色、场景和道具一致。",
+        name: "連續鏡頭",
+        description: "將短劇情拆成可生成的連續鏡頭節拍",
+        prompt: "把這段內容拆成連續鏡頭節拍。每個鏡頭寫清主體動作、景別、構圖、機位、運鏡、光線、情緒和與前後鏡頭的銜接，並保持角色、場景和道具一致。",
         modes: ["text", "image", "video"],
         source: "builtin",
     },
     {
         id: "cinematic-light",
-        name: "电影光影优化",
-        description: "保留内容，优化真实光线、层次和融合感",
-        prompt: "保留主体身份、动作和原始构图，优化为真实电影摄影光线：明确主光方向、环境反射、阴影层次、肤色和背景融合，降低塑料感与过度锐化，不改变画面内容。",
+        name: "電影光影最佳化",
+        description: "保留內容，最佳化真實光線、層次和融合感",
+        prompt: "保留主體身份、動作和原始構圖，最佳化為真實電影攝影光線：明確主光方向、環境反射、陰影層次、膚色和背景融合，降低塑膠感與過度銳化，不改變畫面內容。",
         modes: ["image", "video"],
         source: "builtin",
     },
     {
         id: "video-prompt",
-        name: "视频提示词优化",
-        description: "整理为模型更容易执行的时序化镜头指令",
-        prompt: "将当前要求改写为结构化视频提示词，按时间顺序描述开场画面、主体动作、镜头运动、环境变化、声音和结束画面；消除冲突指令，保留所有关键约束。",
+        name: "影片提示詞最佳化",
+        description: "整理為模型更容易執行的時序化鏡頭指令",
+        prompt: "將當前要求改寫為結構化影片提示詞，按時間順序描述開場畫面、主體動作、鏡頭運動、環境變化、聲音和結束畫面；消除衝突指令，保留所有關鍵約束。",
         modes: ["text", "video"],
         source: "builtin",
     },
 ];
 
-export const IMAGE_PROMPT_REVERSE = `请根据参考图片反推一段适合用于 AI 生图的提示词。
+export const IMAGE_PROMPT_REVERSE = `請根據參考圖片反推一段適合用於 AI 生圖的提示詞。
 
 要求：
-1. 只输出提示词正文，不要解释。
-2. 覆盖主体、构图、风格、光线、色彩、材质、镜头和氛围。
-3. 尽量写成可直接用于生图模型的完整提示词。`;
+1. 只輸出提示詞正文，不要解釋。
+2. 覆蓋主體、構圖、風格、光線、色彩、材質、鏡頭和氛圍。
+3. 儘量寫成可直接用於生圖模型的完整提示詞。`;
 
 export function workflowStarterPrompt(kind: "character_cards" | "character_three_view" | "storyboard_video", title: string, workflowTitle: string) {
-    if (kind === "character_cards") return `请基于「${workflowTitle}」拆分主要角色，并为每个角色生成可用于后续创作的角色图片卡片：外观、服饰、身份、性格和视觉辨识点。`;
-    if (kind === "character_three_view") return `请基于上游角色卡片生成「${title}」：同一角色的正面、侧面、背面三视图，保持服饰、发型、道具和比例一致。`;
-    return `请基于上游角色三视图，为「${workflowTitle}」制作分镜剧情视频方案：包含镜头顺序、景别、动作、节奏和画面连续性。`;
+    if (kind === "character_cards") return `請基於「${workflowTitle}」拆分主要角色，併為每個角色生成可用於後續創作的角色圖片卡片：外觀、服飾、身份、性格和視覺辨識點。`;
+    if (kind === "character_three_view") return `請基於上游角色卡片生成「${title}」：同一角色的正面、側面、背面三檢視，保持服飾、髮型、道具和比例一致。`;
+    return `請基於上游角色三檢視，為「${workflowTitle}」製作分鏡劇情影片方案：包含鏡頭順序、景別、動作、節奏和畫面連續性。`;
 }
 
 export function buildTextRewritePrompt(sourceText: string, instruction: string) {
-    return `请根据要求修改以下文本。\n\n原文：\n${sourceText}\n\n修改要求：\n${instruction}`;
+    return `請根據要求修改以下文本。\n\n原文：\n${sourceText}\n\n修改要求：\n${instruction}`;
 }
 
 export function buildVideoOperationPrompt(operation: string, prompt: string, operationLabel: string) {
-    if (operation === "compare_versions") return `请对以下视频结果版本做对比分析，输出推荐版本、差异点和修改建议：\n${prompt}`;
-    return `视频编辑任务：${operationLabel}\n创作要求：${prompt}`;
+    if (operation === "compare_versions") return `請對以下影片結果版本做對比分析，輸出推薦版本、差異點和修改建議：\n${prompt}`;
+    return `影片編輯任務：${operationLabel}\n創作要求：${prompt}`;
 }
 
 export function buildSubtitleHighlightSystemPrompt() {
-    return `你是一个视频字幕关键词高亮助手。请输出严格 JSON。
+    return `你是一個影片字幕關鍵詞高亮助手。請輸出嚴格 JSON。
 
-任务目标：
-- 为每条字幕判断是否需要高亮
-- 每条字幕最多高亮 1 段
-- 只返回最值得高亮的一个关键词或短语
-- start 和 end 使用 JavaScript 字符串下标
-- end 为 exclusive
-- 没有明确重点时返回 shouldHighlight=false
+任務目標：
+- 為每條字幕判斷是否需要高亮
+- 每條字幕最多高亮 1 段
+- 只返回最值得高亮的一個關鍵詞或短語
+- start 和 end 使用 JavaScript 字串下標
+- end 為 exclusive
+- 沒有明確重點時返回 shouldHighlight=false
 
-高亮标准：
-- 优先高亮结论词、数字、身份词、首次/突破词、强反差词
-- 不要高亮虚词、口头语、整句长短语
+高亮標準：
+- 優先高亮結論詞、數字、身份詞、首次/突破詞、強反差詞
+- 不要高亮虛詞、口頭語、整句長短語
 
-边界约束：
-- 不负责颜色、字号、位置、动效
-- 只返回 highlights 数组
-- highlightText 必须严格等于原字幕文本切片结果`;
+邊界約束：
+- 不負責顏色、字號、位置、動效
+- 只返回 highlights 陣列
+- highlightText 必須嚴格等於原字幕文本切片結果`;
 }
 
 export function buildSubtitleHighlightUserMessage(entries: SrtEntry[]) {
     const lines = entries.map((entry) => {
         return `entryIndex=${entry.index} | startMs=${entry.startMs} | endMs=${entry.endMs} | text=${entry.text}`;
     });
-    return `请根据以下字幕和上下文，为每条字幕判断是否需要高亮，并返回 JSON：
+    return `請根據以下字幕和上下文，為每條字幕判斷是否需要高亮，並返回 JSON：
 
 {
   "highlights": [

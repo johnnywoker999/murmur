@@ -2,7 +2,7 @@ import { Button, Popover } from "antd";
 import { Check, Trash2, X } from "lucide-react";
 import { useRef, useState } from "react";
 
-/** 原位确认只在真实请求完成后关闭；失败保留操作上下文。 */
+/** 原位確認只在真實請求完成後關閉；失敗保留操作上下文。 */
 export function DeleteButton({ label, description, onConfirm }: { label: string; description: string; onConfirm: () => Promise<unknown> }) {
     const [open, setOpen] = useState(false);
     const [pending, setPending] = useState(false);
@@ -16,7 +16,7 @@ export function DeleteButton({ label, description, onConfirm }: { label: string;
         setPending(true);
         setError("");
         try { await onConfirm(); setOpen(false); }
-        catch (cause) { setError(cause instanceof Error ? cause.message : "删除失败，请重试"); }
+        catch (cause) { setError(cause instanceof Error ? cause.message : "刪除失敗，請重試"); }
         finally { busy.current = false; setPending(false); }
     };
     return <span className="product-delete" onClick={(event) => { event.preventDefault(); event.stopPropagation(); }} onKeyDown={(event) => { if (event.key === "Escape") { event.stopPropagation(); close(); } }}>
@@ -27,7 +27,7 @@ export function DeleteButton({ label, description, onConfirm }: { label: string;
                 {error ? <p role="alert" className="product-delete-error">{error}</p> : null}
                 <div className="product-delete-confirm-actions">
                     <Button autoFocus icon={<X />} disabled={pending} onClick={close}>取消</Button>
-                    <Button danger type="primary" icon={<Check />} loading={pending} onClick={() => void confirm()}>确认删除</Button>
+                    <Button danger type="primary" icon={<Check />} loading={pending} onClick={() => void confirm()}>確認刪除</Button>
                 </div>
             </div>
         }>

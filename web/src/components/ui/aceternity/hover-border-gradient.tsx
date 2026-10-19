@@ -31,7 +31,7 @@ function rotateDirection(current: Direction, clockwise: boolean): Direction {
     return directions[(index - 1 + directions.length) % directions.length];
 }
 
-// Aceternity Hover Border Gradient：中性墨色描边，不用彩色高光。
+// Aceternity Hover Border Gradient：中性墨色描邊，不用彩色高光。
 export function HoverBorderGradient<T extends ElementType = "button">({
     children,
     containerClassName,

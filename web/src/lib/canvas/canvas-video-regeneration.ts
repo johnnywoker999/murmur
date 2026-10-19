@@ -15,15 +15,15 @@ export function listVideoReferenceModels(config: AiConfig): string[] {
 export function videoReferenceRegenerationError(config: AiConfig): string {
     const videoProfile = modelCapabilityConfigFor(config, config.model).video;
     if (!videoProfile || videoProfile.references.maxVideos < 1) {
-        return "当前所选视频模型不支持参考视频，无法为片段创建待生成节点。请选择支持参考视频的模型，或在设置中配置 Seedance / Agent Plan / NewAPI 渠道。";
+        return "當前所選影片模型不支援參考影片，無法為片段建立待生成節點。請選擇支援參考影片的模型，或在設定中配置 Seedance / Agent Plan / NewAPI 渠道。";
     }
-    if (!videoProfile.operations.length) return "当前视频模型没有可用的视频生成模式";
+    if (!videoProfile.operations.length) return "當前影片模型沒有可用的影片生成模式";
     return "";
 }
 
 export function videoReferenceOperationError(config: AiConfig, operation: CanvasVideoEditOperation): string {
     const videoProfile = modelCapabilityConfigFor(config, config.model).video;
-    if (!videoProfile?.operations.includes(operation)) return "当前视频模型不支持所选生成模式";
+    if (!videoProfile?.operations.includes(operation)) return "當前影片模型不支援所選生成模式";
     return "";
 }
 
@@ -45,10 +45,10 @@ export function videoReferenceSegmentError(config: AiConfig, durationMs: number)
     const videoProfile = modelCapabilityConfigFor(config, config.model).video;
     const maxSeconds = videoProfile?.references.maxVideoDurationSeconds || 0;
     if (maxSeconds > 0 && durationMs > maxSeconds * 1000) {
-        return `截取片段不能超过当前模型参考视频上限（${maxSeconds} 秒）`;
+        return `擷取片段不能超過當前模型參考影片上限（${maxSeconds} 秒）`;
     }
     if (isSeedanceVideoConfig(config) && durationMs < 2000) {
-        return "Seedance 参考视频单段至少 2 秒，请扩大截取范围";
+        return "Seedance 參考影片單段至少 2 秒，請擴大擷取範圍";
     }
     return "";
 }

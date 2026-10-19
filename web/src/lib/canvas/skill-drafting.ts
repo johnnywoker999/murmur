@@ -30,10 +30,10 @@ export function parseSkillDraft(text: string): Partial<SkillDraft> {
                 };
             }
         } catch {
-            // JSON 解析失败时回退到文本整体方案
+            // JSON 解析失敗時回退到文本整體方案
         }
     }
-    // 回退：首行作为名称，正文作为简介与指令，用户随后可自由编辑
+    // 回退：首行作為名稱，正文作為簡介與指令，使用者隨後可自由編輯
     const firstLine = trimmed.split(/\r?\n/)[0]?.trim().slice(0, 30) || "未命名技能";
     return {
         skillName: firstLine,
@@ -51,7 +51,7 @@ export async function generateSkillDraft(idea: string, config: AiConfig, signal?
         metadata: {
             source: "skill-draft",
             promptTemplateOperation: PromptTemplateOperation.SkillDraft,
-            promptTemplateVariables: { 用户想法: idea.trim() },
+            promptTemplateVariables: { 使用者想法: idea.trim() },
         },
         signal,
     });

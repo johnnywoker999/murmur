@@ -32,14 +32,14 @@ function mergeValue(current: unknown, before: unknown, after: unknown): unknown 
     if (record(current) && record(before) && record(after)) {
         const next = { ...current };
         for (const key of new Set([...Object.keys(before), ...Object.keys(after)])) {
-            if (["__proto__", "constructor", "prototype"].includes(key)) throw new Error("无效的画布增量字段");
+            if (["__proto__", "constructor", "prototype"].includes(key)) throw new Error("無效的畫布增量欄位");
             const value = mergeValue(current[key], before[key], after[key]);
             if (value === undefined) delete next[key];
             else next[key] = value;
         }
         return next;
     }
-    throw new Error("Agent 画布增量与本地内容冲突，需要校准；已保留本地编辑");
+    throw new Error("Agent 畫布增量與本地內容衝突，需要校準；已保留本地編輯");
 }
 
 // Node-level createdAt/updatedAt are stamped by the editor on load and on every
@@ -75,7 +75,7 @@ function mergeItems<T extends { id: string }>(items: T[], changes: Change<T>[], 
     const next = new Map(items.map((item) => [item.id, item]));
     for (const { before, after } of changes) {
         const id = after?.id || before?.id;
-        if (!id || (before && after && before.id !== after.id)) throw new Error("无效的画布增量节点");
+        if (!id || (before && after && before.id !== after.id)) throw new Error("無效的畫布增量節點");
         const merged = merge(next.get(id) ?? null, before, after) as T | null;
         if (merged === null) next.delete(id);
         else next.set(id, merged);
@@ -85,14 +85,14 @@ function mergeItems<T extends { id: string }>(items: T[], changes: Change<T>[], 
 }
 
 export function applyCanvasPatch(project: CanvasProject, patch: CanvasPatch): CanvasProject {
-    if (patch.canvasId !== project.id || !Array.isArray(patch.nodes) || !Array.isArray(patch.connections)) throw new Error("画布增量不属于当前画布或格式无效");
+    if (patch.canvasId !== project.id || !Array.isArray(patch.nodes) || !Array.isArray(patch.connections)) throw new Error("畫布增量不屬於當前畫布或格式無效");
     const byId = new Map(project.nodes.map((node) => [node.id, node]));
     const nodeChanges = patch.nodes.map((change) => {
         if (!change.after) return change;
         const current = byId.get(change.after.id);
         const beforeTask = change.before?.metadata?.taskId;
         const afterTask = change.after.metadata?.taskId;
-        if (beforeTask && current?.metadata?.taskId !== beforeTask && current?.metadata?.taskId !== afterTask) throw new Error("画布增量冲突：生成节点已删除或绑定另一任务，不能覆盖");
+        if (beforeTask && current?.metadata?.taskId !== beforeTask && current?.metadata?.taskId !== afterTask) throw new Error("畫布增量衝突：生成節點已刪除或繫結另一任務，不能覆蓋");
         if (!current || !beforeTask || beforeTask !== afterTask) return change;
         const terminal = (status: string | undefined) => ["succeeded", "failed", "cancelled"].includes(status || "");
         // A local task subscriber may already know a newer state than the SSE

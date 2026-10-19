@@ -48,26 +48,26 @@ export default function ProjectWorkflowView({ detail, projectId, unitId, stage }
     };
     const addShot = useMutation({
         mutationFn: () => {
-            if (!unit) throw new Error("请先添加章节");
+            if (!unit) throw new Error("請先新增章節");
             return saveProjectShot(projectId, {
                 unitId: unit.id,
                 title: formatShotOrdinal(shots.length),
-                description: "待补充分镜画面",
+                description: "待補充分鏡畫面",
                 position: shots.length,
                 durationMs: 3000,
-                revision: { plotDescription: "待补充分镜画面", durationMs: 3000 },
+                revision: { plotDescription: "待補充分鏡畫面", durationMs: 3000 },
             });
         },
         onSuccess: async ({ shot }) => {
             setSelectedShotId(shot.id);
             sessionStorage.setItem(`project-workflow-selected-shot:${projectId}`, shot.id);
             await refresh();
-            message.success("已新增分镜");
+            message.success("已新增分鏡");
         },
-        onError: (error) => message.error(error instanceof Error ? error.message : "新增分镜失败"),
+        onError: (error) => message.error(error instanceof Error ? error.message : "新增分鏡失敗"),
     });
     if (!unit) {
-        return <div className="grid h-full place-items-center"><EmptyState title="先添加一个章节，再进入分镜制作" action={<Link to={`/projects/${projectId}/chapters`}><Button type="primary">添加章节</Button></Link>} /></div>;
+        return <div className="grid h-full place-items-center"><EmptyState title="先新增一個章節，再進入分鏡製作" action={<Link to={`/projects/${projectId}/chapters`}><Button type="primary">新增章節</Button></Link>} /></div>;
     }
 
     return (
@@ -75,7 +75,7 @@ export default function ProjectWorkflowView({ detail, projectId, unitId, stage }
             <main className={`workflow-stage-content ${productionStage ? "is-production" : ""}`}>
                 {activeStage === "story" ? <div className="workflow-overview-scroll thin-scrollbar"><StoryStage detail={detail} projectId={projectId} unitId={unit.id} /></div> : null}
                 {activeStage === "assets" ? <div className="workflow-overview-scroll thin-scrollbar"><AssetsStage detail={detail} projectId={projectId} unitId={unit.id} /></div> : null}
-                {productionStage ? <Suspense fallback={<div className="workflow-workbench-loading">正在准备分镜工作台…</div>}><WorkflowProductionWorkbench activeStage={activeStage} detail={detail} projectId={projectId} unitId={unit.id} workflowStep={activeStep} selectedShot={selectedShot} onSelectShot={setSelectedShotId} onRefresh={refresh} onAddShot={() => addShot.mutate()} addingShot={addShot.isPending} /></Suspense> : null}
+                {productionStage ? <Suspense fallback={<div className="workflow-workbench-loading">正在準備分鏡工作臺…</div>}><WorkflowProductionWorkbench activeStage={activeStage} detail={detail} projectId={projectId} unitId={unit.id} workflowStep={activeStep} selectedShot={selectedShot} onSelectShot={setSelectedShotId} onRefresh={refresh} onAddShot={() => addShot.mutate()} addingShot={addShot.isPending} /></Suspense> : null}
                 {activeStage === "delivery" ? <div className="workflow-overview-scroll thin-scrollbar"><DeliveryStage detail={detail} unitId={unit.id} /></div> : null}
             </main>
         </div>

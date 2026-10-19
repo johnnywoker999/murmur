@@ -67,7 +67,7 @@ export function CometCard({ containerClassName, className, rotateDepth = 5.5, tr
             setMotionActive(false);
             return;
         }
-        // 等回弹结束后彻底移除 3D 合成层，避免缩放画布中的节点长期使用低分辨率栅格缓存。
+        // 等回彈結束後徹底移除 3D 合成層，避免縮放畫布中的節點長期使用低解析度柵格快取。
         settleTimerRef.current = window.setTimeout(() => {
             setMotionActive(false);
             settleTimerRef.current = null;

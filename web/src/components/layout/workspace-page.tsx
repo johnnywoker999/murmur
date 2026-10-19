@@ -64,7 +64,7 @@ export function ListToolbar({
                     <>
                         {!filtersAlwaysVisible ? (
                             <Button type="default" className="admin-filter-toggle" aria-expanded={filtersOpen} icon={<ListFilter className="size-3.5" />} onClick={() => setFiltersOpen((open) => !open)}>
-                                筛选{active ? <span className="admin-filter-active-dot" aria-label="有已应用筛选" /> : null}
+                                篩選{active ? <span className="admin-filter-active-dot" aria-label="有已應用篩選" /> : null}
                             </Button>
                         ) : null}
                         <div className={cn("admin-list-toolbar-filters flex flex-wrap items-center gap-2", (filtersAlwaysVisible || filtersOpen) && "is-open")}>{filters}</div>
@@ -92,7 +92,7 @@ export function CollectionGrid({ children, className, style }: { children: React
     return <div className={cn("mt-4 grid grid-cols-1 gap-4 sm:grid-cols-[repeat(auto-fill,minmax(248px,1fr))]", className)} style={style}>{children}</div>;
 }
 
-/* 自研轻量分页：页码胶囊 + 省略号 + 每页条数 + 总数，替代 AntD Pagination（无 AntD 残留样式，与工具栏容器同语言）。 */
+/* 自研輕量分頁：頁碼膠囊 + 省略號 + 每頁條數 + 總數，替代 AntD Pagination（無 AntD 殘留樣式，與工具欄容器同語言）。 */
 function pageItems(current: number, pages: number): (number | "…")[] {
     if (pages <= 7) return Array.from({ length: pages }, (_, i) => i + 1);
     if (current <= 4) return [1, 2, 3, 4, 5, "…", pages];
@@ -107,7 +107,7 @@ export function PaginationBar({
     onChange,
     pageSizeOptions = [20, 50, 100],
     alwaysShow = false,
-    itemLabel = "条",
+    itemLabel = "條",
 }: {
     current: number;
     pageSize: number;
@@ -125,9 +125,9 @@ export function PaginationBar({
     return (
         <div className="app-pagination-bar admin-pagination-bar mt-4 flex min-h-10 min-w-0 items-center justify-end gap-2 px-2 py-1.5">
             <span className="admin-pagination-total">{total === 0 ? `共 0 ${itemLabel}` : `${start}-${end} / 共 ${total} ${itemLabel}`}</span>
-            <Select size="small" value={pageSize} className="app-pagination-size" options={pageSizeOptions.map((size) => ({ value: size, label: `${size} ${itemLabel}/页` }))} onChange={(value) => onChange(1, Number(value))} />
-            <div className="app-pagination-pages" role="navigation" aria-label="分页">
-                <button type="button" className="app-pagination-btn app-pagination-prev" disabled={current <= 1} aria-label="上一页" onClick={() => onChange(current - 1, pageSize)}>
+            <Select size="small" value={pageSize} className="app-pagination-size" options={pageSizeOptions.map((size) => ({ value: size, label: `${size} ${itemLabel}/頁` }))} onChange={(value) => onChange(1, Number(value))} />
+            <div className="app-pagination-pages" role="navigation" aria-label="分頁">
+                <button type="button" className="app-pagination-btn app-pagination-prev" disabled={current <= 1} aria-label="上一頁" onClick={() => onChange(current - 1, pageSize)}>
                     <ChevronLeft className="size-4" />
                 </button>
                 {items.map((item) =>
@@ -141,7 +141,7 @@ export function PaginationBar({
                         </button>
                     ),
                 )}
-                <button type="button" className="app-pagination-btn app-pagination-next" disabled={current >= pages} aria-label="下一页" onClick={() => onChange(current + 1, pageSize)}>
+                <button type="button" className="app-pagination-btn app-pagination-next" disabled={current >= pages} aria-label="下一頁" onClick={() => onChange(current + 1, pageSize)}>
                     <ChevronRight className="size-4" />
                 </button>
             </div>

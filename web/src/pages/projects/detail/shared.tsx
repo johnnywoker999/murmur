@@ -13,47 +13,47 @@ export type ProjectDetailViewProps = {
 export const categoryLabels: Record<string, string> = ASSET_CATEGORY_LABELS;
 
 export const mediaLabels: Record<string, string> = {
-    image: "图片",
-    video: "视频",
-    audio: "音频",
+    image: "圖片",
+    video: "影片",
+    audio: "音訊",
     text: "文本",
     model: "3D 模型",
     entity: "角色卡",
 };
 
 const statusLabels: Record<string, string> = {
-    active: "进行中",
-    archived: "已归档",
+    active: "進行中",
+    archived: "已歸檔",
     draft: "草稿",
     ready: "待制作",
     completed: "已完成",
-    review: "待审核",
-    confirmed: "已确认",
-    pending: "待处理",
-    pending_confirmation: "待确认",
-    running: "进行中",
-    failed: "失败",
+    review: "待稽核",
+    confirmed: "已確認",
+    pending: "待處理",
+    pending_confirmation: "待確認",
+    running: "進行中",
+    failed: "失敗",
     ignored: "已忽略",
-    skipped: "已跳过",
+    skipped: "已跳過",
     cancelled: "已取消",
     succeeded: "已完成",
     disabled: "已停用",
-    idle: "待开始",
-    loading: "处理中",
-    queued: "排队中",
+    idle: "待開始",
+    loading: "處理中",
+    queued: "排隊中",
     success: "已完成",
-    error: "异常",
-    deleted: "已删除",
-    reserved: "已冻结",
-    settled: "已结算",
+    error: "異常",
+    deleted: "已刪除",
+    reserved: "已凍結",
+    settled: "已結算",
     refunded: "已退款",
-    uncertain: "待核对",
+    uncertain: "待核對",
 };
 
 const sourceTypeLabels: Record<string, string> = {
-    blank: "空白开始",
-    novel: "导入小说",
-    text: "粘贴文本",
+    blank: "空白開始",
+    novel: "匯入小說",
+    text: "貼上文本",
 };
 
 export function categoryLabel(value: string) {
@@ -61,15 +61,15 @@ export function categoryLabel(value: string) {
 }
 
 export function statusLabel(value: string) {
-    return statusLabels[value] || "未知状态";
+    return statusLabels[value] || "未知狀態";
 }
 
 export function mediaLabel(value: string) {
-    return mediaLabels[value] || "其他类型";
+    return mediaLabels[value] || "其他型別";
 }
 
 export function sourceTypeLabel(value: string) {
-    return sourceTypeLabels[value] || "其他来源";
+    return sourceTypeLabels[value] || "其他來源";
 }
 
 export function StatusPill({ status }: { status: string }) {

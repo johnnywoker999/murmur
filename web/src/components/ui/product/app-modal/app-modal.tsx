@@ -1,14 +1,14 @@
 import { Modal, type ModalProps } from "antd";
 import type { CSSProperties } from "react";
 
-// 用途：产品弹窗壳。消费 token 由内容自己负责。接管 AntD Modal 的重复 flush 内边距。
+// 用途：產品彈窗殼。消費 token 由內容自己負責。接管 AntD Modal 的重複 flush 內邊距。
 const FLUSH_STYLES = {
     container: { padding: 0, overflow: "hidden" },
     body: { padding: 0 },
 } as const;
 
 export type AppModalProps = ModalProps & {
-    /** 内容自带外壳时去掉 AntD 默认内边距，避免每个业务弹窗复制同一套 styles。 */
+    /** 內容自帶外殼時去掉 AntD 預設內邊距，避免每個業務彈窗複製同一套 styles。 */
     flush?: boolean;
 };
 

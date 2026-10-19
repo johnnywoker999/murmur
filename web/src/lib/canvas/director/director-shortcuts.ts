@@ -1,32 +1,32 @@
 /**
- * 导演台键盘快捷键解析。
+ * 導演臺鍵盤快捷鍵解析。
  *
- * 纯函数：只把「按键事件形状」映射为语义动作，不碰 DOM、不改场景。
- * 组件层负责注册监听与执行动作，因此这里可以完整单测。
+ * 純函式：只把「按鍵事件形狀」對映為語義動作，不碰 DOM、不改場景。
+ * 元件層負責註冊監聽與執行動作，因此這裡可以完整單測。
  *
- * 安全边界：焦点落在任何交互控件（输入框、按钮、链接、role 型控件、
- * 可编辑区域）或其内部时，绝不把按键解析为全局快捷键。
- * 否则用户改名时会误删对象、按 Space 激活按钮时会误切换播放。
+ * 安全邊界：焦點落在任何互動控制元件（輸入框、按鈕、連結、role 型控制元件、
+ * 可編輯區域）或其內部時，絕不把按鍵解析為全域性快捷鍵。
+ * 否則使用者改名時會誤刪物件、按 Space 啟用按鈕時會誤切換播放。
  */
 
 /**
- * 语义动作。只保留导演台里已经存在真实执行路径的动作：
- * 变换模式（DirectorViewportDock 的 V/R/F，兼容 W/E）、删除选中对象或灯光、
- * 撤销/重做（顶栏按钮）、切换选中对象显隐（检查器「可见」开关）、
- * 取消选择、播放/暂停（时间轴 transport）。
+ * 語義動作。只保留導演臺裡已經存在真實執行路徑的動作：
+ * 變換模式（DirectorViewportDock 的 V/R/F，相容 W/E）、刪除選中物件或燈光、
+ * 撤銷/重做（頂欄按鈕）、切換選中物件顯隱（檢查器「可見」開關）、
+ * 取消選擇、播放/暫停（時間軸 transport）。
  *
- * 聚焦、复制、重命名没有对应实现，不在这里造无处可去的动作。
+ * 聚焦、複製、重新命名沒有對應實現，不在這裡造無處可去的動作。
  */
 export type DirectorShortcutAction = { kind: "transform-mode"; mode: "translate" | "rotate" | "scale" } | { kind: "nudge-selected"; direction: "up" | "down" | "left" | "right"; fine?: boolean } | { kind: "delete-selected" } | { kind: "undo" } | { kind: "redo" } | { kind: "toggle-visibility" } | { kind: "deselect" } | { kind: "toggle-play" } | { kind: "open-add-menu" };
 
-/** 只取事件的必要形状，便于测试构造，也避免耦合真实 KeyboardEvent。 */
+/** 只取事件的必要形狀，便於測試構造，也避免耦合真實 KeyboardEvent。 */
 export type DirectorKeyEvent = {
     key: string;
     ctrlKey?: boolean;
     metaKey?: boolean;
     shiftKey?: boolean;
     altKey?: boolean;
-    /** 事件目标是否落在交互控件内，由调用方判定后传入。 */
+    /** 事件目標是否落在互動控制元件內，由呼叫方判定後傳入。 */
     isInteractiveTarget?: boolean;
 };
 
@@ -39,13 +39,13 @@ const TRANSFORM_KEYS: Record<string, "translate" | "rotate" | "scale"> = {
 };
 
 /**
- * 解析按键为动作；不匹配返回 null。
+ * 解析按鍵為動作；不匹配返回 null。
  *
- * 约定：
- * - 交互控件语境一律不解析，交还给控件本身；
- * - 带修饰键的组合优先（Undo/Redo），避免 Ctrl+R 被当作 rotate；
- * - 单字母快捷键不区分大小写，Shift+W 仍是 translate；
- * - Redo 同时接受 Ctrl/Cmd+Shift+Z 与 Ctrl/Cmd+Y。
+ * 約定：
+ * - 互動控制元件語境一律不解析，交還給控制元件本身；
+ * - 帶修飾鍵的組合優先（Undo/Redo），避免 Ctrl+R 被當作 rotate；
+ * - 單字母快捷鍵不區分大小寫，Shift+W 仍是 translate；
+ * - Redo 同時接受 Ctrl/Cmd+Shift+Z 與 Ctrl/Cmd+Y。
  */
 export function resolveDirectorShortcut(event: DirectorKeyEvent): DirectorShortcutAction | null {
     if (event.isInteractiveTarget) return null;
@@ -55,7 +55,7 @@ export function resolveDirectorShortcut(event: DirectorKeyEvent): DirectorShortc
     const accel = Boolean(event.ctrlKey || event.metaKey);
 
     if (accel) {
-        // Alt 组合留给浏览器/系统，不抢。
+        // Alt 組合留給瀏覽器/系統，不搶。
         if (event.altKey) return null;
         if (lower === "z") return event.shiftKey ? { kind: "redo" } : { kind: "undo" };
         if (lower === "y") return { kind: "redo" };
@@ -78,15 +78,15 @@ export function resolveDirectorShortcut(event: DirectorKeyEvent): DirectorShortc
 }
 
 /**
- * 交互控件的唯一真源。
- * DIRECTOR_INTERACTIVE_SELECTOR（真实 DOM 的 closest 用）与
- * isDirectorInteractiveNode（单节点判定）都从这里派生，避免两处清单漂移。
+ * 互動控制元件的唯一真源。
+ * DIRECTOR_INTERACTIVE_SELECTOR（真實 DOM 的 closest 用）與
+ * isDirectorInteractiveNode（單節點判定）都從這裡派生，避免兩處清單漂移。
  */
 const INTERACTIVE_TAGS = ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A", "OPTION", "LABEL", "SUMMARY"] as const;
 
 /**
- * role 型控件：AntD 大量用 role 而非原生标签表达按钮、开关、菜单项。
- * Space/Delete/Backspace 对这些控件都有自己的含义，必须让它们优先。
+ * role 型控制元件：AntD 大量用 role 而非原生標籤表達按鈕、開關、選單項。
+ * Space/Delete/Backspace 對這些控制元件都有自己的含義，必須讓它們優先。
  */
 const INTERACTIVE_ROLES = [
     "textbox",
@@ -110,12 +110,12 @@ const INTERACTIVE_ROLES = [
     "treeitem",
 ] as const;
 
-/** 供真实 DOM 的 Element.closest 使用：命中控件自身或任何交互祖先。 */
+/** 供真實 DOM 的 Element.closest 使用：命中控制元件自身或任何互動祖先。 */
 export const DIRECTOR_INTERACTIVE_SELECTOR = [...INTERACTIVE_TAGS.map((tag) => tag.toLowerCase()), ...INTERACTIVE_ROLES.map((role) => `[role="${role}"]`), '[contenteditable="true"]', '[contenteditable=""]'].join(",");
 
 /**
- * 判断单个节点自身是否是交互控件。不看祖先。
- * 祖先由 blocksDirectorShortcut 通过 closest 处理。
+ * 判斷單個節點自身是否是互動控制元件。不看祖先。
+ * 祖先由 blocksDirectorShortcut 通過 closest 處理。
  */
 export function isDirectorInteractiveNode(target: unknown): boolean {
     if (!target || typeof target !== "object") return false;
@@ -135,13 +135,13 @@ export function isDirectorInteractiveNode(target: unknown): boolean {
 }
 
 /**
- * 事件目标是否应当阻止全局快捷键。
+ * 事件目標是否應當阻止全域性快捷鍵。
  *
- * 用 closest 而不是只看 target 自身：点击按钮里的 <svg>/<span> 时
- * event.target 是子元素，只判自身会漏掉整个控件。
- * closest 同时覆盖 SVG 元素（SVGElement 也实现 Element.closest）。
+ * 用 closest 而不是隻看 target 自身：點選按鈕裡的 <svg>/<span> 時
+ * event.target 是子元素，只判自身會漏掉整個控制元件。
+ * closest 同時覆蓋 SVG 元素（SVGElement 也實現 Element.closest）。
  *
- * 没有 closest 的目标（window、document、测试替身）退化为单节点判定。
+ * 沒有 closest 的目標（window、document、測試替身）退化為單節點判定。
  */
 export function blocksDirectorShortcut(target: unknown): boolean {
     if (!target || typeof target !== "object") return false;
@@ -151,17 +151,17 @@ export function blocksDirectorShortcut(target: unknown): boolean {
 }
 
 /**
- * 指针激活后释放焦点，使全局快捷键立刻可用。
+ * 指標啟用後釋放焦點，使全域性快捷鍵立刻可用。
  *
- * 为什么需要：blocksDirectorShortcut 会吃掉聚焦控件上的所有全局快捷键（这是刻意的，
- * Space/Delete/Backspace 属于控件自己）。但鼠标点完一个工具按钮或场景行之后，
- * 焦点仍留在按钮上，于是「点选对象 -> 按 Delete」这类主流程会静默失效。
+ * 為什麼需要：blocksDirectorShortcut 會吃掉聚焦控制元件上的所有全域性快捷鍵（這是刻意的，
+ * Space/Delete/Backspace 屬於控制元件自己）。但滑鼠點完一個工具按鈕或場景行之後，
+ * 焦點仍留在按鈕上，於是「點選物件 -> 按 Delete」這類主流程會靜默失效。
  *
- * detail === 0 表示键盘激活（Enter/Space 合成的 click），此时必须保留焦点，
- * 否则 Tab 序列会断、键盘用户会丢失位置。判据与 plugins 页一致。
+ * detail === 0 表示鍵盤啟用（Enter/Space 合成的 click），此時必須保留焦點，
+ * 否則 Tab 序列會斷、鍵盤使用者會丟失位置。判據與 plugins 頁一致。
  *
- * 导演台的按钮分散在 workbench、dock、sequencer 三处，各自没有公共基组件，
- * 因此这条规则集中在这里，避免每个 onClick 各写一遍而慢慢走偏。
+ * 導演臺的按鈕分散在 workbench、dock、sequencer 三處，各自沒有公共基元件，
+ * 因此這條規則集中在這裡，避免每個 onClick 各寫一遍而慢慢走偏。
  */
 export function releaseDirectorFocusAfterPointer(event: { detail: number; currentTarget: { blur?: () => void } }): void {
     if (event.detail === 0) return;

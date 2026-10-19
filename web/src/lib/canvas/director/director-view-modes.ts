@@ -5,36 +5,36 @@ import { directorStageDirection, directorStageMatrix, directorStagePoint, direct
 import type { DirectorCamera, DirectorKeyframe, DirectorScene, DirectorShot, DirectorTransform, DirectorVec3 } from "@/types/director";
 
 /**
- * 视口取景模式（3D / CAM / 五个正交轴向：俯视、正视、背视、左视、右视）。
+ * 視口取景模式（3D / CAM / 五個正交軸向：俯視、正視、背視、左視、右視）。
  *
- * 与一级模式（director-modes.ts 的摆场/姿态/动画/摄影机）是两个正交的量：
- * 一级模式决定「能改什么」，取景模式只决定「从哪只眼睛看」。
+ * 與一級模式（director-modes.ts 的擺場/姿態/動畫/攝影機）是兩個正交的量：
+ * 一級模式決定「能改什麼」，取景模式只決定「從哪隻眼睛看」。
  *
- * viewMode 是纯视口状态，绝不写入 DirectorScene，也绝不产生 undo/history 记录 ——
- * 换一只眼睛看场景不是对内容的修改。本模块只做纯函数，不持有任何 three 对象。
+ * viewMode 是純視口狀態，絕不寫入 DirectorScene，也絕不產生 undo/history 記錄 ——
+ * 換一隻眼睛看場景不是對內容的修改。本模組只做純函式，不持有任何 three 物件。
  *
- * 五个正交轴向和 CAM 一样锁环绕，但取景来自场景内容的包围盒而不是某台摄影机：
- * resolveDirectorOrthographicFraming 解出带 margin 的投影跨度，
- * resolveDirectorOrthographicFrustum 再按视口宽高比收成安全的正交半范围。
+ * 五個正交軸向和 CAM 一樣鎖環繞，但取景來自場景內容的包圍盒而不是某臺攝影機：
+ * resolveDirectorOrthographicFraming 解出帶 margin 的投影跨度，
+ * resolveDirectorOrthographicFrustum 再按視口寬高比收成安全的正交半範圍。
  */
 
 export type DirectorViewMode = "free" | "camera" | "top" | "front" | "back" | "left" | "right";
 
 export type DirectorViewModeCapabilities = {
-    /** 是否允许 OrbitControls 自由环绕。只有 free 允许；CAM 与五个正交轴向都要锁定构图，拖拽会破坏取景。 */
+    /** 是否允許 OrbitControls 自由環繞。只有 free 允許；CAM 與五個正交軸向都要鎖定構圖，拖拽會破壞取景。 */
     orbit: boolean;
-    /** 是否由 shot 的摄影机接管取景（视口相机 == 当前镜头）。只有 CAM。 */
+    /** 是否由 shot 的攝影機接管取景（視口相機 == 當前鏡頭）。只有 CAM。 */
     framed: boolean;
-    /** 投影方式。free/camera 是透视；五个正交轴向必须是正交投影，否则物体比例会随远近畸变。 */
+    /** 投影方式。free/camera 是透視；五個正交軸向必須是正交投影，否則物體比例會隨遠近畸變。 */
     projection: "perspective" | "orthographic";
 };
 
 const CAPABILITIES: Record<DirectorViewMode, DirectorViewModeCapabilities> = {
-    // 3D：编辑用的自由视角，可环绕、可缩放，摄影机只被关键帧驱动时才回写。
+    // 3D：編輯用的自由視角，可環繞、可縮放，攝影機只被關鍵幀驅動時才回寫。
     free: { orbit: true, framed: false, projection: "perspective" },
-    // CAM：所见即成片取景，视口 == 当前 shot 的摄影机，禁止环绕。
+    // CAM：所見即成片取景，視口 == 當前 shot 的攝影機，禁止環繞。
     camera: { orbit: false, framed: true, projection: "perspective" },
-    // 五个正交轴向：取景来自场景包围盒而非某台摄影机，同样锁环绕，投影必须正交。
+    // 五個正交軸向：取景來自場景包圍盒而非某臺攝影機，同樣鎖環繞，投影必須正交。
     top: { orbit: false, framed: false, projection: "orthographic" },
     front: { orbit: false, framed: false, projection: "orthographic" },
     back: { orbit: false, framed: false, projection: "orthographic" },
@@ -43,27 +43,27 @@ const CAPABILITIES: Record<DirectorViewMode, DirectorViewModeCapabilities> = {
 };
 
 export const DIRECTOR_VIEW_MODES: Array<{ mode: DirectorViewMode; label: string; hint: string }> = [
-    { mode: "free", label: "3D", hint: "自由视角：拖拽环绕、滚轮缩放" },
-    { mode: "camera", label: "CAM", hint: "机位视图：按当前镜头的摄影机取景，环绕已锁定" },
-    { mode: "top", label: "TOP", hint: "俯视：从正上方向下看，正交投影，环绕已锁定" },
-    { mode: "front", label: "FRONT", hint: "正视：沿 -Z 方向看向场景，正交投影，环绕已锁定" },
-    { mode: "back", label: "BACK", hint: "背视：沿 +Z 方向看向场景，正交投影，环绕已锁定" },
-    { mode: "left", label: "LEFT", hint: "左视：沿 +X 方向看向场景，正交投影，环绕已锁定" },
-    { mode: "right", label: "RIGHT", hint: "右视：沿 -X 方向看向场景，正交投影，环绕已锁定" },
+    { mode: "free", label: "3D", hint: "自由視角：拖拽環繞、滾輪縮放" },
+    { mode: "camera", label: "CAM", hint: "機位檢視：按當前鏡頭的攝影機取景，環繞已鎖定" },
+    { mode: "top", label: "TOP", hint: "俯視：從正上方向下看，正交投影，環繞已鎖定" },
+    { mode: "front", label: "FRONT", hint: "正視：沿 -Z 方向看向場景，正交投影，環繞已鎖定" },
+    { mode: "back", label: "BACK", hint: "背視：沿 +Z 方向看向場景，正交投影，環繞已鎖定" },
+    { mode: "left", label: "LEFT", hint: "左視：沿 +X 方向看向場景，正交投影，環繞已鎖定" },
+    { mode: "right", label: "RIGHT", hint: "右視：沿 -X 方向看向場景，正交投影，環繞已鎖定" },
 ];
 
 export const DIRECTOR_DEFAULT_VIEW_MODE: DirectorViewMode = "free";
 
-/** 未知模式回落默认能力，绝不返回 undefined —— 调用方直接读 .orbit / .framed。 */
+/** 未知模式回落預設能力，絕不返回 undefined —— 呼叫方直接讀 .orbit / .framed。 */
 export function directorViewModeCapabilities(mode: DirectorViewMode): DirectorViewModeCapabilities {
     return CAPABILITIES[mode] ?? CAPABILITIES[DIRECTOR_DEFAULT_VIEW_MODE];
 }
 
 /**
- * 当前 shot / 摄影机的唯一解析入口。
+ * 當前 shot / 攝影機的唯一解析入口。
  *
- * activeShotId 指向不存在的 shot 时回落到第一个 shot；shot 的 cameraId 指向不存在的
- * 摄影机时回落到第一台。空场景返回 null 而不是抛异常 —— 视口在任何场景下都必须能渲染。
+ * activeShotId 指向不存在的 shot 時回落到第一個 shot；shot 的 cameraId 指向不存在的
+ * 攝影機時回落到第一臺。空場景返回 null 而不是拋異常 —— 視口在任何場景下都必須能渲染。
  */
 export function resolveDirectorActiveShot(scene: DirectorScene): DirectorShot | null {
     return scene.shots.find((item) => item.id === scene.activeShotId) || scene.shots[0] || null;
@@ -74,22 +74,22 @@ export function resolveDirectorActiveCamera(scene: DirectorScene): DirectorCamer
     return scene.cameras.find((item) => item.id === shot?.cameraId) || scene.cameras[0] || null;
 }
 
-/** 取景数据：CAM 模式下视口相机需要被写入的完整状态。 */
+/** 取景資料：CAM 模式下視口相機需要被寫入的完整狀態。 */
 export type DirectorViewFraming = {
     cameraId: string;
     position: DirectorVec3;
     target: DirectorVec3;
-    /** 世界系 up。保留 roll，且保证与视线不共线。 */
+    /** 世界系 up。保留 roll，且保證與視線不共線。 */
     up: DirectorVec3;
     fov: number;
     near: number;
     far: number;
 };
 
-// 叉积长度低于此值即视为共线：lookAt 会解出非法基向量（NaN 矩阵），视口直接黑屏。
+// 叉積長度低於此值即視為共線：lookAt 會解出非法基向量（NaN 矩陣），視口直接黑屏。
 const DIRECTOR_VIEW_COLLINEAR_EPSILON = 1e-6;
 
-// 退化时的备选 up：世界 up 优先，其次两个水平轴 —— 正俯视/正仰视镜头落在这里。
+// 退化時的備選 up：世界 up 優先，其次兩個水平軸 —— 正俯視/正仰視鏡頭落在這裡。
 const DIRECTOR_VIEW_UP_FALLBACKS: DirectorVec3[] = [
     [0, 1, 0],
     [0, 0, -1],
@@ -97,13 +97,13 @@ const DIRECTOR_VIEW_UP_FALLBACKS: DirectorVec3[] = [
 ];
 
 /**
- * 解出带 roll 的 up 向量。
+ * 解出帶 roll 的 up 向量。
  *
- * 摄影机 rotation 的 z 分量就是荷兰角。裸 lookAt 会丢掉它 —— three 用固定的 camera.up
- * 重算基向量，画面永远水平。这里把世界 up 按摄影机自身欧拉角旋转，roll 才留得住。
+ * 攝影機 rotation 的 z 分量就是荷蘭角。裸 lookAt 會丟掉它 —— three 用固定的 camera.up
+ * 重算基向量，畫面永遠水平。這裡把世界 up 按攝影機自身尤拉角旋轉，roll 才留得住。
  *
- * 再处理退化：正俯视/正仰视时旋转后的 up 与视线共线，叉积为 0，lookAt 解出 NaN 矩阵。
- * 此时按 世界up -> -Z -> +X 取第一个不共线的备选，绝不返回让相机失效的值。
+ * 再處理退化：正俯視/正仰視時旋轉後的 up 與視線共線，叉積為 0，lookAt 解出 NaN 矩陣。
+ * 此時按 世界up -> -Z -> +X 取第一個不共線的備選，絕不返回讓相機失效的值。
  */
 export function resolveDirectorViewUp(rotation: DirectorVec3, viewDirection: DirectorVec3): DirectorVec3 {
     const view = new Vector3(...viewDirection);
@@ -114,10 +114,10 @@ export function resolveDirectorViewUp(rotation: DirectorVec3, viewDirection: Dir
 }
 
 /**
- * Three 透视投影是否可写进 PerspectiveCamera。
+ * Three 透視投影是否可寫進 PerspectiveCamera。
  *
- * 只检查有限还不够：fov=0 / 180、near<=0、far<=near 都能通过 isFinite，
- * 但 makePerspective 会得到 Inf/NaN 矩阵，视口黑屏。fov 必须落在 (0, 180)。
+ * 只檢查有限還不夠：fov=0 / 180、near<=0、far<=near 都能通過 isFinite，
+ * 但 makePerspective 會得到 Inf/NaN 矩陣，視口黑屏。fov 必須落在 (0, 180)。
  */
 export function directorUsablePerspectiveProjection(input: { fov: number; near: number; far: number }): boolean {
     const { fov, near, far } = input;
@@ -128,18 +128,18 @@ export function directorUsablePerspectiveProjection(input: { fov: number; near: 
 }
 
 export type DirectorEffectiveViewport = {
-    /** 视口应激活的专用相机。CAM 取景失败时必须是 free，不能停在从未写入的 camCamera。 */
+    /** 視口應啟用的專用相機。CAM 取景失敗時必須是 free，不能停在從未寫入的 camCamera。 */
     camera: "free" | "camera" | "orthographic";
-    /** 是否允许环绕 free 相机。与 camera 同步：只有 free 为 true。 */
+    /** 是否允許環繞 free 相機。與 camera 同步：只有 free 為 true。 */
     orbit: boolean;
 };
 
 /**
- * 视口活动相机与交互的唯一决策。
+ * 視口活動相機與互動的唯一決策。
  *
- * CAM 取景为 null（空场景、非法光学参数）时回落到已有的 free 相机和自由环绕，
- * 绝不改 DirectorScene。取景重新合法后确定性回到 CAM（orbit 锁死）。
- * 正交轴向不走这条回落：它们始终有安全默认包围盒。
+ * CAM 取景為 null（空場景、非法光學引數）時回落到已有的 free 相機和自由環繞，
+ * 絕不改 DirectorScene。取景重新合法後確定性回到 CAM（orbit 鎖死）。
+ * 正交軸向不走這條回落：它們始終有安全預設包圍盒。
  */
 export function resolveDirectorEffectiveViewport(input: { mode: DirectorViewMode; framing: DirectorViewFraming | null }): DirectorEffectiveViewport {
     if (directorViewModeCapabilities(input.mode).projection === "orthographic") return { camera: "orthographic", orbit: false };
@@ -148,12 +148,12 @@ export function resolveDirectorEffectiveViewport(input: { mode: DirectorViewMode
 }
 
 /**
- * 解出 CAM 模式下视口相机应有的取景。
+ * 解出 CAM 模式下視口相機應有的取景。
  *
- * 返回 null 的情形都必须走 free 回落：3D 模式、空场景、位置/旋转非法、
- * 透视投影不可用（fov/near/far）。绝不把非法值写进 three 相机。
+ * 返回 null 的情形都必須走 free 回落：3D 模式、空場景、位置/旋轉非法、
+ * 透視投影不可用（fov/near/far）。絕不把非法值寫進 three 相機。
  *
- * position 取 playhead 上插值后的值，所以 CAM 模式下拖时间轴就是在预览成片运镜。
+ * position 取 playhead 上插值後的值，所以 CAM 模式下拖時間軸就是在預覽成片運鏡。
  */
 export function resolveDirectorViewFraming(input: { scene: DirectorScene; mode: DirectorViewMode; playhead: number }): DirectorViewFraming | null {
     if (!directorViewModeCapabilities(input.mode).framed) return null;
@@ -165,7 +165,7 @@ export function resolveDirectorViewFraming(input: { scene: DirectorScene; mode: 
     return { ...local, position: directorStagePoint(stage, local.position), target: directorStagePoint(stage, local.target), up: directorStageDirection(stage, local.up), near: local.near * stage.scale, far: local.far * stage.scale };
 }
 
-/** CAM 画面与自由视角机位辅助图形共用的场景局部取景；也支持非活动机位。 */
+/** CAM 畫面與自由視角機位輔助圖形共用的場景區域性取景；也支援非活動機位。 */
 export function resolveDirectorCameraLocalFraming(scene: DirectorScene, camera: DirectorCamera, playhead: number): DirectorViewFraming | null {
     const time = Number.isFinite(playhead) ? playhead : 0;
     const transform: DirectorTransform = resolveDirectorCameraTransform(camera, time);
@@ -193,7 +193,7 @@ export function resolveDirectorCameraLocalFraming(scene: DirectorScene, camera: 
     if (![...position, ...requestedTarget].every(Number.isFinite)) return null;
     const raw = new Vector3(requestedTarget[0] - position[0], requestedTarget[1] - position[1], requestedTarget[2] - position[2]);
     const degenerate = raw.lengthSq() <= DIRECTOR_VIEW_COLLINEAR_EPSILON;
-    // 位置与焦点重合时视线为零向量，lookAt 无解：沿摄影机自身 -Z 造一个 1m 外的焦点。
+    // 位置與焦點重合時視線為零向量，lookAt 無解：沿攝影機自身 -Z 造一個 1m 外的焦點。
     const view = degenerate ? new Vector3(0, 0, -1).applyEuler(new Euler(...transform.rotation)) : raw;
     const target: DirectorVec3 = degenerate ? [position[0] + view.x, position[1] + view.y, position[2] + view.z] : requestedTarget;
     return { cameraId: camera.id, position, target, up: resolveDirectorViewUp(transform.rotation, view.toArray() as DirectorVec3), fov, near: camera.near, far: camera.far };
@@ -241,10 +241,10 @@ function interpolateDirectorCameraTrack<K extends "target" | "fov">(keyframes: D
 }
 
 /**
- * 取景同步键。
+ * 取景同步鍵。
  *
- * 相机回写的 effect 只依赖这个字符串：草稿对象每次 render 都是新身份，但取景数值没变
- * 就不该重写相机。数值截到 4 位小数，避免浮点噪声引起无意义的重同步。
+ * 相機回寫的 effect 只依賴這個字串：草稿物件每次 render 都是新身份，但取景數值沒變
+ * 就不該重寫相機。數值截到 4 位小數，避免浮點噪聲引起無意義的重同步。
  */
 export function directorViewFramingKey(framing: DirectorViewFraming | null): string {
     if (!framing) return "";
@@ -252,24 +252,24 @@ export function directorViewFramingKey(framing: DirectorViewFraming | null): str
 }
 
 /**
- * 五个正交轴向的视线方向与 up。这五个轴上视线与 up 恒定正交（都是不同的主轴向量），
- * 不会出现 CAM 取景那种「roll 导致 up 与视线共线」的退化情形，因此不需要
- * resolveDirectorViewUp 那套回落链。
+ * 五個正交軸向的視線方向與 up。這五個軸上視線與 up 恆定正交（都是不同的主軸向量），
+ * 不會出現 CAM 取景那種「roll 導致 up 與視線共線」的退化情形，因此不需要
+ * resolveDirectorViewUp 那套回落鏈。
  *
- * 方向约定（世界系，Y-up）：
- * - top：看向 -Y（从上往下看），up 取 -Z。
+ * 方向約定（世界系，Y-up）：
+ * - top：看向 -Y（從上往下看），up 取 -Z。
  * - front：看向 -Z，up 取 +Y。
- * - back：看向 +Z，up 取 +Y —— front 的正对面。
- * - left：看向 +X（从场景左侧看向右侧），up 取 +Y。
- * - right：看向 -X，up 取 +Y —— left 的正对面。
+ * - back：看向 +Z，up 取 +Y —— front 的正對面。
+ * - left：看向 +X（從場景左側看向右側），up 取 +Y。
+ * - right：看向 -X，up 取 +Y —— left 的正對面。
  */
 type DirectorOrthographicAxis = "top" | "front" | "back" | "left" | "right";
 
 /**
- * 正交画面上的世界轴。horizontal/vertical 是投影后的屏幕轴，不是视线轴：
- * - top：水平 X / 竖直 Z
- * - front / back：水平 X / 竖直 Y
- * - left / right：水平 Z / 竖直 Y
+ * 正交畫面上的世界軸。horizontal/vertical 是投影后的螢幕軸，不是視線軸：
+ * - top：水平 X / 豎直 Z
+ * - front / back：水平 X / 豎直 Y
+ * - left / right：水平 Z / 豎直 Y
  */
 const DIRECTOR_ORTHOGRAPHIC_AXES: Record<DirectorOrthographicAxis, { view: DirectorVec3; up: DirectorVec3; horizontal: 0 | 1 | 2; vertical: 0 | 1 | 2 }> = {
     top: { view: [0, -1, 0], up: [0, 0, -1], horizontal: 0, vertical: 2 },
@@ -279,7 +279,7 @@ const DIRECTOR_ORTHOGRAPHIC_AXES: Record<DirectorOrthographicAxis, { view: Direc
     right: { view: [-1, 0, 0], up: [0, 1, 0], horizontal: 2, vertical: 1 },
 };
 
-/** 穷举类型守卫：合法的正交轴向集合在类型层面就是穷举的，调用方无需再查能力表判断。 */
+/** 窮舉型別守衛：合法的正交軸向集合在型別層面就是窮舉的，呼叫方無需再查能力表判斷。 */
 function isDirectorOrthographicAxis(mode: DirectorViewMode): mode is DirectorOrthographicAxis {
     return mode === "top" || mode === "front" || mode === "back" || mode === "left" || mode === "right";
 }
@@ -289,10 +289,10 @@ function directorFinitePoint(point: DirectorVec3): boolean {
 }
 
 /**
- * 取景点云：可见对象的旋转后缩放包围盒角点 + 全部摄影机/灯光的位置。
+ * 取景點雲：可見物件的旋轉後縮放包圍盒角點 + 全部攝影機/燈光的位置。
  *
- * 只收对象中心会把大比例背景板、长道具等裁掉。资源尚未加载时无法读取真实 geometry，
- * transform.scale 是当前场景合同里稳定可用的保守代理；旋转后的八个角点还能覆盖斜放对象。
+ * 只收物件中心會把大比例背景板、長道具等裁掉。資源尚未載入時無法讀取真實 geometry，
+ * transform.scale 是當前場景合同裡穩定可用的保守代理；旋轉後的八個角點還能覆蓋斜放物件。
  */
 function collectDirectorFramingPoints(scene: DirectorScene): DirectorVec3[] {
     const points: DirectorVec3[] = [];
@@ -319,23 +319,23 @@ function collectDirectorFramingPoints(scene: DirectorScene): DirectorVec3[] {
 
 type DirectorFramingBounds = { center: DirectorVec3; extent: DirectorVec3 };
 
-// 空场景 / 全部点位非法时的安全默认包围盒，贴近场景模板的默认布景尺度（见 director-templates.ts 三点布光半径）。
+// 空場景 / 全部點位非法時的安全預設包圍盒，貼近場景模板的預設佈景尺度（見 director-templates.ts 三點布光半徑）。
 const DIRECTOR_ORTHOGRAPHIC_DEFAULT_BOUNDS: DirectorFramingBounds = { center: [0, 0, 0], extent: [6, 6, 6] };
-// 单轴范围下限：单点或共面内容不能把该轴压成 0，否则正交相机等于无限缩放。
+// 單軸範圍下限：單點或共面內容不能把該軸壓成 0，否則正交相機等於無限縮放。
 const DIRECTOR_ORTHOGRAPHIC_MIN_EXTENT = 2;
-// 构图留白：内容贴着画面边缘看不清楚，按包围盒放大这个比例再取景。
+// 構圖留白：內容貼著畫面邊緣看不清楚，按包圍盒放大這個比例再取景。
 const DIRECTOR_ORTHOGRAPHIC_MARGIN = 1.2;
-// 相机与目标的距离相对包围盒半径的倍数：太近会让正交相机的机位穿进内容内部。
+// 相機與目標的距離相對包圍盒半徑的倍數：太近會讓正交相機的機位穿進內容內部。
 const DIRECTOR_ORTHOGRAPHIC_DISTANCE_FACTOR = 2;
 const DIRECTOR_ORTHOGRAPHIC_NEAR = 0.1;
-// far 相对距离额外预留的深度倍数，保证视线方向上的内容不被裁切。
+// far 相對距離額外預留的深度倍數，保證視線方向上的內容不被裁切。
 const DIRECTOR_ORTHOGRAPHIC_FAR_MARGIN = 4;
-// 视锥换算的跨度下限：0 / 负 / 非有限值都不能当除数或半范围。
+// 視錐換算的跨度下限：0 / 負 / 非有限值都不能當除數或半範圍。
 const DIRECTOR_ORTHOGRAPHIC_MIN_SPAN = 1e-3;
-// 非法宽高比（0 / 负 / NaN / Infinity）回落正方形，避免半范围变成 NaN 或 Infinity。
+// 非法寬高比（0 / 負 / NaN / Infinity）回落正方形，避免半範圍變成 NaN 或 Infinity。
 const DIRECTOR_ORTHOGRAPHIC_DEFAULT_ASPECT = 1;
 
-/** 点云的轴对齐包围盒中心与三轴范围。点云为空时回落安全默认值，每轴范围不低于最小下限。 */
+/** 點雲的軸對齊包圍盒中心與三軸範圍。點雲為空時回落安全預設值，每軸範圍不低於最小下限。 */
 function resolveDirectorFramingBounds(points: DirectorVec3[]): DirectorFramingBounds {
     if (points.length === 0) return DIRECTOR_ORTHOGRAPHIC_DEFAULT_BOUNDS;
     const min: DirectorVec3 = [Infinity, Infinity, Infinity];
@@ -351,21 +351,21 @@ function resolveDirectorFramingBounds(points: DirectorVec3[]): DirectorFramingBo
     return { center, extent };
 }
 
-/** 正交轴向取景数据：视口相机需要被写入的完整状态。 */
+/** 正交軸向取景資料：視口相機需要被寫入的完整狀態。 */
 export type DirectorOrthographicFraming = {
     position: DirectorVec3;
     target: DirectorVec3;
-    /** 世界系 up，恒定为主轴向量，绝不与视线共线。 */
+    /** 世界系 up，恆定為主軸向量，絕不與視線共線。 */
     up: DirectorVec3;
-    /** 投影后的水平跨度（已含构图留白）。不得单独按高度×宽高比展开，否则宽内容会被裁切。 */
+    /** 投影后的水平跨度（已含構圖留白）。不得單獨按高度×寬高比展開，否則寬內容會被裁切。 */
     horizontalSpan: number;
-    /** 投影后的竖直跨度（已含构图留白）。 */
+    /** 投影后的豎直跨度（已含構圖留白）。 */
     verticalSpan: number;
     near: number;
     far: number;
 };
 
-/** 正交相机的左右上下半范围。始终对称，且 width/height 等于安全后的宽高比。 */
+/** 正交相機的左右上下半範圍。始終對稱，且 width/height 等於安全後的寬高比。 */
 export type DirectorOrthographicFrustum = {
     halfWidth: number;
     halfHeight: number;
@@ -380,11 +380,11 @@ function directorSafePositive(value: number, fallback: number): number {
 }
 
 /**
- * 把投影跨度与视口宽高比收成正交半范围。
+ * 把投影跨度與視口寬高比收成正交半範圍。
  *
- * 必须同时装下水平与竖直跨度：只按高度×aspect 算宽度时，宽于画面的内容会被裁掉。
- * aspect 为 0 / 负 / NaN / ±Infinity 时回落 1；跨度非法时回落最小正跨度。
- * 这是纯函数，不读 scene，也不写 three 相机。
+ * 必須同時裝下水平與豎直跨度：只按高度×aspect 算寬度時，寬於畫面的內容會被裁掉。
+ * aspect 為 0 / 負 / NaN / ±Infinity 時回落 1；跨度非法時回落最小正跨度。
+ * 這是純函式，不讀 scene，也不寫 three 相機。
  */
 export function resolveDirectorOrthographicFrustum(input: { horizontalSpan: number; verticalSpan: number; aspect: number }): DirectorOrthographicFrustum {
     const horizontalSpan = directorSafePositive(input.horizontalSpan, DIRECTOR_ORTHOGRAPHIC_MIN_SPAN);
@@ -405,11 +405,11 @@ export function resolveDirectorOrthographicFrustum(input: { horizontalSpan: numb
 }
 
 /**
- * 解出五个正交轴向的取景。free/camera 不是正交轴向，返回 null。
+ * 解出五個正交軸向的取景。free/camera 不是正交軸向，返回 null。
  *
- * target 与两条投影跨度来自可见对象的变换包围盒 + 全部摄影机/灯光的位置包围盒；空场景或全部
- * 位置非法（NaN/Infinity）时回落安全默认值，绝不返回会让正交相机退化成无限缩放的 0 值。
- * position 由 target 沿该轴向的视线方向反推，因此永远落在包围盒之外，不会穿模。
+ * target 與兩條投影跨度來自可見物件的變換包圍盒 + 全部攝影機/燈光的位置包圍盒；空場景或全部
+ * 位置非法（NaN/Infinity）時回落安全預設值，絕不返回會讓正交相機退化成無限縮放的 0 值。
+ * position 由 target 沿該軸向的視線方向反推，因此永遠落在包圍盒之外，不會穿模。
  */
 export function resolveDirectorOrthographicFraming(input: { scene: DirectorScene; mode: DirectorViewMode }): DirectorOrthographicFraming | null {
     if (!isDirectorOrthographicAxis(input.mode)) return null;

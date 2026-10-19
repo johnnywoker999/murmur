@@ -11,7 +11,7 @@ import { useAssetStore, type ImageAsset } from "@/stores/use-asset-store";
 import type { AiConfig } from "@/stores/use-config-store";
 import type { ReferenceImage } from "@/types/image";
 
-export const DIRECTOR_PANORAMA_PROMPT = "以参考图中的主体、材质和光影为基础，将环境扩展成完整的 360 度等距柱状全景图。输出 2:1 比例的连续单幅画面，左右边缘自然无缝衔接，保持真实空间尺度；不要拼贴、边框、文字、水印或拍摄设备。";
+export const DIRECTOR_PANORAMA_PROMPT = "以參考圖中的主體、材質和光影為基礎，將環境擴充套件成完整的 360 度等距柱狀全景圖。輸出 2:1 比例的連續單幅畫面，左右邊緣自然無縫銜接，保持真實空間尺度；不要拼貼、邊框、文字、水印或拍攝裝置。";
 
 type DirectorPanoramaGenerationInput = { file: File; config: AiConfig; sceneId: string; projectId?: string; signal?: AbortSignal; onTaskUpdate?: (task: GenerationTask) => void };
 type DirectorPanoramaGenerationDependencies = {
@@ -46,7 +46,7 @@ const defaultRecoveryDependencies: DirectorPanoramaRecoveryDependencies = { ...d
 function panoramaSessionGuard(signal?: AbortSignal) {
     const expected = captureUserScope();
     return () => {
-        if (signal?.aborted) throw new DOMException("生成会话已结束", "AbortError");
+        if (signal?.aborted) throw new DOMException("生成會話已結束", "AbortError");
         assertUserScope(expected);
     };
 }
@@ -56,11 +56,11 @@ async function panoramaFromTask(task: GenerationTask, sceneId: string, dependenc
     const materialized = await dependencies.materialize(task, signal);
     assertCurrent();
     const assetId = materialized.outputs?.find((output) => output.mediaType === "image")?.materializedAssetId;
-    if (!assetId) throw new Error("图片任务完成，但没有返回全景图");
+    if (!assetId) throw new Error("圖片任務完成，但沒有返回全景圖");
     const asset = dependencies.findAsset(assetId);
-    if (!asset) throw new Error("全景图结果无法读取，请到任务中心检查输出资源");
+    if (!asset) throw new Error("全景圖結果無法讀取，請到任務中心檢查輸出資源");
     if (asset.metadata?.source !== "director-panorama-ai") {
-        dependencies.updateAsset(assetId, { title: name || "AI 全景图", tags: ["全景图", "AI生成"], source: "导演台", metadata: { ...asset.metadata, source: "director-panorama-ai", sceneId, taskId: task.id } });
+        dependencies.updateAsset(assetId, { title: name || "AI 全景圖", tags: ["全景圖", "AI生成"], source: "導演臺", metadata: { ...asset.metadata, source: "director-panorama-ai", sceneId, taskId: task.id } });
     }
     return { id: assetId, name: name || asset.title, url: asset.data.dataUrl, storageKey: asset.data.storageKey || "", width: asset.data.width, height: asset.data.height };
 }
@@ -73,17 +73,17 @@ export async function generateDirectorPanorama(input: DirectorPanoramaGeneration
         const signal = consumer.signal;
         const assertCurrent = panoramaSessionGuard(signal);
         assertCurrent();
-        if (!file.type.startsWith("image/")) throw new Error("请选择图片文件");
+        if (!file.type.startsWith("image/")) throw new Error("請選擇圖片檔案");
         const model = dependencies.selectModel(config);
-        if (!model) throw new Error("请先在模型设置中选择可用的图片模型");
-        if (modelCapabilityConfigFor(config, model).image?.references.maxImages === 0) throw new Error("当前图片模型不支持参考图，请选择支持图生图的模型");
+        if (!model) throw new Error("請先在模型設定中選擇可用的圖片模型");
+        if (modelCapabilityConfigFor(config, model).image?.references.maxImages === 0) throw new Error("當前圖片模型不支援參考圖，請選擇支援圖生圖的模型");
         const source = await dependencies.upload(file);
         assertCurrent();
         const reference: ReferenceImage = { id: nanoid(), name: file.name, type: source.mimeType, dataUrl: source.url, storageKey: source.storageKey, width: source.width, height: source.height, bytes: source.bytes };
         const task = await dependencies.submit({ projectId, mode: "image", prompt: DIRECTOR_PANORAMA_PROMPT, config: { ...config, model, size: directorPanoramaSize(config, model), count: "1" }, referenceImages: [reference], metadata: { source: "director-panorama", sceneId }, signal, onTaskUpdate });
         assertCurrent();
         const completed = await dependencies.wait(task.id, { initialTask: task, signal, onTaskUpdate });
-        return await panoramaFromTask(completed, sceneId, dependencies, assertCurrent, `AI 全景图 · ${file.name}`, signal);
+        return await panoramaFromTask(completed, sceneId, dependencies, assertCurrent, `AI 全景圖 · ${file.name}`, signal);
     } finally {
         consumer.release();
     }
@@ -110,7 +110,7 @@ export async function recoverDirectorPanoramaTasks(projectId: string, sceneId: s
                 return true;
             } catch (error) {
                 if (isUserScopeAbandonedError(error)) throw error;
-                if (!signal?.aborted) console.warn("导演台全景图任务恢复失败", summary.id, error);
+                if (!signal?.aborted) console.warn("導演臺全景圖任務恢復失敗", summary.id, error);
                 return false;
             }
         }));

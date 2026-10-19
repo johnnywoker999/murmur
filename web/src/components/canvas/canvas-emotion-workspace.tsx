@@ -55,12 +55,12 @@ export function CanvasEmotionWorkspace({ node, viewport, containerRef, dragOffse
                     return;
                 }
                 setStatus("error");
-                setError("未识别到清晰人脸，请手动框选");
+                setError("未識別到清晰人臉，請手動框選");
             })
             .catch((reason) => {
                 if (reason instanceof DOMException && reason.name === "AbortError") return;
                 setStatus("error");
-                setError(reason instanceof Error ? `${reason.message}，请手动框选` : "人脸识别失败，请手动框选");
+                setError(reason instanceof Error ? `${reason.message}，請手動框選` : "人臉識別失敗，請手動框選");
             });
         return () => controller.abort();
     }, [dataUrl]);
@@ -107,7 +107,7 @@ export function CanvasEmotionWorkspace({ node, viewport, containerRef, dragOffse
             });
         } catch (reason) {
             setStatus("editing");
-            setError(reason instanceof Error ? reason.message : "生成前处理失败");
+            setError(reason instanceof Error ? reason.message : "生成前處理失敗");
         }
     };
 
@@ -287,7 +287,7 @@ function FaceSelectionOverlay({
                     <motion.button
                         key={face.id}
                         type="button"
-                        aria-label={selected ? `选择${selected.name}` : "选择此人脸"}
+                        aria-label={selected ? `選擇${selected.name}` : "選擇此人臉"}
                         className={`absolute rounded-[var(--r-md)] border-2 ${interactive ? "pointer-events-auto" : "pointer-events-none"}`}
                         style={{
                             left: `${(face.x / imageWidth) * 100}%`,
@@ -357,7 +357,7 @@ function SelectionToolbar({
     const toolbarRef = useRef<HTMLDivElement>(null);
     useScreenAnchor(toolbarRef, node, viewport, containerRef, (next, container) => toolbarScreenRect(node, next, container, toolbarRef.current));
     if (status === "editing" || status === "generating") return null;
-    const label = status === "detecting" ? "正在识别人脸" : status === "manual" ? "拖动鼠标框选需要调节的人脸" : status === "selecting" ? `识别到 ${faceCount} 张人脸，请选择人物` : error || "请选择人物";
+    const label = status === "detecting" ? "正在識別人臉" : status === "manual" ? "拖動滑鼠框選需要調節的人臉" : status === "selecting" ? `識別到 ${faceCount} 張人臉，請選擇人物` : error || "請選擇人物";
     return (
         <SpotlightSurface
             ref={toolbarRef}
@@ -371,7 +371,7 @@ function SelectionToolbar({
             onPointerDown={(event) => event.stopPropagation()}
         >
             <div className="flex size-full items-center">
-                <button type="button" aria-label="关闭情绪调节" className="grid size-8 shrink-0 place-items-center rounded-full hover:bg-black/5 dark:hover:bg-white/10" onClick={onClose}>
+                <button type="button" aria-label="關閉情緒調節" className="grid size-8 shrink-0 place-items-center rounded-full hover:bg-black/5 dark:hover:bg-white/10" onClick={onClose}>
                     <X className="size-4" />
                 </button>
                 <span className="mx-2 h-5 w-px" style={{ background: theme.toolbar.border }} />
@@ -386,7 +386,7 @@ function SelectionToolbar({
                         onClick={onManualSelect}
                     >
                         <SquareDashedMousePointer className="size-3.5" />
-                        手动框选
+                        手動框選
                     </button>
                 ) : null}
             </div>

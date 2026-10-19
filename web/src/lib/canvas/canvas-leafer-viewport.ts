@@ -6,7 +6,7 @@ const MAX_PREVIEW_RATIO = 1.25;
 
 export function calculateCanvasPreviewTransform(viewport: ViewportTransform, rasterViewport: ViewportTransform) {
     const ratio = viewport.k / Math.max(rasterViewport.k, MIN_VIEWPORT_SCALE);
-    // 将旧 backing store 的屏幕坐标映射到实时视口，避免缩放手势逐帧触发矢量重绘。
+    // 將舊 backing store 的螢幕座標對映到即時視口，避免縮放手勢逐幀觸發向量重繪。
     return {
         ratio,
         x: viewport.x - rasterViewport.x * ratio,

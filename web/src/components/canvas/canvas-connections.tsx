@@ -50,16 +50,16 @@ export const ConnectionPath = React.memo(function ConnectionPath({
                     <stop offset="48%" stopColor={theme.accent.primary} stopOpacity={0.58} />
                     <stop offset="100%" stopColor={theme.accent.primary} stopOpacity={0.34} />
                 </linearGradient>
-                {/* 流光头部的软化渐变：两端透明、中间亮，避免短划线看起来是硬色块 */}
+                {/* 流光頭部的軟化漸變：兩端透明、中間亮，避免短劃線看起來是硬色塊 */}
                 <linearGradient id={`${gradientId}-comet`} x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0%" stopColor={theme.accent.primary} stopOpacity={0} />
                     <stop offset="45%" stopColor={theme.accent.primary} stopOpacity={0.95} />
                     <stop offset="100%" stopColor={theme.accent.primary} stopOpacity={0} />
                 </linearGradient>
             </defs> : null}
-            {/* 光晕：只在强调态渲染。blur 是 filter，成本随线条数量线性上升，
-                常态几十条线全开会明显掉帧，所以刻意只给悬停/选中的那一条。
-                垫在底衬描边之下，不改动常态可读性那几层。 */}
+            {/* 光暈：只在強調態渲染。blur 是 filter，成本隨線條數量線性上升，
+                常態幾十條線全開會明顯掉幀，所以刻意只給懸停/選中的那一條。
+                墊在底襯描邊之下，不改動常態可讀性那幾層。 */}
             {showEmphasis ? <path
                 d={pathD}
                 stroke={theme.accent.primary}
@@ -132,8 +132,8 @@ export const ConnectionPath = React.memo(function ConnectionPath({
                 strokeLinejoin="round"
                 style={{ pointerEvents: "none" }}
             /> : null}
-            {/* 流光：一小段高亮沿路径跑。周期与虚线流动刻意不同（2.1s vs 1.25s），
-                两者错拍才像有光在走；同频会锁成一条整体平移的虚线。 */}
+            {/* 流光：一小段高亮沿路徑跑。週期與虛線流動刻意不同（2.1s vs 1.25s），
+                兩者錯拍才像有光在走；同頻會鎖成一條整體平移的虛線。 */}
             {showEmphasis ? <path
                 className="canvas-connection-comet"
                 d={pathD}
@@ -179,12 +179,12 @@ export function activeConnectionPath(node: CanvasNodeData | undefined, handle: C
 }
 
 /**
- * 连线在节点上的接入 Y。
+ * 連線在節點上的接入 Y。
  *
- * 单端口的一侧（左右各一个出入口，除分镜脚本外都是）**永远取边的正中**：
- * 之前按鼠标落点比例取 Y，多条线接同一个端口就会沿着边散开，视觉上像节点有很多端口。
- * 真正的多端口只存在于分镜脚本的 `row:` 句柄；普通节点始终连接到边缘
- * 垂直中心，避免同一个节点因鼠标落点产生漂移的“伪端口”。
+ * 單埠的一側（左右各一個出入口，除分鏡指令碼外都是）**永遠取邊的正中**：
+ * 之前按滑鼠落點比例取 Y，多條線接同一個埠就會沿著邊散開，視覺上像節點有很多埠。
+ * 真正的多埠只存在於分鏡指令碼的 `row:` 控制程式碼；普通節點始終連線到邊緣
+ * 垂直中心，避免同一個節點因滑鼠落點產生漂移的“偽埠”。
  */
 export function connectionHandleY(node: CanvasNodeData, handleId?: string, scrollTop = 0) {
     const batchY = batchReferenceHandleY(node, handleId);

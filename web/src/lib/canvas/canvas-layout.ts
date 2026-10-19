@@ -54,7 +54,7 @@ export function layoutCanvasFlow(nodes: CanvasNodeData[], connections: CanvasCon
         outbound.get(connection.fromNodeId)?.push(connection.toNodeId);
     });
 
-    // Kahn 拓扑分层让依赖方向保持从左到右；环形连接留在第一层，避免布局死循环。
+    // Kahn 拓撲分層讓依賴方向保持從左到右；環形連線留在第一層，避免佈局死迴圈。
     const queue = nodes.filter((node) => !inbound.get(node.id)).map((node) => node.id);
     const layerById = new Map<string, number>();
     queue.forEach((id) => layerById.set(id, 0));
@@ -145,8 +145,8 @@ export const CANVAS_SPREAD_SCALE = 1.4;
 export const CANVAS_SPREAD_MIN_GAP = 56;
 
 /**
- * 保持选区里节点的相对占位，只把彼此间距拉开。
- * 先按选区左上角等比展开，再把仍然过近的盒子沿原有主方向推开，最后把整组钉回原来的左上角。
+ * 保持選區裡節點的相對佔位，只把彼此間距拉開。
+ * 先按選區左上角等比展開，再把仍然過近的盒子沿原有主方向推開，最後把整組釘回原來的左上角。
  */
 export function spreadCanvasNodes(nodes: CanvasNodeData[], options?: { scale?: number; minGap?: number }) {
     const result = new Map<string, Position>();

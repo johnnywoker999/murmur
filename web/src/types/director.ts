@@ -23,13 +23,13 @@ export type DirectorKeyframe = {
     time: number;
     transform: DirectorTransform;
     easing?: DirectorKeyframeEasing;
-    /** 摄影机专用：false 表示该时刻未记录位置；旧帧缺省仍是位置帧。 */
+    /** 攝影機專用：false 表示該時刻未記錄位置；舊幀預設仍是位置幀。 */
     positionKeyed?: boolean;
-    /** 摄影机专用：旋转轨与位置轨独立；旧帧缺省仍有旋转帧。 */
+    /** 攝影機專用：旋轉軌與位置軌獨立；舊幀預設仍有旋轉幀。 */
     rotationKeyed?: boolean;
-    /** 对象专用：false 表示此帧不记录缩放；旧帧缺省为完整 Transform 帧。 */
+    /** 物件專用：false 表示此幀不記錄縮放；舊幀預設為完整 Transform 幀。 */
     scaleKeyed?: boolean;
-    /** 摄影机专用；旧场景没有这些字段时仍采用 camera.target / camera.fov。 */
+    /** 攝影機專用；舊場景沒有這些欄位時仍採用 camera.target / camera.fov。 */
     target?: DirectorVec3;
     fov?: number;
 };
@@ -53,8 +53,8 @@ export type DirectorBoneTrack = {
 };
 
 /**
- * 时间轴上一个可删除关键帧的定位信息。
- * 三类覆盖当前时间轴真正可见的关键帧轨道：对象 transform、对象骨骼、摄影机。
+ * 時間軸上一個可刪除關鍵幀的定位資訊。
+ * 三類覆蓋當前時間軸真正可見的關鍵幀軌道：物件 transform、物件骨骼、攝影機。
  */
 export type DirectorKeyframeDeleteTarget =
     | { track: "object-transform"; objectId: string; keyframeId: string; channel?: "position" | "rotation" | "scale" }
@@ -86,9 +86,9 @@ export type DirectorObject = {
     primitive?: DirectorPrimitiveKind;
     transform: DirectorTransform;
     color: string;
-    /** 独立的统一缩放倍率；旧场景缺省为 1，不抹平各轴比例。 */
+    /** 獨立的統一縮放倍率；舊場景預設為 1，不抹平各軸比例。 */
     uniformScale?: number;
-    /** 场景列表锁定：保留选择与属性编辑，但禁止视口操控及误删。 */
+    /** 場景列表鎖定：保留選擇與屬性編輯，但禁止視口操控及誤刪。 */
     locked?: boolean;
     visible: boolean;
     castShadow: boolean;
@@ -99,9 +99,9 @@ export type DirectorObject = {
     rig?: DirectorRig;
     motionClips?: DirectorMotionClip[];
     activeMotionClipId?: string;
-    /** 显式建立的时间轴轨道；旧场景仍由已有关键帧/轨迹推断轨道。 */
+    /** 顯式建立的時間軸軌道；舊場景仍由已有關鍵幀/軌跡推斷軌道。 */
     animationTrackEnabled?: boolean;
-    /** 角色轨迹只接管生成的变换帧；移除时可还原创建前的手动动画。 */
+    /** 角色軌跡只接管生成的變換幀；移除時可還原建立前的手動動畫。 */
     motionPath?: { kind: "line" | "ring" | "rectangle" | "pencil" | "pen"; duration: number; facePath: boolean; transform: DirectorTransform; originalKeyframes: DirectorKeyframe[]; controlKeyframeIds?: string[] };
     boneOverrides?: Partial<Record<DirectorHumanoidBone, DirectorQuat>>;
     boneTracks?: DirectorBoneTrack[];
@@ -116,16 +116,16 @@ export type DirectorObject = {
 export type DirectorCamera = {
     id: string;
     name: string;
-    /** 编辑器机位辅助图形；旧场景缺省显示，不影响该机位取景。 */
+    /** 編輯器機位輔助圖形；舊場景預設顯示，不影響該機位取景。 */
     visible?: boolean;
-    /** 场景列表锁定；保留机位选择和属性查看。 */
+    /** 場景列表鎖定；保留機位選擇和屬性檢視。 */
     locked?: boolean;
     transform: DirectorTransform;
     target: DirectorVec3;
-    /** 角色跟随以绑定帧的位置为锚；相机原有关键帧仍可叠加角色位移。 */
+    /** 角色跟隨以繫結幀的位置為錨；相機原有關鍵幀仍可疊加角色位移。 */
     followObjectId?: string;
     followAnchor?: DirectorVec3;
-    /** 旧场景缺省为坐标注视。 */
+    /** 舊場景預設為座標注視。 */
     lookAtMode?: "coordinates" | "rotation" | "object";
     lookAtObjectId?: string;
     focalLength: number;
@@ -135,7 +135,7 @@ export type DirectorCamera = {
     near: number;
     far: number;
     keyframes: DirectorKeyframe[];
-    /** 绘制或预设轨迹；插值采样仍参与播放和导出，但不占满编辑时间轴。 */
+    /** 繪製或預設軌跡；插值取樣仍參與播放和匯出，但不佔滿編輯時間軸。 */
     drawnPath?: { kind: "pencil" | "pen" | "line" | "ring" | "rectangle"; sampleKeyframeIds: string[]; originalKeyframes?: DirectorKeyframe[] };
 };
 

@@ -63,10 +63,10 @@ export function CanvasAssistantOutputs({ outputs }: { outputs: AssistantTurnOutp
     const lastReady = last && assistantOutputResource(tasks[last.taskId]);
     const lastTask = last ? tasks[last.taskId] : undefined;
     const lastUnread = Boolean(last && records.identity === identity && records.unread.includes(last.taskId));
-    const previousNotice = lastUnread || !lastTask ? "这是之前已完成的版本；后一次合成结果尚未确认。"
-        : lastTask.status === "queued" || lastTask.status === "running" ? "这是之前已完成的版本；后一次正在合成。"
-        : lastTask.status === "failed" || lastTask.status === "cancelled" ? "这是之前已完成的版本；后一次合成未完成。"
-        : lastTask.status === "succeeded" ? "这是之前已完成的版本；后一次成片暂不可用。" : "这是之前已完成的版本；后一次合成结果尚未确认。";
+    const previousNotice = lastUnread || !lastTask ? "這是之前已完成的版本；後一次合成結果尚未確認。"
+        : lastTask.status === "queued" || lastTask.status === "running" ? "這是之前已完成的版本；後一次正在合成。"
+        : lastTask.status === "failed" || lastTask.status === "cancelled" ? "這是之前已完成的版本；後一次合成未完成。"
+        : lastTask.status === "succeeded" ? "這是之前已完成的版本；後一次成片暫不可用。" : "這是之前已完成的版本；後一次合成結果尚未確認。";
     async function play(taskId: string) {
         const resourceId = assistantOutputResource(tasks[taskId]);
         if (!resourceId) return;
@@ -102,27 +102,27 @@ export function CanvasAssistantOutputs({ outputs }: { outputs: AssistantTurnOutp
                 ownedURLs.current.add(url);
             }
             const result = await downloadOwnedOrBrowserMedia({ fileName: `${title}.mp4`, resourceId, browserUrl: url || undefined });
-            if (result === "saved" && currentIdentity.current === identity && userScopeMatches(expected)) setFeedback({ identity, text: "成片已保存" });
+            if (result === "saved" && currentIdentity.current === identity && userScopeMatches(expected)) setFeedback({ identity, text: "成片已儲存" });
         } catch {
-            if (currentIdentity.current === identity && userScopeMatches(expected)) setFeedback({ identity, text: "下载没有完成，请再试一次" });
+            if (currentIdentity.current === identity && userScopeMatches(expected)) setFeedback({ identity, text: "下載沒有完成，請再試一次" });
         } finally {
             // The browser starts reading the clicked link asynchronously.
             // Scope/unmount cleanup can revoke earlier; otherwise let it start first.
             if (url) { const savedURL = url; setTimeout(() => { URL.revokeObjectURL(savedURL); ownedURLs.current.delete(savedURL); }, 1000); }
         }
     }
-    return <div className="canvas-assistant-outputs" aria-label="成片结果">{outputs.map((output, index) => {
+    return <div className="canvas-assistant-outputs" aria-label="成片結果">{outputs.map((output, index) => {
         const task = tasks[output.taskId], ready = Boolean(assistantOutputResource(task));
         const title = `成片${index + 1}`;
         const unread = records.identity === identity && records.unread.includes(output.taskId);
-        const status = unread ? "暂时无法读取状态" : ready ? "已就绪" : !task ? "正在读取状态" : task.status === "failed" || task.status === "cancelled" ? "合成未完成" : task.status === "succeeded" ? "成片暂不可用" : task.status === "queued" || task.status === "running" ? "正在合成" : "暂时无法确认状态";
+        const status = unread ? "暫時無法讀取狀態" : ready ? "已就緒" : !task ? "正在讀取狀態" : task.status === "failed" || task.status === "cancelled" ? "合成未完成" : task.status === "succeeded" ? "成片暫不可用" : task.status === "queued" || task.status === "running" ? "正在合成" : "暫時無法確認狀態";
         return <div key={output.taskId} className="canvas-assistant-card">
             <strong>{title}</strong><span role="status">{status}</span>
             {ready && output.taskId !== last?.taskId ? <span className="canvas-assistant-meta">{lastReady ? "之前的版本" : previousNotice}</span> : null}
-            {ready ? <div className="canvas-assistant-card-actions"><Button size="small" loading={shownPlayback?.taskId === output.taskId && shownPlayback.loading} onClick={() => void play(output.taskId)}>播放成片</Button><Button size="small" autoInsertSpace={false} onClick={() => void download(output.taskId, title)}>下载</Button></div> : null}
-            {unread ? <Button size="small" onClick={() => setRetry(value => value + 1)}>重读状态</Button> : null}
-            {shownPlayback?.taskId === output.taskId && shownPlayback.url ? <Suspense fallback={<span>正在读取播放器…</span>}><Player src={shownPlayback.url} title={title} mimeType="video/mp4" autoPlay compactControls className="w-full" /></Suspense> : null}
-            {shownPlayback?.taskId === output.taskId && shownPlayback.error ? <span role="status">暂时无法播放，请重新读取成片。</span> : null}
+            {ready ? <div className="canvas-assistant-card-actions"><Button size="small" loading={shownPlayback?.taskId === output.taskId && shownPlayback.loading} onClick={() => void play(output.taskId)}>播放成片</Button><Button size="small" autoInsertSpace={false} onClick={() => void download(output.taskId, title)}>下載</Button></div> : null}
+            {unread ? <Button size="small" onClick={() => setRetry(value => value + 1)}>重讀狀態</Button> : null}
+            {shownPlayback?.taskId === output.taskId && shownPlayback.url ? <Suspense fallback={<span>正在讀取播放器…</span>}><Player src={shownPlayback.url} title={title} mimeType="video/mp4" autoPlay compactControls className="w-full" /></Suspense> : null}
+            {shownPlayback?.taskId === output.taskId && shownPlayback.error ? <span role="status">暫時無法播放，請重新讀取成片。</span> : null}
         </div>;
     })}{feedback?.identity === identity ? <span role="status">{feedback.text}</span> : null}</div>;
 }

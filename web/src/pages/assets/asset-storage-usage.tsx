@@ -16,11 +16,11 @@ export function AssetStorageUsage() {
     const meter = accountStorageMeter(usage);
 
     return (
-        <section className={`assets-storage-usage${meter.full ? " is-full" : ""}${usage?.usedBytes ? " has-usage" : ""}`} aria-label={localMode ? "本地文件容量" : "账号文件容量"} aria-busy={query.isPending} title={localMode ? "统计浏览器本地保存的素材文件" : "包含素材文件和创作会话附件"}>
+        <section className={`assets-storage-usage${meter.full ? " is-full" : ""}${usage?.usedBytes ? " has-usage" : ""}`} aria-label={localMode ? "本地檔案容量" : "賬號檔案容量"} aria-busy={query.isPending} title={localMode ? "統計瀏覽器本地儲存的素材檔案" : "包含素材檔案和創作會話附件"}>
             <span className="assets-storage-usage-icon" aria-hidden="true">
                 <HardDrive />
             </span>
-            <span className="assets-storage-usage-title">{localMode ? "本地存储" : "账号容量"}</span>
+            <span className="assets-storage-usage-title">{localMode ? "本地儲存" : "賬號容量"}</span>
             {usage ? (
                 <>
                     <span className="assets-storage-usage-value">
@@ -29,11 +29,11 @@ export function AssetStorageUsage() {
                     <span
                         className="assets-storage-usage-track"
                         role="progressbar"
-                        aria-label="账号文件容量使用进度"
+                        aria-label="賬號檔案容量使用進度"
                         aria-valuemin={0}
                         aria-valuemax={usage.totalBytes}
                         aria-valuenow={Math.min(usage.usedBytes, usage.totalBytes)}
-                        aria-valuetext={`已使用 ${formatStorageBytes(usage.usedBytes)}，总容量 ${formatStorageBytes(usage.totalBytes)}`}
+                        aria-valuetext={`已使用 ${formatStorageBytes(usage.usedBytes)}，總容量 ${formatStorageBytes(usage.totalBytes)}`}
                     >
                         <span style={{ width: `${meter.percent}%` }} />
                     </span>
@@ -41,13 +41,13 @@ export function AssetStorageUsage() {
                 </>
             ) : query.isError ? (
                 <span className="assets-storage-usage-status">
-                    容量统计暂时不可用。
+                    容量統計暫時不可用。
                     <button type="button" onClick={() => void query.refetch()}>
-                        重试
+                        重試
                     </button>
                 </span>
             ) : (
-                <span className="assets-storage-usage-status">正在统计已用容量…</span>
+                <span className="assets-storage-usage-status">正在統計已用容量…</span>
             )}
         </section>
     );

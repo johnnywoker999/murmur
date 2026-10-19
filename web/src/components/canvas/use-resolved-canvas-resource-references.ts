@@ -95,7 +95,7 @@ export function useResolvedCanvasResourceReferences(references: CanvasResourceRe
 }
 
 function previewIdentity(reference: CanvasResourceReference, projectId?: string) {
-    // 只有当 drawingId 和 projectId 同时存在时才返回绘图身份,避免不完整的缓存键导致运行时错误
+    // 只有當 drawingId 和 projectId 同時存在時才返回繪圖身份,避免不完整的快取鍵導致執行時錯誤
     if (reference.drawingId) {
         if (!projectId) return "";
         return `drawing:${projectId}:${reference.drawingId}:${reference.drawingRevision || 0}`;
@@ -137,7 +137,7 @@ function resolveReferencePreview(reference: CanvasResourceReference, identity: s
 function blobToDataUrl(blob: Blob) {
     return new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
-        reader.onerror = () => reject(reader.error || new Error("读取绘图预览失败"));
+        reader.onerror = () => reject(reader.error || new Error("讀取繪圖預覽失敗"));
         reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
         reader.readAsDataURL(blob);
     });

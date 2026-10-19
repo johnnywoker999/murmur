@@ -81,7 +81,7 @@ export async function executeVideoGeneration({
         }),
     };
     registerPendingNodeIds([videoId]);
-    // 待生成版本先加入版本族，但只有成功结果才能替换当前主版本。
+    // 待生成版本先加入版本族，但只有成功結果才能替換當前主版本。
     const applyVideoNodes = (current: CanvasNodeData[]): CanvasNodeData[] => {
         if (reuseSourceNode) return current.map((node) => (node.id === nodeId ? rebaseCanvasGenerationTarget(node, videoNode, sourceNode) : node));
         if (!isExistingVideoNode || !sourceNode) return [...current.map((node) => (node.id === nodeId ? { ...node, metadata: { ...node.metadata, status: NODE_STATUS_SUCCESS } } : node)), videoNode];
@@ -115,7 +115,7 @@ export async function executeVideoGeneration({
         if (!reuseSourceNode) setConnections(nextConnections);
     } else {
         setNodes(applyVideoNodes);
-        // 重新生成已有视频时，新节点继承源视频的上游连接，与源视频保持并行关系，而不是作为其下游子节点。
+        // 重新生成已有影片時，新節點繼承源影片的上游連線，與源影片保持並行關係，而不是作為其下游子節點。
         if (!reuseSourceNode) {
             setConnections((current) => [...current, ...newVideoConnections]);
         }

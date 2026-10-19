@@ -10,7 +10,7 @@ import { useAssetStore } from "@/stores/use-asset-store";
 export async function uploadWorkspaceAssetFiles(files: File[], folderId: string, expected: CapturedUserScope) {
     assertUserScope(expected);
     const media = files.filter((file) => file.type.startsWith("image/") || file.type.startsWith("video/"));
-    if (!media.length) throw new Error("请选择图片或视频文件");
+    if (!media.length) throw new Error("請選擇圖片或影片檔案");
     let cursor = 0;
     let completed = 0;
     let failed = 0;
@@ -19,7 +19,7 @@ export async function uploadWorkspaceAssetFiles(files: File[], folderId: string,
             if (!userScopeMatches(expected)) return;
             const file = media[cursor++];
             try {
-                const common = { title: file.name.replace(/\.[^.]+$/, ""), category: folderId.startsWith("builtin:") ? normalizeAssetCategory(folderId.slice(8)) : "material" as const, folderId: folderId.startsWith("builtin:") ? undefined : folderId || undefined, tags: [], source: "批量上传", metadata: { source: "manual-batch" } };
+                const common = { title: file.name.replace(/\.[^.]+$/, ""), category: folderId.startsWith("builtin:") ? normalizeAssetCategory(folderId.slice(8)) : "material" as const, folderId: folderId.startsWith("builtin:") ? undefined : folderId || undefined, tags: [], source: "批次上傳", metadata: { source: "manual-batch" } };
                 if (file.type.startsWith("video/")) {
                     const uploaded = await uploadMediaFile(file, "video", undefined, expected);
                     assertUserScope(expected);

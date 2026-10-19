@@ -7,7 +7,7 @@
 .app-workspace-shell:has(.assets-library-page) .app-user-content { background: var(--user-page-bg) !important; }
 .app-workspace-shell:has(.assets-library-page) .assets-library-source-rail { background: var(--user-page-bg) !important; border-left-color: var(--user-border) !important; }
 .app-workspace-shell:has(.assets-library-page) .assets-library-source-rail-item.is-active { background: var(--user-surface-hover) !important; }
-.assets-header-compact-button[aria-label="筛选资产"] { width: 38px; margin-left: -2px; }
+.assets-header-compact-button[aria-label="篩選資產"] { width: 38px; margin-left: -2px; }
 .assets-library-page .assets-library-grid:not(.is-list-view) {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
 }

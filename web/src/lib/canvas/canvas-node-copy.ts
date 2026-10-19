@@ -8,7 +8,7 @@ const COPY_TITLE_SUFFIX = /^(.*)_copy(\d+)$/i;
 
 export function nextCopiedNodeTitle(sourceTitle: string, existingTitles: Iterable<string>) {
     const sourceMatch = sourceTitle.match(COPY_TITLE_SUFFIX);
-    const baseTitle = (sourceMatch?.[1] || sourceTitle.replace(/ Copy$/i, "")).trim() || sourceTitle.trim() || "未命名节点";
+    const baseTitle = (sourceMatch?.[1] || sourceTitle.replace(/ Copy$/i, "")).trim() || sourceTitle.trim() || "未命名節點";
     let maxCopyIndex = 0;
     for (const title of existingTitles) {
         const match = title.match(COPY_TITLE_SUFFIX);
@@ -49,10 +49,10 @@ function copyStoryboardRow(row: StoryboardRow, idMap: ReadonlyMap<string, string
     };
 }
 
-// 副本只能继承内容和用户引用，运行中任务、批次及指向源生成结果的关系必须隔离。
+// 副本只能繼承內容和使用者引用，執行中任務、批次及指向源生成結果的關係必須隔離。
 export function isolateCopiedNodeMetadata(node: CanvasNodeData, idMap: ReadonlyMap<string, string>): CanvasNodeMetadata {
     const metadata = resetGenerationTaskMetadata(node.metadata, node.metadata?.content ? "success" : "idle");
-    // 提交标记绑定原任务和节点；副本携带它会被普通保存当作未确认生成结果过滤。
+    // 提交標記繫結原任務和節點；副本攜帶它會被普通儲存當作未確認生成結果過濾。
     delete metadata.generationEffectKeys;
     delete metadata.generationBatches;
     delete metadata.batchRootId;

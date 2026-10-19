@@ -18,24 +18,24 @@ export async function downloadOwnedOrBrowserMedia(options: { fileName: string; r
     const fileName = sanitizeDownloadFileName(options.fileName);
     if (isWailsNativeShell()) {
         const resourceId = options.resourceId?.trim();
-        if (!resourceId) throw new Error("没有可导出的本机文件");
+        if (!resourceId) throw new Error("沒有可匯出的本機檔案");
         const save = window.go?.main?.DesktopApp?.SaveOwnedMedia;
-        if (!save) throw new Error("当前应用还不能把文件存到所选位置");
+        if (!save) throw new Error("當前應用還不能把檔案存到所選位置");
         const saved = await save(fileName, resourceId);
         return saved ? "saved" : "cancelled";
     }
     const browserUrl = options.browserUrl?.trim();
-    if (!browserUrl) throw new Error("没有可导出的文件");
+    if (!browserUrl) throw new Error("沒有可匯出的檔案");
     saveAs(browserUrl, fileName);
     return "saved";
 }
 
 export async function saveOwnedOrBrowserBlob(fileName: string, blob: Blob): Promise<OwnedMediaSaveResult> {
-    const name = sanitizeDownloadFileName(fileName, "未命名导出");
+    const name = sanitizeDownloadFileName(fileName, "未命名匯出");
     if (isWailsNativeShell()) {
-        if (blob.size > MAX_OWNED_ARTIFACT_BYTES) throw new Error("导出包太大，请减少所选内容后再导出");
+        if (blob.size > MAX_OWNED_ARTIFACT_BYTES) throw new Error("匯出包太大，請減少所選內容後再匯出");
         const save = window.go?.main?.DesktopApp?.SaveOwnedArtifact;
-        if (!save) throw new Error("当前应用还不能把文件存到所选位置");
+        if (!save) throw new Error("當前應用還不能把檔案存到所選位置");
         const bytes = new Uint8Array(await blob.arrayBuffer());
         const saved = await save(name, bytesToBase64(bytes));
         return saved ? "saved" : "cancelled";
@@ -48,8 +48,8 @@ export async function saveOwnedOrBrowserBlob(fileName: string, blob: Blob): Prom
 export async function saveOwnedOrBrowserVideoBlob(fileName: string, blob: Blob, expectedScope: CapturedUserScope): Promise<OwnedMediaSaveResult> {
     assertUserScope(expectedScope);
     if (!isWailsNativeShell()) return saveOwnedOrBrowserBlob(fileName, blob);
-    if (!window.go?.main?.DesktopApp?.SaveOwnedMedia) throw new Error("当前应用还不能把文件存到所选位置");
-    const name = sanitizeDownloadFileName(fileName, "未命名导出.mp4");
+    if (!window.go?.main?.DesktopApp?.SaveOwnedMedia) throw new Error("當前應用還不能把檔案存到所選位置");
+    const name = sanitizeDownloadFileName(fileName, "未命名匯出.mp4");
     const resource = await uploadResourceFile(blob, "video", {
         fileName: name,
         expectedScope,
@@ -73,9 +73,9 @@ function bytesToBase64(bytes: Uint8Array) {
 export function reportOwnedMediaSave(message: { success: (text: string) => void; error: (text: string) => void }, result: Promise<OwnedMediaSaveResult>) {
     return result
         .then((status) => {
-            if (status === "saved" && isWailsNativeShell()) message.success("已保存到所选位置");
+            if (status === "saved" && isWailsNativeShell()) message.success("已儲存到所選位置");
         })
         .catch((error) => {
-            message.error(error instanceof Error && error.message.trim() ? error.message : "保存没有完成，请再试一次");
+            message.error(error instanceof Error && error.message.trim() ? error.message : "儲存沒有完成，請再試一次");
         });
 }

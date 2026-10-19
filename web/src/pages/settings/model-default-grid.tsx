@@ -36,11 +36,11 @@ type AssistantRow = {
 };
 
 const rows: Array<CapabilityRow | AssistantRow> = [
-    { kind: "capability", id: "image", capability: "image", modelKey: "imageModel", title: "默认生图模型", icon: Image },
-    { kind: "capability", id: "video", capability: "video", modelKey: "videoModel", title: "默认视频模型", icon: Film },
-    { kind: "capability", id: "text", capability: "text", modelKey: "textModel", title: "默认文本模型", icon: MessageSquareText },
+    { kind: "capability", id: "image", capability: "image", modelKey: "imageModel", title: "預設生圖模型", icon: Image },
+    { kind: "capability", id: "video", capability: "video", modelKey: "videoModel", title: "預設影片模型", icon: Film },
+    { kind: "capability", id: "text", capability: "text", modelKey: "textModel", title: "預設文本模型", icon: MessageSquareText },
     { kind: "assistant", id: "assistant", modelKey: "assistantModel", title: "助手模型", icon: Bot },
-    { kind: "capability", id: "audio", capability: "audio", modelKey: "audioModel", title: "默认音频模型", icon: AudioLines },
+    { kind: "capability", id: "audio", capability: "audio", modelKey: "audioModel", title: "預設音訊模型", icon: AudioLines },
 ];
 
 export function ModelDefaultGrid({ config, onChange, onOpenChannels }: { config: AiConfig; onChange: (key: DefaultModelKey, model: string) => void; onOpenChannels?: () => void }) {
@@ -66,7 +66,7 @@ export function ModelDefaultGrid({ config, onChange, onOpenChannels }: { config:
                     const channel = isBuiltinBeefAPIChannel(modelChannel) ? "MURMUR AI" : modelChannel.name || "未命名渠道";
                     return { value: model, label, searchLabel: `${label} ${channel}`, channel };
                 });
-                if (isAssistant) options.unshift({ value: "", label: "跟随默认文本模型", searchLabel: "跟随默认文本模型", channel: "" });
+                if (isAssistant) options.unshift({ value: "", label: "跟隨預設文本模型", searchLabel: "跟隨預設文本模型", channel: "" });
                 const unavailable = isAssistant ? Boolean(config.assistantModel && !selected) : Boolean(selected && !options.some((option) => option.value === selected));
                 const value = unavailable ? undefined : isAssistant && !config.assistantModel ? "" : options.some((option) => option.value === selected) ? selected : undefined;
                 const Icon = row.icon;
@@ -86,7 +86,7 @@ export function ModelDefaultGrid({ config, onChange, onOpenChannels }: { config:
                                 data-model-picker-id={row.id}
                                 value={value}
                                 options={options}
-                                placeholder={unavailable ? "已选模型不可用，请重新选择" : options.length ? "选择模型" : "暂无可用模型"}
+                                placeholder={unavailable ? "已選模型不可用，請重新選擇" : options.length ? "選擇模型" : "暫無可用模型"}
                                 disabled={!options.length}
                                 showSearch={{ optionFilterProp: "searchLabel" }}
                                 listHeight={256}
@@ -104,7 +104,7 @@ export function ModelDefaultGrid({ config, onChange, onOpenChannels }: { config:
                                     onChange(row.modelKey, model);
                                 }}
                             />
-                            {!options.length && localMode && onOpenChannels ? <Button type="link" size="small" onClick={onOpenChannels}>添加模型渠道</Button> : null}
+                            {!options.length && localMode && onOpenChannels ? <Button type="link" size="small" onClick={onOpenChannels}>新增模型渠道</Button> : null}
                         </div>
                     </section>
                 );

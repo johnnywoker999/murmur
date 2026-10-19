@@ -12,11 +12,11 @@ type CompareNodeContentProps = {
 };
 
 /**
- * A/B 对比节点：吃两个图片上游，中间一根滑杆左右拖动对比。
+ * A/B 對比節點：吃兩個圖片上游，中間一根滑桿左右拖動對比。
  *
- * 分割位置只存组件内 state，不落 metadata——它是「看的时候临时挪一下」，
- * 不是画布内容；CanvasNodeContentProps 也只给了 onContentChange(content)，
- * 为它另开一条写元数据的通道不值得。
+ * 分割位置只存元件內 state，不落 metadata——它是「看的時候臨時挪一下」，
+ * 不是畫布內容；CanvasNodeContentProps 也只給了 onContentChange(content)，
+ * 為它另開一條寫後設資料的通道不值得。
  */
 export function CompareNodeContent({ node, theme }: CompareNodeContentProps) {
     const upstream = useUpstreamNodes(node.id);
@@ -32,7 +32,7 @@ export function CompareNodeContent({ node, theme }: CompareNodeContentProps) {
         return (
             <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-center" style={{ color: theme.node.muted }}>
                 <Columns2 className="size-5 opacity-60" />
-                <span style={{ fontSize: "var(--fs-label)" }}>{images.length === 1 ? "再连一张图片即可对比" : "连接两张图片进行对比"}</span>
+                <span style={{ fontSize: "var(--fs-label)" }}>{images.length === 1 ? "再連一張圖片即可對比" : "連線兩張圖片進行對比"}</span>
             </div>
         );
     }
@@ -62,7 +62,7 @@ export function CompareNodeContent({ node, theme }: CompareNodeContentProps) {
             }}
         >
             <img src={after} alt="B" className="absolute inset-0 h-full w-full object-contain" draggable={false} />
-            {/* 上层按分割位置裁切，露出下层的 B */}
+            {/* 上層按分割位置裁切，露出下層的 B */}
             <img src={before} alt="A" className="absolute inset-0 h-full w-full object-contain" draggable={false} style={{ clipPath: `inset(0 ${100 - split}% 0 0)` }} />
             <div className="pointer-events-none absolute inset-y-0 w-px bg-white/90 shadow-[0_0_0_1px_rgba(0,0,0,.35)]" style={{ left: `${split}%` }} />
             <span className="pointer-events-none absolute left-2 top-2 rounded bg-black/55 px-1.5 py-0.5 text-white" style={{ fontSize: "var(--fs-tiny)" }}>A</span>

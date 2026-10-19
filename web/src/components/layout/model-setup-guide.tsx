@@ -17,7 +17,7 @@ export function ModelSetupGuide({ hidden = false }: { hidden?: boolean }) {
     const storageMode = useUserStore((state) => state.storageMode);
     const localMode = isLocalWorkspaceMode() || storageMode === "local" || user?.username === "local";
     const models = useConfigStore((state) => state.config.models);
-    // MURMUR AI 本地工作区不显示阻塞式模型引导浮层；模型配置入口已经固定在侧边栏。
+    // MURMUR AI 本地工作區不顯示阻塞式模型引導浮層；模型配置入口已經固定在側邊欄。
     if (hidden || dismissed || !hydrated || !user || localMode || user.role === "admin" || (!registrationGuide && models.length > 0)) return null;
 
     const close = () => {
@@ -35,11 +35,11 @@ export function ModelSetupGuide({ hidden = false }: { hidden?: boolean }) {
             <div className="flex items-start gap-3 p-4">
                 <span className="grid size-9 shrink-0 place-items-center rounded-xl border border-amber-400/25 bg-amber-400/10 text-amber-600 dark:text-amber-300"><Sparkles className="size-4" /></span>
                 <button type="button" className="min-w-0 flex-1 text-left" onClick={openModels}>
-                    <span className="block text-sm font-semibold">先选择创作模型</span>
-                    <span className="mt-1 block text-xs leading-5 text-foreground/55">{localMode ? "添加本地模型渠道，配置生图、视频和文本的默认模型。" : "配置生图、视频和文本的默认模型，价格会在选择时显示。"}</span>
-                    <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">打开模型选择 <ArrowRight className="size-3.5" /></span>
+                    <span className="block text-sm font-semibold">先選擇創作模型</span>
+                    <span className="mt-1 block text-xs leading-5 text-foreground/55">{localMode ? "新增本地模型渠道，配置生圖、影片和文本的預設模型。" : "配置生圖、影片和文本的預設模型，價格會在選擇時顯示。"}</span>
+                    <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">開啟模型選擇 <ArrowRight className="size-3.5" /></span>
                 </button>
-                <button type="button" className="grid size-7 shrink-0 place-items-center rounded-full text-foreground/40 transition hover:bg-muted hover:text-foreground" onClick={close} aria-label="关闭模型配置引导"><X className="size-3.5" /></button>
+                <button type="button" className="grid size-7 shrink-0 place-items-center rounded-full text-foreground/40 transition hover:bg-muted hover:text-foreground" onClick={close} aria-label="關閉模型配置引導"><X className="size-3.5" /></button>
             </div>
         </motion.aside>
     );

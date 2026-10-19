@@ -15,8 +15,8 @@ export function CanvasSyncStatus({ projectId, onLoadLatest, onOpenVersions }: { 
     const localOnly = workspaceCapabilities().local;
     const [busy, setBusy] = useState(false);
     const [statusOpen, setStatusOpen] = useState(false);
-    // 外部改动被本地编辑挡住时必须在顶栏一直看得见：它以前藏在侧边面板里，
-    // 面板关着的时候用户根本不知道画布已经在别处变了。
+    // 外部改動被本地編輯擋住時必須在頂欄一直看得見：它以前藏在側邊面板裡，
+    // 面板關著的時候使用者根本不知道畫布已經在別處變了。
     const externalRevision = useSyncExternalStore(subscribeCanvasExternalRevision, canvasExternalRevisionVersion);
     const externalConflict = pendingExternalCanvasRevision(projectId);
     const [adopting, setAdopting] = useState(false);
@@ -24,13 +24,13 @@ export function CanvasSyncStatus({ projectId, onLoadLatest, onOpenVersions }: { 
     const conflict = phase === "conflict";
     const failed = phase === "error" || conflict || !phase;
     const saving = phase === "pending" || phase === "saving" || phase === "uploading";
-    const label = localOnly ? "已保存在本地" : conflict ? "版本冲突 · 未同步" : !phase ? "尚未同步" : failed ? "云端未保存" : saving ? "正在保存" : "已保存";
+    const label = localOnly ? "已儲存在本地" : conflict ? "版本衝突 · 未同步" : !phase ? "尚未同步" : failed ? "雲端未儲存" : saving ? "正在儲存" : "已儲存";
     const run = async (operation: () => Promise<unknown>) => {
         setBusy(true);
         try {
             await operation();
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "操作失败，请重试");
+            message.error(error instanceof Error ? error.message : "操作失敗，請重試");
         } finally {
             setBusy(false);
         }
@@ -45,16 +45,16 @@ export function CanvasSyncStatus({ projectId, onLoadLatest, onOpenVersions }: { 
                     data-canvas-external-revision={externalRevision}
                     className="canvas-sync-external-notice"
                     loading={adopting}
-                    aria-label="画布已在别处更新，使用最新版本"
+                    aria-label="畫布已在別處更新，使用最新版本"
                     icon={<RefreshCw className="size-3.5" />}
                     onClick={() => {
                         setAdopting(true);
                         void acceptExternalCanvasRevision(projectId)
-                            .catch(() => message.error("加载最新版本失败，请重试"))
+                            .catch(() => message.error("載入最新版本失敗，請重試"))
                             .finally(() => setAdopting(false));
                     }}
                 >
-                    <span className="canvas-sync-status-label text-xs">画布已在别处更新 · 使用最新版本</span>
+                    <span className="canvas-sync-status-label text-xs">畫布已在別處更新 · 使用最新版本</span>
                 </Button>
             ) : null}
             <Popover
@@ -65,11 +65,11 @@ export function CanvasSyncStatus({ projectId, onLoadLatest, onOpenVersions }: { 
                 content={
                     <div className="max-w-80 space-y-3" data-canvas-no-zoom>
                         <p role="status" className="text-sm">
-                            {localOnly ? "画布已保存在本机。" : progress?.message || (phase === "done" ? "画布已同步到云端" : "尚未确认云端保存，请保留本地内容")}
+                            {localOnly ? "畫布已儲存在本機。" : progress?.message || (phase === "done" ? "畫布已同步到雲端" : "尚未確認雲端儲存，請保留本地內容")}
                         </p>
-                        {!localOnly && conflict ? <p className="text-xs text-muted-foreground">此画布的自动提交已暂停。加载最新版前会保留本地草稿，可下载后从画布列表导入为副本。</p> : null}
+                        {!localOnly && conflict ? <p className="text-xs text-muted-foreground">此畫布的自動提交已暫停。載入最新版前會保留本地草稿，可下載後從畫佈列表匯入為副本。</p> : null}
                         <div className="flex flex-wrap gap-2">
-                            {!localOnly ? <Button size="small" loading={busy} onClick={() => void run(onLoadLatest)}>加载云端最新版本</Button> : null}
+                            {!localOnly ? <Button size="small" loading={busy} onClick={() => void run(onLoadLatest)}>載入雲端最新版本</Button> : null}
                             <Button
                                 size="small"
                                 disabled={busy}
@@ -83,7 +83,7 @@ export function CanvasSyncStatus({ projectId, onLoadLatest, onOpenVersions }: { 
                                     })
                                 }
                             >
-                                下载当前内容
+                                下載當前內容
                             </Button>
                             {onOpenVersions ? (
                                 <Button
@@ -93,7 +93,7 @@ export function CanvasSyncStatus({ projectId, onLoadLatest, onOpenVersions }: { 
                                         onOpenVersions();
                                     }}
                                 >
-                                    版本记录{progress?.draftCount ? ` · ${progress.draftCount} 份草稿` : ""}
+                                    版本記錄{progress?.draftCount ? ` · ${progress.draftCount} 份草稿` : ""}
                                 </Button>
                             ) : null}
                         </div>
@@ -104,7 +104,7 @@ export function CanvasSyncStatus({ projectId, onLoadLatest, onOpenVersions }: { 
                     type="text"
                     size="small"
                     danger={!localOnly && failed}
-                    aria-label={`画布保存状态：${label}`}
+                    aria-label={`畫布儲存狀態：${label}`}
                     icon={localOnly ? <CheckCircle2 className="size-3.5 text-emerald-500" /> : saving ? <LoaderCircle className="size-3.5 animate-spin motion-reduce:animate-none" /> : failed ? <CloudOff className="size-3.5" /> : <CloudCheck className="size-3.5" />}
                 >
                     <span className="canvas-sync-status-label text-xs">{label}</span>
@@ -133,7 +133,7 @@ export function CanvasSyncDraftMenu({ projectId }: { projectId?: string }) {
                     .then((items) => {
                         if (getActiveUserScope() === scope) setDrafts(items.reverse());
                     })
-                    .catch(() => message.error("读取本地草稿失败"))
+                    .catch(() => message.error("讀取本地草稿失敗"))
                     .finally(() => setLoading(false));
             }}
             menu={{
@@ -144,19 +144,19 @@ export function CanvasSyncDraftMenu({ projectId }: { projectId?: string }) {
                           onClick: () => {
                               if (getActiveUserScope() !== draftScope) {
                                   setDrafts([]);
-                                  message.error("账号已切换，请重新打开本地草稿");
+                                  message.error("賬號已切換，請重新開啟本地草稿");
                                   return;
                               }
                               setExporting(true);
                               void exportCanvasProjects([draft.project], `${draft.project.title}-本地草稿`, { includeLocalDrawings: false })
                                   .then((result) => {
-                                      if (result === "saved") message.success("草稿已下载，可从画布列表导入为新画布");
+                                      if (result === "saved") message.success("草稿已下載，可從畫佈列表匯入為新畫布");
                                   })
-                                  .catch(() => message.error("草稿下载失败，请重试"))
+                                  .catch(() => message.error("草稿下載失敗，請重試"))
                                   .finally(() => setExporting(false));
                           },
                       }))
-                    : [{ key: "empty", label: loading ? "正在读取草稿…" : "暂无本地草稿", disabled: true }],
+                    : [{ key: "empty", label: loading ? "正在讀取草稿…" : "暫無本地草稿", disabled: true }],
             }}
         >
             <Button size={projectId ? "small" : "middle"} loading={exporting}>

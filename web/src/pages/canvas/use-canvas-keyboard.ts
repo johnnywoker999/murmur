@@ -139,7 +139,7 @@ export function useCanvasKeyboard({
                 }
                 return;
             }
-            // 助手开合在输入框里也要能用（面板自己的输入框就是输入框）。
+            // 助手開合在輸入框裡也要能用（面板自己的輸入框就是輸入框）。
             if (isModifierShortcut && !event.altKey && !event.shiftKey && key === "j") {
                 if (target?.closest(".ant-modal-wrap, .ant-dropdown, .ant-popover")) return;
                 event.preventDefault();
@@ -199,7 +199,7 @@ export function useCanvasKeyboard({
                 return;
             }
             if (isModifierShortcut && !event.altKey && key === "v") {
-                // 有些浏览器/焦点状态不会继续派发 paste 事件；内部节点复制必须有 keydown 兜底。
+                // 有些瀏覽器/焦點狀態不會繼續派發 paste 事件；內部節點複製必須有 keydown 兜底。
                 if (shouldPreferCopiedNodes()) {
                     event.preventDefault();
                     if (pasteCopiedNodes()) return;
@@ -225,7 +225,7 @@ export function useCanvasKeyboard({
                 return;
             }
             if (event.key === "Escape") {
-                // 沉浸专注：无选中且无弹窗/下拉/右键菜单时，Esc 退出专注；否则保留原有取消选择行为。
+                // 沉浸專注：無選中且無彈窗/下拉/右鍵選單時，Esc 退出專注；否則保留原有取消選擇行為。
                 const hasFocusOverlay = Boolean(document.querySelector(".ant-modal-wrap, .ant-dropdown, .ant-select-dropdown, .ant-popover, [data-canvas-context-menu]"));
                 if (focusMode && !selectedNodeIdsRef.current.size && !hasFocusOverlay) {
                     event.stopPropagation();
@@ -243,7 +243,7 @@ export function useCanvasKeyboard({
         const handlePaste = (event: ClipboardEvent) => {
             const target = event.target instanceof Element ? event.target : null;
             if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement || target?.closest("[contenteditable='true']")) return;
-            // 节点标记写入失败或仍在写入时避开旧系统图片，其余情况保持系统内容优先。
+            // 節點標記寫入失敗或仍在寫入時避開舊系統圖片，其餘情況保持系統內容優先。
             event.preventDefault();
             const text = event.clipboardData?.getData("text/plain") || "";
             if (text && restoreCopiedNodesFromText(text) && pasteCopiedNodes()) return;

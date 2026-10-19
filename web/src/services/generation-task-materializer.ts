@@ -81,7 +81,7 @@ export function createGenerationTaskMaterializer(dependencies: { effects: Genera
             throwIfAborted(signal);
             if (claim.status !== "busy") return claim;
             const leaseRetryAt = claim.retryAt && Number.isFinite(Date.parse(claim.retryAt)) ? Date.parse(claim.retryAt) : Date.now() + leaseHeartbeatMs;
-            // 同一 effect 可能已由当前 owner 提前完成；短周期复核 completed，同时仍以租约到期为接管边界。
+            // 同一 effect 可能已由當前 owner 提前完成；短週期複核 completed，同時仍以租約到期為接管邊界。
             const nextCheckAt = Math.min(leaseRetryAt, Date.now() + 250);
             await waitUntil(new Date(nextCheckAt).toISOString(), signal);
         }

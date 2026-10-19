@@ -10,7 +10,7 @@ type SpotlightSurfaceProps = Omit<HTMLMotionProps<"div">, "children"> & {
     contentClassName?: string;
 };
 
-// 基于 Aceternity Card Spotlight 改造：只保留中性指针高光，避免高频工具面板持续动画。
+// 基於 Aceternity Card Spotlight 改造：只保留中性指標高光，避免高頻工具面板持續動畫。
 export const SpotlightSurface = forwardRef<HTMLDivElement, SpotlightSurfaceProps>(function SpotlightSurface(
     { children, className, contentClassName, spotlightColor, spotlightRadius = 220, onPointerEnter, onPointerLeave, onPointerMove, ...props },
     ref,

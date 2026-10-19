@@ -26,27 +26,27 @@ export async function canvasContentHash(project: CanvasProject) {
 }
 
 /**
- * 只比较画布文档内容，忽略本机查看偏好。
+ * 只比較畫布檔案內容，忽略本機檢視偏好。
  *
- * 复用 `canvasContentSnapshot` 的同一套「非文档字段」规则（它已经排除视口、时间戳、
- * revision 与远端哈希），而不是另立一份字段白名单：白名单会静默漏掉没列进去的文档
- * 字段（例如 folderId、projectId、canvasTitle），让用户未确认的编辑被当成「本地干净」。
+ * 複用 `canvasContentSnapshot` 的同一套「非檔案欄位」規則（它已經排除視口、時間戳、
+ * revision 與遠端雜湊），而不是另立一份欄位白名單：白名單會靜默漏掉沒列進去的檔案
+ * 欄位（例如 folderId、projectId、canvasTitle），讓使用者未確認的編輯被當成「本地乾淨」。
  *
- * 两处刻意容忍的不对称，都不代表用户编辑过文档：
- * 1. 画布外观偏好（appearance/backgroundMode/showImageInfo）：服务端由客户端决定是否写入，
- *    外部写入产生的画布常常没有它们；套用外部 revision 时本机外观也不会被覆盖
- *    （见 canvas-external-revision.ts）。
- * 2. 一侧缺失、另一侧为空值：应用自己会给 nodes/connections/chatSessions/activeChatId
- *    这类字段补默认空值。只有「缺失 vs 非空值」才算差异，因此 folderId 从无到有、
- *    projectId/canvasTitle 被设置、节点被删除都会如实识别。
+ * 兩處刻意容忍的不對稱，都不代表使用者編輯過檔案：
+ * 1. 畫布外觀偏好（appearance/backgroundMode/showImageInfo）：服務端由客戶端決定是否寫入，
+ *    外部寫入產生的畫布常常沒有它們；套用外部 revision 時本機外觀也不會被覆蓋
+ *    （見 canvas-external-revision.ts）。
+ * 2. 一側缺失、另一側為空值：應用自己會給 nodes/connections/chatSessions/activeChatId
+ *    這類欄位補預設空值。只有「缺失 vs 非空值」才算差異，因此 folderId 從無到有、
+ *    projectId/canvasTitle 被設定、節點被刪除都會如實識別。
  */
 const CANVAS_VIEW_PREFERENCE_KEYS = new Set(["appearance", "backgroundMode", "showImageInfo"]);
 
 /**
- * 服务端拥有、应用从不编辑的元数据。
+ * 服務端擁有、應用從不編輯的後設資料。
  *
- * `createdAt` 由服务端在首次写入时确定，`updateProject` 也不会改动它；外部写入产生的
- * 画布文档可能没有这个字段，缺失不代表用户编辑过内容。
+ * `createdAt` 由服務端在首次寫入時確定，`updateProject` 也不會改動它；外部寫入產生的
+ * 畫布檔案可能沒有這個欄位，缺失不代表使用者編輯過內容。
  */
 const CANVAS_SERVER_OWNED_KEYS = new Set(["createdAt"]);
 

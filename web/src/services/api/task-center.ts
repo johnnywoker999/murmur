@@ -138,7 +138,7 @@ export type CreateTaskInput = {
 };
 export function createGenerationTask(input: CreateTaskInput, config?: HttpRequestConfig) {
     return http.post<GenerationTask>("/tasks", input, config).then((task) => {
-        recordDiagnosticEvent({ level: "info", category: "task", message: "任务已创建", taskId: task.id, projectId: task.projectId });
+        recordDiagnosticEvent({ level: "info", category: "task", message: "任務已建立", taskId: task.id, projectId: task.projectId });
         notifyCanvasTaskCreated(task);
         return task;
     });
@@ -251,7 +251,7 @@ export function createGenerationTaskSubscriptionService(dependencies: Generation
                 window.dispatchEvent(new CustomEvent("canvas:task-updated", { detail: { task } }));
             }
         } catch (error) {
-            console.warn("生成任务的辅助通知失败，本地订阅者已正常更新", { taskId: task.id, error });
+            console.warn("生成任務的輔助通知失敗，本地訂閱者已正常更新", { taskId: task.id, error });
         }
     };
     const observe = (id: string, entry: Entry) => {
@@ -266,11 +266,11 @@ export function createGenerationTaskSubscriptionService(dependencies: Generation
             });
             publish(entry, terminal);
         })().catch((error) => {
-            // 观察失败不能永久占住 entry，否则页面重新订阅时也不会再查询任务。
+            // 觀察失敗不能永久佔住 entry，否則頁面重新訂閱時也不會再查詢任務。
             // Only clear this attempt: a newer subscriber may already have
             // installed its replacement while this rejection was settling.
             if (entry.observation === observation) entry.observation = undefined;
-            console.warn("生成任务观察中断，后续订阅将重新建立连接", { taskId: id, error });
+            console.warn("生成任務觀察中斷，後續訂閱將重新建立連線", { taskId: id, error });
         });
         entry.observation = observation;
         return observation;
@@ -431,8 +431,8 @@ export async function waitForGenerationTask(id: string, options?: WaitForGenerat
                 if (isUserScopeAbandonedError(error)) throw error;
                 lastQueryError = error;
                 consecutiveFailures += 1;
-                // 连续失败说明查询通道已不可用，继续轮询只会空转到整体超时；
-                // 保留少量容忍度（约 10 秒）以跳过瞬时抖动后直接报错，便于用户尽早处理。
+                // 連續失敗說明查詢通道已不可用，繼續輪詢只會空轉到整體超時；
+                // 保留少量容忍度（約 10 秒）以跳過瞬時抖動後直接報錯，便於使用者儘早處理。
                 if (consecutiveFailures >= 5) {
                     throw error instanceof Error ? error : new Error(String(error));
                 }
@@ -453,21 +453,21 @@ export async function waitForGenerationTask(id: string, options?: WaitForGenerat
                 return task;
             }
             if (task.status === "failed" || task.status === "cancelled") {
-                throw new Error(task.error ? generationErrorMessage(task.error) : `任务${task.status === "cancelled" ? "已取消" : "失败"}`);
+                throw new Error(task.error ? generationErrorMessage(task.error) : `任務${task.status === "cancelled" ? "已取消" : "失敗"}`);
             }
             const retrieving = Boolean(task.delivery) || task.stage === GENERATION_RESULT_FETCH_STAGE;
             await delay(retrieving ? Math.min(intervalMs, 500) : intervalMs, options?.signal);
         }
     } catch (error) {
         if (options?.signal?.aborted) {
-            // Abort 只停止当前页面的状态监听，不能把已发起的上游任务改成取消状态。
+            // Abort 只停止當前頁面的狀態監聽，不能把已發起的上游任務改成取消狀態。
             throw new DOMException("Aborted", "AbortError");
         }
         throw error;
     } finally {
         if (publishedDelivery) publishGenerationDeliveryProgress(id, undefined);
     }
-    throw new Error(lastQueryError instanceof Error ? `任务状态同步失败：${lastQueryError.message}` : "任务执行超时，请稍后重试");
+    throw new Error(lastQueryError instanceof Error ? `任務狀態同步失敗：${lastQueryError.message}` : "任務執行超時，請稍後重試");
 }
 
 async function waitForGenerationTaskTextEvents(id: string, options: WaitForGenerationTaskOptions) {
@@ -475,7 +475,7 @@ async function waitForGenerationTaskTextEvents(id: string, options: WaitForGener
     const intervalMs = options.intervalMs || 1000;
     let lastTask = options.initialTask;
     let lastEventId = 0;
-    // 已有草稿先落到文本里，重开对话时同一批增量不会被当成新内容重复拼接。
+    // 已有草稿先落到文本里，重開對話時同一批增量不會被當成新內容重複拼接。
     let fullText = lastTask?.textDraft || "";
     let lastStreamError: unknown;
     if (!lastTask) {
@@ -499,9 +499,9 @@ async function waitForGenerationTaskTextEvents(id: string, options: WaitForGener
             });
             if (!response.ok) throw new TaskTextStreamFatalError(await taskTextStreamHTTPError(response));
             if (!(response.headers.get("content-type") || "").toLowerCase().includes("text/event-stream")) {
-                throw new TaskTextStreamFatalError("任务文本流接口未返回事件流，请检查后端地址和反向代理配置");
+                throw new TaskTextStreamFatalError("任務文本流介面未返回事件流，請檢查後端地址和反向代理配置");
             }
-            if (!response.body) throw new Error("任务文本流不可用");
+            if (!response.body) throw new Error("任務文本流不可用");
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             const parser = createTaskTextStreamParser();
@@ -541,7 +541,7 @@ async function waitForGenerationTaskTextEvents(id: string, options: WaitForGener
                     }
                     return;
                 }
-                if (event.event === "error") throw new Error(typeof payload.message === "string" ? payload.message : "任务文本流不可用");
+                if (event.event === "error") throw new Error(typeof payload.message === "string" ? payload.message : "任務文本流不可用");
             };
             try {
                 for (;;) {
@@ -561,10 +561,10 @@ async function waitForGenerationTaskTextEvents(id: string, options: WaitForGener
                 options.onTaskUpdate?.(completed);
                 if (completed.status === "succeeded") return completed;
                 if (completed.status === "failed" || completed.status === "cancelled") {
-                    throw new TaskTextStreamFatalError(completed.error ? generationErrorMessage(completed.error) : `任务${completed.status === "cancelled" ? "已取消" : "失败"}`);
+                    throw new TaskTextStreamFatalError(completed.error ? generationErrorMessage(completed.error) : `任務${completed.status === "cancelled" ? "已取消" : "失敗"}`);
                 }
             }
-            lastStreamError = new Error("任务文本流连接提前结束");
+            lastStreamError = new Error("任務文本流連線提前結束");
         } catch (error) {
             if (options.signal?.aborted) throw new DOMException("Aborted", "AbortError");
             if (isUserScopeAbandonedError(error)) throw error;
@@ -573,7 +573,7 @@ async function waitForGenerationTaskTextEvents(id: string, options: WaitForGener
         }
         await delay(intervalMs, options.signal);
     }
-    throw new Error(lastStreamError instanceof Error ? `任务文本流同步失败：${lastStreamError.message}` : "任务执行超时，请稍后重试");
+    throw new Error(lastStreamError instanceof Error ? `任務文本流同步失敗：${lastStreamError.message}` : "任務執行超時，請稍後重試");
 }
 
 function asTaskTextStreamRecord(value: unknown): Record<string, unknown> {
@@ -600,9 +600,9 @@ async function taskTextStreamHTTPError(response: Response) {
         const payload = await response.json() as { msg?: unknown };
         if (typeof payload.msg === "string" && payload.msg.trim()) return payload.msg;
     } catch {
-        // SSE 错误响应可能是空正文或网关 HTML，只返回状态码，避免泄露正文。
+        // SSE 錯誤響應可能是空正文或閘道器 HTML，只返回狀態碼，避免洩露正文。
     }
-    return `任务文本流请求失败（HTTP ${response.status}）`;
+    return `任務文本流請求失敗（HTTP ${response.status}）`;
 }
 
 function taskWaitTimeoutMs(task?: GenerationTask) {

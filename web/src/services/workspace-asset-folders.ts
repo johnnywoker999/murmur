@@ -56,7 +56,7 @@ export async function createWorkspaceAssetFolder(name: string, expectedScope?: C
     const expected = expectedScope ?? captureUserScope();
     assertUserScope(expected);
     const trimmed = name.trim();
-    if (!trimmed) throw new Error("请输入分类名称");
+    if (!trimmed) throw new Error("請輸入分類名稱");
     if (!usesWorkspaceAssetFolderApi()) {
         const folders = await readLocalFolders(expected.userScope);
         assertUserScope(expected);
@@ -73,8 +73,8 @@ export async function renameWorkspaceAssetFolder(id: string, name: string, expec
     assertUserScope(expected);
     const folderId = id.trim();
     const trimmed = name.trim();
-    if (!folderId) throw new Error("素材分类 ID 不能为空");
-    if (!trimmed) throw new Error("请输入分类名称");
+    if (!folderId) throw new Error("素材分類 ID 不能為空");
+    if (!trimmed) throw new Error("請輸入分類名稱");
     if (!usesWorkspaceAssetFolderApi()) {
         const folders = await readLocalFolders(expected.userScope);
         assertUserScope(expected);
@@ -90,7 +90,7 @@ export async function deleteWorkspaceAssetFolder(id: string, expectedScope?: Cap
     const expected = expectedScope ?? captureUserScope();
     assertUserScope(expected);
     const folderId = id.trim();
-    if (!folderId) throw new Error("素材分类 ID 不能为空");
+    if (!folderId) throw new Error("素材分類 ID 不能為空");
     if (!usesWorkspaceAssetFolderApi()) {
         const folders = await readLocalFolders(expected.userScope);
         assertUserScope(expected);

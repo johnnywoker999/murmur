@@ -104,10 +104,10 @@ export async function recoverCanvasGenerationTaskNode(input: {
     if (!isCurrentProject()) return;
     const consumeContinuation = input.consumeContinuation ?? consumeCanvasGenerationContinuation;
     try {
-        if (input.completed.projectId && input.completed.projectId !== input.projectId) throw new Error("生成任务不属于当前画布");
+        if (input.completed.projectId && input.completed.projectId !== input.projectId) throw new Error("生成任務不屬於當前畫布");
         if (!isCurrentProject()) return;
         if (input.completed.status === "failed" || input.completed.status === "cancelled") {
-            throw new Error(input.completed.error || (input.completed.status === "cancelled" ? "任务已取消" : "任务失败"));
+            throw new Error(input.completed.error || (input.completed.status === "cancelled" ? "任務已取消" : "任務失敗"));
         }
         if (!input.continuationOnly) {
             if (!isCurrentProject()) return;
@@ -227,7 +227,7 @@ export function useCanvasGeneration({ projectId, domainProjectId, projectLoaded,
                 ? nodesRef.current
                 : useCanvasStore.getState().openProject(projectId)?.nodes ?? nodesRef.current;
             const next = canvasGenerationTaskNodes(current, targetNodeId, task);
-            // 成功终态可能在同一轮到达；消费结果前就要让保存器看见 taskId。
+            // 成功終態可能在同一輪到達；消費結果前就要讓儲存器看見 taskId。
             useCanvasStore.getState().updateProject(projectId, { nodes: next });
             nodesRef.current = next;
             setNodes(next);
@@ -255,7 +255,7 @@ export function useCanvasGeneration({ projectId, domainProjectId, projectLoaded,
                 if (generationTaskCanReloadResource(task) && isCurrentCanvas()) {
                     setNodes((current) => current.map((node) => (node.id === nodeId ? { ...node, metadata: { ...node.metadata, resourceReloadAvailable: true } } : node)));
                 }
-                throw new Error(task.error || (task.status === "cancelled" ? "任务已取消" : "任务失败"));
+                throw new Error(task.error || (task.status === "cancelled" ? "任務已取消" : "任務失敗"));
             }
             try {
                 await bindBackendCanvasGenerationResult({
@@ -292,16 +292,16 @@ export function useCanvasGeneration({ projectId, domainProjectId, projectLoaded,
             queryClient.setQueryData(["task-details", projectId, task.id], (current: { task: GenerationTask; logs: unknown[] } | undefined) => ({ task: result.task, logs: current?.logs ?? [] }));
             if (result.recovered) {
                 const node = nodesRef.current.find((item) => item.metadata?.taskId === task.id);
-                if (!node) throw new Error("视频已取回，请在生成历史中查看");
+                if (!node) throw new Error("影片已取回，請在生成歷史中檢視");
                 await applyGenerationTaskResult(node.id, result.task);
                 if (signal.aborted) return;
-                message.success("视频已取回并放回画布，未重新生成");
+                message.success("影片已取回並放回畫布，未重新生成");
             } else {
-                message.info("原任务仍在处理中，请稍后再取回结果");
+                message.info("原任務仍在處理中，請稍後再取回結果");
             }
             void queryClient.invalidateQueries({ queryKey: ["task-details", projectId, task.id] });
         } catch (error) {
-            if (!signal.aborted) message.error(error instanceof Error ? error.message : "暂时无法取回结果，请稍后再试");
+            if (!signal.aborted) message.error(error instanceof Error ? error.message : "暫時無法取回結果，請稍後再試");
         } finally {
             if (retrievalRef.current === retrieval) {
                 retrievalRef.current = null;
@@ -350,7 +350,7 @@ export function useCanvasGeneration({ projectId, domainProjectId, projectLoaded,
                 const pendingAgentContinuation = node.metadata?.agentGenerationContinuation?.status === "pending";
                 const aggregateBatchRoot = node.metadata?.isBatchRoot && node.metadata.batchChildIds?.length && !node.metadata.taskId;
                 if (aggregateBatchRoot && !pendingAgentContinuation) return false;
-                return pendingAgentContinuation || ["submitting", "unknown"].includes(node.metadata?.generationSubmissionState || "") || node.metadata?.status === NODE_STATUS_LOADING || node.metadata?.errorDetails === "页面刷新后生成已中断，请重新生成。" || Boolean(node.metadata?.taskId && (node.metadata.status !== NODE_STATUS_SUCCESS || (node.metadata.taskStatus === "succeeded" && !node.metadata.content && !node.metadata.storageKey)));
+                return pendingAgentContinuation || ["submitting", "unknown"].includes(node.metadata?.generationSubmissionState || "") || node.metadata?.status === NODE_STATUS_LOADING || node.metadata?.errorDetails === "頁面重新整理後生成已中斷，請重新生成。" || Boolean(node.metadata?.taskId && (node.metadata.status !== NODE_STATUS_SUCCESS || (node.metadata.taskStatus === "succeeded" && !node.metadata.content && !node.metadata.storageKey)));
             });
             const needsDiscovery = recoveryNodes.some((node) => !node.metadata?.taskId && !node.metadata?.agentGenerationContinuation?.taskId);
             const projectTasks = needsDiscovery && !localMode
@@ -377,7 +377,7 @@ export function useCanvasGeneration({ projectId, domainProjectId, projectLoaded,
                     if (!taskId) {
                         if (!isCurrentProject()) return;
                         setNodes((current) =>
-                            isCurrentProject() ? current.map((item) => (item.id === node.id ? { ...item, metadata: { ...item.metadata, status: NODE_STATUS_ERROR, ...(item.metadata?.taskClientOperationId ? { generationSubmissionState: "unknown" as const, taskStage: "提交结果待确认", errorDetails: "尚未查到上次提交的任务，请稍后重新打开画布查询，暂勿重新生成" } : { errorDetails: "页面刷新后找不到对应任务，请重新生成。" }) } } : item)) : current,
+                            isCurrentProject() ? current.map((item) => (item.id === node.id ? { ...item, metadata: { ...item.metadata, status: NODE_STATUS_ERROR, ...(item.metadata?.taskClientOperationId ? { generationSubmissionState: "unknown" as const, taskStage: "提交結果待確認", errorDetails: "尚未查到上次提交的任務，請稍後重新開啟畫布查詢，暫勿重新生成" } : { errorDetails: "頁面重新整理後找不到對應任務，請重新生成。" }) } } : item)) : current,
                         );
                         return;
                     }
@@ -465,7 +465,7 @@ export function useCanvasGeneration({ projectId, domainProjectId, projectLoaded,
                                         primaryImageId: undefined,
                                     }),
                               status: primary ? NODE_STATUS_SUCCESS : loading ? NODE_STATUS_LOADING : NODE_STATUS_ERROR,
-                              errorDetails: primary ? undefined : failed?.metadata?.errorDetails || "全部图片生成失败",
+                              errorDetails: primary ? undefined : failed?.metadata?.errorDetails || "全部圖片生成失敗",
                           };
                           const nextNode: CanvasNodeData = { ...node, metadata: nextMetadata };
                           const primaryResourceId = primary ? canvasNodeResourceId(primary) : "";
@@ -503,8 +503,8 @@ export function useCanvasGeneration({ projectId, domainProjectId, projectLoaded,
         };
     }, [projectId, projectLoaded, recoverInterruptedGenerationTasks]);
 
-    // 本地任务同样持久化在任务表中，优先由上面的任务恢复流程按 taskId 对账。
-    // 这里只把没有持久任务身份的孤立 loading 快照标记为中断，避免覆盖已完成任务。
+    // 本地任務同樣持久化在任務表中，優先由上面的任務恢復流程按 taskId 對賬。
+    // 這裡只把沒有持久任務身份的孤立 loading 快照標記為中斷，避免覆蓋已完成任務。
     useEffect(() => {
         if (!projectLoaded || !localMode) return;
         setNodes((current) => {
@@ -521,7 +521,7 @@ export function useCanvasGeneration({ projectId, domainProjectId, projectLoaded,
                         taskStatus: "failed" as const,
                         taskStage: undefined,
                         taskUpdatedAt: new Date().toISOString(),
-                        errorDetails: "页面刷新后本地生成已中断，请重新生成。",
+                        errorDetails: "頁面重新整理後本地生成已中斷，請重新生成。",
                     },
                 };
             });
@@ -554,7 +554,7 @@ export function useCanvasGeneration({ projectId, domainProjectId, projectLoaded,
                 if (error instanceof Error && error.name === "AbortError") return;
                 message.warning({
                     key: `canvas-asset-sync:${projectId}`,
-                    content: error instanceof Error ? `生成结果已保留，但项目资产同步失败：${error.message}` : "生成结果已保留，但项目资产同步失败",
+                    content: error instanceof Error ? `生成結果已保留，但專案資產同步失敗：${error.message}` : "生成結果已保留，但專案資產同步失敗",
                     duration: 4,
                 });
             });

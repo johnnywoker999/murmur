@@ -24,7 +24,7 @@ export type PluginContributionsV2 = PluginContributions & {
     editorSlots?: EditorSlotContribution[];
 };
 
-// 注意：必须把 permissions 一并 Omit 掉再完全替换，否则数组交叉类型会被归约为 v1 的 PluginPermission[]，v2 权限字面量无法赋值。
+// 注意：必須把 permissions 一併 Omit 掉再完全替換，否則陣列交叉型別會被歸約為 v1 的 PluginPermission[]，v2 許可權字面量無法賦值。
 export type PluginManifestV2 = Omit<PluginManifest, "apiVersion" | "contributes" | "permissions"> & {
     apiVersion: typeof PLUGIN_API_VERSION_V2;
     permissions: Array<PluginPermission | EditorPluginPermission>;
@@ -317,16 +317,16 @@ export type RegisteredPlugin = {
     agentActions?: PluginAgentAction[];
     /** Pure, bounded projection: never return embedded media or provider credentials. */
     readAgentNode?: (node: import("@/types/canvas").CanvasNodeData, snapshot: import("@/lib/canvas/canvas-operation-contract").CanvasSnapshot) => Record<string, unknown>;
-    /** v1 或 v2 插件清单；v2 清单结构为 v1 超集（含 editorSlots 声明）。 */
+    /** v1 或 v2 外掛清單；v2 清單結構為 v1 超集（含 editorSlots 宣告）。 */
     manifest: PluginManifest | PluginManifestV2;
     source?: "bundled" | "uploaded" | string;
     activate?: (context: PluginHostContext) => Promise<void> | void;
     deactivate?: (context: PluginHostContext) => Promise<void> | void;
     createAssetSource?: (context: PluginHostContext) => AssetSourceProvider;
     createPromptOptimizer?: (context: PluginHostContext) => PromptOptimizerProvider;
-    /** v2 插件由注册器从 manifest 提取的编辑器插槽声明（v1 插件无此字段）。 */
+    /** v2 外掛由註冊器從 manifest 提取的編輯器插槽宣告（v1 外掛無此欄位）。 */
     editorSlots?: EditorSlotContribution[];
-    /** v2 插件 UI 插槽的实际渲染函数由插件 activate() 阶段经 registerEditorSlot 提供。 */
+    /** v2 外掛 UI 插槽的實際渲染函式由外掛 activate() 階段經 registerEditorSlot 提供。 */
 };
 
 export type PluginInstallation = {

@@ -1,65 +1,65 @@
-# 实时对话功能实现（第一阶段 MVP）
+# 即時對話功能實現（第一階段 MVP）
 
-## 项目概述
+## 專案概述
 
-实现第一阶段（MVP）：**本地语音录制 + 浏览器语音识别转写**。点击"实时对话"按钮 → 输入行内展开波形录制条 → 停止后自动转写为文字 → 文字填入输入框或直接发送。
+實現第一階段（MVP）：**本地語音錄製 + 瀏覽器語音識別轉寫**。點選"即時對話"按鈕 → 輸入行內展開波形錄製條 → 停止後自動轉寫為文字 → 文字填入輸入框或直接傳送。
 
-第一阶段**不接入语音大模型、不依赖后端与 API Key**，转写由浏览器内置 Web Speech API 完成，零配置可用。
-
----
-
-## 交互流程
-
-1. 点击"实时对话"按钮（`VoiceRecordingButton`）
-2. 输入行内展开 `VoiceRecordingInline` 录制条（不弹窗），自动开始录音
-3. 显示波形动画（AnalyserNode 实时音量）+ 时长
-4. 点击停止 → 停止录音并触发浏览器语音识别
-5. 识别成功 → 短暂显示"转写完成" → 回调文本，由调用方填入输入框或直接发送
-6. 识别失败（无语音 / 权限拒绝 / 网络异常）→ 录制条内提示并支持重试
+第一階段**不接入語音大模型、不依賴後端與 API Key**，轉寫由瀏覽器內建 Web Speech API 完成，零配置可用。
 
 ---
 
-## 技术架构
+## 互動流程
+
+1. 點選"即時對話"按鈕（`VoiceRecordingButton`）
+2. 輸入行內展開 `VoiceRecordingInline` 錄製條（不彈窗），自動開始錄音
+3. 顯示波形動畫（AnalyserNode 即時音量）+ 時長
+4. 點選停止 → 停止錄音並觸發瀏覽器語音識別
+5. 識別成功 → 短暫顯示"轉寫完成" → 回撥文本，由呼叫方填入輸入框或直接傳送
+6. 識別失敗（無語音 / 許可權拒絕 / 網路異常）→ 錄製條內提示並支援重試
+
+---
+
+## 技術架構
 
 ```
-用户点击"实时对话"按钮
+使用者點選"即時對話"按鈕
         │
         ▼
-VoiceRecordingButton（输入行内展开录制条，不弹窗）
+VoiceRecordingButton（輸入行內展開錄製條，不彈窗）
         │
         ▼
-VoiceRecordingInline 内联波形录制条
-        ├── useVoiceRecording：MediaRecorder 录制 + AnalyserNode 实时波形
-        ├── AudioWaveform：SVG 波形动画 + 时长显示
-        └── useSpeechRecognition：Web Speech API 实时转写
+VoiceRecordingInline 內聯波形錄製條
+        ├── useVoiceRecording：MediaRecorder 錄製 + AnalyserNode 即時波形
+        ├── AudioWaveform：SVG 波形動畫 + 時長顯示
+        └── useSpeechRecognition：Web Speech API 即時轉寫
                 │
                 ▼
-点击停止 → speech.stop() 返回文本 → onTranscribed(文本) → 填入输入框
+點選停止 → speech.stop() 返回文本 → onTranscribed(文本) → 填入輸入框
 ```
 
-## 前端实现
+## 前端實現
 
-### 组件
+### 元件
 
-| 文件 | 说明 |
+| 檔案 | 說明 |
 |------|------|
-| `components/conversation/voice-recording-button.tsx` | 语音输入按钮：点击后输入行内展开录制条（局部状态，不弹窗） |
-| `components/conversation/voice-recording-inline.tsx` | 内联波形录制条：波形 + 时长 + 停止/取消，停止后自动转写 |
-| `components/conversation/audio-waveform.tsx` | SVG 波形可视化组件 |
-| `components/conversation/index.ts` | 组件统一导出 |
+| `components/conversation/voice-recording-button.tsx` | 語音輸入按鈕：點選後輸入行內展開錄製條（區域性狀態，不彈窗） |
+| `components/conversation/voice-recording-inline.tsx` | 內聯波形錄製條：波形 + 時長 + 停止/取消，停止後自動轉寫 |
+| `components/conversation/audio-waveform.tsx` | SVG 波形視覺化元件 |
+| `components/conversation/index.ts` | 元件統一匯出 |
 
 ### Hook
 
-| 文件 | 说明 |
+| 檔案 | 說明 |
 |------|------|
-| `hooks/use-voice-recording.ts` | 语音录制逻辑（MediaRecorder + AnalyserNode，波形/时长/停止/取消） |
-| `hooks/use-speech-recognition.ts` | 浏览器语音识别（Web Speech API，start/stop/cancel，返回文本与错误） |
+| `hooks/use-voice-recording.ts` | 語音錄製邏輯（MediaRecorder + AnalyserNode，波形/時長/停止/取消） |
+| `hooks/use-speech-recognition.ts` | 瀏覽器語音識別（Web Speech API，start/stop/cancel，返回文本與錯誤） |
 
 ## 接入位置
 
-- 创建页主输入行：`web/src/pages/create/index.tsx`（`CreationComposer` 的 `creation-chat-controls`）
-- 画布：旧内置 Agent 停靠面板已退场，画布侧暂不再接入语音输入
-- 测试页：`web/src/pages/test-voice-recording.tsx`（路由 `/test-voice-recording`）
+- 建立頁主輸入行：`web/src/pages/create/index.tsx`（`CreationComposer` 的 `creation-chat-controls`）
+- 畫布：舊內建 Agent 停靠面板已退場，畫布側暫不再接入語音輸入
+- 測試頁：`web/src/pages/test-voice-recording.tsx`（路由 `/test-voice-recording`）
 
 ## 使用示例
 
@@ -72,38 +72,38 @@ import { VoiceRecordingButton } from "@/components/conversation/voice-recording-
 />
 ```
 
-## 浏览器支持
+## 瀏覽器支援
 
-- 语音识别使用 Web Speech API（`SpeechRecognition` / `webkitSpeechRecognition`），Chrome / Edge 支持
-- 不支持时录制条内提示"当前浏览器不支持语音识别，请使用 Chrome 或 Edge 浏览器"，并可取消
-- 识别语言默认 `zh-CN`，可通过 `useSpeechRecognition({ lang })` 调整
+- 語音識別使用 Web Speech API（`SpeechRecognition` / `webkitSpeechRecognition`），Chrome / Edge 支援
+- 不支援時錄製條內提示"當前瀏覽器不支援語音識別，請使用 Chrome 或 Edge 瀏覽器"，並可取消
+- 識別語言預設 `zh-CN`，可通過 `useSpeechRecognition({ lang })` 調整
 
-## 已删除内容
+## 已刪除內容
 
-以下第二阶段实验代码已全部删除：
+以下第二階段實驗程式碼已全部刪除：
 
 ### 前端
 
 - `components/conversation/realtime-conversation.tsx`、`realtime-conversation-button.tsx`、`voice-recording-overlay.tsx`
 - `hooks/use-websocket.ts`、`stores/conversation-mode-store.ts`
-- `services/api/stt.ts`（后端 Whisper 转写客户端）
+- `services/api/stt.ts`（後端 Whisper 轉寫客戶端）
 
-### 后端
+### 後端
 
-- `service/stt.go`（OpenAI Whisper 转写）、`model/stt.go`（`stt_results` 表）
-- `handler/routes.go` 中 `RegisterSTTRoutes`、`main.go` 中路由注册
-- `database/schema.go` 中 `STTResult` 模型注册、`repository/repository.go` 中 `CreateSTTResult`
+- `service/stt.go`（OpenAI Whisper 轉寫）、`model/stt.go`（`stt_results` 表）
+- `handler/routes.go` 中 `RegisterSTTRoutes`、`main.go` 中路由註冊
+- `database/schema.go` 中 `STTResult` 模型註冊、`repository/repository.go` 中 `CreateSTTResult`
 
-## 验证情况
+## 驗證情況
 
-- 后端 `go build ./...`：通过
-- 前端 `npx tsc --noEmit`：无本次新增类型错误（上游遗留 style profile / image.ts 错误除外）
-- 浏览器手动测试（真实麦克风 + 语音识别）未运行，需在 Chrome/Edge 下验证
+- 後端 `go build ./...`：通過
+- 前端 `npx tsc --noEmit`：無本次新增型別錯誤（上游遺留 style profile / image.ts 錯誤除外）
+- 瀏覽器手動測試（真實麥克風 + 語音識別）未執行，需在 Chrome/Edge 下驗證
 
 ## 下一步
 
-- [x] 内联波形录制 + 浏览器语音识别自动转写（第一阶段 MVP）
-- [x] 移除第二阶段实验代码（WebSocket / WebRTC / Realtime API）
-- [ ] 语音播放功能（TTS）
-- [ ] 语音消息发送和显示
-- [ ] 真正实时对话（WebSocket + WebRTC + Realtime API，后续阶段）
+- [x] 內聯波形錄製 + 瀏覽器語音識別自動轉寫（第一階段 MVP）
+- [x] 移除第二階段實驗程式碼（WebSocket / WebRTC / Realtime API）
+- [ ] 語音播放功能（TTS）
+- [ ] 語音訊息傳送和顯示
+- [ ] 真正即時對話（WebSocket + WebRTC + Realtime API，後續階段）

@@ -9,7 +9,7 @@ import type { DirectorScene } from "@/types/director";
 
 export type DirectorSaveController = {
     progress: DirectorSaveProgress;
-    /** canonical 提交入口：预览态与「仅镜像」路径都不得调用。 */
+    /** canonical 提交入口：預覽態與「僅映象」路徑都不得呼叫。 */
     commitScene: (scene: DirectorScene) => void;
     retry: () => Promise<boolean>;
     restoreCandidate: () => DirectorDraftEnvelope | null;
@@ -20,8 +20,8 @@ export type DirectorSaveController = {
 };
 
 /**
- * 按 scene.id 持有唯一 coordinator：切换场景或卸载时 dispose。
- * persistScene 必须把 request.scene 落到项目状态，flushPersistence 负责真正落盘。
+ * 按 scene.id 持有唯一 coordinator：切換場景或解除安裝時 dispose。
+ * persistScene 必須把 request.scene 落到專案狀態，flushPersistence 負責真正落盤。
  */
 export function useDirectorSaveCoordinator(input: { sceneId: string | null; initialScene: DirectorScene | null; persistScene: (scene: DirectorScene) => void; flushPersistence: () => void | Promise<void> }): DirectorSaveController {
     const { sceneId, initialScene, persistScene, flushPersistence } = input;
@@ -32,11 +32,11 @@ export function useDirectorSaveCoordinator(input: { sceneId: string | null; init
     const initialSceneRef = useRef(initialScene);
     const [progress, setProgress] = useState<DirectorSaveProgress>(idleDirectorSaveProgress);
 
-    // scope 取响应式 user id：user-session 先切 active scope 再 setUser，
-    // 因此这里能在用户变化时重建 coordinator，且不会在播放时每帧读 localStorage。
+    // scope 取響應式 user id：user-session 先切 active scope 再 setUser，
+    // 因此這裡能在使用者變化時重建 coordinator，且不會在播放時每幀讀 localStorage。
     const scope = useUserStore((state) => state.user?.id) ?? "guest";
 
-    // 依赖为空的 effect 每次 render 后都跑，保证 coordinator effect 读到的是最新回调。
+    // 依賴為空的 effect 每次 render 後都跑，保證 coordinator effect 讀到的是最新回撥。
     useEffect(() => {
         persistSceneRef.current = persistScene;
         flushPersistenceRef.current = flushPersistence;
@@ -57,11 +57,11 @@ export function useDirectorSaveCoordinator(input: { sceneId: string | null; init
             storage: resolveDirectorDraftStorage(() => globalThis.localStorage),
             flush: async (request) => {
                 try {
-                    // 先把这次 flush 对应的场景写进项目状态，再等持久化真正完成。
+                    // 先把這次 flush 對應的場景寫進專案狀態，再等持久化真正完成。
                     persistSceneRef.current(request.scene);
                     await flushPersistenceRef.current();
                 } catch (error) {
-                    // 只记录稳定码与安全字段；原始 error 继续上抛给 coordinator 走 error/draft 语义。
+                    // 只記錄穩定碼與安全欄位；原始 error 繼續上拋給 coordinator 走 error/draft 語義。
                     recordDirectorDiagnostic("DIRECTOR_SAVE_FLUSH_FAILED", { sceneId: request.scene.id, revision: request.revision });
                     throw error;
                 }
@@ -71,15 +71,15 @@ export function useDirectorSaveCoordinator(input: { sceneId: string | null; init
         coordinatorRef.current = coordinator;
         setProgress(directorSaveProgress(coordinator.getSnapshot()));
 
-        // 通知里必须读完整快照：只搬 status 会让 confirmedRevision/draftStored 停在旧值，
-        // UI 继续显示未保存、beforeunload 也会误拦。
+        // 通知裡必須讀完整快照：只搬 status 會讓 confirmedRevision/draftStored 停在舊值，
+        // UI 繼續顯示未儲存、beforeunload 也會誤攔。
         const unsubscribe = coordinator.onStatusChange(() => {
             if (!active) return;
             setProgress(directorSaveProgress(coordinator.getSnapshot()));
         });
 
         const unregisterUpdate = registerDesktopUpdatePreparation(async () => {
-            if (!(await coordinator.flushLatest())) throw new Error("导演工作台尚未保存完成。");
+            if (!(await coordinator.flushLatest())) throw new Error("導演工作臺尚未儲存完成。");
         }, coordinator.hasActiveSave);
 
         return () => {
@@ -87,7 +87,7 @@ export function useDirectorSaveCoordinator(input: { sceneId: string | null; init
             unsubscribe();
             coordinatorRef.current = null;
 
-            // 卸载前把未确认改动推完再 dispose，否则 debounce 里的最后一次编辑只剩本地草稿。
+            // 解除安裝前把未確認改動推完再 dispose，否則 debounce 裡的最後一次編輯只剩本地草稿。
             const pending = coordinator.getSnapshot();
             if (pending.confirmedRevision < pending.revision) {
                 const flushing = coordinator.flushLatest();
@@ -102,13 +102,13 @@ export function useDirectorSaveCoordinator(input: { sceneId: string | null; init
         };
     }, [sceneId, scope]);
 
-    /** dispose 后 coordinatorRef 为 null，因此卸载期的调用不会再 setState。 */
+    /** dispose 後 coordinatorRef 為 null，因此解除安裝期的呼叫不會再 setState。 */
     const syncProgress = useCallback(() => {
         const coordinator = coordinatorRef.current;
         if (coordinator) setProgress(directorSaveProgress(coordinator.getSnapshot()));
     }, []);
 
-    /** canonical 提交唯一入口：预览态和「仅镜像当前 draft」都不得调用。 */
+    /** canonical 提交唯一入口：預覽態和「僅映象當前 draft」都不得呼叫。 */
     const commitScene = useCallback(
         (scene: DirectorScene) => {
             if (!coordinatorRef.current?.edit(scene)) return;
@@ -131,7 +131,7 @@ export function useDirectorSaveCoordinator(input: { sceneId: string | null; init
         (candidate: DirectorDraftEnvelope) => {
             const coordinator = coordinatorRef.current;
             if (!coordinator?.explicitRestore(candidate)) return false;
-            // 恢复后必须回到项目状态并触发可靠保存，否则草稿只活在本地。
+            // 恢復後必須回到專案狀態並觸發可靠儲存，否則草稿只活在本地。
             persistSceneRef.current(candidate.scene);
             void coordinator.flushLatest().finally(syncProgress);
             syncProgress();
@@ -155,9 +155,9 @@ export function useDirectorSaveCoordinator(input: { sceneId: string | null; init
     }, [syncProgress]);
 
     /**
-     * pagehide：dirty 时只能走 coordinator.handlePageHide —— 它的 flush 已经
-     * persist(request.scene) + await flushPersistence，组件再叠一次就是重复落盘。
-     * clean 时 coordinator 不会 flush，因此这里显式落盘，保留原有「离开页面必落盘」语义。
+     * pagehide：dirty 時只能走 coordinator.handlePageHide —— 它的 flush 已經
+     * persist(request.scene) + await flushPersistence，元件再疊一次就是重複落盤。
+     * clean 時 coordinator 不會 flush，因此這裡顯式落盤，保留原有「離開頁面必落盤」語義。
      */
     const handlePageHide = useCallback(async () => {
         const coordinator = coordinatorRef.current;

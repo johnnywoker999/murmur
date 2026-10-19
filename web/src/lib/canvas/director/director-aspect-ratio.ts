@@ -13,7 +13,7 @@ export function directorAspectRatioValue(ratio: DirectorAspectRatio): number | n
 
 export type DirectorFrameRect = { x: number; y: number; width: number; height: number };
 
-/** LibTV 画布导演台在视口两侧留 48px、顶部/底部留 112px 给工具与输入栏。 */
+/** LibTV 畫布導演臺在視口兩側留 48px、頂部/底部留 112px 給工具與輸入欄。 */
 export function resolveDirectorFrameRect(width: number, height: number, ratio: DirectorAspectRatio): DirectorFrameRect {
     const aspect = directorAspectRatioValue(ratio);
     if (!aspect || width <= 0 || height <= 0) return { x: 0, y: 0, width, height };
@@ -45,7 +45,7 @@ export function cropDirectorCanvas(source: HTMLCanvasElement, aspectRatio: Direc
     output.width = crop.width;
     output.height = crop.height;
     const context = output.getContext("2d");
-    if (!context) throw new Error("无法创建画幅裁切画布");
+    if (!context) throw new Error("無法建立畫幅裁切畫布");
     context.drawImage(source, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
     return output;
 }

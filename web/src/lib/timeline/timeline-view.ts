@@ -1,5 +1,5 @@
-// 时间线视图数学（移植自 lingji-cut 的 timeline-view.ts，按本项目类型精简）。
-// 提供缩放钳制、像素/毫秒换算、标尺刻度与时间格式化。
+// 時間線檢視數學（移植自 lingji-cut 的 timeline-view.ts，按本專案型別精簡）。
+// 提供縮放鉗制、畫素/毫秒換算、標尺刻度與時間格式化。
 
 export const BASE_TIMELINE_PX_PER_SECOND = 96;
 const MIN_TIMELINE_TRACK_WIDTH = 960;
@@ -21,7 +21,7 @@ export function getBaseTimelineWidth(durationMs: number): number {
     return Math.max(MIN_TIMELINE_TRACK_WIDTH, Math.ceil(Math.max(1_000, durationMs) / 1_000) * BASE_TIMELINE_PX_PER_SECOND);
 }
 
-/** 缩放级别对应的像素/毫秒。时间线面板用它做独立的等比映射，拖动片段时轨道随内容扩展，比例保持恒定。 */
+/** 縮放級別對應的畫素/毫秒。時間線面板用它做獨立的等比對映，拖動片段時軌道隨內容擴充套件，比例保持恆定。 */
 export function getTimelinePxPerMs(zoomLevel: number): number {
     return (BASE_TIMELINE_PX_PER_SECOND * clampTimelineZoom(zoomLevel)) / 1_000;
 }
@@ -54,14 +54,14 @@ export function getTimelineVisualEndMs(clips: { startMs: number; durationMs: num
     return clips.reduce((max, clip) => Math.max(max, clip.startMs + clip.durationMs), 0);
 }
 
-/** 标尺刻度间隔（毫秒），保证刻度间隔像素不小于 64px。 */
+/** 標尺刻度間隔（毫秒），保證刻度間隔畫素不小於 64px。 */
 export function getRulerTickStep(pxPerMs: number): number {
     const steps = [100, 250, 500, 1_000, 2_000, 5_000, 10_000, 15_000, 30_000, 60_000, 120_000, 300_000];
     const target = 64 / Math.max(pxPerMs, 1e-6);
     return steps.find((step) => step >= target) ?? steps[steps.length - 1];
 }
 
-/** 毫秒 → 标尺/播放头时间文案（mm:ss.d）。 */
+/** 毫秒 → 標尺/播放頭時間文案（mm:ss.d）。 */
 export function formatTimelineTime(ms: number): string {
     const safeMs = Math.max(0, Math.round(ms));
     const totalSeconds = Math.floor(safeMs / 1_000);

@@ -10,25 +10,25 @@ import { CanvasNodeType } from "@/types/canvas";
 import "./folder-preview-lab.css";
 
 const STYLE_PRESETS: Array<{ style: CanvasFolderStyle; name: string; hint: string }> = [
-    { style: "glass", name: "流光玻璃", hint: "复刻参考 · 加号入口" },
-    { style: "stacked", name: "内容陈列", hint: "复刻参考 · 文件预览" },
-    { style: "midnight", name: "午夜封面", hint: "复刻参考 · 深色标签" },
-    { style: "paper", name: "纸感收藏", hint: "衍生 · 轻量资料" },
-    { style: "cinema", name: "电影胶片", hint: "衍生 · 影像项目" },
-    { style: "compact", name: "紧凑资料", hint: "衍生 · 高频调用" },
+    { style: "glass", name: "流光玻璃", hint: "復刻參考 · 加號入口" },
+    { style: "stacked", name: "內容陳列", hint: "復刻參考 · 檔案預覽" },
+    { style: "midnight", name: "午夜封面", hint: "復刻參考 · 深色標籤" },
+    { style: "paper", name: "紙感收藏", hint: "衍生 · 輕量資料" },
+    { style: "cinema", name: "電影膠片", hint: "衍生 · 影像專案" },
+    { style: "compact", name: "緊湊資料", hint: "衍生 · 高頻呼叫" },
 ];
 
 const PRESET_GROUPS = [
     {
         key: "reference",
-        title: "原图复刻",
-        description: "三种参考结构：玻璃加号、内容陈列、午夜封面。",
+        title: "原圖復刻",
+        description: "三種參考結構：玻璃加號、內容陳列、午夜封面。",
         presets: STYLE_PRESETS.slice(0, 3),
     },
     {
         key: "derived",
-        title: "风格衍生",
-        description: "外形与主题正交组合，六种结构都可切换四套皮肤。",
+        title: "風格衍生",
+        description: "外形與主題正交組合，六種結構都可切換四套皮膚。",
         presets: STYLE_PRESETS.slice(3),
     },
 ];
@@ -53,7 +53,7 @@ function makeFolderNode(style: CanvasFolderStyle, index: number): CanvasNodeData
     return {
         id: `folder-${style}`,
         type: CanvasNodeType.Frame,
-        title: ["My Files", "Archives", "My Files", "灵感收藏", "影像资产", "快速调用"][index],
+        title: ["My Files", "Archives", "My Files", "靈感收藏", "影像資產", "快速呼叫"][index],
         position: { x: 0, y: 0 },
         width: 360,
         height: 280,
@@ -69,7 +69,7 @@ const INITIAL_FOLDERS = STYLE_PRESETS.map((preset, index) => makeFolderNode(pres
 const INITIAL_CHILDREN = Object.fromEntries(
     INITIAL_FOLDERS.map((folder, folderIndex) => [
         folder.id,
-        SAMPLE_MEDIA.slice(0, 3 + (folderIndex % 3)).map((source, childIndex) => makeMediaNode(`${folder.id}-asset-${childIndex}`, ["主视觉", "氛围参考", "场景草图", "色彩方案", "镜头灵感"][childIndex], source, childIndex)),
+        SAMPLE_MEDIA.slice(0, 3 + (folderIndex % 3)).map((source, childIndex) => makeMediaNode(`${folder.id}-asset-${childIndex}`, ["主視覺", "氛圍參考", "場景草圖", "色彩方案", "鏡頭靈感"][childIndex], source, childIndex)),
     ]),
 ) as Record<string, CanvasNodeData[]>;
 
@@ -102,18 +102,18 @@ export default function FolderPreviewLab() {
             <header className="folder-preview-lab-header">
                 <div>
                     <span className="folder-preview-lab-kicker">DEV · INTERACTIVE FOLDER LAB</span>
-                    <h1>通用素材文件夹</h1>
-                    <p>文件夹外形与主题皮肤独立：四套主题都不是内部素材。打开后，真实内容以独立卡片展示；悬停、单击、双击与菜单均可交互。</p>
+                    <h1>通用素材資料夾</h1>
+                    <p>資料夾外形與主題皮膚獨立：四套主題都不是內部素材。開啟後，真實內容以獨立卡片展示；懸停、單擊、雙擊與選單均可互動。</p>
                 </div>
                 <div className="folder-preview-lab-controls">
-                    <div className="folder-preview-lab-theme" aria-label="预览主题">
+                    <div className="folder-preview-lab-theme" aria-label="預覽主題">
                         <button type="button" aria-pressed={theme === "dark"} onClick={() => setTheme("dark")}>
                             <Moon aria-hidden /> 深色
                         </button>
                     </div>
                     <div className="folder-preview-lab-guide">
                         <MousePointer2 aria-hidden />
-                        <span>试试 hover、双击与样式切换</span>
+                        <span>試試 hover、雙擊與樣式切換</span>
                     </div>
                 </div>
             </header>
@@ -138,7 +138,7 @@ export default function FolderPreviewLab() {
                                         className="folder-preview-lab-folder"
                                         role="button"
                                         tabIndex={0}
-                                        aria-label={`打开 ${folder.title}`}
+                                        aria-label={`開啟 ${folder.title}`}
                                         onClick={() => setSelectedId(folder.id)}
                                         onDoubleClick={() => setOpenedId(folder.id)}
                                         onKeyDown={(event) => {
@@ -177,7 +177,7 @@ export default function FolderPreviewLab() {
                                         />
                                     </div>
                                     <button type="button" className="folder-preview-lab-open" onClick={() => setOpenedId(folder.id)}>
-                                        <FolderOpen aria-hidden /> 打开文件夹
+                                        <FolderOpen aria-hidden /> 開啟資料夾
                                     </button>
                                 </article>
                             );
@@ -186,7 +186,7 @@ export default function FolderPreviewLab() {
                 </section>
             ))}
 
-            <section className="folder-preview-lab-theme-catalog" aria-label="可用文件夹主题">
+            <section className="folder-preview-lab-theme-catalog" aria-label="可用資料夾主題">
                 {CANVAS_FOLDER_THEME_OPTIONS.map((item) => (
                     <div key={item.key}>
                         <img src={item.cover} alt="" />
@@ -196,17 +196,17 @@ export default function FolderPreviewLab() {
             </section>
 
             {openedFolder ? (
-                <section className="folder-preview-lab-drawer" aria-label={`${openedFolder.title} 内容`}>
+                <section className="folder-preview-lab-drawer" aria-label={`${openedFolder.title} 內容`}>
                     <div className="folder-preview-lab-drawer-header">
                         <button type="button" onClick={() => setOpenedId(null)}>
                             <ChevronLeft aria-hidden /> 返回
                         </button>
                         <div>
-                            <span>已打开</span>
+                            <span>已開啟</span>
                             <h2>{openedFolder.title}</h2>
                         </div>
                         <button type="button" onClick={addSampleContent}>
-                            <ImagePlus aria-hidden /> 添加示例内容
+                            <ImagePlus aria-hidden /> 新增示例內容
                         </button>
                     </div>
                     <div className="folder-preview-lab-assets">
@@ -215,7 +215,7 @@ export default function FolderPreviewLab() {
                                 <img src={node.metadata?.content} alt="" draggable={false} />
                                 <div>
                                     <strong>{node.title}</strong>
-                                    <span>图片素材</span>
+                                    <span>圖片素材</span>
                                 </div>
                             </article>
                         ))}

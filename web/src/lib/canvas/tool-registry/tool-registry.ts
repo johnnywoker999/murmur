@@ -7,17 +7,17 @@ import { listCreatableNodeDefinitions } from "@/lib/canvas/node-registry";
 
 import type { AddNodeMenuCommand, AddNodeMenuContext, NodeToolbarGroup, ToolCategory, ToolContext, ToolDefinition, ToolbarId, ToolbarPrefs } from "./tool-definition";
 
-/** 模块级注册表 */
+/** 模組級登入檔 */
 const registry = new Map<ToolbarId, ToolDefinition[]>();
 const addNodeMenuRegistry: AddNodeMenuCommand[] = [];
 
-/** 批量注册工具到指定工具栏 */
+/** 批次註冊工具到指定工具欄 */
 export function registerToolbarTools(tools: ToolDefinition[]) {
     for (const tool of tools) {
         const list = registry.get(tool.toolbar) ?? [];
-        // Vite HMR/桌面开发容器可能重复执行定义模块。注册表必须是
-        // 幂等的，否则每次热更新都会再追加一份按钮，最终导致工具栏
-        // 出现 2x/3x 重复 DOM。按稳定 id 覆盖，保留原有顺序。
+        // Vite HMR/桌面開發容器可能重複執行定義模組。登入檔必須是
+        // 冪等的，否則每次熱更新都會再追加一份按鈕，最終導致工具欄
+        // 出現 2x/3x 重複 DOM。按穩定 id 覆蓋，保留原有順序。
         const existingIndex = list.findIndex((item) => item.id === tool.id);
         if (existingIndex >= 0) list[existingIndex] = tool;
         else list.push(tool);
@@ -25,7 +25,7 @@ export function registerToolbarTools(tools: ToolDefinition[]) {
     }
 }
 
-/** 注册添加节点菜单命令 */
+/** 註冊新增節點選單命令 */
 export function registerAddNodeMenuCommands(commands: AddNodeMenuCommand[]) {
     for (const command of commands) {
         const existingIndex = addNodeMenuRegistry.findIndex((item) => item.id === command.id);
@@ -34,20 +34,20 @@ export function registerAddNodeMenuCommands(commands: AddNodeMenuCommand[]) {
     }
 }
 
-/** 获取某工具栏全部已注册工具（按 defaultOrder 升序） */
+/** 獲取某工具欄全部已註冊工具（按 defaultOrder 升序） */
 export function getToolbarTools(toolbar: ToolbarId): ToolDefinition[] {
     const tools = registry.get(toolbar) ?? [];
     return [...new Map(tools.map((tool) => [tool.id, tool])).values()].sort((a, b) => a.defaultOrder - b.defaultOrder);
 }
 
-/** 获取添加节点菜单全部命令（按 defaultOrder 升序） */
+/** 獲取新增節點選單全部命令（按 defaultOrder 升序） */
 export function getAddNodeMenuCommands(): AddNodeMenuCommand[] {
     return [...new Map(addNodeMenuRegistry.map((command) => [command.id, command])).values()].sort((a, b) => a.defaultOrder - b.defaultOrder);
 }
 
 /**
- * 将已注册的插件画布节点转换为添加菜单命令。
- * 这部分按需生成，避免远程/延迟加载的插件必须在工具定义模块初始化前完成注册。
+ * 將已註冊的外掛畫布節點轉換為新增選單命令。
+ * 這部分按需生成，避免遠端/延遲載入的外掛必須在工具定義模組初始化前完成註冊。
  */
 function getPluginNodeMenuCommands(): AddNodeMenuCommand[] {
     return listCreatableNodeDefinitions()
@@ -67,7 +67,7 @@ function getPluginNodeMenuCommands(): AddNodeMenuCommand[] {
         });
 }
 
-/** 默认偏好：全部工具按 defaultOrder 排列；defaultVisible 为 false 的进入 hidden */
+/** 預設偏好：全部工具按 defaultOrder 排列；defaultVisible 為 false 的進入 hidden */
 export function defaultToolbarPrefs(toolbar: ToolbarId): ToolbarPrefs {
     const tools = getToolbarTools(toolbar);
     return {
@@ -77,9 +77,9 @@ export function defaultToolbarPrefs(toolbar: ToolbarId): ToolbarPrefs {
 }
 
 /**
- * 解析工具栏条目——核心函数
+ * 解析工具欄條目——核心函式
  *
- * 流程：过滤 applicable → 应用用户排序 → 过滤用户隐藏 → 生成 FloatingDockEntry（含 separator 分组）
+ * 流程：過濾 applicable → 應用使用者排序 → 過濾使用者隱藏 → 生成 FloatingDockEntry（含 separator 分組）
  */
 export function resolveToolbarEntries(toolbar: ToolbarId, ctx: ToolContext, prefs: ToolbarPrefs | null): FloatingDockEntry[] {
     const tools = resolveToolbarTools(toolbar, ctx, prefs);
@@ -87,8 +87,8 @@ export function resolveToolbarEntries(toolbar: ToolbarId, ctx: ToolContext, pref
 }
 
 /**
- * 解析工具栏工具——返回过滤排序后的 ToolDefinition[]（不含 separator）。
- * 供需要后处理工具列表的场景使用（如节点悬停工具栏合并图片工具）。
+ * 解析工具欄工具——返回過濾排序後的 ToolDefinition[]（不含 separator）。
+ * 供需要後處理工具列表的場景使用（如節點懸停工具欄合併圖片工具）。
  */
 export function resolveToolbarTools(toolbar: ToolbarId, ctx: ToolContext, prefs: ToolbarPrefs | null): ToolDefinition[] {
     const allTools = getToolbarTools(toolbar);
@@ -105,7 +105,7 @@ export function resolveToolbarTools(toolbar: ToolbarId, ctx: ToolContext, prefs:
     });
 }
 
-/** 将节点工具定义解析为唯一的 Dock 展示层级和排序。 */
+/** 將節點工具定義解析為唯一的 Dock 展示層級和排序。 */
 export function resolveNodeToolbarPlacement(tool: ToolDefinition, ctx: ToolContext): { group: NodeToolbarGroup; order: number } {
     const placement = tool.nodeToolbar;
     return {
@@ -114,14 +114,14 @@ export function resolveNodeToolbarPlacement(tool: ToolDefinition, ctx: ToolConte
     };
 }
 
-/** 解析添加节点菜单命令——合并插件节点后按 applicable 过滤并排序。 */
+/** 解析新增節點選單命令——合併外掛節點後按 applicable 過濾並排序。 */
 export function resolveAddNodeMenuCommands(ctx: AddNodeMenuContext): AddNodeMenuCommand[] {
     return [...getAddNodeMenuCommands(), ...getPluginNodeMenuCommands()].filter((command) => !command.applicable || command.applicable(ctx)).sort((a, b) => a.defaultOrder - b.defaultOrder);
 }
 
 /**
- * 将工具列表转为 FloatingDockEntry，按 category 边界自动插入 separator。
- * danger 类工具会被包裹在 is-danger-group 容器中实现视觉隔离。
+ * 將工具列表轉為 FloatingDockEntry，按 category 邊界自動插入 separator。
+ * danger 類工具會被包裹在 is-danger-group 容器中實現視覺隔離。
  */
 function buildEntriesWithSeparators(tools: ToolDefinition[], ctx: ToolContext): FloatingDockEntry[] {
     const entries: FloatingDockEntry[] = [];

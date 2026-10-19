@@ -20,10 +20,10 @@ type DiagnosticsPanelProps = {
 type DiagnosticRange = "15m" | "30m" | "1h" | "24h";
 
 const rangeOptions: { value: DiagnosticRange; label: string }[] = [
-    { value: "15m", label: "最近 15 分钟" },
-    { value: "30m", label: "最近 30 分钟" },
-    { value: "1h", label: "最近 1 小时" },
-    { value: "24h", label: "最近 24 小时" },
+    { value: "15m", label: "最近 15 分鐘" },
+    { value: "30m", label: "最近 30 分鐘" },
+    { value: "1h", label: "最近 1 小時" },
+    { value: "24h", label: "最近 24 小時" },
 ];
 
 export default function DiagnosticsPanel({ taskId, projectId, open, onClose }: DiagnosticsPanelProps) {
@@ -64,9 +64,9 @@ export default function DiagnosticsPanel({ taskId, projectId, open, onClose }: D
             const saved = await downloadDiagnosticBundle(download);
             if (saved !== "saved") return;
             setBundleId(download.bundleId);
-            message.success("诊断包已保存，请连同诊断编号提交给支持人员");
+            message.success("診斷包已儲存，請連同診斷編號提交給支援人員");
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "导出诊断包失败");
+            message.error(error instanceof Error ? error.message : "匯出診斷包失敗");
         } finally {
             setExporting(false);
         }
@@ -85,8 +85,8 @@ export default function DiagnosticsPanel({ taskId, projectId, open, onClose }: D
             rootClassName="app-spatial-modal diagnostics-modal"
             title={(
                 <div className="flex items-center justify-between gap-2">
-                    <span>问题诊断</span>
-                    <Button type="text" aria-label="关闭问题诊断" disabled={exporting} icon={<X className="size-4" />} onClick={onClose} />
+                    <span>問題診斷</span>
+                    <Button type="text" aria-label="關閉問題診斷" disabled={exporting} icon={<X className="size-4" />} onClick={onClose} />
                 </div>
             )}
         >
@@ -94,9 +94,9 @@ export default function DiagnosticsPanel({ taskId, projectId, open, onClose }: D
                 {open ? <EnvironmentChecks /> : null}
                 <div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <span className="text-sm font-medium">日志范围</span>
+                        <span className="text-sm font-medium">日誌範圍</span>
                         <Select
-                            ariaLabel="日志范围"
+                            ariaLabel="日誌範圍"
                             className="w-full sm:w-60"
                             value={range}
                             options={rangeOptions}
@@ -107,43 +107,43 @@ export default function DiagnosticsPanel({ taskId, projectId, open, onClose }: D
                         />
                     </div>
                     <p className="mt-3 text-xs leading-5 text-foreground/55" aria-live="polite">
-                        {loadingPreview ? "正在读取日志…" : preview ? `包含 ${preview.taskCount} 个任务、${preview.apiCallCount} 次模型调用及前端日志。` : "暂时无法读取记录数量，可继续尝试导出。"}
+                        {loadingPreview ? "正在讀取日誌…" : preview ? `包含 ${preview.taskCount} 個任務、${preview.apiCallCount} 次模型呼叫及前端日誌。` : "暫時無法讀取記錄數量，可繼續嘗試匯出。"}
                     </p>
                 </div>
                 {openUpdateLogs ? <div>
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                        <p className="text-sm font-medium">应用更新日志</p>
-                        <Button onClick={() => { setUpdateLogError(""); void openUpdateLogs().catch(() => setUpdateLogError("无法打开日志文件夹，请在存储设置中查看当前目录。")); }}>打开日志文件夹</Button>
+                        <p className="text-sm font-medium">應用更新日誌</p>
+                        <Button onClick={() => { setUpdateLogError(""); void openUpdateLogs().catch(() => setUpdateLogError("無法開啟日誌資料夾，請在儲存設定中檢視當前目錄。")); }}>開啟日誌資料夾</Button>
                     </div>
-                    <p className="mt-1 text-xs leading-5 text-foreground/55">{preview?.updateLog?.status === "available" ? `诊断包将包含 ${preview.updateLog.lines} 条更新记录。` : preview?.updateLog?.status === "unreadable" ? "部分更新日志无法读取，其他信息仍可导出。" : preview?.updateLog?.status === "missing" ? "未找到更新日志，其他信息仍可导出。" : "请选择覆盖更新失败时间的日志范围。"}</p>
-                    {preview?.updateLog?.truncated ? <p className="mt-1 text-xs leading-5 text-foreground/55">日志较多，仅包含最近的部分更新记录。</p> : null}
-                    <p className="mt-1 text-xs leading-5 text-foreground/55">日志位于当前数据目录，文件名为 update.log。</p>
+                    <p className="mt-1 text-xs leading-5 text-foreground/55">{preview?.updateLog?.status === "available" ? `診斷包將包含 ${preview.updateLog.lines} 條更新記錄。` : preview?.updateLog?.status === "unreadable" ? "部分更新日誌無法讀取，其他資訊仍可匯出。" : preview?.updateLog?.status === "missing" ? "未找到更新日誌，其他資訊仍可匯出。" : "請選擇覆蓋更新失敗時間的日誌範圍。"}</p>
+                    {preview?.updateLog?.truncated ? <p className="mt-1 text-xs leading-5 text-foreground/55">日誌較多，僅包含最近的部分更新記錄。</p> : null}
+                    <p className="mt-1 text-xs leading-5 text-foreground/55">日誌位於當前資料目錄，檔名為 update.log。</p>
                     {updateLogError ? <p className="mt-1 text-xs leading-5 text-destructive" role="alert">{updateLogError}</p> : null}
                 </div> : null}
                 <div>
                     <label className="mb-3 block text-sm font-medium" htmlFor="diagnostic-description">
-                        问题描述 <span className="ml-1 text-xs font-normal text-foreground/55">可选</span>
+                        問題描述 <span className="ml-1 text-xs font-normal text-foreground/55">可選</span>
                     </label>
-                    <Input.TextArea id="diagnostic-description" rows={3} maxLength={1000} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="例如：生成一直停在处理中。" />
+                    <Input.TextArea id="diagnostic-description" rows={3} maxLength={1000} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="例如：生成一直停在處理中。" />
                 </div>
                 <div className="flex items-center justify-between gap-4">
                     <div className="min-w-0">
-                        <p className="text-sm font-medium">视频预览缓存</p>
-                        <p className="mt-1 text-xs leading-5 text-foreground/55">清理预览以释放空间，原文件保留。</p>
+                        <p className="text-sm font-medium">影片預覽快取</p>
+                        <p className="mt-1 text-xs leading-5 text-foreground/55">清理預覽以釋放空間，原檔案保留。</p>
                     </div>
                     <Button className="shrink-0" loading={clearingPreviews} onClick={async () => {
                         setClearingPreviews(true);
-                        try { const result = await clearVideoPreviewCache(); message.success(`已清理 ${result.cleared} 个视频预览`); }
-                        catch (error) { message.error(error instanceof Error ? error.message : "清理失败，请重试"); }
+                        try { const result = await clearVideoPreviewCache(); message.success(`已清理 ${result.cleared} 個影片預覽`); }
+                        catch (error) { message.error(error instanceof Error ? error.message : "清理失敗，請重試"); }
                         finally { setClearingPreviews(false); }
-                    }}>清理预览缓存</Button>
+                    }}>清理預覽快取</Button>
                 </div>
                 <div>
                     <div className="flex items-center justify-between gap-4">
-                        <p className="min-w-0 text-xs leading-5 text-foreground/55">诊断包不包含密钥、Cookie 等隐私或原始媒体</p>
-                        <Button className="shrink-0" type="primary" icon={<Download className="size-4" />} loading={exporting} onClick={() => void handleExport()}>导出诊断包</Button>
+                        <p className="min-w-0 text-xs leading-5 text-foreground/55">診斷包不包含金鑰、Cookie 等隱私或原始媒體</p>
+                        <Button className="shrink-0" type="primary" icon={<Download className="size-4" />} loading={exporting} onClick={() => void handleExport()}>匯出診斷包</Button>
                     </div>
-                    {bundleId ? <p className="mt-3 break-all text-xs text-foreground/65" role="status">诊断编号：{bundleId}</p> : null}
+                    {bundleId ? <p className="mt-3 break-all text-xs text-foreground/65" role="status">診斷編號：{bundleId}</p> : null}
                 </div>
             </div>
         </AppModal>

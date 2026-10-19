@@ -65,7 +65,7 @@ export function CanvasPresetPicker({
                 allowClear
                 size="small"
                 prefix={<Search className="size-3.5" />}
-                placeholder="搜索预设或已加入技能"
+                placeholder="搜尋預設或已加入技能"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
             />
@@ -88,7 +88,7 @@ export function CanvasPresetPicker({
                                 <span className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: theme.node.text }}>
                                     <span className="truncate">{preset.name}</span>
                                     <span className="shrink-0 text-[var(--fs-micro)] font-medium" style={{ color: theme.accent.primary }}>
-                                        {preset.source === "skill" ? "技能" : "预设"}
+                                        {preset.source === "skill" ? "技能" : "預設"}
                                     </span>
                                 </span>
                                 <span className="mt-0.5 block truncate text-[var(--fs-tiny)] leading-4" style={{ color: theme.node.muted }}>
@@ -99,7 +99,7 @@ export function CanvasPresetPicker({
                     ))
                 ) : (
                     <div className="py-8 text-center text-xs" style={{ color: theme.node.muted }}>
-                        没有匹配的预设
+                        沒有匹配的預設
                     </div>
                 )}
             </div>
@@ -120,12 +120,12 @@ export function CanvasPresetPicker({
                 type="button"
                 className={`canvas-preset-picker-trigger ${appearance === "quiet" ? "canvas-node-composer-header-action" : ""} inline-flex shrink-0 items-center justify-center gap-1 rounded-lg transition focus-visible:outline-none ${compact ? "size-6" : dense ? "h-6 px-1.5" : "h-7 px-2"}`}
                 style={appearance === "quiet" ? undefined : { background: theme.accent.primarySoft, color: theme.accent.primary }}
-                title={appearance === "quiet" ? "预设" : "打开提示词预设"}
-                aria-label={appearance === "quiet" ? "预设" : "打开提示词预设"}
+                title={appearance === "quiet" ? "預設" : "開啟提示詞預設"}
+                aria-label={appearance === "quiet" ? "預設" : "開啟提示詞預設"}
                 aria-expanded={actualOpen}
             >
                 {appearance === "quiet" ? <LayoutTemplate className="size-3" /> : <WandSparkles className={dense ? "size-3" : "size-3.5"} />}
-                {compact ? null : <span className="text-[var(--fs-tiny)] font-medium">预设</span>}
+                {compact ? null : <span className="text-[var(--fs-tiny)] font-medium">預設</span>}
             </button>
         </Popover>
     );

@@ -33,8 +33,8 @@ export function repairMissingCanvasAssets(projectIds?: Set<string>, partialAsset
             for (const node of project.nodes) {
                 if (node.metadata?.assetId) {
                     knownAssetIds.add(node.metadata.assetId);
-                    // 节点声明只用于补充本地未加载的素材映射，不能覆盖素材库的真实绑定：
-                    // 原地重生成的节点可能保留旧 assetId 却指向新资源，覆盖会让修复永远放行错误配对。
+                    // 節點宣告只用於補充本地未載入的素材對映，不能覆蓋素材庫的真實繫結：
+                    // 原地重生成的節點可能保留舊 assetId 卻指向新資源，覆蓋會讓修復永遠放行錯誤配對。
                     if (node.metadata.storageKey && !storageKeyByAssetId.has(node.metadata.assetId)) storageKeyByAssetId.set(node.metadata.assetId, node.metadata.storageKey);
                 }
             }
@@ -145,10 +145,10 @@ const RESOURCE_URL_PATTERN = /\/resources\/([A-Za-z0-9_-]{1,80})\/file/;
 const RESOURCE_ID_PATTERN = /^[A-Za-z0-9_-]{1,80}$/;
 
 /**
- * 强制对齐画布媒体与素材的绑定：以素材记录实际引用的资源为准校验节点声明的
- * (assetId, 资源) 对，不一致时重绑到引用同一资源的现有素材，缺失则按节点新建。
- * 服务端画布不变式只认「资源被 assetId 对应素材引用」，重绑后按素材先于画布
- * 推送即可在不破坏该不变式的前提下用本地画布覆盖云端。
+ * 強制對齊畫布媒體與素材的繫結：以素材記錄實際引用的資源為準校驗節點宣告的
+ * (assetId, 資源) 對，不一致時重綁到引用同一資源的現有素材，缺失則按節點新建。
+ * 服務端畫布不變式只認「資源被 assetId 對應素材引用」，重綁後按素材先於畫布
+ * 推送即可在不破壞該不變式的前提下用本地畫布覆蓋雲端。
  */
 export function rebindInconsistentCanvasAssets(records: Asset[], projectIds?: Set<string>): CanvasAssetRebindResult {
     const identitiesByAssetId = new Map<string, Set<string>>();
@@ -214,7 +214,7 @@ export function rebindInconsistentCanvasAssets(records: Asset[], projectIds?: Se
     return { reboundNodes, createdAssets, updatedProjects };
 }
 
-/** 收集画布媒体节点与时间线片段声明过 assetId 的媒体引用，供强制覆盖前批量拉取服务端素材记录。 */
+/** 收集畫布媒體節點與時間線片段宣告過 assetId 的媒體引用，供強制覆蓋前批次拉取服務端素材記錄。 */
 export function collectCanvasMediaAssetIds(projects: CanvasProject[]): Set<string> {
     const ids = new Set<string>();
     for (const project of projects) {
@@ -249,7 +249,7 @@ function mediaIdentityFromValue(value: string | undefined) {
     if (resourceId) return resourceIdFromIdentity(resourceId);
     const urlMatch = RESOURCE_URL_PATTERN.exec(key);
     if (urlMatch) return urlMatch[1];
-    // 本地存储 key（image:/video:…）上传时以 key 为幂等标识，同名必得同资源，可作稳定身份。
+    // 本地儲存 key（image:/video:…）上傳時以 key 為冪等標識，同名必得同資源，可作穩定身份。
     return LOCAL_MEDIA_KEY_PATTERN.test(key) ? key : undefined;
 }
 
@@ -258,7 +258,7 @@ function resourceIdFromIdentity(candidate: string | undefined) {
     return RESOURCE_ID_PATTERN.test(id) ? id : undefined;
 }
 
-/** 镜像服务端 guard 的素材资源定位来源：storageKey、resourceKey 与 URL 形态的资源引用。 */
+/** 映象服務端 guard 的素材資源定位來源：storageKey、resourceKey 與 URL 形態的資源引用。 */
 function assetIdentities(asset: Asset) {
     const identities = new Set<string>();
     const data = asset.kind === "text" || asset.kind === "entity" ? undefined : asset.data;

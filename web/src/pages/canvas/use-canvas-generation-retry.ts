@@ -83,12 +83,12 @@ export function useCanvasGenerationRetry({
     return useCallback(
         async (node: CanvasNodeData) => {
             if (isDepthCaptureResultNode(node)) {
-                message.warning("深度动作捕捉节点必须使用本地深度任务重试");
+                message.warning("深度動作捕捉節點必須使用本地深度任務重試");
                 return;
             }
             const retryMode = retryModeForNode(node.type);
             if (!retryMode) {
-                message.warning("当前节点不能使用通用生成重试");
+                message.warning("當前節點不能使用通用生成重試");
                 return;
             }
             const batchRoot = node.metadata?.batchRootId ? nodesRef.current.find((item) => item.id === node.metadata?.batchRootId) : null;
@@ -148,13 +148,13 @@ export function useCanvasGenerationRetry({
                     context = { ...rawContext, prompt: skillExecution.prompt };
                     skillMetadata = skillExecution.metadata;
                 } catch (error) {
-                    message.error(error instanceof Error ? error.message : "技能上下文加载失败");
+                    message.error(error instanceof Error ? error.message : "技能上下文載入失敗");
                     return;
                 }
             }
             const prompt = (context?.prompt || savedImageMetadata?.prompt || "").trim();
             if (!prompt) {
-                message.warning("找不到提示词，无法重试");
+                message.warning("找不到提示詞，無法重試");
                 return;
             }
             let mediaPrompt = prompt;
@@ -167,25 +167,25 @@ export function useCanvasGenerationRetry({
                         styleMetadata = { styleProfileJson: runtime.profileJson, styleExecutionPlan: runtime.plan };
                     }
                 } catch (error) {
-                    message.error(error instanceof Error ? error.message : "项目画风与当前模型不兼容");
+                    message.error(error instanceof Error ? error.message : "專案畫風與當前模型不相容");
                     return;
                 }
             }
             if (retryMode === "audio" && context?.characterReferences.length) {
                 if (context.characterReferences.length !== 1) {
-                    message.error("角色配音一次只能引用一个角色卡");
+                    message.error("角色配音一次只能引用一個角色卡");
                     return;
                 }
                 const voice = context.resolvedCharacterVoices[0];
                 if (!voice) {
-                    message.error("角色尚未绑定可用声音，无法重试角色配音任务");
+                    message.error("角色尚未繫結可用聲音，無法重試角色配音任務");
                     return;
                 }
                 generationConfig = { ...generationConfig, audioVoice: voice.voiceKey, audioInstructions: [voice.instructions, generationConfig.audioInstructions].filter(Boolean).join("；") };
             }
             const isEmotionRetry = Boolean(node.metadata?.emotionEdit);
             if (isEmotionRetry && resolveModelRequestConfig(generationConfig, generationConfig.model).interfaceType !== "openai-image") {
-                message.error("表情编辑需要支持蒙版的 OpenAI Images 渠道，当前渠道已拒绝整图重绘");
+                message.error("表情編輯需要支援蒙版的 OpenAI Images 渠道，當前渠道已拒絕整圖重繪");
                 return;
             }
             const useReferenceImages = !isEmotionRetry && (Boolean(context?.referenceImages.length) || (useStoredSource && savedImageMetadata?.generationType === "edit"));
@@ -196,7 +196,7 @@ export function useCanvasGenerationRetry({
                     : context?.referenceImages || [];
             if (useReferenceImages && !retryReferenceImages) {
                 markMissingReferences(node.id, setNodes);
-                message.error("参考图片已丢失，无法继续重试");
+                message.error("參考圖片已丟失，無法繼續重試");
                 return;
             }
             const retryImages = retryReferenceImages || [];
@@ -210,7 +210,7 @@ export function useCanvasGenerationRetry({
             const storedVideoImages = node.type === CanvasNodeType.Video && !context?.referenceImages.length ? await resolveStoredReferenceImages(node.metadata?.references) : [];
             if (storedVideoImages === null) {
                 markMissingReferences(node.id, setNodes);
-                message.error("参考图片已丢失，无法继续重试");
+                message.error("參考圖片已丟失，無法繼續重試");
                 return;
             }
             const videoReferenceImages = context?.referenceImages.length ? context.referenceImages : storedVideoImages;
@@ -237,7 +237,7 @@ export function useCanvasGenerationRetry({
             const runAndConsumeRetry = async (input: Parameters<typeof runBackendCanvasGenerationTask>[0]) => {
                 submittedInput = input;
                 if (canvasGenerationRetryBlocked(node.metadata, input)) {
-                    message.warning(node.metadata?.errorDetails || "请先查看失败原因并调整输入，再重新生成");
+                    message.warning(node.metadata?.errorDetails || "請先檢視失敗原因並調整輸入，再重新生成");
                     return;
                 }
                 const originalError = { code: node.metadata?.generationErrorCode || node.metadata?.taskErrorCode, message: node.metadata?.errorDetails };
@@ -338,15 +338,15 @@ export function useCanvasGenerationRetry({
                 const emotionEdit = node.metadata?.emotionEdit;
                 if (emotionEdit) {
                     const emotionSource = nodesRef.current.find((item) => item.id === emotionEdit.sourceNodeId);
-                    if (!emotionSource?.metadata?.content) throw new Error("情绪编辑源图片已删除，无法重试");
+                    if (!emotionSource?.metadata?.content) throw new Error("情緒編輯源圖片已刪除，無法重試");
                     const sourceDataUrl = await resolveImageUrl(emotionSource.metadata.storageKey, emotionSource.metadata.content, { cacheMiss: true });
-                    if (!sourceDataUrl) throw new Error("无法读取情绪编辑源图片");
+                    if (!sourceDataUrl) throw new Error("無法讀取情緒編輯源圖片");
                     const artifacts = await buildEmotionImageArtifacts(sourceDataUrl, emotionEdit.faceBox, emotionSource.metadata.naturalWidth || 0, emotionSource.metadata.naturalHeight || 0);
                     const emotionConfig = { ...generationConfig, size: emotionGenerationSize(artifacts.editRegion), quality: !generationConfig.quality || generationConfig.quality === "auto" ? "high" : generationConfig.quality };
                     const imageProfile = modelCapabilityConfigFor(emotionConfig, emotionConfig.model).image!;
                     const editPlan = resolveEmotionEditPlan(imageProfile.references.maskSupported);
                     const sourceReference = sourceNodeReferenceImages(emotionSource)[0];
-                    if (!sourceReference) throw new Error("情绪编辑源图片不可用");
+                    if (!sourceReference) throw new Error("情緒編輯源圖片不可用");
                     const editReference = { id: `${emotionSource.id}-${emotionEdit.presetId}-edit-region`, name: "emotion-edit-region.png", type: "image/png", dataUrl: artifacts.sourceDataUrl };
                     const characterReference = { id: `${emotionSource.id}-${emotionEdit.presetId}-character`, name: `${emotionEdit.characterName}-face.jpg`, type: "image/jpeg", dataUrl: artifacts.characterDataUrl };
                     const nextEmotionEdit = { ...emotionEdit, editRegion: artifacts.editRegion, sourceWidth: artifacts.imageWidth, sourceHeight: artifacts.imageHeight, providerSize: emotionConfig.size, editMode: editPlan.mode };
@@ -421,7 +421,7 @@ export function useCanvasGenerationRetry({
     );
 }
 
-// 生成类型必须由明确的节点契约决定，未知节点不能降级成图片任务。
+// 生成型別必須由明確的節點契約決定，未知節點不能降級成圖片任務。
 function retryModeForNode(type: CanvasNodeTypeId): CanvasNodeGenerationMode | null {
     if (type === CanvasNodeType.Text) return "text";
     if (type === CanvasNodeType.Image) return "image";
@@ -431,5 +431,5 @@ function retryModeForNode(type: CanvasNodeTypeId): CanvasNodeGenerationMode | nu
 }
 
 function markMissingReferences(nodeId: string, setNodes: Dispatch<SetStateAction<CanvasNodeData[]>>) {
-    setNodes((current) => current.map((item) => (item.id === nodeId ? { ...item, metadata: { ...item.metadata, status: NODE_STATUS_ERROR, errorDetails: "参考图片已丢失，无法继续重试" } } : item)));
+    setNodes((current) => current.map((item) => (item.id === nodeId ? { ...item, metadata: { ...item.metadata, status: NODE_STATUS_ERROR, errorDetails: "參考圖片已丟失，無法繼續重試" } } : item)));
 }

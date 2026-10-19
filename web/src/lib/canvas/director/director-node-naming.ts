@@ -5,7 +5,7 @@ export function nextDirectorNodeIndex(nodes: CanvasNodeData[]): number {
     const used = new Set<number>();
     for (const node of nodes) {
         if (node.type !== CanvasNodeType.Director && !node.metadata?.directorSceneId) continue;
-        const titleIndex = /^导演台(?:\s+(\d+))?$/.exec(node.title)?.[1];
+        const titleIndex = /^導演臺(?:\s+(\d+))?$/.exec(node.title)?.[1];
         const index = Number(titleIndex || node.metadata?.shotIndex || 1);
         if (Number.isSafeInteger(index) && index > 0) used.add(index);
     }

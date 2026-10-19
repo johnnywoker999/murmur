@@ -1,12 +1,12 @@
 const maxChapterHeadingLength = 120;
-const chineseChapterNumber = "[零〇○一二两三四五六七八九十百千万亿壹贰叁肆伍陆柒捌玖拾佰仟\\d]+";
+const chineseChapterNumber = "[零〇○一二兩三四五六七八九十百千萬億壹貳叄肆伍陸柒捌玖拾佰仟\\d]+";
 const englishChapterNumber = "(?:\\d+|[ivxlcdm]+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)";
 const chapterTitleSuffix = "(?:\\s*[-—–:：·.]\\s*.*|\\s+.*)?";
 const chapterHeadingPatterns = [
-    new RegExp(`^(?:正文\\s*)?第\\s*${chineseChapterNumber}\\s*[章节卷回部篇集季幕]${chapterTitleSuffix}$`, "i"),
+    new RegExp(`^(?:正文\\s*)?第\\s*${chineseChapterNumber}\\s*[章節捲回部篇集季幕]${chapterTitleSuffix}$`, "i"),
     new RegExp(`^(?:卷|篇|部|集|季|幕)\\s*${chineseChapterNumber}${chapterTitleSuffix}$`, "i"),
-    new RegExp(`^(?:序|序幕|序章|序言|前言|前记|楔子|引子|引言|开篇|终章|尾声|后记)${chapterTitleSuffix}$`, "i"),
-    new RegExp(`^(?:番外(?:篇)?|附录)(?:\\s*(?:第\\s*)?${chineseChapterNumber}\\s*[章节回篇]?)?${chapterTitleSuffix}$`, "i"),
+    new RegExp(`^(?:序|序幕|序章|序言|前言|前記|楔子|引子|引言|開篇|終章|尾聲|後記)${chapterTitleSuffix}$`, "i"),
+    new RegExp(`^(?:番外(?:篇)?|附錄)(?:\\s*(?:第\\s*)?${chineseChapterNumber}\\s*[章節回篇]?)?${chapterTitleSuffix}$`, "i"),
     new RegExp(`^(?:chapter|book|part|volume)\\s+${englishChapterNumber}\\b${chapterTitleSuffix}$`, "i"),
     new RegExp(`^(?:prologue|preface|introduction|epilogue|afterword|appendix)${chapterTitleSuffix}$`, "i"),
 ];
@@ -27,7 +27,7 @@ function chapterTitleFromLine(line: string) {
         .replace(/\s+/g, " ")
         .trim();
 
-    // 只把较短且整行符合章节结构的文本当作标题，避免正文中提到“第一章”时误切分。
+    // 只把較短且整行符合章節結構的文本當作標題，避免正文中提到“第一章”時誤切分。
     return chapterHeadingPatterns.some((pattern) => pattern.test(candidate)) ? title : null;
 }
 
@@ -40,7 +40,7 @@ export function decodeNovelText(buffer: ArrayBuffer) {
     try {
         return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
     } catch {
-        // 中文网文 TXT 常由旧版编辑器导出为 GBK；GB18030 兼容 GBK，并能覆盖更多汉字。
+        // 中文網文 TXT 常由舊版編輯器匯出為 GBK；GB18030 相容 GBK，並能覆蓋更多漢字。
         return new TextDecoder("gb18030").decode(bytes);
     }
 }

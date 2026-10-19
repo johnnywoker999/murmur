@@ -47,7 +47,7 @@ type ComposerCandidate =
           reference: CanvasResourceReference;
       };
 
-export const CONFIG_REFERENCE_PATTERN = /@\[node:([^\]]+)\]|@(图片|视频|音频|文本|角色|绘图)(\d+)/g;
+export const CONFIG_REFERENCE_PATTERN = /@\[node:([^\]]+)\]|@(圖片|影片|音訊|文本|角色|繪圖)(\d+)/g;
 
 export function CanvasConfigComposer({ value, inputs, skillReferences = [], generationMode, metadata, model="", onChange, onMetadataChange, onClose, workspaceMode = "professional" }: CanvasConfigComposerProps) {
     const theme = canvasThemes[useActiveTheme()];
@@ -181,8 +181,8 @@ export function CanvasConfigComposer({ value, inputs, skillReferences = [], gene
         >
             <div className="mb-3 flex items-center justify-between gap-3">
                 <div className="flex min-w-0 items-baseline gap-2">
-                    <div className="shrink-0 text-xs font-semibold">{simpleMode ? "快速生成" : "组装提示词"}</div>
-                    <div className="truncate text-[var(--fs-label)] opacity-55">{simpleMode ? "已连接素材会自动带入" : workflowVideoReferenceMode ? "已连接媒体会按工作流字段顺序自动带入" : "@ 引用已连接素材或已激活技能，发送前自动组装"}</div>
+                    <div className="shrink-0 text-xs font-semibold">{simpleMode ? "快速生成" : "組裝提示詞"}</div>
+                    <div className="truncate text-[var(--fs-label)] opacity-55">{simpleMode ? "已連線素材會自動帶入" : workflowVideoReferenceMode ? "已連線媒體會按工作流欄位順序自動帶入" : "@ 引用已連線素材或已啟用技能，傳送前自動組裝"}</div>
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
                     <CanvasPromptFontControl />
@@ -194,7 +194,7 @@ export function CanvasConfigComposer({ value, inputs, skillReferences = [], gene
                     <CanvasVideoPromptTools
                         metadata={metadata}
                         endFrameSupported={!isH3Style(model)}
-                        referenceLabel={workflowVideoReferenceMode?"工作流参考":"参考生成"}
+                        referenceLabel={workflowVideoReferenceMode?"工作流參考":"參考生成"}
                         frameOptions={videoFrameOptions}
                         referenceMode={workflowVideoReferenceMode || model.split("::").at(-1)==="minimax-h3" && metadata?.videoEditOperation==="reference_to_video" ? "all" : "frames"}
                         referenceSummary={{
@@ -208,7 +208,7 @@ export function CanvasConfigComposer({ value, inputs, skillReferences = [], gene
                 </div>
             ) : null}
             <div className="canvas-config-composer-editor relative rounded-lg" style={{ background: theme.node.fill }}>
-                {!value.trim() ? <div className="pointer-events-none absolute left-4 top-3 text-sm leading-7" style={{ color: theme.node.placeholder, ...promptTextStyle }}>输入提示词，按 @ 引用连接素材或技能</div> : null}
+                {!value.trim() ? <div className="pointer-events-none absolute left-4 top-3 text-sm leading-7" style={{ color: theme.node.placeholder, ...promptTextStyle }}>輸入提示詞，按 @ 引用連線素材或技能</div> : null}
                 <div
                     ref={editorRef}
                     contentEditable
@@ -261,7 +261,7 @@ export function CanvasConfigComposer({ value, inputs, skillReferences = [], gene
                 />
                 {mention && candidates.length ? <MentionMenu candidates={candidates} allInputs={inputs} activeIndex={Math.min(activeIndex, candidates.length - 1)} theme={theme} onSelect={insertCandidate} /> : null}
             </div>
-            {imagePreview ? <Image src={imagePreview} alt="引用图片预览" style={{ display: "none" }} preview={{ visible: true, src: imagePreview, onVisibleChange: (visible) => !visible && setImagePreview(null) }} /> : null}
+            {imagePreview ? <Image src={imagePreview} alt="引用圖片預覽" style={{ display: "none" }} preview={{ visible: true, src: imagePreview, onVisibleChange: (visible) => !visible && setImagePreview(null) }} /> : null}
         </div>
     );
 

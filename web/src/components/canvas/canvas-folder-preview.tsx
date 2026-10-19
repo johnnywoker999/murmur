@@ -9,11 +9,11 @@ import { CanvasNodeType } from "@/types/canvas";
 
 const FOLDER_STYLE_OPTIONS: Array<{ key: CanvasFolderStyle; label: string }> = [
     { key: "glass", label: "流光玻璃" },
-    { key: "stacked", label: "内容陈列" },
+    { key: "stacked", label: "內容陳列" },
     { key: "midnight", label: "午夜封面" },
-    { key: "paper", label: "纸感收藏" },
-    { key: "cinema", label: "电影胶片" },
-    { key: "compact", label: "紧凑资料" },
+    { key: "paper", label: "紙感收藏" },
+    { key: "cinema", label: "電影膠片" },
+    { key: "compact", label: "緊湊資料" },
 ];
 
 export const CanvasFolderPreview = React.memo(function CanvasFolderPreview({
@@ -49,12 +49,12 @@ export const CanvasFolderPreview = React.memo(function CanvasFolderPreview({
         items: [
             {
                 key: "styles",
-                label: "文件夹样式",
+                label: "資料夾樣式",
                 children: FOLDER_STYLE_OPTIONS.map((item) => ({ key: `style:${item.key}`, label: item.label })),
             },
             {
                 key: "themes",
-                label: "主题皮肤",
+                label: "主題皮膚",
                 children: CANVAS_FOLDER_THEME_OPTIONS.map((item) => ({ key: `theme:${item.key}`, label: item.label })),
             },
         ],
@@ -67,7 +67,7 @@ export const CanvasFolderPreview = React.memo(function CanvasFolderPreview({
     useEffect(() => setTitle(data.title), [data.title]);
 
     const commitTitle = () => {
-        const next = title.trim() || "未命名文件夹";
+        const next = title.trim() || "未命名資料夾";
         setTitle(next);
         setEditing(false);
         onTitleChange(data.id, next);
@@ -116,7 +116,7 @@ export const CanvasFolderPreview = React.memo(function CanvasFolderPreview({
                         <button
                             type="button"
                             className="canvas-folder-title"
-                            title={readOnly ? data.title : `${data.title} · 点击重命名`}
+                            title={readOnly ? data.title : `${data.title} · 點選重新命名`}
                             onClick={(event) => {
                                 event.stopPropagation();
                                 if (!readOnly) setEditing(true);
@@ -130,7 +130,7 @@ export const CanvasFolderPreview = React.memo(function CanvasFolderPreview({
                             {!readOnly ? <Pencil aria-hidden /> : null}
                         </button>
                     )}
-                    <span className="canvas-folder-meta">{style === "midnight" ? formatFolderDate(data.metadata?.folder?.createdAt) : `${childNodes.length} 项内容`}</span>
+                    <span className="canvas-folder-meta">{style === "midnight" ? formatFolderDate(data.metadata?.folder?.createdAt) : `${childNodes.length} 項內容`}</span>
                 </div>
 
                 {!readOnly ? (
@@ -138,8 +138,8 @@ export const CanvasFolderPreview = React.memo(function CanvasFolderPreview({
                         <button
                             type="button"
                             className="canvas-folder-action canvas-folder-add"
-                            aria-label="展开文件夹并添加内容"
-                            title="展开文件夹并添加内容"
+                            aria-label="展開資料夾並新增內容"
+                            title="展開資料夾並新增內容"
                             onMouseDown={(event) => event.stopPropagation()}
                             onClick={(event) => {
                                 event.stopPropagation();
@@ -153,8 +153,8 @@ export const CanvasFolderPreview = React.memo(function CanvasFolderPreview({
                             <button
                                 type="button"
                                 className="canvas-folder-action canvas-folder-options"
-                                aria-label={`文件夹选项，当前 ${childNodes.length} 项`}
-                                title="切换文件夹样式与主题"
+                                aria-label={`資料夾選項，當前 ${childNodes.length} 項`}
+                                title="切換資料夾樣式與主題"
                                 onMouseDown={(event) => event.stopPropagation()}
                                 onClick={(event) => event.stopPropagation()}
                             >
@@ -166,7 +166,7 @@ export const CanvasFolderPreview = React.memo(function CanvasFolderPreview({
 
                 {!readOnly && showAdd ? (
                     <Dropdown trigger={["click"]} menu={folderMenu}>
-                        <button type="button" className="canvas-folder-style-trigger" aria-label="切换文件夹样式与主题" title="切换文件夹样式与主题" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => event.stopPropagation()}>
+                        <button type="button" className="canvas-folder-style-trigger" aria-label="切換資料夾樣式與主題" title="切換資料夾樣式與主題" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => event.stopPropagation()}>
                             <MoreHorizontal />
                         </button>
                     </Dropdown>
@@ -210,6 +210,6 @@ function FolderNodeMedia({ node }: { node?: CanvasNodeData }) {
 
 function formatFolderDate(value?: string) {
     const date = value ? new Date(value) : new Date();
-    if (Number.isNaN(date.getTime())) return "刚刚创建";
+    if (Number.isNaN(date.getTime())) return "剛剛建立";
     return new Intl.DateTimeFormat("zh-CN", { month: "short", day: "numeric" }).format(date);
 }

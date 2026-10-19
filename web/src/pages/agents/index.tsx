@@ -29,7 +29,7 @@ export default function AgentsPage() {
         refetchInterval: 5000,
     });
 
-    // 后端还没带上这个能力时（404）不报错，也不留一个坏掉的页面。
+    // 後端還沒帶上這個能力時（404）不報錯，也不留一個壞掉的頁面。
     const unsupported = clientsQuery.error instanceof ApiError && clientsQuery.error.status === 404;
     const clients = clientsQuery.data?.clients || [];
     const cli = clientsQuery.data?.cli;
@@ -38,10 +38,10 @@ export default function AgentsPage() {
         setRevoking(id);
         try {
             await revokeAgentClient(id);
-            message.success("已断开");
+            message.success("已斷開");
             await clientsQuery.refetch();
         } catch (error) {
-            message.error(error instanceof Error ? error.message : "断开失败，请稍后重试");
+            message.error(error instanceof Error ? error.message : "斷開失敗，請稍後重試");
         } finally {
             setRevoking("");
         }
@@ -52,16 +52,16 @@ export default function AgentsPage() {
             <PageHeader title="MURMUR AI MCP" />
 
             {unsupported ? (
-                <EmptyState icon={Plug} title="当前版本还不支持" description="更新到新版本后就能在这里连接 Codex、Claude Code 和 Cursor。" />
+                <EmptyState icon={Plug} title="當前版本還不支援" description="更新到新版本後就能在這裡連線 Codex、Claude Code 和 Cursor。" />
             ) : (
                 <div className="agents-settings mt-4 pb-6">
-                    {clientsQuery.isPending ? <p className="text-xs text-foreground/55">正在读取…</p> : null}
-                    {clientsQuery.error ? <div role="alert" className="mb-4 text-sm">无法读取连接状态。<Button type="link" onClick={() => void clientsQuery.refetch()}>重试</Button></div> : null}
+                    {clientsQuery.isPending ? <p className="text-xs text-foreground/55">正在讀取…</p> : null}
+                    {clientsQuery.error ? <div role="alert" className="mb-4 text-sm">無法讀取連線狀態。<Button type="link" onClick={() => void clientsQuery.refetch()}>重試</Button></div> : null}
                     <div className="agent-tool-list">
                         {agentClientKinds.map((kind) => {
                             const registered = clients.filter((client) => client.kind === kind);
                             const expanded = connecting === kind || managing === kind;
-                            const status = clientsQuery.isPending || clientsQuery.error ? "状态未知" : registered.some((client) => client.lastUsedAt) ? "已验证连接" : registered.length ? "等待连接" : "未连接";
+                            const status = clientsQuery.isPending || clientsQuery.error ? "狀態未知" : registered.some((client) => client.lastUsedAt) ? "已驗證連線" : registered.length ? "等待連線" : "未連線";
                             return <section key={kind} data-agent-client-kind={kind} className="agent-tool">
                                 <div className="agent-tool-row">
                                     <h2>{agentClientKindLabel(kind)}</h2>
@@ -71,24 +71,24 @@ export default function AgentsPage() {
                                             if (expanded) { setConnecting(null); setManaging(null); return; }
                                             setConnecting(registered.length ? null : kind);
                                             setManaging(registered.length ? kind : null);
-                                        }}>{expanded ? "收起" : registered.length ? "管理" : "连接"}</Button>
+                                        }}>{expanded ? "收起" : registered.length ? "管理" : "連線"}</Button>
                                     </div>
                                 </div>
                                 {managing === kind ? <div className="agent-management">
                                     {registered.map((client) => <div key={client.id} data-agent-client-id={client.id} className="agent-registration">
                                         <div className="agent-registration-info"><p className="text-sm font-medium break-words">{agentClientDisplayLabel(client)}</p><p className="text-xs text-foreground/55">{agentClientModeLabel(client.mode)} · 最近使用：{agentClientLastUsedLabel(client.lastUsedAt)}</p></div>
-                                        <Popconfirm title="断开这个工具？" description="断开后它不能再读取或修改画布，需要重新连接。" okText="断开" cancelText="取消" okButtonProps={{ danger: true }} onConfirm={() => void disconnect(client.id)}>
-                                            <Button loading={revoking === client.id}>断开</Button>
+                                        <Popconfirm title="斷開這個工具？" description="斷開後它不能再讀取或修改畫布，需要重新連線。" okText="斷開" cancelText="取消" okButtonProps={{ danger: true }} onConfirm={() => void disconnect(client.id)}>
+                                            <Button loading={revoking === client.id}>斷開</Button>
                                         </Popconfirm>
                                     </div>)}
-                                    <Button className="agent-add-connection mt-3" onClick={() => { setManaging(null); setConnecting(kind); }}>新增连接</Button>
+                                    <Button className="agent-add-connection mt-3" onClick={() => { setManaging(null); setConnecting(kind); }}>新增連線</Button>
                                 </div> : null}
                                 {connecting === kind ? <AgentConnectPanel key={kind} kind={kind} onClose={() => setConnecting(null)} onConfigured={() => void clientsQuery.refetch()} verifiedClientIds={clients.filter((client) => client.lastUsedAt).map((client) => client.id)} onBusyChange={setSetupBusy} /> : null}
                             </section>;
                         })}
                     </div>
-                    {cli && !cli.available ? <p role="alert" className="mt-4 text-sm text-foreground/60">安装文件不完整，无法连接外部工具。请重新下载并完整解压 MURMUR AI。</p> : null}
-                    {cli?.available ? <details className="agent-cli-details"><summary>命令行工具</summary><div className="mt-3 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-foreground/55">在终端使用 beeftv 命令</p><Button size="small" onClick={() => copyText(cli.installCommand)}>复制安装命令</Button></div></details> : null}
+                    {cli && !cli.available ? <p role="alert" className="mt-4 text-sm text-foreground/60">安裝檔案不完整，無法連線外部工具。請重新下載並完整解壓 MURMUR AI。</p> : null}
+                    {cli?.available ? <details className="agent-cli-details"><summary>命令列工具</summary><div className="mt-3 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-foreground/55">在終端使用 beeftv 命令</p><Button size="small" onClick={() => copyText(cli.installCommand)}>複製安裝命令</Button></div></details> : null}
                 </div>
             )}
 

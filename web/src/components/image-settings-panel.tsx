@@ -11,7 +11,7 @@ import { mergedImageCapabilityConfig } from "@/lib/model-selection";
 import { type AiConfig } from "@/stores/use-config-store";
 
 const qualityOptions = [
-    { value: "auto", label: "自动" },
+    { value: "auto", label: "自動" },
     { value: "high", label: "高" },
     { value: "xhigh", label: "超高" },
     { value: "max", label: "最高" },
@@ -78,9 +78,9 @@ export function ImageSettingsPanel({ config, onConfigChange, theme, showTitle = 
                     if (document.activeElement instanceof HTMLInputElement && event.currentTarget.contains(document.activeElement)) document.activeElement.blur();
                 }}
             >
-                {showTitle ? <div className="text-base font-semibold">图像设置</div> : null}
+                {showTitle ? <div className="text-base font-semibold">影像設定</div> : null}
                 {showQuality && profile.quality.supported && !imageResolutionUsesQuality(profile) ? <div className="space-y-2">
-                    <SettingTitle color={theme.node.muted}>{isGrokResolutionQuality(profile) ? "分辨率" : "质量"}</SettingTitle>
+                    <SettingTitle color={theme.node.muted}>{isGrokResolutionQuality(profile) ? "解析度" : "質量"}</SettingTitle>
                     <div className={`grid gap-1.5 ${activeQualityOptions.length <= 2 ? "grid-cols-2" : "grid-cols-4"}`}>
 						{activeQualityOptions.map((item) => (
                             <OptionPill key={item.value} selected={quality === item.value} theme={theme} onClick={() => onConfigChange("quality", item.value)}>
@@ -93,10 +93,10 @@ export function ImageSettingsPanel({ config, onConfigChange, theme, showTitle = 
                     <div className="min-w-0">
                         <SettingTitle color={theme.node.muted}>透明背景</SettingTitle>
                         <div className="mt-1 text-[var(--fs-label)]" style={{ color: theme.node.muted }}>
-                            请求模型输出保留 Alpha 通道的 PNG
+                            請求模型輸出保留 Alpha 通道的 PNG
                         </div>
                     </div>
-                    <span title="是否支持透明背景由当前模型接口决定" onMouseDown={(event) => event.stopPropagation()}>
+                    <span title="是否支援透明背景由當前模型介面決定" onMouseDown={(event) => event.stopPropagation()}>
                         <Switch
                             size="sm"
                             checked={transparentBackground}
@@ -106,10 +106,10 @@ export function ImageSettingsPanel({ config, onConfigChange, theme, showTitle = 
                 </div> : null}
                 {showSize ? <ImageSizePicker profile={profile} size={activeSize} quality={quality} onChange={(size, nextQuality) => applyImageSizeSelection(onConfigChange, size, nextQuality)} /> : null}
                 {showCount && profile.fixedOutputs ? (
-                    <div className="text-[var(--fs-label)]" style={{ color: theme.node.muted }}>每次固定生成 {profile.fixedOutputs} 张</div>
+                    <div className="text-[var(--fs-label)]" style={{ color: theme.node.muted }}>每次固定生成 {profile.fixedOutputs} 張</div>
                 ) : showCount && effectiveMaxCount > 1 ? (
                     <div className="space-y-2">
-                        <SettingTitle color={theme.node.muted}>生成张数</SettingTitle>
+                        <SettingTitle color={theme.node.muted}>生成張數</SettingTitle>
                         <div className="grid grid-cols-4 gap-1.5">
                             {Array.from({ length: Math.min(quickCount, effectiveMaxCount) }, (_, index) => index + 1).map((value) => (
                                 <OptionPill key={value} selected={count === value} theme={theme} onClick={() => onConfigChange("count", String(value))}>
@@ -144,7 +144,7 @@ export function ImageSettingsTheme({ theme, children }: { theme: CanvasTheme; ch
 }
 
 export function imageQualityLabel(value: string) {
-    return ({ auto: "自动", high: "高", xhigh: "超高", max: "最高", medium: "中", low: "低", "1k": "1K", "2k": "2K", "4k": "4K" } as Record<string, string>)[value.toLowerCase()] || value || "默认";
+    return ({ auto: "自動", high: "高", xhigh: "超高", max: "最高", medium: "中", low: "低", "1k": "1K", "2k": "2K", "4k": "4K" } as Record<string, string>)[value.toLowerCase()] || value || "預設";
 }
 
 function isGrokResolutionQuality(profile: ImageCapabilityConfig) {
@@ -186,8 +186,8 @@ function CountInput({ value, quickCount, max, theme, onChange }: { value: number
                 type="number"
                 min={1}
                 max={max}
-                aria-label="自定义生成张数"
-                placeholder="输入"
+                aria-label="自定義生成張數"
+                placeholder="輸入"
                 className="min-w-0 flex-1 bg-transparent px-2 text-center outline-none placeholder:text-current placeholder:opacity-55 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 style={{ color: theme.node.text, WebkitTextFillColor: theme.node.text }}
                 defaultValue={value > quickCount ? value : ""}

@@ -7,29 +7,29 @@ const kindLabels: Record<AgentClientKind, string> = {
     claude: "Claude Code",
     "claude-desktop": "Claude Desktop",
     cursor: "Cursor",
-    other: "其他 MCP 客户端",
+    other: "其他 MCP 客戶端",
 };
 
 const kindSummaries: Record<AgentClientKind, string> = {
-    codex: "在终端里连接 Codex。",
-    claude: "在终端里连接 Claude Code。",
-    "claude-desktop": "在 Claude 桌面应用里连接。",
-    cursor: "在 Cursor 的配置里连接。",
-    other: "支持 MCP 的工具都能连。",
+    codex: "在終端裡連線 Codex。",
+    claude: "在終端裡連線 Claude Code。",
+    "claude-desktop": "在 Claude 桌面應用裡連線。",
+    cursor: "在 Cursor 的配置裡連線。",
+    other: "支援 MCP 的工具都能連。",
 };
 
 const modeLabels: Record<AgentClientMode, string> = {
-    "read-only": "旧版只读连接",
-    "read-write": "全部创作工具",
+    "read-only": "舊版只讀連線",
+    "read-write": "全部創作工具",
 };
 
 const modeSummaries: Record<AgentClientMode, string> = {
-    "read-only": "此连接保持只读；重新连接后可使用全部创作工具。",
-    "read-write": "可使用 MURMUR AI 的全部创作工具，操作审批由连接的 Agent 负责。",
+    "read-only": "此連線保持只讀；重新連線後可使用全部創作工具。",
+    "read-write": "可使用 MURMUR AI 的全部創作工具，操作審批由連線的 Agent 負責。",
 };
 
 export function agentClientKindLabel(kind: AgentClientKind | string) {
-    return kindLabels[kind as AgentClientKind] || "其他 MCP 客户端";
+    return kindLabels[kind as AgentClientKind] || "其他 MCP 客戶端";
 }
 
 export function agentClientKindSummary(kind: AgentClientKind) {
@@ -45,25 +45,25 @@ export function agentClientModeSummary(mode: AgentClientMode) {
 }
 
 export type AgentClientSetupBlock = {
-    /** 待粘贴的整段内容；凭证只存在于这里，页面不再单独展示。 */
+    /** 待貼上的整段內容；憑證只存在於這裡，頁面不再單獨展示。 */
     text: string;
     format: "command" | "json";
     instruction: string;
 };
 
-const COMMAND_INSTRUCTION = "粘贴到终端运行；Windows 请使用 PowerShell。连接时请保持 MURMUR AI 开启。";
+const COMMAND_INSTRUCTION = "貼上到終端執行；Windows 請使用 PowerShell。連線時請保持 MURMUR AI 開啟。";
 
 const configInstructions: Record<AgentClientKind, string> = {
-    codex: "粘贴到你使用的工具的 MCP 配置文件里。",
-    claude: "粘贴到你使用的工具的 MCP 配置文件里。",
-    "claude-desktop": "打开 Claude Desktop 的设置 → 开发者 → 编辑配置，将 beeftv 项合并到 mcpServers，保留已有服务，然后完全退出并重新打开 Claude。连接时请保持 MURMUR AI 开启。",
-    cursor: "粘贴到 ~/.cursor/mcp.json。",
-    other: "粘贴到你使用的工具的 MCP 配置文件里。",
+    codex: "貼上到你使用的工具的 MCP 配置檔案裡。",
+    claude: "貼上到你使用的工具的 MCP 配置檔案裡。",
+    "claude-desktop": "開啟 Claude Desktop 的設定 → 開發者 → 編輯配置，將 beeftv 項合併到 mcpServers，保留已有服務，然後完全退出並重新開啟 Claude。連線時請保持 MURMUR AI 開啟。",
+    cursor: "貼上到 ~/.cursor/mcp.json。",
+    other: "貼上到你使用的工具的 MCP 配置檔案裡。",
 };
 
 /**
- * codex / claude 给一条终端命令，cursor / other 给一段配置。
- * 后端只会给出其中一种；若与类型不一致，按实际给到的那一种展示，避免页面空白。
+ * codex / claude 給一條終端命令，cursor / other 給一段配置。
+ * 後端只會給出其中一種；若與型別不一致，按實際給到的那一種展示，避免頁面空白。
  */
 export function agentClientSetupBlock(setup: AgentClientSetup | undefined): AgentClientSetupBlock | null {
     if (!setup) return null;
@@ -80,15 +80,15 @@ const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
-/** 最近使用：没用过要说没用过，不要显示一个假的时间。 */
+/** 最近使用：沒用過要說沒用過，不要顯示一個假的時間。 */
 export function agentClientLastUsedLabel(lastUsedAt: string | null | undefined, now: number = Date.now()) {
-    if (!lastUsedAt) return "还没用过";
+    if (!lastUsedAt) return "還沒用過";
     const used = Date.parse(lastUsedAt);
-    if (!Number.isFinite(used)) return "还没用过";
+    if (!Number.isFinite(used)) return "還沒用過";
     const elapsed = now - used;
-    if (elapsed < MINUTE) return "刚刚";
-    if (elapsed < HOUR) return `${Math.floor(elapsed / MINUTE)} 分钟前`;
-    if (elapsed < DAY) return `${Math.floor(elapsed / HOUR)} 小时前`;
+    if (elapsed < MINUTE) return "剛剛";
+    if (elapsed < HOUR) return `${Math.floor(elapsed / MINUTE)} 分鐘前`;
+    if (elapsed < DAY) return `${Math.floor(elapsed / HOUR)} 小時前`;
     if (elapsed < 30 * DAY) return `${Math.floor(elapsed / DAY)} 天前`;
     return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric" }).format(used);
 }

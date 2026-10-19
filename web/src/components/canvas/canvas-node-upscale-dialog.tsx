@@ -8,9 +8,9 @@ import { MAX_UPSCALE_LONG_EDGE, resolveUpscaleSize, type ImageUpscaleAlgorithm, 
 export type CanvasImageUpscaleParams = ImageUpscaleParams;
 
 const algorithms: Array<{ value: ImageUpscaleAlgorithm; title: string; description: string }> = [
-    { value: "high", title: "高质量插值", description: "适合照片和细节图" },
-    { value: "bilinear", title: "双线性", description: "平滑、速度快" },
-    { value: "nearest", title: "最近邻", description: "适合像素风格" },
+    { value: "high", title: "高質量插值", description: "適合照片和細節圖" },
+    { value: "bilinear", title: "雙線性", description: "平滑、速度快" },
+    { value: "nearest", title: "最近鄰", description: "適合畫素風格" },
 ];
 
 const targetOptions = [
@@ -53,8 +53,8 @@ export function CanvasNodeUpscaleDialog({ dataUrl, open, onClose, onConfirm }: {
         <Modal title={null} open={open && Boolean(dataUrl)} onCancel={onClose} footer={null} width={820} centered destroyOnHidden>
             <div className="space-y-5">
                 <div>
-                    <h2 className="text-xl font-semibold">调整尺寸</h2>
-                    <p className="mt-2 text-sm opacity-60">通过插值放大像素尺寸，另存为新图片，保留原图。这不是 AI 超分，不会生成新的真实细节。</p>
+                    <h2 className="text-xl font-semibold">調整尺寸</h2>
+                    <p className="mt-2 text-sm opacity-60">通過插值放大畫素尺寸，另存為新圖片，保留原圖。這不是 AI 超分，不會生成新的真實細節。</p>
                 </div>
                 <div className="grid gap-6 md:grid-cols-[minmax(260px,1fr)_360px]">
                     <div className="rounded-xl border p-4">
@@ -62,23 +62,23 @@ export function CanvasNodeUpscaleDialog({ dataUrl, open, onClose, onConfirm }: {
                             <img src={dataUrl} alt="" className="max-h-[320px] max-w-full rounded-lg object-contain shadow-xl" draggable={false} />
                         </div>
                         <div className="mt-3 flex items-center justify-between text-sm">
-                            <span className="opacity-60">源图</span>
-                            <span className="font-semibold">{image ? `${image.width} x ${image.height} px` : "读取中"}</span>
+                            <span className="opacity-60">源圖</span>
+                            <span className="font-semibold">{image ? `${image.width} x ${image.height} px` : "讀取中"}</span>
                         </div>
                     </div>
                     <div className="space-y-6 py-2">
                         <div className="space-y-2">
-                            <div className="font-medium opacity-75">目标像素</div>
+                            <div className="font-medium opacity-75">目標畫素</div>
                             <Segmented
                                 block
                                 value={params.targetLongEdge}
                                 options={targetOptions.map((option) => ({ label: `${option.label} · ${option.value}px`, value: option.value, disabled: Boolean(image && sourceLongEdge >= option.value) }))}
                                 onChange={(value) => setParams((current) => ({ ...current, targetLongEdge: Number(value) }))}
                             />
-                            {image && !canUpscale ? <div className="text-xs font-medium text-[#ef4444]">{reachedMax ? "图片已达到 4K，无需放大" : "图片已达到当前目标像素，无需放大"}</div> : null}
+                            {image && !canUpscale ? <div className="text-xs font-medium text-[#ef4444]">{reachedMax ? "圖片已達到 4K，無需放大" : "圖片已達到當前目標畫素，無需放大"}</div> : null}
                         </div>
                         <div className="space-y-2">
-                            <div className="font-medium opacity-75">放大算法</div>
+                            <div className="font-medium opacity-75">放大演算法</div>
                             <Segmented
                                 block
                                 value={params.algorithm}
@@ -96,7 +96,7 @@ export function CanvasNodeUpscaleDialog({ dataUrl, open, onClose, onConfirm }: {
                         </div>
                         <div className="rounded-xl border px-4 py-3 text-sm">
                             <div className="flex items-center justify-between">
-                                <span className="opacity-60">输出尺寸</span>
+                                <span className="opacity-60">輸出尺寸</span>
                                 <span className="font-semibold">{outputSize ? `${outputSize.width} x ${outputSize.height} px` : "未知"}</span>
                             </div>
                         </div>
@@ -104,7 +104,7 @@ export function CanvasNodeUpscaleDialog({ dataUrl, open, onClose, onConfirm }: {
                 </div>
                 <div className="flex justify-end">
                     <Button type="primary" size="large" icon={<ImagePlus className="size-4" />} disabled={!canUpscale} onClick={() => onConfirm(params)}>
-                        生成放大图
+                        生成放大圖
                     </Button>
                 </div>
             </div>

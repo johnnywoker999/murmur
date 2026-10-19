@@ -1,21 +1,21 @@
-# 实时对话功能组件（第一阶段 MVP）
-本目录实现第一阶段（MVP）：**本地语音录制 + 浏览器语音识别转写**。点击"实时对话"按钮 → 输入行内展开波形录制条 → 停止后自动转写为文字 → 文字填入输入框或直接发送。
+# 即時對話功能元件（第一階段 MVP）
+本目錄實現第一階段（MVP）：**本地語音錄製 + 瀏覽器語音識別轉寫**。點選"即時對話"按鈕 → 輸入行內展開波形錄製條 → 停止後自動轉寫為文字 → 文字填入輸入框或直接傳送。
 
-## 零配置说明
+## 零配置說明
 
-第一阶段**不接入语音大模型、不依赖后端与 API Key**：录音完成后直接使用浏览器内置 Web Speech API（`SpeechRecognition`）识别，转写全程在前端完成。
+第一階段**不接入語音大模型、不依賴後端與 API Key**：錄音完成後直接使用瀏覽器內建 Web Speech API（`SpeechRecognition`）識別，轉寫全程在前端完成。
 
-- 支持的浏览器：Chrome / Edge（Chromium 内核）
-- 不支持时录制条内会明确提示，并可取消
-- 识别语言默认 `zh-CN`，见 `useSpeechRecognition` 的 `lang` 参数
+- 支援的瀏覽器：Chrome / Edge（Chromium 核心）
+- 不支援時錄製條內會明確提示，並可取消
+- 識別語言預設 `zh-CN`，見 `useSpeechRecognition` 的 `lang` 引數
 
 ---
 
-## 组件列表
+## 元件列表
 
-### 1. `VoiceRecordingButton` - 语音输入按钮
+### 1. `VoiceRecordingButton` - 語音輸入按鈕
 
-点击后输入行内展开波形录制条（不弹窗），自动开始录音；停止后自动转写并回调文本。使用局部状态，多个输入行可独立使用。
+點選後輸入行內展開波形錄製條（不彈窗），自動開始錄音；停止後自動轉寫並回撥文本。使用區域性狀態，多個輸入行可獨立使用。
 
 **使用示例：**
 ```tsx
@@ -27,9 +27,9 @@ import { VoiceRecordingButton } from "@/components/conversation/voice-recording-
 />
 ```
 
-### 2. `VoiceRecordingInline` - 内联波形录制条
+### 2. `VoiceRecordingInline` - 內聯波形錄製條
 
-输入行内展示的录制控件：波形动画 + 时长 + 停止/取消按钮；停止后自动转写，失败可重试。`VoiceRecordingButton` 默认使用本组件。
+輸入行內展示的錄製控制元件：波形動畫 + 時長 + 停止/取消按鈕；停止後自動轉寫，失敗可重試。`VoiceRecordingButton` 預設使用本元件。
 
 **使用示例：**
 ```tsx
@@ -41,25 +41,25 @@ import { VoiceRecordingInline } from "@/components/conversation/voice-recording-
 />
 ```
 
-### 3. `AudioWaveform` - 音频波形可视化
+### 3. `AudioWaveform` - 音訊波形視覺化
 
-SVG 波形可视化组件，支持实时数据更新。
+SVG 波形視覺化元件，支援即時資料更新。
 
 ---
 
 ## Hook
 
-### `useVoiceRecording` - 语音录制 Hook
+### `useVoiceRecording` - 語音錄製 Hook
 
-封装 MediaRecorder API 和 AnalyserNode，提供录制状态、波形数据、控制方法（供波形动画与时长展示）。
+封裝 MediaRecorder API 和 AnalyserNode，提供錄製狀態、波形資料、控制方法（供波形動畫與時長展示）。
 
-### `useSpeechRecognition` - 浏览器语音识别 Hook
+### `useSpeechRecognition` - 瀏覽器語音識別 Hook
 
-封装 Web Speech API（`SpeechRecognition`/`webkitSpeechRecognition`），提供 `start()` / `stop(): Promise<string>` / `cancel()`，返回是否支持、识别错误。转写不依赖后端。
+封裝 Web Speech API（`SpeechRecognition`/`webkitSpeechRecognition`），提供 `start()` / `stop(): Promise<string>` / `cancel()`，返回是否支援、識別錯誤。轉寫不依賴後端。
 
 ---
 
-## 完整集成示例
+## 完整整合示例
 
 ```tsx
 import { useState } from "react";
@@ -69,16 +69,16 @@ function ChatInput() {
   const [prompt, setPrompt] = useState("");
 
   const handleTranscribed = (text: string) => {
-    // 转写结果填入输入框，用户确认后发送
+    // 轉寫結果填入輸入框，使用者確認後傳送
     setPrompt((current) => (current.trim() ? `${current} ${text}` : text));
   };
 
   return (
     <div className="flex items-center gap-2">
-      <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="输入消息..." />
-      {/* 点击后输入行内展开波形录制条，停止后自动转写 */}
+      <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="輸入訊息..." />
+      {/* 點選後輸入行內展開波形錄製條，停止後自動轉寫 */}
       <VoiceRecordingButton onTranscribed={handleTranscribed} />
-      <button>发送</button>
+      <button>傳送</button>
     </div>
   );
 }
@@ -86,15 +86,15 @@ function ChatInput() {
 
 ## 接入位置
 
-- 创建页主输入行：`web/src/pages/create/index.tsx`（`CreationComposer` 的 `creation-chat-controls`）
-- 画布：旧内置 Agent 停靠面板已退场，画布侧暂不再接入语音输入
-- 测试页：`web/src/pages/test-voice-recording.tsx`
+- 建立頁主輸入行：`web/src/pages/create/index.tsx`（`CreationComposer` 的 `creation-chat-controls`）
+- 畫布：舊內建 Agent 停靠面板已退場，畫布側暫不再接入語音輸入
+- 測試頁：`web/src/pages/test-voice-recording.tsx`
 
 ## 下一步
-- [x] 内联波形录制（不弹窗），停止后自动转写
-- [x] 移除第二阶段实验代码（WebSocket / Realtime API / 旧浮层组件）
-- [x] 移除后端 STT 接口与数据库表（第一阶段不接入语音大模型）
-- [ ] 语音播放功能（TTS）
-- [ ] 语音消息发送和显示
-- [ ] 多模态对话（图片、视频）
-- [ ] 真正实时对话（WebSocket + WebRTC + Realtime API，后续阶段）
+- [x] 內聯波形錄製（不彈窗），停止後自動轉寫
+- [x] 移除第二階段實驗程式碼（WebSocket / Realtime API / 舊浮層元件）
+- [x] 移除後端 STT 介面與資料庫表（第一階段不接入語音大模型）
+- [ ] 語音播放功能（TTS）
+- [ ] 語音訊息傳送和顯示
+- [ ] 多模態對話（圖片、影片）
+- [ ] 真正即時對話（WebSocket + WebRTC + Realtime API，後續階段）

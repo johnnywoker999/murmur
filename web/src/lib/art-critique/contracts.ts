@@ -80,12 +80,12 @@ export type ArtCritiqueIssue = {
     severity: ArtCritiqueSeverity;
     confidence: number;
     target: ArtCritiqueTarget;
-    /** Reviewer 给出的自然语言位置描述，供定位降级时生成参考区域。 */
+    /** Reviewer 給出的自然語言位置描述，供定位降級時生成參考區域。 */
     targetDescription?: string;
-    /** 标记坐标来自模型、参考区域映射，还是全局降级。 */
+    /** 標記座標來自模型、參考區域對映，還是全域性降級。 */
     targetSource?: ArtCritiqueTargetSource;
     suggestion: ArtCritiqueSuggestion;
-    /** AI Prompt Writer 生成的局部修图提示词。缺失时不提供本地拼接替代。 */
+    /** AI Prompt Writer 生成的區域性修圖提示詞。缺失時不提供本地拼接替代。 */
     editPrompt?: string;
     sourceCandidateIds?: string[];
     groundingConfidence?: number;
@@ -152,8 +152,8 @@ export function isArtCritiqueImageInput(node: CanvasNodeData | undefined): node 
 }
 
 /**
- * 只把输入的身份信息做成指纹，不把图片 URL 或图片内容保存进节点状态。
- * 对 data URL 使用轻量 hash，避免把大字符串原样落盘。
+ * 只把輸入的身份資訊做成指紋，不把圖片 URL 或圖片內容儲存進節點狀態。
+ * 對 data URL 使用輕量 hash，避免把大字串原樣落盤。
  */
 export function artCritiqueSourceFingerprint(node: CanvasNodeData) {
     const metadata = node.metadata;
@@ -172,28 +172,28 @@ function compactSource(value: string) {
 }
 
 export function artCritiqueCategoryLabel(category: ArtCritiqueCategory) {
-    if (category === "composition") return "构图";
+    if (category === "composition") return "構圖";
     if (category === "color") return "色彩";
-    if (category === "lighting") return "光线";
+    if (category === "lighting") return "光線";
     if (category === "proportion") return "比例";
     return "其他";
 }
 
 export function artCritiqueSeverityLabel(severity: ArtCritiqueSeverity) {
-    if (severity === "high") return "优先处理";
-    if (severity === "medium") return "建议处理";
-    return "可选优化";
+    if (severity === "high") return "優先處理";
+    if (severity === "medium") return "建議處理";
+    return "可選最佳化";
 }
 
 export function artCritiqueStageLabel(stage?: ArtCritiquePipelineStage) {
-    if (stage === "preparing") return "准备图片";
-    if (stage === "scene") return "理解场景";
-    if (stage === "reviewing") return "检查视觉维度";
-    if (stage === "aggregating") return "整理重点问题";
-    if (stage === "grounding") return "定位问题区域";
-    if (stage === "verifying") return "复核批改结果";
-    if (stage === "annotating") return "生成标注";
+    if (stage === "preparing") return "準備圖片";
+    if (stage === "scene") return "理解場景";
+    if (stage === "reviewing") return "檢查視覺維度";
+    if (stage === "aggregating") return "整理重點問題";
+    if (stage === "grounding") return "定位問題區域";
+    if (stage === "verifying") return "複核批改結果";
+    if (stage === "annotating") return "生成標註";
     if (stage === "completed") return "分析完成";
-    if (stage === "failed") return "分析失败";
+    if (stage === "failed") return "分析失敗";
     return "尚未分析";
 }

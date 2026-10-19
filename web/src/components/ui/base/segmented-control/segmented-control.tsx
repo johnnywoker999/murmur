@@ -1,26 +1,26 @@
 import { useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 
 /**
- * SegmentedControl — 分段控制器（自研，无依赖）。
+ * SegmentedControl — 分段控制器（自研，無依賴）。
  *
- * 设计约束（对齐 ui/README 与 ADR-0008）：
- * - 只消费三层 token 工具类（surface-tertiary / surface-strong / foreground / muted-foreground / ring …），
- *   不写死任何色值；明暗自适应随主题 token。
- * - 选中项 thumb 走 bg-surface-strong（light #fff / dark #2a2a2a 抬升面）。
- * - 键盘：radio 组 roving tabindex（←/→/Home/End，自动跳过禁用项）。
- * - thumb 位置 useLayoutEffect 测量 + ResizeObserver 兜底；motion-reduce 下不播动画。
- * - API 对齐 AntD Segmented（value/onChange/options/block/size/disabled），
- *   可直接置于 antd Form.Item（Form 注入 value/onChange，props 同名兼容）。
- * - icon 节点尺寸由调用方控制（与 AntD options.icon 行为一致），用 currentColor 跟随文字色。
+ * 設計約束（對齊 ui/README 與 ADR-0008）：
+ * - 只消費三層 token 工具類（surface-tertiary / surface-strong / foreground / muted-foreground / ring …），
+ *   不寫死任何色值；明暗自適應隨主題 token。
+ * - 選中項 thumb 走 bg-surface-strong（light #fff / dark #2a2a2a 抬升面）。
+ * - 鍵盤：radio 組 roving tabindex（←/→/Home/End，自動跳過停用項）。
+ * - thumb 位置 useLayoutEffect 測量 + ResizeObserver 兜底；motion-reduce 下不播動畫。
+ * - API 對齊 AntD Segmented（value/onChange/options/block/size/disabled），
+ *   可直接置於 antd Form.Item（Form 注入 value/onChange，props 同名相容）。
+ * - icon 節點尺寸由呼叫方控制（與 AntD options.icon 行為一致），用 currentColor 跟隨文字色。
  */
 
 export type SegmentedSize = "sm" | "md";
 
 export interface SegmentedOption<V extends string = string> {
     value: V;
-    /** 文本标签（icon-only 时省略） */
+    /** 文本標籤（icon-only 時省略） */
     label?: ReactNode;
-    /** 图标节点（与 label 同给时渲染在左侧，尺寸自控） */
+    /** 圖示節點（與 label 同給時渲染在左側，尺寸自控） */
     icon?: ReactNode;
     disabled?: boolean;
     /** 原生 title */
@@ -32,9 +32,9 @@ export interface SegmentedControlProps<V extends string = string> {
     onChange?: (value: V) => void;
     options: Array<SegmentedOption<V>>;
     size?: SegmentedSize;
-    /** 填满父容器宽度（项均分） */
+    /** 填滿父容器寬度（項均分） */
     block?: boolean;
-    /** 整体禁用 */
+    /** 整體停用 */
     disabled?: boolean;
     ariaLabel?: string;
     className?: string;
@@ -60,7 +60,7 @@ export function SegmentedControl<V extends string = string>({ value, onChange, o
 
     const selectedIndex = options.findIndex((option) => option.value === value);
 
-    /** 无选中项时兜底首个可用项，保证 roving tabindex 下键盘始终可达 */
+    /** 無選中項時兜底首個可用項，保證 roving tabindex 下鍵盤始終可達 */
     const focusableIndex = selectedIndex >= 0 ? selectedIndex : options.findIndex((option) => !option.disabled);
 
     useLayoutEffect(() => {

@@ -14,7 +14,7 @@ type ToolbarSettingsModalProps = {
     toolbar: ToolbarId;
 };
 
-/** 设置面板用的最小化上下文——仅用于解析工具的 label/icon */
+/** 設定面板用的最小化上下文——僅用於解析工具的 label/icon */
 const settingsMockContext: ToolContext = {
     selectedCount: 0,
     selectedNodeTypes: new Set(),
@@ -51,7 +51,7 @@ export function ToolbarSettingsModal({ open, onClose, toolbar }: ToolbarSettings
     const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
     const visibleCount = items.filter((item) => item.visible).length;
 
-    // 当 modal 打开或 toolbar 变化时，加载工具列表与偏好
+    // 當 modal 開啟或 toolbar 變化時，載入工具列表與偏好
     useEffect(() => {
         if (!open) return;
         setToolbarId(toolbar);
@@ -149,33 +149,33 @@ export function ToolbarSettingsModal({ open, onClose, toolbar }: ToolbarSettings
         >
             <div className="flex items-start justify-between gap-4 px-5 pb-3 pt-5">
                 <div className="min-w-0">
-                    <h2 className="text-[var(--fs-heading)] font-semibold leading-none">工具栏设置</h2>
-                    <p className="mt-2 text-[var(--fs-caption)] leading-none" style={{ color: theme.node.muted }}>拖动调整顺序，关闭不常用入口</p>
+                    <h2 className="text-[var(--fs-heading)] font-semibold leading-none">工具欄設定</h2>
+                    <p className="mt-2 text-[var(--fs-caption)] leading-none" style={{ color: theme.node.muted }}>拖動調整順序，關閉不常用入口</p>
                 </div>
                 <button
                     type="button"
                     onClick={onClose}
                     className="grid size-8 shrink-0 place-items-center rounded-[var(--dock-item-radius)] outline-none transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 dark:hover:bg-white/8"
                     style={{ color: theme.node.muted, outlineColor: theme.accent.primary }}
-                    aria-label="关闭工具栏设置"
+                    aria-label="關閉工具欄設定"
                 >
                     <X className="size-4" />
                 </button>
             </div>
             <div className="flex items-center justify-between gap-3 px-5 pb-2 pt-1">
-                <span className="text-[var(--fs-tiny)] font-medium" style={{ color: theme.node.muted }}>已显示 {visibleCount}/{items.length}</span>
+                <span className="text-[var(--fs-tiny)] font-medium" style={{ color: theme.node.muted }}>已顯示 {visibleCount}/{items.length}</span>
                 <button
                     type="button"
                     onClick={handleReset}
                     className="inline-flex h-7 items-center gap-1.5 rounded-[var(--dock-item-radius)] px-2 text-[var(--fs-tiny)] font-medium outline-none transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 dark:hover:bg-white/8"
                     style={{ color: theme.node.muted, outlineColor: theme.accent.primary }}
-                    aria-label="恢复默认工具栏设置"
+                    aria-label="恢復預設工具欄設定"
                 >
                     <RotateCcw className="size-3" />
-                    恢复默认
+                    恢復預設
                 </button>
             </div>
-            <div className="grid grid-cols-2 gap-2 px-5 pb-5 pt-2 md:grid-cols-5" aria-label="主工具栏顺序">
+            <div className="grid grid-cols-2 gap-2 px-5 pb-5 pt-2 md:grid-cols-5" aria-label="主工具欄順序">
                 {items.map((item) => (
                     <ToolbarSettingsItem
                         key={item.id}
@@ -215,11 +215,11 @@ function ToolbarSettingsItem({ item, reducedMotion, theme, dragging, onToggleVis
                         onDragStart(item.id);
                     }}
                     onDragEnd={onDragEnd}
-                    aria-label={`拖动调整${item.label}顺序`}
+                    aria-label={`拖動調整${item.label}順序`}
                 >
                     <GripVertical className="size-4" />
                 </button>
-                <Switch size="sm" checked={item.visible} onChange={(checked) => onToggleVisible(item.id, checked)} aria-label={`${item.visible ? "隐藏" : "显示"}${item.label}`} />
+                <Switch size="sm" checked={item.visible} onChange={(checked) => onToggleVisible(item.id, checked)} aria-label={`${item.visible ? "隱藏" : "顯示"}${item.label}`} />
             </div>
             <div className="canvas-toolbar-settings-card-content mt-auto flex min-w-0 flex-col items-center gap-1">
                 <span className="grid size-8 shrink-0 place-items-center rounded-[var(--r-md)]" style={{ background: theme.toolbar.itemHover, color: theme.node.muted }}>

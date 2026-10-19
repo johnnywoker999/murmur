@@ -4,7 +4,7 @@ export type AssetCategory = (typeof ASSET_CATEGORIES)[number];
 
 export const ASSET_CATEGORY_LABELS: Record<AssetCategory, string> = {
     character: "角色",
-    environment: "场景",
+    environment: "場景",
     prop: "道具",
     material: "素材",
     other: "其他",
@@ -30,11 +30,11 @@ export function normalizeAssetCategory(value: unknown, fallback: AssetCategory =
 }
 
 export function parseAssetCategory(value: unknown): AssetCategory {
-    if (typeof value !== "string") throw new Error("素材 category 必须是字符串");
+    if (typeof value !== "string") throw new Error("素材 category 必須是字串");
     const normalized = value.trim().toLowerCase();
     if ((ASSET_CATEGORIES as readonly string[]).includes(normalized)) return normalized as AssetCategory;
     const mapped = LEGACY_ASSET_CATEGORY_MAP[normalized];
-    if (!mapped) throw new Error("素材 category 无效");
+    if (!mapped) throw new Error("素材 category 無效");
     return mapped;
 }
 

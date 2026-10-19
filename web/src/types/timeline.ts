@@ -1,4 +1,4 @@
-// 时间线与字幕的共享数据模型。第一期落字幕数据；第二期起时间线轨道/片段在此持久化。
+// 時間線與字幕的共享資料模型。第一期落字幕資料；第二期起時間線軌道/片段在此持久化。
 
 export type SrtEntry = {
     index: number;
@@ -29,9 +29,9 @@ export type SubtitleStyle = {
     highlightPaddingY: number;
     highlightRadius: number;
     highlightAnimation: SubtitleHighlightAnimation;
-    /** 单条字幕最多字符数，超过则自动切分。默认 35，范围 20~60 */
+    /** 單條字幕最多字元數，超過則自動切分。預設 35，範圍 20~60 */
     maxCharsPerEntry: number;
-    /** 是否启用自动切分。默认 true */
+    /** 是否啟用自動切分。預設 true */
     autoResegment: boolean;
 };
 
@@ -60,19 +60,19 @@ export type TimelineTrack = {
     label: string;
     order: number;
     locked?: boolean;
-    /** 轨道可见性（预览/导出跳过不可见轨）。undefined = true。 */
+    /** 軌道可見性（預覽/匯出跳過不可見軌）。undefined = true。 */
     visible?: boolean;
-    /** 轨道静音（音频轨在播放/导出时静音）。undefined = false。 */
+    /** 軌道靜音（音訊軌在播放/匯出時靜音）。undefined = false。 */
     muted?: boolean;
 };
 
 export type TimelineClipKind = "video" | "audio" | "subtitle" | "text" | "image";
 
-/** 仅时间线作用域的直连媒体（不落画布）：素材库/项目资产/本地上传在时间线内直接入轨时使用。 */
+/** 僅時間線作用域的直連媒體（不落畫布）：素材庫/專案資產/本地上傳在時間線內直接入軌時使用。 */
 export type TimelineDirectMedia = {
-    /** 源素材 id（本地资产 id / 上传文件 id），用于生成时间线内唯一 nodeId 前缀 */
+    /** 源素材 id（本地資產 id / 上傳檔案 id），用於生成時間線內唯一 nodeId 字首 */
     id: string;
-    /** 远端素材库记录；本地上传成功后必须存在。 */
+    /** 遠端素材庫記錄；本地上傳成功後必須存在。 */
     assetId?: string;
     kind: "video" | "audio" | "image" | "text";
     title: string;
@@ -95,18 +95,18 @@ export type TimelineClip = {
     startMs: number;
     durationMs: number;
     title?: string;
-    /** 源素材内裁剪起点（毫秒），用于导出阶段定位源文件片段 */
+    /** 源素材內裁剪起點（毫秒），用於匯出階段定位原始檔片段 */
     sourceStartMs?: number;
-    /** 源素材总时长（毫秒），用于 UI 限制裁剪上限 */
+    /** 源素材總時長（毫秒），用於 UI 限制裁剪上限 */
     sourceDurationMs?: number;
     volume?: number;
     fadeInMs?: number;
     fadeOutMs?: number;
-    /** 字幕片段：对应源视频节点 subtitleEntries 的下标（-1 表示未关联） */
+    /** 字幕片段：對應源影片節點 subtitleEntries 的下標（-1 表示未關聯） */
     subtitleEntryIndex?: number;
-    /** 字幕片段文本快照，时间线内直接展示，不与节点双向同步 */
+    /** 字幕片段文本快照，時間線內直接展示，不與節點雙向同步 */
     text?: string;
-    /** 仅时间线作用域的直连媒体；存在时预览/导出优先从该字段解析，不再回画布查节点 */
+    /** 僅時間線作用域的直連媒體；存在時預覽/匯出優先從該欄位解析，不再回畫布查節點 */
     directMedia?: TimelineDirectMedia;
 };
 
@@ -114,7 +114,7 @@ export type TimelineProject = {
     version: 2;
     tracks: TimelineTrack[];
     clips: TimelineClip[];
-    /** 时间线总时长（毫秒），取所有片段末端最大值 */
+    /** 時間線總時長（毫秒），取所有片段末端最大值 */
     durationMs: number;
     updatedAt?: string;
 };
