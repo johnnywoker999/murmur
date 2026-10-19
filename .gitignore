@@ -97,3 +97,6 @@ tools/depth-capture/**/__pycache__/
 /.pages-preview/
 web/dist/
 
+
+# 部署結構模擬（本機驗證用）
+/.prod-sim/
