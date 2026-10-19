@@ -67,6 +67,10 @@ jobs:
           bun run build
           mkdir -p ../../dist/murmur-canvas
           cp -r dist/. ../../dist/murmur-canvas/
+          # GitHub Pages 沒有 SPA 重寫：為已知深連結預生成實體頁面，
+          # 否則 /murmur-canvas/canvas 會落到根 404.html（工作台殼）。
+          mkdir -p ../../dist/murmur-canvas/canvas
+          cp dist/index.html ../../dist/murmur-canvas/canvas/index.html
 
       - name: Note missing canvas
         if: steps.canvas.outcome != 'success'
