@@ -655,3 +655,131 @@ img {
     line-height: 1.8;
     color: var(--fg-dim);
 }
+
+/* ---------- 算力超市 ---------- */
+.gpu-grid .card.gpu {
+    gap: 8px;
+    padding: 22px;
+}
+
+.gpu-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.gpu-badge {
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(34, 211, 238, 0.14);
+    color: #67e8f9;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.gpu-badge.hot {
+    background: rgba(139, 92, 246, 0.2);
+    color: #c4b5fd;
+}
+
+.gpu-vram {
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg-faint);
+}
+
+.gpu-grid h3 {
+    font-size: 20px;
+    letter-spacing: -0.01em;
+}
+
+.gpu-use {
+    font-size: 12.5px !important;
+    color: var(--fg-faint) !important;
+}
+
+.gpu-price {
+    margin-top: 4px !important;
+    font-size: 25px !important;
+    font-weight: 800;
+    color: var(--fg) !important;
+    letter-spacing: -0.015em;
+}
+
+.gpu-unit {
+    margin-left: 4px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--fg-faint);
+}
+
+.gpu-meta {
+    font-size: 12px !important;
+    color: var(--fg-faint) !important;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+}
+
+.featured-gpu {
+    border-color: rgba(34, 211, 238, 0.4);
+    background: linear-gradient(180deg, rgba(34, 211, 238, 0.1), rgba(255, 255, 255, 0.03));
+}
+
+.compute-points {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.compute-point {
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+}
+
+.compute-point h4 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.compute-point p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--fg-dim);
+    line-height: 1.75;
+}
+
+.compute-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 22px;
+    padding: 20px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+}
+
+.compute-cta p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--fg-dim);
+}
+
+.compute-cta strong {
+    color: var(--fg);
+}
+
+.inline-link {
+    margin-left: 6px;
+    color: #a5b4fc;
+    font-weight: 600;
+    white-space: nowrap;
+}

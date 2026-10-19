@@ -22,6 +22,7 @@
                 <a href="#assets">數位資產</a>
                 <a href="#market">AI 超市</a>
                 <a href="#custom">客製化訂製</a>
+                <a href="#compute">算力超市</a>
                 <a href="#pricing">方案與計價</a>
                 <a href="#pipeline">產線</a>
             </nav>
@@ -255,12 +256,86 @@
                     </article>
                     <article class="card mini">
                         <h3>雲端算力</h3>
-                        <p>臨時擴容跑大規模生成，用完就關，不必為峰值養卡。</p>
+                        <p>臨時擴容跑大規模生成，用完就關，不必為峰值養卡。<a class="inline-link" href="#compute">看算力超市 →</a></p>
                     </article>
                     <article class="card mini">
                         <h3>閉源 API</h3>
                         <p>需要特定廠商效果時直接串接，與本地渠道混用同一張畫布。</p>
                     </article>
+                </div>
+            </section>
+
+            <section id="compute" class="section">
+                <div class="section-head">
+                    <p class="eyebrow">算力超市</p>
+                    <h2>不養卡，用多少租多少</h2>
+                    <p class="section-sub">
+                        按量計費的 GPU 算力，開機即帶 ComfyUI 環境。跑完關機，帳單按秒算；
+                        要長期跑一條產線再包月。租來的算力直接綁進畫布渠道，和本機 GPU 用法一樣。
+                    </p>
+                </div>
+
+                <div class="cards four gpu-grid">
+                    <article class="card gpu">
+                        <div class="gpu-head">
+                            <span class="gpu-badge">單卡</span>
+                            <span class="gpu-vram">24GB</span>
+                        </div>
+                        <h3>RTX 4090</h3>
+                        <p class="gpu-use">出圖、短片試鏡、LoRA 訓練</p>
+                        <p class="gpu-price">NT$45<span class="gpu-unit">/ 小時</span></p>
+                        <p class="gpu-meta">月租 NT$19,800 起</p>
+                    </article>
+                    <article class="card gpu featured-gpu">
+                        <div class="gpu-head">
+                            <span class="gpu-badge hot">熱門</span>
+                            <span class="gpu-vram">32GB</span>
+                        </div>
+                        <h3>RTX 5090</h3>
+                        <p class="gpu-use">H3 影片、高解析度長鏡頭</p>
+                        <p class="gpu-price">NT$75<span class="gpu-unit">/ 小時</span></p>
+                        <p class="gpu-meta">月租 NT$32,000 起</p>
+                    </article>
+                    <article class="card gpu">
+                        <div class="gpu-head">
+                            <span class="gpu-badge">大顯存</span>
+                            <span class="gpu-vram">80GB</span>
+                        </div>
+                        <h3>A100</h3>
+                        <p class="gpu-use">大模型推理、批次生成</p>
+                        <p class="gpu-price">NT$120<span class="gpu-unit">/ 小時</span></p>
+                        <p class="gpu-meta">月租 NT$52,000 起</p>
+                    </article>
+                    <article class="card gpu">
+                        <div class="gpu-head">
+                            <span class="gpu-badge">極致</span>
+                            <span class="gpu-vram">80GB × 8</span>
+                        </div>
+                        <h3>H100 整機</h3>
+                        <p class="gpu-use">多卡訓練、整條產線並行</p>
+                        <p class="gpu-price">NT$1,400<span class="gpu-unit">/ 小時</span></p>
+                        <p class="gpu-meta">依需求客製報價</p>
+                    </article>
+                </div>
+
+                <div class="compute-points">
+                    <div class="compute-point">
+                        <h4>開機就有環境</h4>
+                        <p>常用鏡像預裝 ComfyUI、模型與插件，不用重裝一晚。自訂環境可存成私有鏡像，下次直接調用。</p>
+                    </div>
+                    <div class="compute-point">
+                        <h4>按秒計費，關機不收</h4>
+                        <p>跑完就關，停了不計 GPU 費用；只有儲存空間按實際佔用計價，成品放在雲端硬碟不佔卡。</p>
+                    </div>
+                    <div class="compute-point">
+                        <h4>直接綁進畫布</h4>
+                        <p>租到的實例填進渠道設定，無限畫布與工作台立刻多一條算力通道，和本機 GPU 用法完全一致。</p>
+                    </div>
+                </div>
+
+                <div class="compute-cta">
+                    <p><strong>需要更便宜的長租？</strong>整月包機、教育與非營利方案另行報價，可開立發票。</p>
+                    <a class="btn btn-primary" href="#contact">洽詢算力方案 →</a>
                 </div>
             </section>
 
