@@ -1,0 +1,57 @@
+name: Deploy MURMUR AI to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: web
+        run: bun install --frozen-lockfile || bun install
+
+      - name: Build static site
+        working-directory: web
+        env:
+          # 子路徑必須等於 repo 名，否則 GitHub Pages 上的資源會 404
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          # 側欄「ComfyUI 無限畫布」的目標；留空則用預設 http://127.0.0.1:3000
+          VITE_INFINITE_CANVAS_URL: ${{ vars.INFINITE_CANVAS_URL }}
+        run: bun run build:desktop
+
+      - name: SPA fallback + nojekyll
+        run: |
+          cp web/dist/index.html web/dist/404.html
+          touch web/dist/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
