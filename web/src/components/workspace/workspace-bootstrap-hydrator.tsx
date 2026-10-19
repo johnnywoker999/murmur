@@ -20,7 +20,10 @@ export function WorkspaceBootstrapHydrator({ children }: { children: ReactNode }
         let cancelled = false;
         const loadWorkspace = () => {
             const bootstrap = getWorkspaceBootstrap();
-            const timeout = new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error("本地工作區啟動超時")), 15_000));
+            // 純靜態部署（GitHub Pages）沒有後端可等，縮短等待避免白屏十幾秒
+            const isLocalHost = /^(localhost|127\.0\.0\.1)$/u.test(window.location.hostname);
+            const timeoutMs = isLocalHost ? 15_000 : 2_500;
+            const timeout = new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error("本地工作區啟動超時")), timeoutMs));
             return Promise.race([bootstrap, timeout]);
         };
         void initializeWorkspaceState({
